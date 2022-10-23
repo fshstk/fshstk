@@ -6,4 +6,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
   Main.cpp
   PluginEditor.cpp
   PluginProcessor.cpp
+  utils/OSCParameterInterface.cpp
+  utils/efficientSHvanilla.cpp
 )
