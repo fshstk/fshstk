@@ -86,7 +86,7 @@ private:
 
   juce::Atomic<bool> positionHasChanged = true;
 
-  iem::Quaternion<float> quaternionDirection;
+  iem::Quaternion quaternionDirection;
 
   juce::AudioBuffer<float> bufferCopy;
 

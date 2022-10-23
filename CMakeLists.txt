@@ -25,7 +25,7 @@ juce_add_plugin(${CMAKE_PROJECT_NAME}
   IS_SYNTH                  FALSE
   NEEDS_MIDI_INPUT          FALSE
 
-  FORMATS                   AU VST3 Standalone
+  FORMATS                   VST3 Standalone
   COPY_PLUGIN_AFTER_BUILD   TRUE
 )
 
