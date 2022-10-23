@@ -6,7 +6,6 @@
 #include "utils/efficientSHvanilla.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
-
 using namespace juce;
 
 #define ProcessorClass StereoEncoderAudioProcessor
@@ -46,10 +45,6 @@ public:
   void setStateInformation(const void* data, int sizeInBytes) override;
 
   void parameterChanged(const juce::String& parameterID, float newValue) override;
-
-  // ====== OSC ==================================================================
-  const bool processNotYetConsumedOSCMessage(const juce::OSCMessage& message) override;
-  // =================
 
   //======= Parameters ===========================================================
   std::vector<std::unique_ptr<juce::RangedAudioParameter>> createParameterLayout();

@@ -41,7 +41,6 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   juce::juce_audio_utils
-  juce::juce_osc
   RobotoFont
 
   kfr
