@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 # Cross-compile for x86 on Apple M1 machines:
 set(CMAKE_OSX_ARCHITECTURES x86_64)
 
-project(LightOrgan
+project(StereoEncoder
     VERSION     0.0.1
     LANGUAGES   CXX)
 
@@ -17,9 +17,9 @@ enable_testing()
 add_subdirectory(roboto)
 
 juce_add_plugin(${CMAKE_PROJECT_NAME}
-  COMPANY_NAME              "Fabian Hummel & Benedikt Mayrhofer"
-  PLUGIN_MANUFACTURER_CODE  FhBm
-  PLUGIN_CODE               LigO
+  COMPANY_NAME              fshstk
+  PLUGIN_MANUFACTURER_CODE  Fabi
+  PLUGIN_CODE               StEn
 
   # NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail:
   IS_SYNTH                  FALSE
