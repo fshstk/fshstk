@@ -1,6 +1,7 @@
 #pragma once
-#include "../ambisonicTools.h"
+#include "../utils/ambisonicTools.h"
 #include "TitleBarPaths.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 class AlertSymbol
   : public juce::Component
@@ -610,31 +611,3 @@ public:
 private:
   IEMLogo iemLogo;
 };
-
-#ifdef JUCE_OSC_H_INCLUDED
-class OSCFooter : public juce::Component
-{
-public:
-  OSCFooter(OSCParameterInterface& oscInterface)
-    : oscStatus(oscInterface)
-  {
-    addAndMakeVisible(footer);
-    addAndMakeVisible(oscStatus);
-  }
-
-  void resized() override
-  {
-    auto bounds = getLocalBounds();
-    footer.setBounds(bounds);
-
-    bounds.removeFromBottom(2);
-    bounds = bounds.removeFromBottom(16);
-    bounds.removeFromLeft(50);
-    oscStatus.setBounds(bounds);
-  }
-
-private:
-  OSCStatus oscStatus;
-  Footer footer;
-};
-#endif

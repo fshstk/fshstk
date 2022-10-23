@@ -1,10 +1,13 @@
 #pragma once
-#include "../../resources/AudioProcessorBase.h"
-#include "../../resources/Conversions.h"
-#include "../../resources/Quaternion.h"
-#include "../../resources/ambisonicTools.h"
-#include "../../resources/efficientSHvanilla.h"
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "utils/AudioProcessorBase.h"
+#include "utils/Conversions.h"
+#include "utils/Quaternion.h"
+#include "utils/ambisonicTools.h"
+#include "utils/efficientSHvanilla.h"
+#include <juce_audio_processors/juce_audio_processors.h>
+
+
+using namespace juce;
 
 #define ProcessorClass StereoEncoderAudioProcessor
 

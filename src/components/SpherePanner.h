@@ -1,6 +1,7 @@
 #pragma once
-#include "../../resources/Conversions.h"
-#include "../../resources/Quaternion.h"
+#include "../utils/Conversions.h"
+#include "../utils/Quaternion.h"
+#include <juce_audio_processors/juce_audio_processors.h>
 
 using namespace juce;
 

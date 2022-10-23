@@ -14,6 +14,8 @@ include(Dependencies.cmake)
 
 enable_testing()
 
+add_subdirectory(roboto)
+
 juce_add_plugin(${CMAKE_PROJECT_NAME}
   COMPANY_NAME              "Fabian Hummel & Benedikt Mayrhofer"
   PLUGIN_MANUFACTURER_CODE  FhBm
@@ -39,6 +41,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   juce::juce_audio_utils
+  RobotoFont
 
   kfr
   kfr_dft

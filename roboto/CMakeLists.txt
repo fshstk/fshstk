@@ -1,0 +1,10 @@
+juce_add_binary_data(RobotoFont
+  HEADER_NAME
+    RobotoFont.h
+  NAMESPACE
+    Roboto
+  SOURCES
+    Roboto-Bold.ttf
+    Roboto-Light.ttf
+    Roboto-Medium.ttf
+    Roboto-Regular.ttf)

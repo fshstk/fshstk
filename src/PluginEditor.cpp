@@ -6,7 +6,6 @@ StereoEncoderAudioProcessorEditor::StereoEncoderAudioProcessorEditor(
   StereoEncoderAudioProcessor& p,
   juce::AudioProcessorValueTreeState& vts)
   : juce::AudioProcessorEditor(&p)
-  , footer(p.getOSCParameterInterface())
   , processor(p)
   , valueTreeState(vts)
   , centerElement(*valueTreeState.getParameter("azimuth"),
@@ -51,7 +50,7 @@ StereoEncoderAudioProcessorEditor::StereoEncoderAudioProcessorEditor(
   title.setTitle(juce::String("Stereo"), juce::String("Encoder"));
   title.setFont(globalLaF.robotoBold, globalLaF.robotoLight);
 
-  addAndMakeVisible(&footer);
+  // addAndMakeVisible(&footer);
 
   toolTipWin.setLookAndFeel(&globalLaF);
   toolTipWin.setMillisecondsBeforeTipAppears(500);
@@ -231,7 +230,7 @@ void StereoEncoderAudioProcessorEditor::resized()
   juce::Rectangle<int> area(getLocalBounds());
 
   juce::Rectangle<int> footerArea(area.removeFromBottom(footerHeight));
-  footer.setBounds(footerArea);
+  // footer.setBounds(footerArea);
 
   area.removeFromLeft(leftRightMargin);
   area.removeFromRight(leftRightMargin);

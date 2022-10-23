@@ -1,11 +1,14 @@
 #pragma once
-#include "../../resources/lookAndFeel/IEM_LaF.h"
-#include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 #include "components/ReverseSlider.h"
 #include "components/SimpleLabel.h"
 #include "components/SpherePanner.h"
 #include "components/TitleBar.h"
+#include "utils/IEM_LaF.h"
+#include <juce_audio_basics/juce_audio_basics.h>
+#include <juce_audio_processors/juce_audio_processors.h>
+
+using namespace juce;
 
 typedef ReverseSlider::SliderAttachment SliderAttachment;
 typedef juce::AudioProcessorValueTreeState::ComboBoxAttachment ComboBoxAttachment;
@@ -38,7 +41,7 @@ private:
   LaF globalLaF;
 
   TitleBar<AudioChannelsIOWidget<2, false>, AmbisonicIOWidget<>> title;
-  OSCFooter footer;
+  // OSCFooter footer;
 
   void timerCallback() override;
 
