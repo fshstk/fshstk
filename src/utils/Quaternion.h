@@ -11,8 +11,8 @@ struct Quaternion
   Type y = 0.0;
   Type z = 0.0;
 
-  void toYPR(Type* ypr);
-  void fromYPR(Type* ypr);
+  void toYPR(std::array<Type, 3> ypr) const;
+  void fromYPR(const std::array<Type, 3> ypr);
 };
 } // namespace iem
 

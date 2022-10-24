@@ -117,7 +117,7 @@ void StereoEncoderAudioProcessor::releaseResources()
 
 inline void StereoEncoderAudioProcessor::updateQuaternions()
 {
-  float ypr[3];
+  std::array<float, 3> ypr;
   ypr[0] = Conversions<float>::degreesToRadians(*azimuth);
   ypr[1] = -Conversions<float>::degreesToRadians(*elevation); // pitch
   ypr[2] = Conversions<float>::degreesToRadians(*roll);
@@ -138,7 +138,7 @@ inline void StereoEncoderAudioProcessor::updateQuaternions()
 
 void StereoEncoderAudioProcessor::updateEuler()
 {
-  float ypr[3];
+  std::array<float, 3> ypr;
   quaternionDirection = iem::Quaternion{ *qw, *qx, *qy, *qz };
   quaternionDirection = normalize(quaternionDirection);
   quaternionDirection.toYPR(ypr);

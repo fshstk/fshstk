@@ -359,7 +359,7 @@ public:
 
       // ==== calculate roll
       iem::Quaternion quat;
-      float ypr[3];
+      std::array<float, 3> ypr;
       ypr[0] = centerElement.getAzimuthInRadians();
       ypr[1] = -centerElement.getElevationInRadians(); // pitch
       ypr[2] = 0.0f;
@@ -388,7 +388,7 @@ public:
      */
     juce::Vector3D<float> getCoordinates() override
     {
-      float ypr[3];
+      std::array<float, 3> ypr;
       ypr[0] = centerElement.getAzimuthInRadians();
       ypr[1] = -centerElement.getElevationInRadians(); // pitch
       ypr[2] = Conversions<float>::degreesToRadians(rollRange.convertFrom0to1(roll.getValue()));

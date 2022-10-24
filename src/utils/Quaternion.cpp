@@ -90,7 +90,7 @@ juce::Vector3D<Type> getCartesian(const iem::Quaternion& q)
   return ret;
 }
 
-void Quaternion::toYPR(Type* ypr)
+void Quaternion::toYPR(std::array<Type, 3> ypr) const
 {
   // CONVERSION FROM QUATERNION DATA TO TAIT-BRYAN ANGLES yaw, pitch and roll
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
@@ -115,7 +115,7 @@ void Quaternion::toYPR(Type* ypr)
   ypr[2] = atan2(t0, t1);
 }
 
-void Quaternion::fromYPR(Type* ypr)
+void Quaternion::fromYPR(const std::array<Type, 3> ypr)
 {
   // CONVERSION FROM TAIT-BRYAN ANGLES DATA TO QUATERNION
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
