@@ -3,12 +3,10 @@
 
 typedef std::vector<std::unique_ptr<juce::RangedAudioParameter>> ParameterList;
 
-template<class inputType, class outputType, bool combined = false>
-
 class AudioProcessorBase
   : public juce::AudioProcessor
   , public juce::VSTCallbackHandler
-  , public IOHelper<inputType, outputType, combined>
+  , public IOHelper
   , public juce::AudioProcessorValueTreeState::Listener
 {
 public:

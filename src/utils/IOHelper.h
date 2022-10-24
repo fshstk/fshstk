@@ -117,15 +117,15 @@ private:
 };
 } // namespace IOTypes
 
-template<class Input, class Output, bool combined = false>
 class IOHelper
 {
 public:
   IOHelper() {}
   virtual ~IOHelper() {}
 
-  Input input;
-  Output output;
+  IOTypes::AudioChannels input;
+  IOTypes::Ambisonics output;
+  bool combined = false;
 
   bool inputSizeHasChanged;
   bool outputSizeHasChanged;

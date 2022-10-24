@@ -11,8 +11,7 @@
 //==============================================================================
 /**
  */
-class StereoEncoderAudioProcessor
-  : public AudioProcessorBase<IOTypes::AudioChannels, IOTypes::Ambisonics>
+class StereoEncoderAudioProcessor : public AudioProcessorBase
 {
 public:
   constexpr static int numberOfInputChannels = 2;
