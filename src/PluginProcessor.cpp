@@ -100,8 +100,8 @@ void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPe
   const iem::Quaternion quatL = quaternionDirection * quatLRot;
   const iem::Quaternion quatR = quaternionDirection * conj(quatLRot);
 
-  const auto left = quatL.getCartesian();
-  const auto right = quatR.getCartesian();
+  const auto left = getCartesian(quatL);
+  const auto right = getCartesian(quatR);
 
   SHEval(7, left, _SHL);
   SHEval(7, right, _SHR);
@@ -140,7 +140,7 @@ void StereoEncoderAudioProcessor::updateEuler()
 {
   float ypr[3];
   quaternionDirection = iem::Quaternion{ *qw, *qx, *qy, *qz };
-  quaternionDirection.normalize();
+  quaternionDirection = normalize(quaternionDirection);
   quaternionDirection.toYPR(ypr);
 
   // updating not active params
@@ -180,8 +180,8 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   const iem::Quaternion quatL = quaternionDirection * quatLRot;
   const iem::Quaternion quatR = quaternionDirection * conj(quatLRot);
 
-  const auto left = quatL.getCartesian();
-  const auto right = quatR.getCartesian();
+  const auto left = getCartesian(quatL);
+  const auto right = getCartesian(quatR);
 
   // conversion to spherical for high-quality mode
   float azimuthL, azimuthR, elevationL, elevationR;

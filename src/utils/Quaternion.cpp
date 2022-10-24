@@ -1,28 +1,25 @@
 #include "Quaternion.h"
+#include <math.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 using namespace iem;
 using Type = Quaternion::Type;
 
-Type Quaternion::magnitude() const
+Type mag(const Quaternion& q)
 {
-  return sqrt(w * w + x * x + y * y + z * z);
+  return sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
 }
 
-void Quaternion::normalize()
+iem::Quaternion normalize(const iem::Quaternion& q)
 {
-  Type mag = magnitude();
-  if (mag != Type(0.0))
-    *this = this->scale(Type(1.0) / mag);
+  return q / mag(q);
 }
 
 iem::Quaternion conj(const iem::Quaternion& q)
 {
   return { q.w, -q.x, -q.y, -q.z };
-}
-
-iem::Quaternion operator~(const iem::Quaternion& q)
-{
-  return conj(q);
 }
 
 iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
@@ -73,30 +70,22 @@ iem::Quaternion operator/(const iem::Quaternion& q, iem::Quaternion::Type scalar
   };
 }
 
-Quaternion Quaternion::scale(Type scalar) const
+juce::Vector3D<Type> rotateVector(juce::Vector3D<Type> v, const iem::Quaternion& q)
 {
-  return *this * scalar;
-}
-
-juce::Vector3D<Type> Quaternion::rotateVector(juce::Vector3D<Type> vec)
-{ // has to be tested!
-  iem::Quaternion t{ 0, vec.x, vec.y, vec.z };
-  t = *this * t;
-  t = t * conj(*this);
+  iem::Quaternion t{ 0, v.x, v.y, v.z };
+  t = q * t;
+  t = t * conj(q);
 
   return { t.x, t.y, t.z };
 }
 
-/**
- Rotates the cartesian vector (1, 0, 0) by this quaternion and returns it.
- */
-juce::Vector3D<Type> Quaternion::getCartesian() const
+juce::Vector3D<Type> getCartesian(const iem::Quaternion& q)
 {
   juce::Vector3D<Type> ret;
 
-  ret.x = Type(1.0) - Type(2.0) * y * y - Type(2.0) * z * z;
-  ret.y = Type(2.0) * x * y + Type(2.0) * w * z;
-  ret.z = Type(2.0) * x * z - Type(2.0) * w * y;
+  ret.x = Type(1.0) - Type(2.0) * q.y * q.y - Type(2.0) * q.z * q.z;
+  ret.y = Type(2.0) * q.x * q.y + Type(2.0) * q.w * q.z;
+  ret.z = Type(2.0) * q.x * q.z - Type(2.0) * q.w * q.y;
 
   return ret;
 }

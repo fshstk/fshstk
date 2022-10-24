@@ -367,7 +367,7 @@ public:
       quat.fromYPR(ypr);
       quat = conj(quat);
 
-      const auto rotated = quat.rotateVector(posXYZ);
+      const auto rotated = rotateVector(posXYZ, quat);
 
       float rollInRadians = atan2(rotated.z, rotated.y);
       if (isMirrored)
@@ -408,7 +408,7 @@ public:
 
       iem::Quaternion quatL = quat * quatLRot;
 
-      return quatL.getCartesian();
+      return getCartesian(quatL);
     }
 
     void setMirrored(bool mirrored) { isMirrored = mirrored; }
