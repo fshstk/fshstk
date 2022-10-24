@@ -193,7 +193,7 @@ public:
       if (!upBeforeDrag)
         elevation *= -1.0f;
 
-      position = sphericalToCartesian(azimuth, elevation);
+      position = sphericalToCartesian<float>({ .azimuth = azimuth, .elevation = elevation });
     }
 
     /*
@@ -293,7 +293,10 @@ public:
      */
     juce::Vector3D<float> getCoordinates() override
     {
-      return sphericalToCartesian(getAzimuthInRadians(), getElevationInRadians());
+      return sphericalToCartesian<float>({
+        .azimuth = getAzimuthInRadians(),
+        .elevation = getElevationInRadians(),
+      });
     }
 
   private:
@@ -347,7 +350,7 @@ public:
       if (!upBeforeDrag)
         ele *= -1.0f;
 
-      auto posXYZ = sphericalToCartesian(azi, ele);
+      auto posXYZ = sphericalToCartesian<float>({ .azimuth = azi, .elevation = ele });
 
       // ==== calculate width
       juce::Vector3D<float> dPos = posXYZ - centerElement.getCoordinates();

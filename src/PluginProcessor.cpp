@@ -179,17 +179,16 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   const auto right = cartesian(quatR);
 
   // conversion to spherical for high-quality mode
-  float azimuthL, azimuthR, elevationL, elevationR;
-  cartesianToSpherical(left, azimuthL, elevationL);
-  cartesianToSpherical(right, azimuthR, elevationR);
+  const auto leftSpherical = cartesianToSpherical(left);
+  const auto rightSpherical = cartesianToSpherical(right);
 
   if (*highQuality < 0.5f) // no high-quality
   {
     if (positionHasChanged.compareAndSetBool(false, true)) {
-      smoothAzimuthL.setCurrentAndTargetValue(azimuthL);
-      smoothElevationL.setCurrentAndTargetValue(elevationL);
-      smoothAzimuthR.setCurrentAndTargetValue(azimuthR);
-      smoothElevationR.setCurrentAndTargetValue(elevationR);
+      smoothAzimuthL.setCurrentAndTargetValue(leftSpherical.azimuth);
+      smoothElevationL.setCurrentAndTargetValue(leftSpherical.elevation);
+      smoothAzimuthR.setCurrentAndTargetValue(rightSpherical.azimuth);
+      smoothElevationR.setCurrentAndTargetValue(rightSpherical.elevation);
 
       SHEval(ambisonicOrder, left.x, left.y, left.z, SHL);
       SHEval(ambisonicOrder, right.x, right.y, right.z, SHR);
@@ -207,38 +206,44 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     }
   } else // high-quality sampling
   {
-    if (smoothAzimuthL.getTargetValue() - azimuthL > juce::MathConstants<float>::pi)
+    if (smoothAzimuthL.getTargetValue() - leftSpherical.azimuth > juce::MathConstants<float>::pi)
       smoothAzimuthL.setCurrentAndTargetValue(smoothAzimuthL.getTargetValue() -
                                               2.0f * juce::MathConstants<float>::pi);
-    else if (azimuthL - smoothAzimuthL.getTargetValue() > juce::MathConstants<float>::pi)
+    else if (leftSpherical.azimuth - smoothAzimuthL.getTargetValue() >
+             juce::MathConstants<float>::pi)
       smoothAzimuthL.setCurrentAndTargetValue(smoothAzimuthL.getTargetValue() +
                                               2.0f * juce::MathConstants<float>::pi);
 
-    if (smoothElevationL.getTargetValue() - elevationL > juce::MathConstants<float>::pi)
+    if (smoothElevationL.getTargetValue() - leftSpherical.elevation >
+        juce::MathConstants<float>::pi)
       smoothElevationL.setCurrentAndTargetValue(smoothElevationL.getTargetValue() -
                                                 2.0f * juce::MathConstants<float>::pi);
-    else if (elevationL - smoothElevationL.getTargetValue() > juce::MathConstants<float>::pi)
+    else if (leftSpherical.elevation - smoothElevationL.getTargetValue() >
+             juce::MathConstants<float>::pi)
       smoothElevationL.setCurrentAndTargetValue(smoothElevationL.getTargetValue() +
                                                 2.0f * juce::MathConstants<float>::pi);
 
-    if (smoothAzimuthR.getTargetValue() - azimuthR > juce::MathConstants<float>::pi)
+    if (smoothAzimuthR.getTargetValue() - rightSpherical.azimuth > juce::MathConstants<float>::pi)
       smoothAzimuthR.setCurrentAndTargetValue(smoothAzimuthR.getTargetValue() -
                                               2.0f * juce::MathConstants<float>::pi);
-    else if (azimuthR - smoothAzimuthR.getTargetValue() > juce::MathConstants<float>::pi)
+    else if (rightSpherical.azimuth - smoothAzimuthR.getTargetValue() >
+             juce::MathConstants<float>::pi)
       smoothAzimuthR.setCurrentAndTargetValue(smoothAzimuthR.getTargetValue() +
                                               2.0f * juce::MathConstants<float>::pi);
 
-    if (smoothElevationR.getTargetValue() - elevationR > juce::MathConstants<float>::pi)
+    if (smoothElevationR.getTargetValue() - rightSpherical.elevation >
+        juce::MathConstants<float>::pi)
       smoothElevationR.setCurrentAndTargetValue(smoothElevationR.getTargetValue() -
                                                 2.0f * juce::MathConstants<float>::pi);
-    else if (elevationR - smoothElevationR.getTargetValue() > juce::MathConstants<float>::pi)
+    else if (rightSpherical.elevation - smoothElevationR.getTargetValue() >
+             juce::MathConstants<float>::pi)
       smoothElevationR.setCurrentAndTargetValue(smoothElevationR.getTargetValue() +
                                                 2.0f * juce::MathConstants<float>::pi);
 
-    smoothAzimuthL.setTargetValue(azimuthL);
-    smoothElevationL.setTargetValue(elevationL);
-    smoothAzimuthR.setTargetValue(azimuthR);
-    smoothElevationR.setTargetValue(elevationR);
+    smoothAzimuthL.setTargetValue(leftSpherical.azimuth);
+    smoothElevationL.setTargetValue(leftSpherical.elevation);
+    smoothAzimuthR.setTargetValue(rightSpherical.azimuth);
+    smoothElevationR.setTargetValue(rightSpherical.elevation);
 
     for (int i = 0; i < L; ++i) // left
     {
@@ -246,7 +251,10 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
       const float elevation = smoothElevationL.getNextValue();
       float sample = bufferCopy.getSample(0, i);
 
-      const juce::Vector3D<float> pos = sphericalToCartesian(azimuth, elevation);
+      const auto pos = sphericalToCartesian<float>({
+        .azimuth = azimuth,
+        .elevation = elevation,
+      });
       SHEval(ambisonicOrder, pos.x, pos.y, pos.z, SHL);
 
       for (int ch = 0; ch < nChOut; ++ch)
@@ -259,7 +267,10 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
       const float elevation = smoothElevationR.getNextValue();
       float sample = bufferCopy.getSample(1, i);
 
-      const juce::Vector3D<float> pos = sphericalToCartesian(azimuth, elevation);
+      const auto pos = sphericalToCartesian<float>({
+        .azimuth = azimuth,
+        .elevation = elevation,
+      });
       SHEval(ambisonicOrder, pos.x, pos.y, pos.z, SHR);
 
       for (int ch = 0; ch < nChOut; ++ch)
