@@ -1,6 +1,6 @@
 #pragma once
-#include "../utils/Conversions.h"
 #include "../utils/Quaternion.h"
+#include "../utils/SphericalCartesian.h"
 #include "../utils/YawPitchRoll.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
@@ -50,7 +50,7 @@ public:
     for (int deg = 75; deg >= 0; deg -= 15) {
       float rCirc;
       if (!linearElevation)
-        rCirc = radius * std::cos(Conversions<float>::degreesToRadians(deg));
+        rCirc = radius * std::cos(juce::degreesToRadians(deg));
       else
         rCirc = radius * (90 - deg) / 90;
       circles.addEllipse(centreX - rCirc, centreY - rCirc, 2.0f * rCirc, 2.0f * rCirc);
@@ -193,7 +193,7 @@ public:
       if (!upBeforeDrag)
         elevation *= -1.0f;
 
-      position = Conversions<float>::sphericalToCartesian(azimuth, elevation);
+      position = sphericalToCartesian(azimuth, elevation);
     }
 
     /*
@@ -246,7 +246,7 @@ public:
     {
       auto pos = event.getPosition();
       const float azi = -1.0f * centre.getAngleToPoint(pos);
-      const float azimuthInDegrees{ Conversions<float>::radiansToDegrees(azi) };
+      const float azimuthInDegrees{ juce::radiansToDegrees(azi) };
 
       if (!rightClick) {
         float r = centre.getDistanceFrom(pos) / radius;
@@ -262,7 +262,7 @@ public:
         if (!upBeforeDrag)
           ele *= -1.0f;
 
-        const float elevationInDegrees{ Conversions<float>::radiansToDegrees(ele) };
+        const float elevationInDegrees{ juce::radiansToDegrees(ele) };
 
         elevation.setValueNotifyingHost(elevationRange.convertTo0to1(elevationInDegrees));
       }
@@ -279,13 +279,13 @@ public:
     const float getAzimuthInRadians()
     {
       const float azimuthInDegrees{ azimuthRange.convertFrom0to1(azimuth.getValue()) };
-      return Conversions<float>::degreesToRadians(azimuthInDegrees);
+      return juce::degreesToRadians(azimuthInDegrees);
     }
 
     const float getElevationInRadians()
     {
       const float elevationInDegrees{ elevationRange.convertFrom0to1(elevation.getValue()) };
-      return Conversions<float>::degreesToRadians(elevationInDegrees);
+      return juce::degreesToRadians(elevationInDegrees);
     }
 
     /*
@@ -293,8 +293,7 @@ public:
      */
     juce::Vector3D<float> getCoordinates() override
     {
-      return Conversions<float>::sphericalToCartesian(getAzimuthInRadians(),
-                                                      getElevationInRadians());
+      return sphericalToCartesian(getAzimuthInRadians(), getElevationInRadians());
     }
 
   private:
@@ -348,13 +347,12 @@ public:
       if (!upBeforeDrag)
         ele *= -1.0f;
 
-      auto posXYZ = Conversions<float>::sphericalToCartesian(azi, ele);
+      auto posXYZ = sphericalToCartesian(azi, ele);
 
       // ==== calculate width
       juce::Vector3D<float> dPos = posXYZ - centerElement.getCoordinates();
       const float alpha = 4.0f * std::asin(dPos.length() / 2.0f);
-      width.setValueNotifyingHost(
-        widthRange.convertTo0to1(Conversions<float>::radiansToDegrees(alpha)));
+      width.setValueNotifyingHost(widthRange.convertTo0to1(juce::radiansToDegrees(alpha)));
 
       // ==== calculate roll
       ::Quaternion quat;
@@ -372,8 +370,7 @@ public:
       if (isMirrored)
         rollInRadians = atan2(-rotated.z, -rotated.y);
 
-      roll.setValueNotifyingHost(
-        rollRange.convertTo0to1(Conversions<float>::radiansToDegrees(rollInRadians)));
+      roll.setValueNotifyingHost(rollRange.convertTo0to1(juce::radiansToDegrees(rollInRadians)));
     }
 
     void stopMovement() override
@@ -390,14 +387,14 @@ public:
       YawPitchRoll ypr;
       ypr.yaw = centerElement.getAzimuthInRadians();
       ypr.pitch = -centerElement.getElevationInRadians(); // pitch
-      ypr.roll = Conversions<float>::degreesToRadians(rollRange.convertFrom0to1(roll.getValue()));
+      ypr.roll = juce::degreesToRadians(rollRange.convertFrom0to1(roll.getValue()));
 
       // updating not active params
       ::Quaternion quat;
       quat = fromYPR(ypr);
 
       const float widthInRadiansQuarter(
-        Conversions<float>::degreesToRadians(widthRange.convertFrom0to1(width.getValue())) / 4.0f);
+        juce::degreesToRadians(widthRange.convertFrom0to1(width.getValue())) / 4.0f);
 
       ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
       if (isMirrored)

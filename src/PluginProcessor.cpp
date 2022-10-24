@@ -94,7 +94,7 @@ void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPe
   smoothAzimuthR.reset(1, samplesPerBlock);
   smoothElevationR.reset(1, samplesPerBlock);
 
-  const float widthInRadiansQuarter{ Conversions<float>::degreesToRadians(*width) / 4.0f };
+  const float widthInRadiansQuarter{ juce::degreesToRadians(width->load()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
   const ::Quaternion quatL = quaternionDirection * quatLRot;
   const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
@@ -117,9 +117,9 @@ void StereoEncoderAudioProcessor::releaseResources()
 inline void StereoEncoderAudioProcessor::updateQuaternions()
 {
   YawPitchRoll ypr;
-  ypr.yaw = Conversions<float>::degreesToRadians(*azimuth);
-  ypr.pitch = -Conversions<float>::degreesToRadians(*elevation); // pitch
-  ypr.roll = Conversions<float>::degreesToRadians(*roll);
+  ypr.yaw = degreesToRadians(azimuth->load());
+  ypr.pitch = -degreesToRadians(elevation->load()); // pitch
+  ypr.roll = degreesToRadians(roll->load());
 
   // updating not active params
   quaternionDirection = fromYPR(ypr);
@@ -145,14 +145,12 @@ void StereoEncoderAudioProcessor::updateEuler()
   // updating not active params
   processorUpdatingParams = true;
   parameters.getParameter("azimuth")->setValueNotifyingHost(
-    parameters.getParameterRange("azimuth").convertTo0to1(
-      Conversions<float>::radiansToDegrees(ypr.yaw)));
+    parameters.getParameterRange("azimuth").convertTo0to1(radiansToDegrees(ypr.yaw)));
   parameters.getParameter("elevation")
-    ->setValueNotifyingHost(parameters.getParameterRange("elevation")
-                              .convertTo0to1(-Conversions<float>::radiansToDegrees(ypr.pitch)));
+    ->setValueNotifyingHost(
+      parameters.getParameterRange("elevation").convertTo0to1(-radiansToDegrees(ypr.pitch)));
   parameters.getParameter("roll")->setValueNotifyingHost(
-    parameters.getParameterRange("roll").convertTo0to1(
-      Conversions<float>::radiansToDegrees(ypr.roll)));
+    parameters.getParameterRange("roll").convertTo0to1(radiansToDegrees(ypr.roll)));
   processorUpdatingParams = false;
 }
 
@@ -172,7 +170,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     bufferCopy.copyFrom(i, 0, buffer.getReadPointer(i), buffer.getNumSamples());
   buffer.clear();
 
-  const float widthInRadiansQuarter{ Conversions<float>::degreesToRadians(*width) / 4.0f };
+  const float widthInRadiansQuarter{ degreesToRadians(width->load()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
   const ::Quaternion quatL = quaternionDirection * quatLRot;
   const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
@@ -182,8 +180,8 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
   // conversion to spherical for high-quality mode
   float azimuthL, azimuthR, elevationL, elevationR;
-  Conversions<float>::cartesianToSpherical(left, azimuthL, elevationL);
-  Conversions<float>::cartesianToSpherical(right, azimuthR, elevationR);
+  cartesianToSpherical(left, azimuthL, elevationL);
+  cartesianToSpherical(right, azimuthR, elevationR);
 
   if (*highQuality < 0.5f) // no high-quality
   {
@@ -248,8 +246,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
       const float elevation = smoothElevationL.getNextValue();
       float sample = bufferCopy.getSample(0, i);
 
-      const juce::Vector3D<float> pos =
-        Conversions<float>::sphericalToCartesian(azimuth, elevation);
+      const juce::Vector3D<float> pos = sphericalToCartesian(azimuth, elevation);
       SHEval(ambisonicOrder, pos.x, pos.y, pos.z, SHL);
 
       for (int ch = 0; ch < nChOut; ++ch)
@@ -262,8 +259,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
       const float elevation = smoothElevationR.getNextValue();
       float sample = bufferCopy.getSample(1, i);
 
-      const juce::Vector3D<float> pos =
-        Conversions<float>::sphericalToCartesian(azimuth, elevation);
+      const juce::Vector3D<float> pos = sphericalToCartesian(azimuth, elevation);
       SHEval(ambisonicOrder, pos.x, pos.y, pos.z, SHR);
 
       for (int ch = 0; ch < nChOut; ++ch)
