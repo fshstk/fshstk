@@ -15,20 +15,6 @@ inline int isqrt(int x)
     title.setMaxSize (audioProcessor.getMaxSize());
  // ==========================================
  */
-namespace IOTypes {
-class Nothing
-{
-public:
-  Nothing() {}
-  bool check(juce::AudioProcessor* p, int setting, bool isInput)
-  {
-    ignoreUnused(p, setting, isInput);
-    return false;
-  }
-  int getSize() { return 0; }
-  int getMaxSize() { return 0; }
-};
-
 class AudioChannels
 {
   // int maxNumberOfInputChannels = 64;
@@ -115,7 +101,6 @@ private:
   int nChannels, _nChannels;
   int maxSize = highestOrder;
 };
-} // namespace IOTypes
 
 class IOHelper
 {
@@ -123,8 +108,8 @@ public:
   IOHelper() {}
   virtual ~IOHelper() {}
 
-  IOTypes::AudioChannels input;
-  IOTypes::Ambisonics output;
+  AudioChannels input;
+  Ambisonics output;
   bool combined = false;
 
   bool inputSizeHasChanged;
