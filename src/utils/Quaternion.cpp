@@ -84,46 +84,46 @@ juce::Vector3D<float> getCartesian(const Quaternion& q)
   return ret;
 }
 
-std::array<float, 3> toYPR(const Quaternion& q)
+YawPitchRoll toYPR(const Quaternion& q)
 {
   // CONVERSION FROM QUATERNION DATA TO TAIT-BRYAN ANGLES yaw, pitch and roll
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
   // MNEMONIC: swivel on your swivel chair, look up/down, then tilt your head left/right...
   //            ... that's how we yaw, pitch'n'roll.
   float ysqr = q.y * q.y;
-  std::array<float, 3> ypr;
+  YawPitchRoll ypr;
 
   // yaw (z-axis rotation)
   float t0 = float(2.0) * (q.w * q.z + q.x * q.y);
   float t1 = float(1.0) - float(2.0) * (ysqr + q.z * q.z);
-  ypr[0] = atan2(t0, t1);
+  ypr.yaw = atan2(t0, t1);
 
   // pitch (y-axis rotation)
   t0 = float(2.0) * (q.w * q.y - q.z * q.x);
   t0 = t0 > float(1.0) ? float(1.0) : t0;
   t0 = t0 < float(-1.0) ? float(-1.0) : t0;
-  ypr[1] = asin(t0);
+  ypr.pitch = asin(t0);
 
   // roll (x-axis rotation)
   t0 = float(2.0) * (q.w * q.x + q.y * q.z);
   t1 = float(1.0) - float(2.0) * (q.x * q.x + ysqr);
-  ypr[2] = atan2(t0, t1);
+  ypr.roll = atan2(t0, t1);
 
   return ypr;
 }
 
-Quaternion fromYPR(const std::array<float, 3>& ypr)
+Quaternion fromYPR(const YawPitchRoll& ypr)
 {
   // CONVERSION FROM TAIT-BRYAN ANGLES DATA TO QUATERNION
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
   // MNEMONIC: swivel on your swivel chair, look up/down, then tilt your head left/right...
   //            ... that's how we yaw, pitch'n'roll.
-  float t0 = cos(ypr[0] * float(0.5));
-  float t1 = sin(ypr[0] * float(0.5));
-  float t2 = cos(ypr[2] * float(0.5));
-  float t3 = sin(ypr[2] * float(0.5));
-  float t4 = cos(ypr[1] * float(0.5));
-  float t5 = sin(ypr[1] * float(0.5));
+  float t0 = cos(ypr.yaw * float(0.5));
+  float t1 = sin(ypr.yaw * float(0.5));
+  float t2 = cos(ypr.roll * float(0.5));
+  float t3 = sin(ypr.roll * float(0.5));
+  float t4 = cos(ypr.pitch * float(0.5));
+  float t5 = sin(ypr.pitch * float(0.5));
 
   Quaternion q;
 

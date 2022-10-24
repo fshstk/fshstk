@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "utils/Quaternion.h"
 
 //==============================================================================
 StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
@@ -115,10 +116,10 @@ void StereoEncoderAudioProcessor::releaseResources()
 
 inline void StereoEncoderAudioProcessor::updateQuaternions()
 {
-  std::array<float, 3> ypr;
-  ypr[0] = Conversions<float>::degreesToRadians(*azimuth);
-  ypr[1] = -Conversions<float>::degreesToRadians(*elevation); // pitch
-  ypr[2] = Conversions<float>::degreesToRadians(*roll);
+  YawPitchRoll ypr;
+  ypr.yaw = Conversions<float>::degreesToRadians(*azimuth);
+  ypr.pitch = -Conversions<float>::degreesToRadians(*elevation); // pitch
+  ypr.roll = Conversions<float>::degreesToRadians(*roll);
 
   // updating not active params
   quaternionDirection = fromYPR(ypr);
@@ -136,7 +137,7 @@ inline void StereoEncoderAudioProcessor::updateQuaternions()
 
 void StereoEncoderAudioProcessor::updateEuler()
 {
-  std::array<float, 3> ypr;
+  YawPitchRoll ypr;
   quaternionDirection = ::Quaternion{ *qw, *qx, *qy, *qz };
   quaternionDirection = normalize(quaternionDirection);
   ypr = toYPR(quaternionDirection);
@@ -145,13 +146,13 @@ void StereoEncoderAudioProcessor::updateEuler()
   processorUpdatingParams = true;
   parameters.getParameter("azimuth")->setValueNotifyingHost(
     parameters.getParameterRange("azimuth").convertTo0to1(
-      Conversions<float>::radiansToDegrees(ypr[0])));
+      Conversions<float>::radiansToDegrees(ypr.yaw)));
   parameters.getParameter("elevation")
     ->setValueNotifyingHost(parameters.getParameterRange("elevation")
-                              .convertTo0to1(-Conversions<float>::radiansToDegrees(ypr[1])));
+                              .convertTo0to1(-Conversions<float>::radiansToDegrees(ypr.pitch)));
   parameters.getParameter("roll")->setValueNotifyingHost(
     parameters.getParameterRange("roll").convertTo0to1(
-      Conversions<float>::radiansToDegrees(ypr[2])));
+      Conversions<float>::radiansToDegrees(ypr.roll)));
   processorUpdatingParams = false;
 }
 

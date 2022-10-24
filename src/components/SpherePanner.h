@@ -357,10 +357,10 @@ public:
 
       // ==== calculate roll
       ::Quaternion quat;
-      std::array<float, 3> ypr;
-      ypr[0] = centerElement.getAzimuthInRadians();
-      ypr[1] = -centerElement.getElevationInRadians(); // pitch
-      ypr[2] = 0.0f;
+      YawPitchRoll ypr;
+      ypr.yaw = centerElement.getAzimuthInRadians();
+      ypr.pitch = -centerElement.getElevationInRadians(); // pitch
+      ypr.roll = 0.0f;
 
       quat = fromYPR(ypr);
       quat = conj(quat);
@@ -386,10 +386,10 @@ public:
      */
     juce::Vector3D<float> getCoordinates() override
     {
-      std::array<float, 3> ypr;
-      ypr[0] = centerElement.getAzimuthInRadians();
-      ypr[1] = -centerElement.getElevationInRadians(); // pitch
-      ypr[2] = Conversions<float>::degreesToRadians(rollRange.convertFrom0to1(roll.getValue()));
+      YawPitchRoll ypr;
+      ypr.yaw = centerElement.getAzimuthInRadians();
+      ypr.pitch = -centerElement.getElevationInRadians(); // pitch
+      ypr.roll = Conversions<float>::degreesToRadians(rollRange.convertFrom0to1(roll.getValue()));
 
       // updating not active params
       ::Quaternion quat;
