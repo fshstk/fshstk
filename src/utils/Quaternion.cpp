@@ -81,8 +81,8 @@ juce::Vector3D<float> rotateVector(juce::Vector3D<float> v, const Quaternion& q)
 juce::Vector3D<float> cartesian(const Quaternion& q)
 {
   return {
-    1.0f - (2.0f * q.y * q.y) - (2.0f * q.z * q.z), // almost same as *.w
-    0.0f + (2.0f * q.x * q.y) + (2.0f * q.w * q.z), // almost same as *.z
-    0.0f + (2.0f * q.x * q.z) - (2.0f * q.w * q.y), // almost same as *.y
+    1.0f - (2.0f * q.y * q.y) - (2.0f * q.z * q.z),
+    0.0f + (2.0f * q.x * q.y) + (2.0f * q.w * q.z),
+    0.0f + (2.0f * q.x * q.z) - (2.0f * q.w * q.y),
   };
 }

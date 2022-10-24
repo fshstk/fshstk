@@ -1,7 +1,8 @@
 add_executable(UnitTests TestMain.cpp)
 
 target_sources(UnitTests PRIVATE
-  DemoTestCase.cpp
+  QuaternionTest.cpp
+  YawPitchRollTest.cpp
 )
 
 target_link_libraries(UnitTests PRIVATE ${CMAKE_PROJECT_NAME} Catch2::Catch2)
