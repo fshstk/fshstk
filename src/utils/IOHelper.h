@@ -29,9 +29,11 @@ public:
   int getMaxSize() { return 0; }
 };
 
-template<int maxNumberOfInputChannels = 64>
 class AudioChannels
 {
+  // int maxNumberOfInputChannels = 64;
+  int maxNumberOfInputChannels = 2;
+
 public:
   AudioChannels()
   {
@@ -65,9 +67,10 @@ private:
   int maxSize = maxNumberOfInputChannels;
 };
 
-template<int highestOrder = 7>
 class Ambisonics
 {
+  int highestOrder = 7;
+
 public:
   Ambisonics()
   {
