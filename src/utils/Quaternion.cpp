@@ -1,27 +1,22 @@
 #include "Quaternion.h"
-#include <math.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
-using namespace iem;
+#include <cmath>
 
 float mag(const Quaternion& q)
 {
   return sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
 }
 
-iem::Quaternion normalize(const iem::Quaternion& q)
+Quaternion normalize(const Quaternion& q)
 {
   return q / mag(q);
 }
 
-iem::Quaternion conj(const iem::Quaternion& q)
+Quaternion conj(const Quaternion& q)
 {
   return { q.w, -q.x, -q.y, -q.z };
 }
 
-iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
+Quaternion operator*(const Quaternion& lhs, const Quaternion& rhs)
 {
   return { (lhs.w * rhs.w) - (lhs.x * rhs.x) - (lhs.y * rhs.y) - (lhs.z * rhs.z),
            (lhs.w * rhs.x) + (lhs.x * rhs.w) + (lhs.y * rhs.z) - (lhs.z * rhs.y),
@@ -29,7 +24,7 @@ iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs
            (lhs.w * rhs.z) + (lhs.x * rhs.y) - (lhs.y * rhs.x) + (lhs.z * rhs.w) };
 }
 
-iem::Quaternion operator+(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
+Quaternion operator+(const Quaternion& lhs, const Quaternion& rhs)
 {
   return {
     lhs.w + rhs.w,
@@ -39,7 +34,7 @@ iem::Quaternion operator+(const iem::Quaternion& lhs, const iem::Quaternion& rhs
   };
 }
 
-iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
+Quaternion operator-(const Quaternion& lhs, const Quaternion& rhs)
 {
   return {
     lhs.w - rhs.w,
@@ -49,7 +44,7 @@ iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs
   };
 }
 
-iem::Quaternion operator*(const iem::Quaternion& q, float scalar)
+Quaternion operator*(const Quaternion& q, float scalar)
 {
   return {
     q.w * scalar,
@@ -59,7 +54,7 @@ iem::Quaternion operator*(const iem::Quaternion& q, float scalar)
   };
 }
 
-iem::Quaternion operator/(const iem::Quaternion& q, float scalar)
+Quaternion operator/(const Quaternion& q, float scalar)
 {
   return {
     q.w / scalar,
@@ -69,16 +64,16 @@ iem::Quaternion operator/(const iem::Quaternion& q, float scalar)
   };
 }
 
-juce::Vector3D<float> rotateVector(juce::Vector3D<float> v, const iem::Quaternion& q)
+juce::Vector3D<float> rotateVector(juce::Vector3D<float> v, const Quaternion& q)
 {
-  iem::Quaternion t{ 0, v.x, v.y, v.z };
+  Quaternion t{ 0, v.x, v.y, v.z };
   t = q * t;
   t = t * conj(q);
 
   return { t.x, t.y, t.z };
 }
 
-juce::Vector3D<float> getCartesian(const iem::Quaternion& q)
+juce::Vector3D<float> getCartesian(const Quaternion& q)
 {
   juce::Vector3D<float> ret;
 
@@ -89,7 +84,7 @@ juce::Vector3D<float> getCartesian(const iem::Quaternion& q)
   return ret;
 }
 
-std::array<float, 3> toYPR(const iem::Quaternion& q)
+std::array<float, 3> toYPR(const Quaternion& q)
 {
   // CONVERSION FROM QUATERNION DATA TO TAIT-BRYAN ANGLES yaw, pitch and roll
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
@@ -117,7 +112,7 @@ std::array<float, 3> toYPR(const iem::Quaternion& q)
   return ypr;
 }
 
-iem::Quaternion fromYPR(const std::array<float, 3>& ypr)
+Quaternion fromYPR(const std::array<float, 3>& ypr)
 {
   // CONVERSION FROM TAIT-BRYAN ANGLES DATA TO QUATERNION
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
@@ -130,7 +125,7 @@ iem::Quaternion fromYPR(const std::array<float, 3>& ypr)
   float t4 = cos(ypr[1] * float(0.5));
   float t5 = sin(ypr[1] * float(0.5));
 
-  iem::Quaternion q;
+  Quaternion q;
 
   q.w = t0 * t2 * t4 + t1 * t3 * t5;
   q.x = t0 * t3 * t4 - t1 * t2 * t5;

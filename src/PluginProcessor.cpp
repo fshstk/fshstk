@@ -94,11 +94,9 @@ void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPe
   smoothElevationR.reset(1, samplesPerBlock);
 
   const float widthInRadiansQuarter{ Conversions<float>::degreesToRadians(*width) / 4.0f };
-  const iem::Quaternion quatLRot{
-    cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter)
-  };
-  const iem::Quaternion quatL = quaternionDirection * quatLRot;
-  const iem::Quaternion quatR = quaternionDirection * conj(quatLRot);
+  const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
+  const ::Quaternion quatL = quaternionDirection * quatLRot;
+  const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
 
   const auto left = getCartesian(quatL);
   const auto right = getCartesian(quatR);
@@ -139,7 +137,7 @@ inline void StereoEncoderAudioProcessor::updateQuaternions()
 void StereoEncoderAudioProcessor::updateEuler()
 {
   std::array<float, 3> ypr;
-  quaternionDirection = iem::Quaternion{ *qw, *qx, *qy, *qz };
+  quaternionDirection = ::Quaternion{ *qw, *qx, *qy, *qz };
   quaternionDirection = normalize(quaternionDirection);
   ypr = toYPR(quaternionDirection);
 
@@ -174,11 +172,9 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   buffer.clear();
 
   const float widthInRadiansQuarter{ Conversions<float>::degreesToRadians(*width) / 4.0f };
-  const iem::Quaternion quatLRot{
-    cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter)
-  };
-  const iem::Quaternion quatL = quaternionDirection * quatLRot;
-  const iem::Quaternion quatR = quaternionDirection * conj(quatLRot);
+  const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
+  const ::Quaternion quatL = quaternionDirection * quatLRot;
+  const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
 
   const auto left = getCartesian(quatL);
   const auto right = getCartesian(quatR);

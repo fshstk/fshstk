@@ -3,8 +3,6 @@
 #include "../utils/Quaternion.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
-using namespace juce;
-
 class SpherePannerBackground : public juce::Component
 {
 
@@ -358,7 +356,7 @@ public:
         widthRange.convertTo0to1(Conversions<float>::radiansToDegrees(alpha)));
 
       // ==== calculate roll
-      iem::Quaternion quat;
+      ::Quaternion quat;
       std::array<float, 3> ypr;
       ypr[0] = centerElement.getAzimuthInRadians();
       ypr[1] = -centerElement.getElevationInRadians(); // pitch
@@ -394,19 +392,17 @@ public:
       ypr[2] = Conversions<float>::degreesToRadians(rollRange.convertFrom0to1(roll.getValue()));
 
       // updating not active params
-      iem::Quaternion quat;
+      ::Quaternion quat;
       quat = fromYPR(ypr);
 
       const float widthInRadiansQuarter(
         Conversions<float>::degreesToRadians(widthRange.convertFrom0to1(width.getValue())) / 4.0f);
 
-      iem::Quaternion quatLRot{
-        cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter)
-      };
+      ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
       if (isMirrored)
         quatLRot = conj(quatLRot);
 
-      iem::Quaternion quatL = quat * quatLRot;
+      ::Quaternion quatL = quat * quatLRot;
 
       return getCartesian(quatL);
     }

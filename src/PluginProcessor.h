@@ -6,8 +6,6 @@
 #include "utils/efficientSHvanilla.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
-using namespace juce;
-
 #define ProcessorClass StereoEncoderAudioProcessor
 
 //==============================================================================
@@ -86,7 +84,7 @@ private:
 
   juce::Atomic<bool> positionHasChanged = true;
 
-  iem::Quaternion quaternionDirection;
+  Quaternion quaternionDirection;
 
   juce::AudioBuffer<float> bufferCopy;
 
