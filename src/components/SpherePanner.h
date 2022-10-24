@@ -404,7 +404,7 @@ public:
 
       ::Quaternion quatL = quat * quatLRot;
 
-      return getCartesian(quatL);
+      return cartesian(quatL);
     }
 
     void setMirrored(bool mirrored) { isMirrored = mirrored; }

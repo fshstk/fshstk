@@ -27,7 +27,7 @@ float mag(const Quaternion& q);
 Quaternion conj(const Quaternion& q);
 Quaternion normalize(const Quaternion& q);
 
-juce::Vector3D<float> getCartesian(const Quaternion& q);
+juce::Vector3D<float> cartesian(const Quaternion& q);
 juce::Vector3D<float> rotateVector(juce::Vector3D<float> v, const Quaternion& q);
 
 YawPitchRoll toYPR(const Quaternion& q);

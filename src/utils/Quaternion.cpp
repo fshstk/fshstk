@@ -73,15 +73,13 @@ juce::Vector3D<float> rotateVector(juce::Vector3D<float> v, const Quaternion& q)
   return { u.x, u.y, u.z };
 }
 
-juce::Vector3D<float> getCartesian(const Quaternion& q)
+juce::Vector3D<float> cartesian(const Quaternion& q)
 {
-  juce::Vector3D<float> ret;
-
-  ret.x = float(1.0) - float(2.0) * q.y * q.y - float(2.0) * q.z * q.z;
-  ret.y = float(2.0) * q.x * q.y + float(2.0) * q.w * q.z;
-  ret.z = float(2.0) * q.x * q.z - float(2.0) * q.w * q.y;
-
-  return ret;
+  return {
+    1.0f - (2.0f * q.y * q.y) - (2.0f * q.z * q.z),
+    0.0f + (2.0f * q.x * q.y) + (2.0f * q.w * q.z),
+    0.0f + (2.0f * q.x * q.z) - (2.0f * q.w * q.y),
+  };
 }
 
 YawPitchRoll toYPR(const Quaternion& q)
