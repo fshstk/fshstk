@@ -15,16 +15,19 @@ void Quaternion::normalize()
     *this = this->scale(Type(1.0) / mag);
 }
 
+iem::Quaternion operator~(const iem::Quaternion& q)
+{
+  return { q.w, -q.x, -q.y, -q.z };
+}
+
 void Quaternion::conjugate()
 {
-  x = -x;
-  y = -y;
-  z = -z;
+  *this = ~*this;
 }
 
 Quaternion Quaternion::getConjugate() const
 {
-  return { w, -x, -y, -z };
+  return ~*this;
 }
 
 iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
@@ -55,19 +58,29 @@ iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs
   };
 }
 
-Quaternion Quaternion::operator/(Type scalar) const
+iem::Quaternion operator*(const iem::Quaternion& q, iem::Quaternion::Type scalar)
 {
-  return scale(Type(1.0) / scalar);
+  return {
+    q.w * scalar,
+    q.x * scalar,
+    q.y * scalar,
+    q.z * scalar,
+  };
 }
 
-Quaternion Quaternion::operator*(Type scalar) const
+iem::Quaternion operator/(const iem::Quaternion& q, iem::Quaternion::Type scalar)
 {
-  return scale(scalar);
+  return {
+    q.w / scalar,
+    q.x / scalar,
+    q.y / scalar,
+    q.z / scalar,
+  };
 }
 
 Quaternion Quaternion::scale(Type scalar) const
 {
-  return Quaternion{ w * scalar, x * scalar, y * scalar, z * scalar };
+  return *this * scalar;
 }
 
 juce::Vector3D<Type> Quaternion::rotateVector(juce::Vector3D<Type> vec)

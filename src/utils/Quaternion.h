@@ -22,8 +22,6 @@ struct Quaternion
   Type magnitude() const;
   Quaternion getConjugate() const;
 
-  Quaternion operator/(Type scalar) const;
-  Quaternion operator*(Type scalar) const;
   Quaternion scale(Type scalar) const;
 
   juce::Vector3D<Type> rotateVector(juce::Vector3D<Type> vec);
@@ -40,3 +38,8 @@ struct Quaternion
 iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs);
 iem::Quaternion operator+(const iem::Quaternion& lhs, const iem::Quaternion& rhs);
 iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs);
+
+iem::Quaternion operator*(const iem::Quaternion& q, iem::Quaternion::Type scalar);
+iem::Quaternion operator/(const iem::Quaternion& q, iem::Quaternion::Type scalar);
+
+iem::Quaternion operator~(const iem::Quaternion& q);
