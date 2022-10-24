@@ -3,7 +3,7 @@
 
 float mag(const Quaternion& q)
 {
-  return sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
+  return sqrt((q.w * q.w) + (q.x * q.x) + (q.y * q.y) + (q.z * q.z));
 }
 
 Quaternion normalize(const Quaternion& q)
@@ -18,10 +18,12 @@ Quaternion conj(const Quaternion& q)
 
 Quaternion operator*(const Quaternion& lhs, const Quaternion& rhs)
 {
-  return { (lhs.w * rhs.w) - (lhs.x * rhs.x) - (lhs.y * rhs.y) - (lhs.z * rhs.z),
-           (lhs.w * rhs.x) + (lhs.x * rhs.w) + (lhs.y * rhs.z) - (lhs.z * rhs.y),
-           (lhs.w * rhs.y) - (lhs.x * rhs.z) + (lhs.y * rhs.w) + (lhs.z * rhs.x),
-           (lhs.w * rhs.z) + (lhs.x * rhs.y) - (lhs.y * rhs.x) + (lhs.z * rhs.w) };
+  return {
+    (lhs.w * rhs.w) - (lhs.x * rhs.x) - (lhs.y * rhs.y) - (lhs.z * rhs.z),
+    (lhs.w * rhs.x) + (lhs.x * rhs.w) + (lhs.y * rhs.z) - (lhs.z * rhs.y),
+    (lhs.w * rhs.y) - (lhs.x * rhs.z) + (lhs.y * rhs.w) + (lhs.z * rhs.x),
+    (lhs.w * rhs.z) + (lhs.x * rhs.y) - (lhs.y * rhs.x) + (lhs.z * rhs.w),
+  };
 }
 
 Quaternion operator+(const Quaternion& lhs, const Quaternion& rhs)
@@ -66,11 +68,9 @@ Quaternion operator/(const Quaternion& q, float scalar)
 
 juce::Vector3D<float> rotateVector(juce::Vector3D<float> v, const Quaternion& q)
 {
-  Quaternion t{ 0, v.x, v.y, v.z };
-  t = q * t;
-  t = t * conj(q);
-
-  return { t.x, t.y, t.z };
+  const auto p = Quaternion{ 0.0f, v.x, v.y, v.z };
+  const auto u = q * p * conj(q);
+  return { u.x, u.y, u.z };
 }
 
 juce::Vector3D<float> getCartesian(const Quaternion& q)
