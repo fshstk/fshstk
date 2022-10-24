@@ -90,32 +90,35 @@ juce::Vector3D<Type> getCartesian(const iem::Quaternion& q)
   return ret;
 }
 
-void Quaternion::toYPR(std::array<Type, 3> ypr) const
+std::array<iem::Quaternion::Type, 3> toYPR(const iem::Quaternion& q)
 {
   // CONVERSION FROM QUATERNION DATA TO TAIT-BRYAN ANGLES yaw, pitch and roll
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
   // MNEMONIC: swivel on your swivel chair, look up/down, then tilt your head left/right...
   //            ... that's how we yaw, pitch'n'roll.
-  Type ysqr = y * y;
+  Type ysqr = q.y * q.y;
+  std::array<iem::Quaternion::Type, 3> ypr;
 
   // yaw (z-axis rotation)
-  Type t0 = Type(2.0) * (w * z + x * y);
-  Type t1 = Type(1.0) - Type(2.0) * (ysqr + z * z);
+  Type t0 = Type(2.0) * (q.w * q.z + q.x * q.y);
+  Type t1 = Type(1.0) - Type(2.0) * (ysqr + q.z * q.z);
   ypr[0] = atan2(t0, t1);
 
   // pitch (y-axis rotation)
-  t0 = Type(2.0) * (w * y - z * x);
+  t0 = Type(2.0) * (q.w * q.y - q.z * q.x);
   t0 = t0 > Type(1.0) ? Type(1.0) : t0;
   t0 = t0 < Type(-1.0) ? Type(-1.0) : t0;
   ypr[1] = asin(t0);
 
   // roll (x-axis rotation)
-  t0 = Type(2.0) * (w * x + y * z);
-  t1 = Type(1.0) - Type(2.0) * (x * x + ysqr);
+  t0 = Type(2.0) * (q.w * q.x + q.y * q.z);
+  t1 = Type(1.0) - Type(2.0) * (q.x * q.x + ysqr);
   ypr[2] = atan2(t0, t1);
+
+  return ypr;
 }
 
-void Quaternion::fromYPR(const std::array<Type, 3> ypr)
+iem::Quaternion fromYPR(const std::array<iem::Quaternion::Type, 3>& ypr)
 {
   // CONVERSION FROM TAIT-BRYAN ANGLES DATA TO QUATERNION
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
@@ -128,8 +131,12 @@ void Quaternion::fromYPR(const std::array<Type, 3> ypr)
   Type t4 = cos(ypr[1] * Type(0.5));
   Type t5 = sin(ypr[1] * Type(0.5));
 
-  w = t0 * t2 * t4 + t1 * t3 * t5;
-  x = t0 * t3 * t4 - t1 * t2 * t5;
-  y = t0 * t2 * t5 + t1 * t3 * t4;
-  z = t1 * t2 * t4 - t0 * t3 * t5;
+  iem::Quaternion q;
+
+  q.w = t0 * t2 * t4 + t1 * t3 * t5;
+  q.x = t0 * t3 * t4 - t1 * t2 * t5;
+  q.y = t0 * t2 * t5 + t1 * t3 * t4;
+  q.z = t1 * t2 * t4 - t0 * t3 * t5;
+
+  return q;
 }

@@ -364,7 +364,7 @@ public:
       ypr[1] = -centerElement.getElevationInRadians(); // pitch
       ypr[2] = 0.0f;
 
-      quat.fromYPR(ypr);
+      quat = fromYPR(ypr);
       quat = conj(quat);
 
       const auto rotated = rotateVector(posXYZ, quat);
@@ -395,7 +395,7 @@ public:
 
       // updating not active params
       iem::Quaternion quat;
-      quat.fromYPR(ypr);
+      quat = fromYPR(ypr);
 
       const float widthInRadiansQuarter(
         Conversions<float>::degreesToRadians(widthRange.convertFrom0to1(width.getValue())) / 4.0f);

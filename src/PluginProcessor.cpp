@@ -123,7 +123,7 @@ inline void StereoEncoderAudioProcessor::updateQuaternions()
   ypr[2] = Conversions<float>::degreesToRadians(*roll);
 
   // updating not active params
-  quaternionDirection.fromYPR(ypr);
+  quaternionDirection = fromYPR(ypr);
   processorUpdatingParams = true;
   parameters.getParameter("qw")->setValueNotifyingHost(
     parameters.getParameterRange("qw").convertTo0to1(quaternionDirection.w));
@@ -141,7 +141,7 @@ void StereoEncoderAudioProcessor::updateEuler()
   std::array<float, 3> ypr;
   quaternionDirection = iem::Quaternion{ *qw, *qx, *qy, *qz };
   quaternionDirection = normalize(quaternionDirection);
-  quaternionDirection.toYPR(ypr);
+  ypr = toYPR(quaternionDirection);
 
   // updating not active params
   processorUpdatingParams = true;

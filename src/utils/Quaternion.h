@@ -10,9 +10,6 @@ struct Quaternion
   Type x = 0.0;
   Type y = 0.0;
   Type z = 0.0;
-
-  void toYPR(std::array<Type, 3> ypr) const;
-  void fromYPR(const std::array<Type, 3> ypr);
 };
 } // namespace iem
 
@@ -31,3 +28,6 @@ juce::Vector3D<iem::Quaternion::Type> rotateVector(juce::Vector3D<iem::Quaternio
                                                    const iem::Quaternion& q);
 
 juce::Vector3D<iem::Quaternion::Type> getCartesian(const iem::Quaternion& q);
+
+std::array<iem::Quaternion::Type, 3> toYPR(const iem::Quaternion& q);
+iem::Quaternion fromYPR(const std::array<iem::Quaternion::Type, 3>& ypr);
