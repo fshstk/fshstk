@@ -30,7 +30,7 @@ TEST_CASE("Two quaternions subtracted should deliver correct result")
   CHECK(c.z == -4.0f);
 }
 
-TEST_CASE("Quaternions multiplied by scalar should deliver correct result")
+TEST_CASE("Quaternion multiplied by scalar should deliver correct result")
 {
   const auto a = Quaternion{ 1.0f, 2.0f, 3.0f, 4.0f };
   const auto b = 10.0f;
@@ -42,7 +42,7 @@ TEST_CASE("Quaternions multiplied by scalar should deliver correct result")
   CHECK(c.z == 40.0f);
 }
 
-TEST_CASE("Quaternions divided by scalar should deliver correct result")
+TEST_CASE("Quaternion divided by scalar should deliver correct result")
 {
   const auto a = Quaternion{ 1.0f, 2.0f, 3.0f, 4.0f };
   const auto b = 10.0f;
