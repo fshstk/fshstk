@@ -194,8 +194,8 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
       SHEval(ambisonicOrder, right.x, right.y, right.z, SHR);
 
       if (*useSN3D > 0.5f) {
-        juce::FloatVectorOperations::multiply(SHL, SHL, n3d2sn3d, nChOut);
-        juce::FloatVectorOperations::multiply(SHR, SHR, n3d2sn3d, nChOut);
+        juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
+        juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
       }
     }
     const float* leftIn = bufferCopy.getReadPointer(0);
@@ -282,8 +282,8 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
         buffer.applyGain(ch, 0, L, n3d2sn3d[ch]);
       }
 
-      juce::FloatVectorOperations::multiply(SHL, SHL, n3d2sn3d, nChOut);
-      juce::FloatVectorOperations::multiply(SHR, SHR, n3d2sn3d, nChOut);
+      juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
+      juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
     }
   }
   juce::FloatVectorOperations::copy(_SHL, SHL, nChOut);

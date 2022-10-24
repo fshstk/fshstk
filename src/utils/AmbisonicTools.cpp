@@ -52,7 +52,7 @@ void ACNtoLM(int acn, int& l, int& m)
   m = acn - l * (l + 1);
 }
 
-const juce::String getOrderString(int order)
+juce::String getOrderString(int order)
 {
   switch (order) {
     case 1:
