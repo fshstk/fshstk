@@ -1,6 +1,7 @@
 #pragma once
 #include "../utils/Conversions.h"
 #include "../utils/Quaternion.h"
+#include "../utils/YawPitchRoll.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
 class SpherePannerBackground : public juce::Component

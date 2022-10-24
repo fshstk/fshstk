@@ -8,4 +8,5 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
   PluginProcessor.cpp
   utils/efficientSHvanilla.cpp
   utils/Quaternion.cpp
+  utils/YawPitchRoll.cpp
 )
