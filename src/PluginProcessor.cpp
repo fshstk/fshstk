@@ -251,7 +251,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
       const float elevation = smoothElevationL.getNextValue();
       float sample = bufferCopy.getSample(0, i);
 
-      const auto pos = sphericalToCartesian<float>({
+      const auto pos = sphericalToCartesian({
         .azimuth = azimuth,
         .elevation = elevation,
       });
@@ -267,7 +267,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
       const float elevation = smoothElevationR.getNextValue();
       float sample = bufferCopy.getSample(1, i);
 
-      const auto pos = sphericalToCartesian<float>({
+      const auto pos = sphericalToCartesian({
         .azimuth = azimuth,
         .elevation = elevation,
       });

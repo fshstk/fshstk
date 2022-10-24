@@ -1,6 +1,6 @@
 #pragma once
 #include "../utils/Quaternion.h"
-#include "../utils/SphericalCartesian.h"
+#include "../utils/SphericalVector.h"
 #include "../utils/YawPitchRoll.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
@@ -193,7 +193,7 @@ public:
       if (!upBeforeDrag)
         elevation *= -1.0f;
 
-      position = sphericalToCartesian<float>({ .azimuth = azimuth, .elevation = elevation });
+      position = sphericalToCartesian({ .azimuth = azimuth, .elevation = elevation });
     }
 
     /*
@@ -293,7 +293,7 @@ public:
      */
     juce::Vector3D<float> getCoordinates() override
     {
-      return sphericalToCartesian<float>({
+      return sphericalToCartesian({
         .azimuth = getAzimuthInRadians(),
         .elevation = getElevationInRadians(),
       });
@@ -350,7 +350,7 @@ public:
       if (!upBeforeDrag)
         ele *= -1.0f;
 
-      auto posXYZ = sphericalToCartesian<float>({ .azimuth = azi, .elevation = ele });
+      auto posXYZ = sphericalToCartesian({ .azimuth = azi, .elevation = ele });
 
       // ==== calculate width
       juce::Vector3D<float> dPos = posXYZ - centerElement.getCoordinates();
