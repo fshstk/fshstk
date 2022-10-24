@@ -17,10 +17,8 @@ struct Quaternion
   Type z = 0.0;
 
   void normalize();
-  void conjugate();
 
   Type magnitude() const;
-  Quaternion getConjugate() const;
 
   Quaternion scale(Type scalar) const;
 
@@ -42,4 +40,5 @@ iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs
 iem::Quaternion operator*(const iem::Quaternion& q, iem::Quaternion::Type scalar);
 iem::Quaternion operator/(const iem::Quaternion& q, iem::Quaternion::Type scalar);
 
+iem::Quaternion conj(const iem::Quaternion& q);
 iem::Quaternion operator~(const iem::Quaternion& q);

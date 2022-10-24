@@ -98,7 +98,7 @@ void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPe
     cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter)
   };
   const iem::Quaternion quatL = quaternionDirection * quatLRot;
-  const iem::Quaternion quatR = quaternionDirection * quatLRot.getConjugate();
+  const iem::Quaternion quatR = quaternionDirection * conj(quatLRot);
 
   const auto left = quatL.getCartesian();
   const auto right = quatR.getCartesian();
@@ -178,7 +178,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter)
   };
   const iem::Quaternion quatL = quaternionDirection * quatLRot;
-  const iem::Quaternion quatR = quaternionDirection * quatLRot.getConjugate();
+  const iem::Quaternion quatR = quaternionDirection * conj(quatLRot);
 
   const auto left = quatL.getCartesian();
   const auto right = quatR.getCartesian();

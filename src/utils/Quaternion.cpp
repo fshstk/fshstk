@@ -15,19 +15,14 @@ void Quaternion::normalize()
     *this = this->scale(Type(1.0) / mag);
 }
 
-iem::Quaternion operator~(const iem::Quaternion& q)
+iem::Quaternion conj(const iem::Quaternion& q)
 {
   return { q.w, -q.x, -q.y, -q.z };
 }
 
-void Quaternion::conjugate()
+iem::Quaternion operator~(const iem::Quaternion& q)
 {
-  *this = ~*this;
-}
-
-Quaternion Quaternion::getConjugate() const
-{
-  return ~*this;
+  return conj(q);
 }
 
 iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
@@ -87,7 +82,7 @@ juce::Vector3D<Type> Quaternion::rotateVector(juce::Vector3D<Type> vec)
 { // has to be tested!
   iem::Quaternion t{ 0, vec.x, vec.y, vec.z };
   t = *this * t;
-  t = t * this->getConjugate();
+  t = t * conj(*this);
 
   return { t.x, t.y, t.z };
 }

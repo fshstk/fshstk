@@ -365,7 +365,7 @@ public:
       ypr[2] = 0.0f;
 
       quat.fromYPR(ypr);
-      quat.conjugate();
+      quat = conj(quat);
 
       const auto rotated = quat.rotateVector(posXYZ);
 
@@ -404,7 +404,7 @@ public:
         cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter)
       };
       if (isMirrored)
-        quatLRot.conjugate();
+        quatLRot = conj(quatLRot);
 
       iem::Quaternion quatL = quat * quatLRot;
 
