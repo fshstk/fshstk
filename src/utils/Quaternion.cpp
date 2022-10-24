@@ -5,9 +5,8 @@
 #include <string.h>
 
 using namespace iem;
-using Type = Quaternion::Type;
 
-Type mag(const Quaternion& q)
+float mag(const Quaternion& q)
 {
   return sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
 }
@@ -50,7 +49,7 @@ iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs
   };
 }
 
-iem::Quaternion operator*(const iem::Quaternion& q, iem::Quaternion::Type scalar)
+iem::Quaternion operator*(const iem::Quaternion& q, float scalar)
 {
   return {
     q.w * scalar,
@@ -60,7 +59,7 @@ iem::Quaternion operator*(const iem::Quaternion& q, iem::Quaternion::Type scalar
   };
 }
 
-iem::Quaternion operator/(const iem::Quaternion& q, iem::Quaternion::Type scalar)
+iem::Quaternion operator/(const iem::Quaternion& q, float scalar)
 {
   return {
     q.w / scalar,
@@ -70,7 +69,7 @@ iem::Quaternion operator/(const iem::Quaternion& q, iem::Quaternion::Type scalar
   };
 }
 
-juce::Vector3D<Type> rotateVector(juce::Vector3D<Type> v, const iem::Quaternion& q)
+juce::Vector3D<float> rotateVector(juce::Vector3D<float> v, const iem::Quaternion& q)
 {
   iem::Quaternion t{ 0, v.x, v.y, v.z };
   t = q * t;
@@ -79,57 +78,57 @@ juce::Vector3D<Type> rotateVector(juce::Vector3D<Type> v, const iem::Quaternion&
   return { t.x, t.y, t.z };
 }
 
-juce::Vector3D<Type> getCartesian(const iem::Quaternion& q)
+juce::Vector3D<float> getCartesian(const iem::Quaternion& q)
 {
-  juce::Vector3D<Type> ret;
+  juce::Vector3D<float> ret;
 
-  ret.x = Type(1.0) - Type(2.0) * q.y * q.y - Type(2.0) * q.z * q.z;
-  ret.y = Type(2.0) * q.x * q.y + Type(2.0) * q.w * q.z;
-  ret.z = Type(2.0) * q.x * q.z - Type(2.0) * q.w * q.y;
+  ret.x = float(1.0) - float(2.0) * q.y * q.y - float(2.0) * q.z * q.z;
+  ret.y = float(2.0) * q.x * q.y + float(2.0) * q.w * q.z;
+  ret.z = float(2.0) * q.x * q.z - float(2.0) * q.w * q.y;
 
   return ret;
 }
 
-std::array<iem::Quaternion::Type, 3> toYPR(const iem::Quaternion& q)
+std::array<float, 3> toYPR(const iem::Quaternion& q)
 {
   // CONVERSION FROM QUATERNION DATA TO TAIT-BRYAN ANGLES yaw, pitch and roll
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
   // MNEMONIC: swivel on your swivel chair, look up/down, then tilt your head left/right...
   //            ... that's how we yaw, pitch'n'roll.
-  Type ysqr = q.y * q.y;
-  std::array<iem::Quaternion::Type, 3> ypr;
+  float ysqr = q.y * q.y;
+  std::array<float, 3> ypr;
 
   // yaw (z-axis rotation)
-  Type t0 = Type(2.0) * (q.w * q.z + q.x * q.y);
-  Type t1 = Type(1.0) - Type(2.0) * (ysqr + q.z * q.z);
+  float t0 = float(2.0) * (q.w * q.z + q.x * q.y);
+  float t1 = float(1.0) - float(2.0) * (ysqr + q.z * q.z);
   ypr[0] = atan2(t0, t1);
 
   // pitch (y-axis rotation)
-  t0 = Type(2.0) * (q.w * q.y - q.z * q.x);
-  t0 = t0 > Type(1.0) ? Type(1.0) : t0;
-  t0 = t0 < Type(-1.0) ? Type(-1.0) : t0;
+  t0 = float(2.0) * (q.w * q.y - q.z * q.x);
+  t0 = t0 > float(1.0) ? float(1.0) : t0;
+  t0 = t0 < float(-1.0) ? float(-1.0) : t0;
   ypr[1] = asin(t0);
 
   // roll (x-axis rotation)
-  t0 = Type(2.0) * (q.w * q.x + q.y * q.z);
-  t1 = Type(1.0) - Type(2.0) * (q.x * q.x + ysqr);
+  t0 = float(2.0) * (q.w * q.x + q.y * q.z);
+  t1 = float(1.0) - float(2.0) * (q.x * q.x + ysqr);
   ypr[2] = atan2(t0, t1);
 
   return ypr;
 }
 
-iem::Quaternion fromYPR(const std::array<iem::Quaternion::Type, 3>& ypr)
+iem::Quaternion fromYPR(const std::array<float, 3>& ypr)
 {
   // CONVERSION FROM TAIT-BRYAN ANGLES DATA TO QUATERNION
   // IMPORTANT: rotation order: yaw, pitch, roll (intrinsic rotation: z-y'-x'') !!
   // MNEMONIC: swivel on your swivel chair, look up/down, then tilt your head left/right...
   //            ... that's how we yaw, pitch'n'roll.
-  Type t0 = cos(ypr[0] * Type(0.5));
-  Type t1 = sin(ypr[0] * Type(0.5));
-  Type t2 = cos(ypr[2] * Type(0.5));
-  Type t3 = sin(ypr[2] * Type(0.5));
-  Type t4 = cos(ypr[1] * Type(0.5));
-  Type t5 = sin(ypr[1] * Type(0.5));
+  float t0 = cos(ypr[0] * float(0.5));
+  float t1 = sin(ypr[0] * float(0.5));
+  float t2 = cos(ypr[2] * float(0.5));
+  float t3 = sin(ypr[2] * float(0.5));
+  float t4 = cos(ypr[1] * float(0.5));
+  float t5 = sin(ypr[1] * float(0.5));
 
   iem::Quaternion q;
 

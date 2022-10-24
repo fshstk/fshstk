@@ -4,12 +4,10 @@
 namespace iem {
 struct Quaternion
 {
-  using Type = float;
-
-  Type w = 1.0;
-  Type x = 0.0;
-  Type y = 0.0;
-  Type z = 0.0;
+  float w = 1.0;
+  float x = 0.0;
+  float y = 0.0;
+  float z = 0.0;
 };
 } // namespace iem
 
@@ -17,17 +15,16 @@ iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs
 iem::Quaternion operator+(const iem::Quaternion& lhs, const iem::Quaternion& rhs);
 iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs);
 
-iem::Quaternion operator*(const iem::Quaternion& q, iem::Quaternion::Type scalar);
-iem::Quaternion operator/(const iem::Quaternion& q, iem::Quaternion::Type scalar);
+iem::Quaternion operator*(const iem::Quaternion& q, float scalar);
+iem::Quaternion operator/(const iem::Quaternion& q, float scalar);
 
 iem::Quaternion conj(const iem::Quaternion& q);
-iem::Quaternion::Type mag(const iem::Quaternion& q);
+float mag(const iem::Quaternion& q);
 iem::Quaternion normalize(const iem::Quaternion& q);
 
-juce::Vector3D<iem::Quaternion::Type> rotateVector(juce::Vector3D<iem::Quaternion::Type> v,
-                                                   const iem::Quaternion& q);
+juce::Vector3D<float> rotateVector(juce::Vector3D<float> v, const iem::Quaternion& q);
 
-juce::Vector3D<iem::Quaternion::Type> getCartesian(const iem::Quaternion& q);
+juce::Vector3D<float> getCartesian(const iem::Quaternion& q);
 
-std::array<iem::Quaternion::Type, 3> toYPR(const iem::Quaternion& q);
-iem::Quaternion fromYPR(const std::array<iem::Quaternion::Type, 3>& ypr);
+std::array<float, 3> toYPR(const iem::Quaternion& q);
+iem::Quaternion fromYPR(const std::array<float, 3>& ypr);
