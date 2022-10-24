@@ -3,14 +3,6 @@
 using namespace iem;
 using Type = Quaternion::Type;
 
-Quaternion::Quaternion(Type qw, Type qx, Type qy, Type qz)
-  : w(qw)
-  , x(qx)
-  , y(qy)
-  , z(qz)
-{
-}
-
 Type Quaternion::magnitude() const
 {
   return sqrt(w * w + x * x + y * y + z * z);
@@ -32,25 +24,35 @@ void Quaternion::conjugate()
 
 Quaternion Quaternion::getConjugate() const
 {
-  return Quaternion(w, -x, -y, -z);
+  return { w, -x, -y, -z };
 }
 
-Quaternion Quaternion::operator*(const Quaternion& q) const
+iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
 {
-  return Quaternion(w * q.w - x * q.x - y * q.y - z * q.z,
-                    w * q.x + x * q.w + y * q.z - z * q.y,
-                    w * q.y - x * q.z + y * q.w + z * q.x,
-                    w * q.z + x * q.y - y * q.x + z * q.w);
+  return { (lhs.w * rhs.w) - (lhs.x * rhs.x) - (lhs.y * rhs.y) - (lhs.z * rhs.z),
+           (lhs.w * rhs.x) + (lhs.x * rhs.w) + (lhs.y * rhs.z) - (lhs.z * rhs.y),
+           (lhs.w * rhs.y) - (lhs.x * rhs.z) + (lhs.y * rhs.w) + (lhs.z * rhs.x),
+           (lhs.w * rhs.z) + (lhs.x * rhs.y) - (lhs.y * rhs.x) + (lhs.z * rhs.w) };
 }
 
-Quaternion Quaternion::operator+(const Quaternion& q) const
+iem::Quaternion operator+(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
 {
-  return Quaternion(w + q.w, x + q.x, y + q.y, z + q.z);
+  return {
+    lhs.w + rhs.w,
+    lhs.x + rhs.x,
+    lhs.y + rhs.y,
+    lhs.z + rhs.z,
+  };
 }
 
-Quaternion Quaternion::operator-(const Quaternion& q) const
+iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs)
 {
-  return Quaternion(w - q.w, x - q.x, y - q.y, z - q.z);
+  return {
+    lhs.w - rhs.w,
+    lhs.x - rhs.x,
+    lhs.y - rhs.y,
+    lhs.z - rhs.z,
+  };
 }
 
 Quaternion Quaternion::operator/(Type scalar) const
@@ -65,12 +67,12 @@ Quaternion Quaternion::operator*(Type scalar) const
 
 Quaternion Quaternion::scale(Type scalar) const
 {
-  return Quaternion(w * scalar, x * scalar, y * scalar, z * scalar);
+  return Quaternion{ w * scalar, x * scalar, y * scalar, z * scalar };
 }
 
 juce::Vector3D<Type> Quaternion::rotateVector(juce::Vector3D<Type> vec)
 { // has to be tested!
-  iem::Quaternion t(0, vec.x, vec.y, vec.z);
+  iem::Quaternion t{ 0, vec.x, vec.y, vec.z };
   t = *this * t;
   t = t * this->getConjugate();
 

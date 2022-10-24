@@ -7,14 +7,14 @@
 #include <string.h>
 
 namespace iem {
-class Quaternion
+struct Quaternion
 {
-public:
   using Type = float;
 
-public:
-  Quaternion() = default;
-  Quaternion(Type qw, Type qx, Type qy, Type qz);
+  Type w = 1.0;
+  Type x = 0.0;
+  Type y = 0.0;
+  Type z = 0.0;
 
   void normalize();
   void conjugate();
@@ -22,12 +22,8 @@ public:
   Type magnitude() const;
   Quaternion getConjugate() const;
 
-  Quaternion operator*(const Quaternion& q) const;
-  Quaternion operator+(const Quaternion& q) const;
-  Quaternion operator-(const Quaternion& q) const;
   Quaternion operator/(Type scalar) const;
   Quaternion operator*(Type scalar) const;
-
   Quaternion scale(Type scalar) const;
 
   juce::Vector3D<Type> rotateVector(juce::Vector3D<Type> vec);
@@ -38,11 +34,9 @@ public:
   juce::Vector3D<Type> getCartesian() const;
   void toYPR(Type* ypr);
   void fromYPR(Type* ypr);
-
-public:
-  Type w = 1.0;
-  Type x = 0.0;
-  Type y = 0.0;
-  Type z = 0.0;
 };
 } // namespace iem
+
+iem::Quaternion operator*(const iem::Quaternion& lhs, const iem::Quaternion& rhs);
+iem::Quaternion operator+(const iem::Quaternion& lhs, const iem::Quaternion& rhs);
+iem::Quaternion operator-(const iem::Quaternion& lhs, const iem::Quaternion& rhs);

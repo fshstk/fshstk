@@ -400,8 +400,9 @@ public:
       const float widthInRadiansQuarter(
         Conversions<float>::degreesToRadians(widthRange.convertFrom0to1(width.getValue())) / 4.0f);
 
-      iem::Quaternion quatLRot{ iem::Quaternion(
-        cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter)) };
+      iem::Quaternion quatLRot{
+        cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter)
+      };
       if (isMirrored)
         quatLRot.conjugate();
 
