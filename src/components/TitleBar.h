@@ -1,7 +1,19 @@
 #pragma once
-#include "../utils/ambisonicTools.h"
 #include "TitleBarPaths.h"
 #include <juce_gui_basics/juce_gui_basics.h>
+
+inline juce::String getOrderString(int order)
+{
+  switch (order) {
+    case 1:
+      return juce::String(order) + juce::String("st");
+    case 2:
+      return juce::String(order) + juce::String("nd");
+    case 3:
+      return juce::String(order) + juce::String("rd");
+  }
+  return juce::String(order) + juce::String("th");
+}
 
 class AlertSymbol
   : public juce::Component

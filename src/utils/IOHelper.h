@@ -1,7 +1,11 @@
 #pragma once
-#include "ambisonicTools.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_audio_processors/juce_audio_processors.h>
+
+inline int isqrt(int x)
+{
+  return static_cast<int>(std::floor(std::pow(x, .5)));
+}
 
 /* Helper class to check the available input and output channels e.g. for auto settings of Ambisonic
  order

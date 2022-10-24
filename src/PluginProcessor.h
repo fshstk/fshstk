@@ -2,8 +2,8 @@
 #include "utils/AudioProcessorBase.h"
 #include "utils/Quaternion.h"
 #include "utils/SphericalVector.h"
-#include "utils/ambisonicTools.h"
 #include "utils/efficientSHvanilla.h"
+#include "utils/n3d2sn3d.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
 #define ProcessorClass StereoEncoderAudioProcessor

@@ -1,9 +1,5 @@
 #pragma once
-#include <juce_audio_basics/juce_audio_basics.h>
-
-int isqrt(int x);
-
-juce::String getOrderString(int order);
+#include <array>
 
 const std::array<float, 64> n3d2sn3d = {
   1.0000000000000000e+00f, 5.7735026918962584e-01f, 5.7735026918962584e-01f,
