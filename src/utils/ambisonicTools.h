@@ -3,9 +3,6 @@
 
 int isqrt(int x);
 
-// convert ACN to l (degree) and m (order)
-void ACNtoLM(int acn, int& l, int& m);
-
 juce::String getOrderString(int order);
 
 const std::array<float, 64> n3d2sn3d = {

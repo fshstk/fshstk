@@ -46,12 +46,6 @@ int isqrt(int x)
   return (int)(p - squares);
 }
 
-void ACNtoLM(int acn, int& l, int& m)
-{
-  l = isqrt(acn);
-  m = acn - l * (l + 1);
-}
-
 juce::String getOrderString(int order)
 {
   switch (order) {
