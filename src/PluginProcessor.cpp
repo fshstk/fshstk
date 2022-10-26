@@ -144,7 +144,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 }
 } // namespace
 
-StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
+PluginProcessor::PluginProcessor()
   : params(*this)
 {
   params.addListeners(*this);
@@ -157,7 +157,7 @@ StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
   juce::FloatVectorOperations::clear(SHR, 64);
 }
 
-void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
   // checkInputAndOutput(this, 2, *orderSetting, true);
 
@@ -192,13 +192,13 @@ void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPe
   positionHasChanged = true; // just to be sure
 }
 
-void StereoEncoderAudioProcessor::releaseResources()
+void PluginProcessor::releaseResources()
 {
   // When playback stops, you can use this as an opportunity to free up any
   // spare memory, etc.
 }
 
-void StereoEncoderAudioProcessor::updateQuaternions()
+void PluginProcessor::updateQuaternions()
 {
   YawPitchRoll ypr;
   ypr.yaw = degreesToRadians(params.azimuth().load());
@@ -219,7 +219,7 @@ void StereoEncoderAudioProcessor::updateQuaternions()
   processorUpdatingParams = false;
 }
 
-void StereoEncoderAudioProcessor::updateEuler()
+void PluginProcessor::updateEuler()
 {
   YawPitchRoll ypr;
   quaternionDirection = ::Quaternion{ params.qw(), params.qx(), params.qy(), params.qz() };
@@ -238,8 +238,7 @@ void StereoEncoderAudioProcessor::updateEuler()
   processorUpdatingParams = false;
 }
 
-void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
-                                               juce::MidiBuffer& midiMessages)
+void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
   // we don't check order anymore...?
   // checkInputAndOutput(this, 2, *orderSetting);
@@ -376,12 +375,12 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   juce::FloatVectorOperations::copy(_SHR, SHR, nChOut);
 }
 
-juce::AudioProcessorEditor* StereoEncoderAudioProcessor::createEditor()
+juce::AudioProcessorEditor* PluginProcessor::createEditor()
 {
   return new StereoEncoderAudioProcessorEditor(*this, params);
 }
 
-void StereoEncoderAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
   if (!processorUpdatingParams) {
     if (parameterID == "qw" || parameterID == "qx" || parameterID == "qy" || parameterID == "qz") {
@@ -407,14 +406,14 @@ void StereoEncoderAudioProcessor::parameterChanged(const juce::String& parameter
   }
 }
 
-void StereoEncoderAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
+void PluginProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
   auto state = params.copyState();
   std::unique_ptr<juce::XmlElement> xml(state.createXml());
   copyXmlToBinary(*xml, destData);
 }
 
-void StereoEncoderAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
+void PluginProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
   std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
   if (xmlState.get() != nullptr)

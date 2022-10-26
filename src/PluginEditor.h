@@ -23,8 +23,7 @@ class StereoEncoderAudioProcessorEditor
   , private juce::KeyListener
 {
 public:
-  StereoEncoderAudioProcessorEditor(StereoEncoderAudioProcessor&,
-                                    juce::AudioProcessorValueTreeState&);
+  StereoEncoderAudioProcessorEditor(PluginProcessor&, juce::AudioProcessorValueTreeState&);
   ~StereoEncoderAudioProcessorEditor();
 
   //==============================================================================
@@ -46,7 +45,7 @@ private:
 
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
-  StereoEncoderAudioProcessor& processor;
+  PluginProcessor& processor;
   juce::AudioProcessorValueTreeState& valueTreeState;
 
   juce::GroupComponent quatGroup, ypGroup, settingsGroup;

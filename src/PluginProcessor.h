@@ -7,12 +7,12 @@
 #include "utils/n3d2sn3d.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
-class StereoEncoderAudioProcessor
+class PluginProcessor
   : public StereoToAmbiPluginBase
   , public juce::AudioProcessorValueTreeState::Listener
 {
 public:
-  StereoEncoderAudioProcessor();
+  PluginProcessor();
 
   juce::AudioProcessorEditor* createEditor() override;
   void prepareToPlay(double sampleRate, int samplesPerBlock) override;

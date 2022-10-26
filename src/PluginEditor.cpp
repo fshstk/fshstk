@@ -3,7 +3,7 @@
 
 //==============================================================================
 StereoEncoderAudioProcessorEditor::StereoEncoderAudioProcessorEditor(
-  StereoEncoderAudioProcessor& p,
+  PluginProcessor& p,
   juce::AudioProcessorValueTreeState& vts)
   : juce::AudioProcessorEditor(&p)
   , processor(p)

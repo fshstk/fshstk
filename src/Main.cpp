@@ -2,5 +2,5 @@
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-  return new StereoEncoderAudioProcessor();
+  return new PluginProcessor();
 }
