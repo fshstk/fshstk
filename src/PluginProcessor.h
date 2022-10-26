@@ -14,7 +14,6 @@ public:
   StereoEncoderAudioProcessor();
 
   juce::AudioProcessorEditor* createEditor() override;
-
   void prepareToPlay(double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
@@ -31,13 +30,7 @@ private:
   void updateQuaternions();
   void updateEuler();
 
-public:
-  juce::Atomic<bool> _updatedPositionData = true;
-
 private:
-  juce::Vector3D<float> posC = { 1.0f, 1.0f, 1.0f };
-  juce::Vector3D<float> posL = { 1.0f, 1.0f, 1.0f };
-  juce::Vector3D<float> posR = { 1.0f, 1.0f, 1.0f };
   std::atomic<float>* orderSetting;
   std::atomic<float>* useSN3D;
   std::atomic<float>* qw;
@@ -49,20 +42,22 @@ private:
   std::atomic<float>* roll;
   std::atomic<float>* width;
   std::atomic<float>* highQuality;
-  bool sphericalInput;
-  double phi;
-  double theta;
-  juce::AudioProcessorValueTreeState parameters;
-  constexpr static int numberOfInputChannels = 2;
-  constexpr static int numberOfOutputChannels = 64;
-  bool processorUpdatingParams;
+
+  juce::LinearSmoothedValue<float> smoothAzimuthL;
+  juce::LinearSmoothedValue<float> smoothAzimuthR;
+  juce::LinearSmoothedValue<float> smoothElevationL;
+  juce::LinearSmoothedValue<float> smoothElevationR;
+
   float SHL[64];
   float SHR[64];
   float _SHL[64];
   float _SHR[64];
+
+  juce::Atomic<bool> _updatedPositionData = true;
   juce::Atomic<bool> positionHasChanged = true;
-  Quaternion quaternionDirection;
   juce::AudioBuffer<float> bufferCopy;
-  juce::LinearSmoothedValue<float> smoothAzimuthL, smoothElevationL;
-  juce::LinearSmoothedValue<float> smoothAzimuthR, smoothElevationR;
+  juce::AudioProcessorValueTreeState parameters;
+  bool sphericalInput;
+  bool processorUpdatingParams;
+  Quaternion quaternionDirection;
 };
