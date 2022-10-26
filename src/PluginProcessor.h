@@ -1,4 +1,5 @@
 #pragma once
+#include "PluginState.h"
 #include "StereoToAmbiPluginBase.h"
 #include "utils/Quaternion.h"
 #include "utils/SphericalVector.h"
@@ -31,17 +32,7 @@ private:
   void updateEuler();
 
 private:
-  std::atomic<float>* orderSetting;
-  std::atomic<float>* useSN3D;
-  std::atomic<float>* qw;
-  std::atomic<float>* qx;
-  std::atomic<float>* qy;
-  std::atomic<float>* qz;
-  std::atomic<float>* azimuth;
-  std::atomic<float>* elevation;
-  std::atomic<float>* roll;
-  std::atomic<float>* width;
-  std::atomic<float>* highQuality;
+  PluginState parameters;
 
   juce::LinearSmoothedValue<float> smoothAzimuthL;
   juce::LinearSmoothedValue<float> smoothAzimuthR;
@@ -56,7 +47,6 @@ private:
   juce::Atomic<bool> _updatedPositionData = true;
   juce::Atomic<bool> positionHasChanged = true;
   juce::AudioBuffer<float> bufferCopy;
-  juce::AudioProcessorValueTreeState parameters;
   bool sphericalInput;
   bool processorUpdatingParams;
   Quaternion quaternionDirection;
