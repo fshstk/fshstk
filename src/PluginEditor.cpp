@@ -212,9 +212,9 @@ void StereoEncoderAudioProcessorEditor::paint(juce::Graphics& g)
 
 void StereoEncoderAudioProcessorEditor::timerCallback()
 {
-  // === update titleBar widgets according to available input/output channel counts
-  title.setMaxSize(processor.getMaxSize());
-  // ==========================================
+  const auto inputNumChannels = 2;
+  const auto outputMaxOrder = 7;
+  title.setMaxSize({ inputNumChannels, outputMaxOrder });
 
   if (processor.updatedPositionData.get()) {
     processor.updatedPositionData = false;

@@ -150,13 +150,15 @@ void StereoEncoderAudioProcessor::updateEuler()
 void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
                                                juce::MidiBuffer& midiMessages)
 {
-  checkInputAndOutput(this, 2, *orderSetting);
+  // we don't check order anymore...?
+  // checkInputAndOutput(this, 2, *orderSetting);
 
   const int L = buffer.getNumSamples();
   const int totalNumInputChannels = getTotalNumInputChannels() < 2 ? 1 : 2;
 
+  const auto maxOrder = 7;
   const int ambisonicOrder =
-    *orderSetting < 0.5f ? output.getOrder() : juce::roundToInt(orderSetting->load()) - 1;
+    *orderSetting < 0.5f ? maxOrder : juce::roundToInt(orderSetting->load()) - 1;
   const int nChOut = juce::jmin(buffer.getNumChannels(), juce::square(ambisonicOrder + 1));
 
   for (int i = 0; i < totalNumInputChannels; ++i)
@@ -313,7 +315,7 @@ void StereoEncoderAudioProcessor::parameterChanged(const juce::String& parameter
     }
   }
   if (parameterID == "orderSetting") {
-    userChangedIOSettings = true;
+    // userChangedIOSettings = true;
     positionHasChanged = true;
   } else if (parameterID == "useSN3D") {
     positionHasChanged = true;

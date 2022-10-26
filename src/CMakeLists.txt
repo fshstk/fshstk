@@ -7,7 +7,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
   PluginEditor.cpp
   PluginProcessor.cpp
   utils/efficientSHvanilla.cpp
-  utils/IOHelper.cpp
   utils/Quaternion.cpp
   utils/YawPitchRoll.cpp
   utils/SphericalVector.cpp
