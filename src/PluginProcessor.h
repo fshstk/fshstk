@@ -1,5 +1,4 @@
 #pragma once
-#include "utils/AudioProcessorBase.h"
 #include "utils/Quaternion.h"
 #include "utils/SphericalVector.h"
 #include "utils/efficientSHvanilla.h"
@@ -11,7 +10,9 @@
 //==============================================================================
 /**
  */
-class StereoEncoderAudioProcessor : public AudioProcessorBase
+class StereoEncoderAudioProcessor
+  : public juce::AudioProcessor
+  , public juce::AudioProcessorValueTreeState::Listener
 {
 public:
   constexpr static int numberOfInputChannels = 2;
@@ -44,8 +45,13 @@ public:
   void parameterChanged(const juce::String& parameterID, float newValue) override;
 
   //======= Parameters ===========================================================
-  std::vector<std::unique_ptr<juce::RangedAudioParameter>> createParameterLayout();
+  juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
   //==============================================================================
+
+  const juce::String getName() const override { return JucePlugin_Name; }
+  bool acceptsMidi() const override { return false; }
+  bool producesMidi() const override { return false; }
+  double getTailLengthSeconds() const override { return 0.0; }
 
   inline void updateQuaternions();
   inline void updateEuler();
@@ -71,6 +77,8 @@ public:
   bool sphericalInput;
 
   double phi, theta;
+
+  juce::AudioProcessorValueTreeState parameters;
 
 private:
   //==============================================================================

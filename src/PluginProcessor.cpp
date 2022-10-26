@@ -4,10 +4,10 @@
 
 //==============================================================================
 StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
-  : AudioProcessorBase(BusesProperties()
-                         .withInput("Input", juce::AudioChannelSet::stereo(), true)
-                         .withOutput("Output", juce::AudioChannelSet::discreteChannels(64), true),
-                       createParameterLayout())
+  : AudioProcessor(BusesProperties()
+                     .withInput("Input", juce::AudioChannelSet::stereo(), true)
+                     .withOutput("Output", juce::AudioChannelSet::discreteChannels(64), true))
+  , parameters(*this, nullptr, juce::String(JucePlugin_Name), createParameterLayout())
   , posC(1.0f, 0.0f, 0.0f)
   , posL(1.0f, 0.0f, 0.0f)
   , posR(1.0f, 0.0f, 0.0f)
@@ -340,12 +340,12 @@ void StereoEncoderAudioProcessor::setStateInformation(const void* data, int size
     }
 }
 
-std::vector<std::unique_ptr<juce::RangedAudioParameter>>
+juce::AudioProcessorValueTreeState::ParameterLayout
 StereoEncoderAudioProcessor::createParameterLayout()
 {
-  auto params = std::vector<std::unique_ptr<juce::RangedAudioParameter>>{};
+  auto params = juce::AudioProcessorValueTreeState::ParameterLayout{};
   const auto addParam = [&](auto... args) {
-    params.emplace_back(std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(args...));
+    params.add(std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(args...));
   };
 
   addParam(
