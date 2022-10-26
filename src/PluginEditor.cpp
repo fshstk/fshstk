@@ -216,8 +216,8 @@ void StereoEncoderAudioProcessorEditor::timerCallback()
   const auto outputMaxOrder = 7;
   title.setMaxSize({ inputNumChannels, outputMaxOrder });
 
-  if (processor.updatedPositionData.get()) {
-    processor.updatedPositionData = false;
+  if (processor.updatedPositionData()) {
+    processor.updatedPositionData(false);
     sphere.repaint();
   }
 }
