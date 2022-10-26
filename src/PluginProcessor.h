@@ -32,7 +32,7 @@ private:
   void updateEuler();
 
 private:
-  PluginState parameters;
+  PluginState params;
 
   juce::LinearSmoothedValue<float> smoothAzimuthL;
   juce::LinearSmoothedValue<float> smoothAzimuthR;

@@ -145,9 +145,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 } // namespace
 
 StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
-  : parameters(*this)
+  : params(*this)
 {
-  parameters.addListeners(*this);
+  params.addListeners(*this);
 
   processorUpdatingParams = false;
 
@@ -163,14 +163,14 @@ void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPe
 
   bufferCopy.setSize(2, samplesPerBlock);
 
-  smoothAzimuthL.setCurrentAndTargetValue(parameters.azimuth().load() / 180.0f *
+  smoothAzimuthL.setCurrentAndTargetValue(params.azimuth().load() / 180.0f *
                                           juce::MathConstants<float>::pi);
-  smoothElevationL.setCurrentAndTargetValue(parameters.elevation().load() / 180.0f *
+  smoothElevationL.setCurrentAndTargetValue(params.elevation().load() / 180.0f *
                                             juce::MathConstants<float>::pi);
 
-  smoothAzimuthR.setCurrentAndTargetValue(parameters.azimuth().load() / 180.0f *
+  smoothAzimuthR.setCurrentAndTargetValue(params.azimuth().load() / 180.0f *
                                           juce::MathConstants<float>::pi);
-  smoothElevationR.setCurrentAndTargetValue(parameters.elevation().load() / 180.0f *
+  smoothElevationR.setCurrentAndTargetValue(params.elevation().load() / 180.0f *
                                             juce::MathConstants<float>::pi);
 
   smoothAzimuthL.reset(1, samplesPerBlock);
@@ -178,7 +178,7 @@ void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPe
   smoothAzimuthR.reset(1, samplesPerBlock);
   smoothElevationR.reset(1, samplesPerBlock);
 
-  const float widthInRadiansQuarter{ juce::degreesToRadians(parameters.width().load()) / 4.0f };
+  const float widthInRadiansQuarter{ juce::degreesToRadians(params.width().load()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
   const ::Quaternion quatL = quaternionDirection * quatLRot;
   const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
@@ -201,41 +201,40 @@ void StereoEncoderAudioProcessor::releaseResources()
 void StereoEncoderAudioProcessor::updateQuaternions()
 {
   YawPitchRoll ypr;
-  ypr.yaw = degreesToRadians(parameters.azimuth().load());
-  ypr.pitch = -degreesToRadians(parameters.elevation().load()); // pitch
-  ypr.roll = degreesToRadians(parameters.roll().load());
+  ypr.yaw = degreesToRadians(params.azimuth().load());
+  ypr.pitch = -degreesToRadians(params.elevation().load()); // pitch
+  ypr.roll = degreesToRadians(params.roll().load());
 
   // updating not active params
   quaternionDirection = fromYPR(ypr);
   processorUpdatingParams = true;
-  parameters.getParameter("qw")->setValueNotifyingHost(
-    parameters.getParameterRange("qw").convertTo0to1(quaternionDirection.w));
-  parameters.getParameter("qx")->setValueNotifyingHost(
-    parameters.getParameterRange("qx").convertTo0to1(quaternionDirection.x));
-  parameters.getParameter("qy")->setValueNotifyingHost(
-    parameters.getParameterRange("qy").convertTo0to1(quaternionDirection.y));
-  parameters.getParameter("qz")->setValueNotifyingHost(
-    parameters.getParameterRange("qz").convertTo0to1(quaternionDirection.z));
+  params.getParameter("qw")->setValueNotifyingHost(
+    params.getParameterRange("qw").convertTo0to1(quaternionDirection.w));
+  params.getParameter("qx")->setValueNotifyingHost(
+    params.getParameterRange("qx").convertTo0to1(quaternionDirection.x));
+  params.getParameter("qy")->setValueNotifyingHost(
+    params.getParameterRange("qy").convertTo0to1(quaternionDirection.y));
+  params.getParameter("qz")->setValueNotifyingHost(
+    params.getParameterRange("qz").convertTo0to1(quaternionDirection.z));
   processorUpdatingParams = false;
 }
 
 void StereoEncoderAudioProcessor::updateEuler()
 {
   YawPitchRoll ypr;
-  quaternionDirection =
-    ::Quaternion{ parameters.qw(), parameters.qx(), parameters.qy(), parameters.qz() };
+  quaternionDirection = ::Quaternion{ params.qw(), params.qx(), params.qy(), params.qz() };
   quaternionDirection = normalize(quaternionDirection);
   ypr = toYPR(quaternionDirection);
 
   // updating not active params
   processorUpdatingParams = true;
-  parameters.getParameter("azimuth")->setValueNotifyingHost(
-    parameters.getParameterRange("azimuth").convertTo0to1(radiansToDegrees(ypr.yaw)));
-  parameters.getParameter("elevation")
+  params.getParameter("azimuth")->setValueNotifyingHost(
+    params.getParameterRange("azimuth").convertTo0to1(radiansToDegrees(ypr.yaw)));
+  params.getParameter("elevation")
     ->setValueNotifyingHost(
-      parameters.getParameterRange("elevation").convertTo0to1(-radiansToDegrees(ypr.pitch)));
-  parameters.getParameter("roll")->setValueNotifyingHost(
-    parameters.getParameterRange("roll").convertTo0to1(radiansToDegrees(ypr.roll)));
+      params.getParameterRange("elevation").convertTo0to1(-radiansToDegrees(ypr.pitch)));
+  params.getParameter("roll")->setValueNotifyingHost(
+    params.getParameterRange("roll").convertTo0to1(radiansToDegrees(ypr.roll)));
   processorUpdatingParams = false;
 }
 
@@ -249,16 +248,15 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   const int totalNumInputChannels = getTotalNumInputChannels() < 2 ? 1 : 2;
 
   const auto maxOrder = 7;
-  const int ambisonicOrder = parameters.orderSetting() < 0.5f
-                               ? maxOrder
-                               : juce::roundToInt(parameters.orderSetting().load()) - 1;
+  const int ambisonicOrder =
+    params.orderSetting() < 0.5f ? maxOrder : juce::roundToInt(params.orderSetting().load()) - 1;
   const int nChOut = juce::jmin(buffer.getNumChannels(), juce::square(ambisonicOrder + 1));
 
   for (int i = 0; i < totalNumInputChannels; ++i)
     bufferCopy.copyFrom(i, 0, buffer.getReadPointer(i), buffer.getNumSamples());
   buffer.clear();
 
-  const float widthInRadiansQuarter{ degreesToRadians(parameters.width().load()) / 4.0f };
+  const float widthInRadiansQuarter{ degreesToRadians(params.width().load()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
   const ::Quaternion quatL = quaternionDirection * quatLRot;
   const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
@@ -270,7 +268,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   const auto leftSpherical = cartesianToSpherical(left);
   const auto rightSpherical = cartesianToSpherical(right);
 
-  if (parameters.highQuality() < 0.5f) // no high-quality
+  if (params.highQuality() < 0.5f) // no high-quality
   {
     if (positionHasChanged.compareAndSetBool(false, true)) {
       smoothAzimuthL.setCurrentAndTargetValue(leftSpherical.azimuth);
@@ -281,7 +279,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
       SHEval(ambisonicOrder, left.x, left.y, left.z, SHL);
       SHEval(ambisonicOrder, right.x, right.y, right.z, SHR);
 
-      if (parameters.useSN3D() > 0.5f) {
+      if (params.useSN3D() > 0.5f) {
         juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
         juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
       }
@@ -365,7 +363,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
         buffer.addSample(ch, i, sample * SHR[ch]);
     }
 
-    if (parameters.useSN3D() > 0.5f) {
+    if (params.useSN3D() > 0.5f) {
       for (int ch = 0; ch < nChOut; ++ch) {
         buffer.applyGain(ch, 0, L, n3d2sn3d[ch]);
       }
@@ -380,7 +378,7 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
 juce::AudioProcessorEditor* StereoEncoderAudioProcessor::createEditor()
 {
-  return new StereoEncoderAudioProcessorEditor(*this, parameters);
+  return new StereoEncoderAudioProcessorEditor(*this, params);
 }
 
 void StereoEncoderAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
@@ -411,7 +409,7 @@ void StereoEncoderAudioProcessor::parameterChanged(const juce::String& parameter
 
 void StereoEncoderAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
-  auto state = parameters.copyState();
+  auto state = params.copyState();
   std::unique_ptr<juce::XmlElement> xml(state.createXml());
   copyXmlToBinary(*xml, destData);
 }
@@ -420,7 +418,7 @@ void StereoEncoderAudioProcessor::setStateInformation(const void* data, int size
 {
   std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
   if (xmlState.get() != nullptr)
-    if (xmlState->hasTagName(parameters.state.getType())) {
-      parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+    if (xmlState->hasTagName(params.state.getType())) {
+      params.replaceState(juce::ValueTree::fromXml(*xmlState));
     }
 }
