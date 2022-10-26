@@ -10,12 +10,9 @@
 
 using namespace juce;
 
-typedef ReverseSlider::SliderAttachment SliderAttachment;
-typedef juce::AudioProcessorValueTreeState::ComboBoxAttachment ComboBoxAttachment;
+using SliderAttachment = ReverseSlider::SliderAttachment;
+using ComboBoxAttachment = juce::AudioProcessorValueTreeState::ComboBoxAttachment;
 
-//==============================================================================
-/**
- */
 class PluginEditor
   : public juce::AudioProcessorEditor
   , private juce::Timer
@@ -26,7 +23,6 @@ public:
   PluginEditor(PluginProcessor&, juce::AudioProcessorValueTreeState&);
   ~PluginEditor();
 
-  //==============================================================================
   void paint(juce::Graphics&) override;
   void resized() override;
 

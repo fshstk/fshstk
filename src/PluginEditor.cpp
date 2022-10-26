@@ -201,7 +201,6 @@ PluginEditor::~PluginEditor()
   setLookAndFeel(nullptr);
 }
 
-//==============================================================================
 void PluginEditor::paint(juce::Graphics& g)
 {
   g.fillAll(globalLaF.ClBackground);
