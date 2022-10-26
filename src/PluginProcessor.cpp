@@ -4,18 +4,10 @@
 
 //==============================================================================
 StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
-  : AudioProcessorBase(
-#ifndef JucePlugin_PreferredChannelConfigurations
-      BusesProperties()
-#if !JucePlugin_IsMidiEffect
-#if !JucePlugin_IsSynth
-        .withInput("Input", juce::AudioChannelSet::stereo(), true)
-#endif
-        .withOutput("Output", juce::AudioChannelSet::discreteChannels(64), true)
-#endif
-        ,
-#endif
-      createParameterLayout())
+  : AudioProcessorBase(BusesProperties()
+                         .withInput("Input", juce::AudioChannelSet::stereo(), true)
+                         .withOutput("Output", juce::AudioChannelSet::discreteChannels(64), true),
+                       createParameterLayout())
   , posC(1.0f, 0.0f, 0.0f)
   , posL(1.0f, 0.0f, 0.0f)
   , posR(1.0f, 0.0f, 0.0f)
@@ -54,12 +46,9 @@ StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
 
 StereoEncoderAudioProcessor::~StereoEncoderAudioProcessor() = default;
 
-//==============================================================================
-
 int StereoEncoderAudioProcessor::getNumPrograms()
 {
-  return 1; // NB: some hosts don't cope very well if you tell them there are 0 programs,
-            // so this should be at least 1, even if you're not really implementing programs.
+  return 1;
 }
 
 int StereoEncoderAudioProcessor::getCurrentProgram()
@@ -79,15 +68,19 @@ void StereoEncoderAudioProcessor::changeProgramName(int index, const juce::Strin
 //==============================================================================
 void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-  checkInputAndOutput(this, 2, *orderSetting, true);
+  // checkInputAndOutput(this, 2, *orderSetting, true);
 
   bufferCopy.setSize(2, samplesPerBlock);
 
-  smoothAzimuthL.setCurrentAndTargetValue(*azimuth / 180.0f * juce::MathConstants<float>::pi);
-  smoothElevationL.setCurrentAndTargetValue(*elevation / 180.0f * juce::MathConstants<float>::pi);
+  smoothAzimuthL.setCurrentAndTargetValue(azimuth->load() / 180.0f *
+                                          juce::MathConstants<float>::pi);
+  smoothElevationL.setCurrentAndTargetValue(elevation->load() / 180.0f *
+                                            juce::MathConstants<float>::pi);
 
-  smoothAzimuthR.setCurrentAndTargetValue(*azimuth / 180.0f * juce::MathConstants<float>::pi);
-  smoothElevationR.setCurrentAndTargetValue(*elevation / 180.0f * juce::MathConstants<float>::pi);
+  smoothAzimuthR.setCurrentAndTargetValue(azimuth->load() / 180.0f *
+                                          juce::MathConstants<float>::pi);
+  smoothElevationR.setCurrentAndTargetValue(elevation->load() / 180.0f *
+                                            juce::MathConstants<float>::pi);
 
   smoothAzimuthL.reset(1, samplesPerBlock);
   smoothElevationL.reset(1, samplesPerBlock);
@@ -348,138 +341,140 @@ void StereoEncoderAudioProcessor::setStateInformation(const void* data, int size
 std::vector<std::unique_ptr<juce::RangedAudioParameter>>
 StereoEncoderAudioProcessor::createParameterLayout()
 {
-  // add your audio parameters here
-  std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+  auto params = std::vector<std::unique_ptr<juce::RangedAudioParameter>>{};
+  const auto addParam = [&](auto... args) {
+    params.emplace_back(std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(args...));
+  };
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "orderSetting",
-  //   "Ambisonics Order",
-  //   "",
-  //   juce::NormalisableRange<float>(0.0f, 8.0f, 1.0f),
-  //   0.0f,
-  //   [](float value) {
-  //     if (value >= 0.5f && value < 1.5f)
-  //       return "0th";
-  //     else if (value >= 1.5f && value < 2.5f)
-  //       return "1st";
-  //     else if (value >= 2.5f && value < 3.5f)
-  //       return "2nd";
-  //     else if (value >= 3.5f && value < 4.5f)
-  //       return "3rd";
-  //     else if (value >= 4.5f && value < 5.5f)
-  //       return "4th";
-  //     else if (value >= 5.5f && value < 6.5f)
-  //       return "5th";
-  //     else if (value >= 6.5f && value < 7.5f)
-  //       return "6th";
-  //     else if (value >= 7.5f)
-  //       return "7th";
-  //     else
-  //       return "Auto";
-  //   },
-  //   nullptr));
+  addParam(
+    "orderSetting",
+    "Ambisonics Order",
+    "",
+    juce::NormalisableRange<float>(0.0f, 8.0f, 1.0f),
+    0.0f,
+    [](float value) {
+      if (value >= 0.5f && value < 1.5f)
+        return "0th";
+      else if (value >= 1.5f && value < 2.5f)
+        return "1st";
+      else if (value >= 2.5f && value < 3.5f)
+        return "2nd";
+      else if (value >= 3.5f && value < 4.5f)
+        return "3rd";
+      else if (value >= 4.5f && value < 5.5f)
+        return "4th";
+      else if (value >= 5.5f && value < 6.5f)
+        return "5th";
+      else if (value >= 6.5f && value < 7.5f)
+        return "6th";
+      else if (value >= 7.5f)
+        return "7th";
+      else
+        return "Auto";
+    },
+    nullptr);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "useSN3D",
-  //   "Normalization",
-  //   "",
-  //   juce::NormalisableRange<float>(0.0f, 1.0f, 1.0f),
-  //   1.0f,
-  //   [](float value) {
-  //     if (value >= 0.5f)
-  //       return "SN3D";
-  //     else
-  //       return "N3D";
-  //   },
-  //   nullptr));
+  addParam(
+    "useSN3D",
+    "Normalization",
+    "",
+    juce::NormalisableRange<float>(0.0f, 1.0f, 1.0f),
+    1.0f,
+    [](float value) {
+      if (value >= 0.5f)
+        return "SN3D";
+      else
+        return "N3D";
+    },
+    nullptr);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "qw",
-  //   "Quaternion W",
-  //   "",
-  //   juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
-  //   1.0,
-  //   [](float value) { return juce::String(value, 2); },
-  //   nullptr,
-  //   true));
+  addParam(
+    "qw",
+    "Quaternion W",
+    "",
+    juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
+    1.0,
+    [](float value) { return juce::String(value, 2); },
+    nullptr,
+    true);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "qx",
-  //   "Quaternion X",
-  //   "",
-  //   juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
-  //   0.0,
-  //   [](float value) { return juce::String(value, 2); },
-  //   nullptr,
-  //   true));
+  addParam(
+    "qx",
+    "Quaternion X",
+    "",
+    juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
+    0.0,
+    [](float value) { return juce::String(value, 2); },
+    nullptr,
+    true);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "qy",
-  //   "Quaternion Y",
-  //   "",
-  //   juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
-  //   0.0,
-  //   [](float value) { return juce::String(value, 2); },
-  //   nullptr,
-  //   true));
+  addParam(
+    "qy",
+    "Quaternion Y",
+    "",
+    juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
+    0.0,
+    [](float value) { return juce::String(value, 2); },
+    nullptr,
+    true);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "qz",
-  //   "Quaternion Z",
-  //   "",
-  //   juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
-  //   0.0,
-  //   [](float value) { return juce::String(value, 2); },
-  //   nullptr,
-  //   true));
+  addParam(
+    "qz",
+    "Quaternion Z",
+    "",
+    juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
+    0.0,
+    [](float value) { return juce::String(value, 2); },
+    nullptr,
+    true);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "azimuth",
-  //   "Azimuth Angle",
-  //   juce::CharPointer_UTF8(R"(°)"),
-  //   juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f),
-  //   0.0,
-  //   [](float value) { return juce::String(value, 2); },
-  //   nullptr,
-  //   true));
+  addParam(
+    "azimuth",
+    "Azimuth Angle",
+    juce::CharPointer_UTF8(R"(°)"),
+    juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f),
+    0.0,
+    [](float value) { return juce::String(value, 2); },
+    nullptr,
+    true);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "elevation",
-  //   "Elevation Angle",
-  //   juce::CharPointer_UTF8(R"(°)"),
-  //   juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f),
-  //   0.0,
-  //   [](float value) { return juce::String(value, 2); },
-  //   nullptr,
-  //   true));
+  addParam(
+    "elevation",
+    "Elevation Angle",
+    juce::CharPointer_UTF8(R"(°)"),
+    juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f),
+    0.0,
+    [](float value) { return juce::String(value, 2); },
+    nullptr,
+    true);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "roll",
-  //   "Roll Angle",
-  //   juce::CharPointer_UTF8(R"(°)"),
-  //   juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f),
-  //   0.0,
-  //   [](float value) { return juce::String(value, 2); },
-  //   nullptr,
-  //   true));
+  addParam(
+    "roll",
+    "Roll Angle",
+    juce::CharPointer_UTF8(R"(°)"),
+    juce::NormalisableRange<float>(-180.0f, 180.0f, 0.01f),
+    0.0,
+    [](float value) { return juce::String(value, 2); },
+    nullptr,
+    true);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "width",
-  //   "Stereo Width",
-  //   juce::CharPointer_UTF8(R"(°)"),
-  //   juce::NormalisableRange<float>(-360.0f, 360.0f, 0.01f),
-  //   0.0,
-  //   [](float value) { return juce::String(value, 2); },
-  //   nullptr));
+  addParam(
+    "width",
+    "Stereo Width",
+    juce::CharPointer_UTF8(R"(°)"),
+    juce::NormalisableRange<float>(-360.0f, 360.0f, 0.01f),
+    0.0,
+    [](float value) { return juce::String(value, 2); },
+    nullptr);
 
-  // params.push_back(OSCParameterInterface::createParameterTheOldWay(
-  //   "highQuality",
-  //   "Sample-wise Panning",
-  //   "",
-  //   juce::NormalisableRange<float>(0.0f, 1.0f, 1.0f),
-  //   0.0f,
-  //   [](float value) { return value < 0.5f ? "OFF" : "ON"; },
-  //   nullptr));
+  addParam(
+    "highQuality",
+    "Sample-wise Panning",
+    "",
+    juce::NormalisableRange<float>(0.0f, 1.0f, 1.0f),
+    0.0f,
+    [](float value) { return value < 0.5f ? "OFF" : "ON"; },
+    nullptr);
 
   return params;
 }

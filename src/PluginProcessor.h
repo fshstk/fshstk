@@ -89,6 +89,4 @@ private:
 
   juce::LinearSmoothedValue<float> smoothAzimuthL, smoothElevationL;
   juce::LinearSmoothedValue<float> smoothAzimuthR, smoothElevationR;
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StereoEncoderAudioProcessor)
 };
