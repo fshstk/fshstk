@@ -2,9 +2,7 @@
 #include "PluginProcessor.h"
 
 //==============================================================================
-StereoEncoderAudioProcessorEditor::StereoEncoderAudioProcessorEditor(
-  PluginProcessor& p,
-  juce::AudioProcessorValueTreeState& vts)
+PluginEditor::PluginEditor(PluginProcessor& p, juce::AudioProcessorValueTreeState& vts)
   : juce::AudioProcessorEditor(&p)
   , processor(p)
   , valueTreeState(vts)
@@ -184,10 +182,9 @@ StereoEncoderAudioProcessorEditor::StereoEncoderAudioProcessorEditor(
   startTimer(20);
 }
 
-void StereoEncoderAudioProcessorEditor::mouseWheelOnSpherePannerMoved(
-  SpherePanner* sphere,
-  const juce::MouseEvent& event,
-  const juce::MouseWheelDetails& wheel)
+void PluginEditor::mouseWheelOnSpherePannerMoved(SpherePanner* sphere,
+                                                 const juce::MouseEvent& event,
+                                                 const juce::MouseWheelDetails& wheel)
 {
   if (event.mods.isCommandDown() && event.mods.isAltDown())
     rollSlider.mouseWheelMove(event, wheel);
@@ -199,18 +196,18 @@ void StereoEncoderAudioProcessorEditor::mouseWheelOnSpherePannerMoved(
     azimuthSlider.mouseWheelMove(event, wheel);
 }
 
-StereoEncoderAudioProcessorEditor::~StereoEncoderAudioProcessorEditor()
+PluginEditor::~PluginEditor()
 {
   setLookAndFeel(nullptr);
 }
 
 //==============================================================================
-void StereoEncoderAudioProcessorEditor::paint(juce::Graphics& g)
+void PluginEditor::paint(juce::Graphics& g)
 {
   g.fillAll(globalLaF.ClBackground);
 }
 
-void StereoEncoderAudioProcessorEditor::timerCallback()
+void PluginEditor::timerCallback()
 {
   const auto inputNumChannels = 2;
   const auto outputMaxOrder = 7;
@@ -222,7 +219,7 @@ void StereoEncoderAudioProcessorEditor::timerCallback()
   }
 }
 
-void StereoEncoderAudioProcessorEditor::resized()
+void PluginEditor::resized()
 {
   const int leftRightMargin = 30;
   const int headerHeight = 60;
@@ -306,8 +303,7 @@ void StereoEncoderAudioProcessorEditor::resized()
   sphere.setBounds(area.getX(), area.getY(), area.getWidth() - 20, area.getWidth() - 20);
 }
 
-bool StereoEncoderAudioProcessorEditor::keyPressed(const juce::KeyPress& key,
-                                                   juce::Component* originatingComponent)
+bool PluginEditor::keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent)
 {
   DBG("Key pressed: " << key.getKeyCode());
 

@@ -16,15 +16,15 @@ typedef juce::AudioProcessorValueTreeState::ComboBoxAttachment ComboBoxAttachmen
 //==============================================================================
 /**
  */
-class StereoEncoderAudioProcessorEditor
+class PluginEditor
   : public juce::AudioProcessorEditor
   , private juce::Timer
   , public SpherePanner::Listener
   , private juce::KeyListener
 {
 public:
-  StereoEncoderAudioProcessorEditor(PluginProcessor&, juce::AudioProcessorValueTreeState&);
-  ~StereoEncoderAudioProcessorEditor();
+  PluginEditor(PluginProcessor&, juce::AudioProcessorValueTreeState&);
+  ~PluginEditor();
 
   //==============================================================================
   void paint(juce::Graphics&) override;
@@ -74,5 +74,5 @@ private:
   // labels
   SimpleLabel lbAzimuth, lbElevation, lbRoll, lblWidth, lbW, lbX, lbY, lbZ;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StereoEncoderAudioProcessorEditor)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

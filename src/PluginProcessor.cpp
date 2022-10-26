@@ -377,7 +377,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
 {
-  return new StereoEncoderAudioProcessorEditor(*this, params);
+  return new PluginEditor(*this, params);
 }
 
 void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
