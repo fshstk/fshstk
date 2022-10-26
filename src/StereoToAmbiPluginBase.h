@@ -1,25 +1,26 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
-class StereoPluginBase : public juce::AudioProcessor
+class StereoToAmbiPluginBase : public juce::AudioProcessor
 {
 public:
-  StereoPluginBase()
-    : AudioProcessor(
-        JucePlugin_IsSynth
-          ? BusesProperties().withOutput("Output", juce::AudioChannelSet::stereo(), true)
-          : BusesProperties()
-              .withInput("Input", juce::AudioChannelSet::stereo(), true)
-              .withOutput("Output", juce::AudioChannelSet::stereo(), true))
+  StereoToAmbiPluginBase()
+    : AudioProcessor(JucePlugin_IsSynth
+                       ? BusesProperties().withOutput("Output",
+                                                      juce::AudioChannelSet::discreteChannels(64),
+                                                      true)
+                       : BusesProperties()
+                           .withInput("Input", juce::AudioChannelSet::stereo(), true)
+                           .withOutput("Output", juce::AudioChannelSet::discreteChannels(64), true))
   {
   }
 
   bool isBusesLayoutSupported(const BusesLayout& layouts) const override
   {
     if (JucePlugin_IsSynth)
-      return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::stereo();
+      return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::discreteChannels(64);
 
-    return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::stereo() &&
+    return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::discreteChannels(64) &&
            layouts.getMainInputChannelSet() == juce::AudioChannelSet::stereo();
   }
 
@@ -46,7 +47,4 @@ public:
   void changeProgramName(int, const juce::String&) override {}
   void getStateInformation(juce::MemoryBlock&) override {}
   void setStateInformation(const void*, int) override {}
-
-private:
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StereoPluginBase)
 };

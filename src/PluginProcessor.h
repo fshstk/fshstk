@@ -1,4 +1,5 @@
 #pragma once
+#include "StereoToAmbiPluginBase.h"
 #include "utils/Quaternion.h"
 #include "utils/SphericalVector.h"
 #include "utils/efficientSHvanilla.h"
@@ -6,36 +7,29 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 
 class StereoEncoderAudioProcessor
-  : public juce::AudioProcessor
+  : public StereoToAmbiPluginBase
   , public juce::AudioProcessorValueTreeState::Listener
 {
 public:
   StereoEncoderAudioProcessor();
 
+  juce::AudioProcessorEditor* createEditor() override;
+
   void prepareToPlay(double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
-  juce::AudioProcessorEditor* createEditor() override;
-  bool hasEditor() const override;
-  int getNumPrograms() override;
-  int getCurrentProgram() override;
-  void setCurrentProgram(int index) override;
-  const juce::String getProgramName(int index) override;
-  void changeProgramName(int index, const juce::String& newName) override;
   void getStateInformation(juce::MemoryBlock& destData) override;
   void setStateInformation(const void* data, int sizeInBytes) override;
   void parameterChanged(const juce::String& parameterID, float newValue) override;
-  const juce::String getName() const override { return JucePlugin_Name; }
-  bool acceptsMidi() const override { return false; }
-  bool producesMidi() const override { return false; }
-  double getTailLengthSeconds() const override { return 0.0; }
+
+  // --
 
   bool updatedPositionData() { return _updatedPositionData.get(); }
   void updatedPositionData(bool newVal) { _updatedPositionData = newVal; }
 
 private:
-  inline void updateQuaternions();
-  inline void updateEuler();
+  void updateQuaternions();
+  void updateEuler();
 
 public:
   juce::Atomic<bool> _updatedPositionData = true;

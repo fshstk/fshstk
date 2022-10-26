@@ -145,10 +145,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 } // namespace
 
 StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
-  : AudioProcessor(BusesProperties()
-                     .withInput("Input", juce::AudioChannelSet::stereo(), true)
-                     .withOutput("Output", juce::AudioChannelSet::discreteChannels(64), true))
-  , parameters(*this, nullptr, juce::String(JucePlugin_Name), createParameterLayout())
+  : parameters(*this, nullptr, juce::String(JucePlugin_Name), createParameterLayout())
 {
   parameters.addParameterListener("qw", this);
   parameters.addParameterListener("qx", this);
@@ -180,25 +177,6 @@ StereoEncoderAudioProcessor::StereoEncoderAudioProcessor()
   juce::FloatVectorOperations::clear(SHL, 64);
   juce::FloatVectorOperations::clear(SHR, 64);
 }
-
-int StereoEncoderAudioProcessor::getNumPrograms()
-{
-  return 1;
-}
-
-int StereoEncoderAudioProcessor::getCurrentProgram()
-{
-  return 0;
-}
-
-void StereoEncoderAudioProcessor::setCurrentProgram(int index) {}
-
-const juce::String StereoEncoderAudioProcessor::getProgramName(int index)
-{
-  return juce::String();
-}
-
-void StereoEncoderAudioProcessor::changeProgramName(int index, const juce::String& newName) {}
 
 //==============================================================================
 void StereoEncoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
@@ -242,7 +220,7 @@ void StereoEncoderAudioProcessor::releaseResources()
   // spare memory, etc.
 }
 
-inline void StereoEncoderAudioProcessor::updateQuaternions()
+void StereoEncoderAudioProcessor::updateQuaternions()
 {
   YawPitchRoll ypr;
   ypr.yaw = degreesToRadians(azimuth->load());
@@ -420,12 +398,6 @@ void StereoEncoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   juce::FloatVectorOperations::copy(_SHR, SHR, nChOut);
 }
 
-//==============================================================================
-bool StereoEncoderAudioProcessor::hasEditor() const
-{
-  return true; // (change this to false if you choose to not supply an editor)
-}
-
 juce::AudioProcessorEditor* StereoEncoderAudioProcessor::createEditor()
 {
   return new StereoEncoderAudioProcessorEditor(*this, parameters);
@@ -457,11 +429,9 @@ void StereoEncoderAudioProcessor::parameterChanged(const juce::String& parameter
   }
 }
 
-//==============================================================================
 void StereoEncoderAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
   auto state = parameters.copyState();
-
   std::unique_ptr<juce::XmlElement> xml(state.createXml());
   copyXmlToBinary(*xml, destData);
 }
