@@ -47,7 +47,7 @@ private:
   juce::Atomic<bool> _updatedPositionData = true;
   juce::Atomic<bool> positionHasChanged = true;
   juce::AudioBuffer<float> bufferCopy;
-  bool sphericalInput;
-  bool processorUpdatingParams;
+  bool sphericalInput = true;
+  bool processorUpdatingParams = false;
   Quaternion quaternionDirection;
 };

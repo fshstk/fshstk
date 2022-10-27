@@ -6,11 +6,6 @@ PluginProcessor::PluginProcessor()
   : params(*this)
 {
   params.addListeners(*this);
-
-  processorUpdatingParams = false;
-
-  sphericalInput = true; // input from ypr
-
   juce::FloatVectorOperations::clear(SHL, 64);
   juce::FloatVectorOperations::clear(SHR, 64);
 }
