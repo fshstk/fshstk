@@ -147,6 +147,18 @@ void PluginState::addListeners(juce::AudioProcessorValueTreeState::Listener& lis
   // addParameterListener("highQuality", &listener);
 }
 
+juce::XmlElement PluginState::getState()
+{
+  auto state = copyState();
+  return *state.createXml();
+}
+
+void PluginState::setState(const juce::XmlElement& xml)
+{
+  if (xml.hasTagName(state.getType()))
+    replaceState(juce::ValueTree::fromXml(xml));
+}
+
 std::atomic<float>& PluginState::orderSetting()
 {
   assert(getRawParameterValue("orderSetting") != nullptr);

@@ -7,6 +7,9 @@ public:
   PluginState(juce::AudioProcessor&);
   void addListeners(juce::AudioProcessorValueTreeState::Listener& listener);
 
+  juce::XmlElement getState();
+  void setState(const juce::XmlElement& xml);
+
   std::atomic<float>& orderSetting();
   std::atomic<float>& useSN3D();
   std::atomic<float>& qw();

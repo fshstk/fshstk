@@ -261,16 +261,14 @@ void PluginProcessor::parameterChanged(const juce::String& parameterID, float ne
 
 void PluginProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
-  auto state = params.copyState();
-  std::unique_ptr<juce::XmlElement> xml(state.createXml());
-  copyXmlToBinary(*xml, destData);
+  const auto xml = params.getState();
+  copyXmlToBinary(xml, destData);
 }
 
 void PluginProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
-  std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
-  if (xmlState.get() != nullptr)
-    if (xmlState->hasTagName(params.state.getType())) {
-      params.replaceState(juce::ValueTree::fromXml(*xmlState));
-    }
+  const auto xml = getXmlFromBinary(data, sizeInBytes);
+  if (!xml)
+    return;
+  params.setState(*xml);
 }
