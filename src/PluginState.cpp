@@ -24,7 +24,7 @@ std::string stringForOrder(const float ambiParam)
 
 auto createParameterLayout()
 {
-  const auto makeParam = [&](auto... args) {
+  const auto makeParam = [](auto... args) {
     return std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(args...);
   };
 
