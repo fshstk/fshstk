@@ -16,22 +16,20 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
   bufferCopy.setSize(2, samplesPerBlock);
 
-  smoothAzimuthL.setCurrentAndTargetValue(params.azimuth().load() / 180.0f *
-                                          juce::MathConstants<float>::pi);
-  smoothElevationL.setCurrentAndTargetValue(params.elevation().load() / 180.0f *
-                                            juce::MathConstants<float>::pi);
+  const auto ypr = params.getYPR();
 
-  smoothAzimuthR.setCurrentAndTargetValue(params.azimuth().load() / 180.0f *
-                                          juce::MathConstants<float>::pi);
-  smoothElevationR.setCurrentAndTargetValue(params.elevation().load() / 180.0f *
-                                            juce::MathConstants<float>::pi);
+  smoothAzimuthL.setCurrentAndTargetValue(ypr.yaw / 180.0f * juce::MathConstants<float>::pi);
+  smoothElevationL.setCurrentAndTargetValue(ypr.pitch / 180.0f * juce::MathConstants<float>::pi);
+
+  smoothAzimuthR.setCurrentAndTargetValue(ypr.yaw / 180.0f * juce::MathConstants<float>::pi);
+  smoothElevationR.setCurrentAndTargetValue(ypr.pitch / 180.0f * juce::MathConstants<float>::pi);
 
   smoothAzimuthL.reset(1, samplesPerBlock);
   smoothElevationL.reset(1, samplesPerBlock);
   smoothAzimuthR.reset(1, samplesPerBlock);
   smoothElevationR.reset(1, samplesPerBlock);
 
-  const float widthInRadiansQuarter{ juce::degreesToRadians(params.width().load()) / 4.0f };
+  const float widthInRadiansQuarter{ juce::degreesToRadians(params.width()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
   const ::Quaternion quatL = quaternionDirection * quatLRot;
   const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
@@ -47,10 +45,11 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
 void PluginProcessor::updateQuaternions()
 {
+  const auto rawYPR = params.getYPR();
   quaternionDirection = fromYPR({
-    .yaw = degreesToRadians(params.azimuth().load()),
-    .pitch = -degreesToRadians(params.elevation().load()),
-    .roll = degreesToRadians(params.roll().load()),
+    .yaw = degreesToRadians(rawYPR.yaw),
+    .pitch = -degreesToRadians(rawYPR.pitch),
+    .roll = degreesToRadians(rawYPR.roll),
   });
   // updating not active params:
   processorUpdatingParams = true;
@@ -60,12 +59,7 @@ void PluginProcessor::updateQuaternions()
 
 void PluginProcessor::updateEuler()
 {
-  quaternionDirection = normalize({
-    .w = params.qw(),
-    .x = params.qx(),
-    .y = params.qy(),
-    .z = params.qz(),
-  });
+  quaternionDirection = normalize(params.getQuaternion());
   // updating not active params:
   processorUpdatingParams = true;
   params.setYPR(toYPR(quaternionDirection));
@@ -81,15 +75,14 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
   const int totalNumInputChannels = getTotalNumInputChannels() < 2 ? 1 : 2;
 
   const auto maxOrder = 7;
-  const int ambisonicOrder =
-    params.orderSetting() < 0.5f ? maxOrder : juce::roundToInt(params.orderSetting().load()) - 1;
+  const int ambisonicOrder = (params.orderSetting() < 1) ? maxOrder : (params.orderSetting() - 1);
   const int nChOut = juce::jmin(buffer.getNumChannels(), juce::square(ambisonicOrder + 1));
 
   for (int i = 0; i < totalNumInputChannels; ++i)
     bufferCopy.copyFrom(i, 0, buffer.getReadPointer(i), buffer.getNumSamples());
   buffer.clear();
 
-  const float widthInRadiansQuarter{ degreesToRadians(params.width().load()) / 4.0f };
+  const float widthInRadiansQuarter{ degreesToRadians(params.width()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
   const ::Quaternion quatL = quaternionDirection * quatLRot;
   const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
@@ -101,7 +94,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
   const auto leftSpherical = cartesianToSpherical(left);
   const auto rightSpherical = cartesianToSpherical(right);
 
-  if (params.highQuality() < 0.5f) // no high-quality
+  if (params.highQuality()) // no high-quality
   {
     if (positionHasChanged.compareAndSetBool(false, true)) {
       smoothAzimuthL.setCurrentAndTargetValue(leftSpherical.azimuth);
@@ -112,7 +105,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
       SHEval(ambisonicOrder, left.x, left.y, left.z, SHL);
       SHEval(ambisonicOrder, right.x, right.y, right.z, SHR);
 
-      if (params.useSN3D() > 0.5f) {
+      if (params.useSN3D()) {
         juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
         juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
       }

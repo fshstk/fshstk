@@ -159,68 +159,78 @@ void PluginState::setState(const juce::XmlElement& xml)
     replaceState(juce::ValueTree::fromXml(xml));
 }
 
-std::atomic<float>& PluginState::orderSetting()
+int PluginState::orderSetting()
 {
   assert(getRawParameterValue("orderSetting") != nullptr);
-  return *getRawParameterValue("orderSetting");
+  return static_cast<int>(*getRawParameterValue("orderSetting"));
 }
 
-std::atomic<float>& PluginState::useSN3D()
+bool PluginState::useSN3D()
 {
   assert(getRawParameterValue("useSN3D") != nullptr);
-  return *getRawParameterValue("useSN3D");
+  return (*getRawParameterValue("useSN3D") > 0.5f);
 }
 
-std::atomic<float>& PluginState::qw()
+Quaternion PluginState::getQuaternion()
 {
   assert(getRawParameterValue("qw") != nullptr);
-  return *getRawParameterValue("qw");
-}
-
-std::atomic<float>& PluginState::qx()
-{
   assert(getRawParameterValue("qx") != nullptr);
-  return *getRawParameterValue("qx");
-}
-
-std::atomic<float>& PluginState::qy()
-{
   assert(getRawParameterValue("qy") != nullptr);
-  return *getRawParameterValue("qy");
-}
-
-std::atomic<float>& PluginState::qz()
-{
   assert(getRawParameterValue("qz") != nullptr);
-  return *getRawParameterValue("qz");
+  return {
+    .w = *getRawParameterValue("qw"),
+    .x = *getRawParameterValue("qx"),
+    .y = *getRawParameterValue("qy"),
+    .z = *getRawParameterValue("qz"),
+  };
 }
 
-std::atomic<float>& PluginState::azimuth()
+void PluginState::setQuaternion(Quaternion newVal)
+{
+  assert(getParameter("qw") != nullptr);
+  assert(getParameter("qx") != nullptr);
+  assert(getParameter("qy") != nullptr);
+  assert(getParameter("qz") != nullptr);
+  getParameter("qw")->setValueNotifyingHost(getParameterRange("qw").convertTo0to1(newVal.w));
+  getParameter("qx")->setValueNotifyingHost(getParameterRange("qx").convertTo0to1(newVal.x));
+  getParameter("qy")->setValueNotifyingHost(getParameterRange("qy").convertTo0to1(newVal.y));
+  getParameter("qz")->setValueNotifyingHost(getParameterRange("qz").convertTo0to1(newVal.z));
+}
+
+YawPitchRoll PluginState::getYPR()
 {
   assert(getRawParameterValue("azimuth") != nullptr);
-  return *getRawParameterValue("azimuth");
-}
-
-std::atomic<float>& PluginState::elevation()
-{
   assert(getRawParameterValue("elevation") != nullptr);
-  return *getRawParameterValue("elevation");
-}
-
-std::atomic<float>& PluginState::roll()
-{
   assert(getRawParameterValue("roll") != nullptr);
-  return *getRawParameterValue("roll");
+  return {
+    .yaw = *getRawParameterValue("azimuth"),
+    .pitch = *getRawParameterValue("elevation"),
+    .roll = *getRawParameterValue("roll"),
+  };
 }
 
-std::atomic<float>& PluginState::width()
+void PluginState::setYPR(YawPitchRoll newVal)
+{
+  assert(getParameter("azimuth") != nullptr);
+  assert(getParameter("elevation") != nullptr);
+  assert(getParameter("roll") != nullptr);
+  getParameter("azimuth")->setValueNotifyingHost(
+    getParameterRange("azimuth").convertTo0to1(juce::radiansToDegrees(newVal.yaw)));
+  getParameter("elevation")
+    ->setValueNotifyingHost(
+      getParameterRange("elevation").convertTo0to1(-juce::radiansToDegrees(newVal.pitch)));
+  getParameter("roll")->setValueNotifyingHost(
+    getParameterRange("roll").convertTo0to1(juce::radiansToDegrees(newVal.roll)));
+}
+
+float PluginState::width()
 {
   assert(getRawParameterValue("width") != nullptr);
   return *getRawParameterValue("width");
 }
 
-std::atomic<float>& PluginState::highQuality()
+bool PluginState::highQuality()
 {
   assert(getRawParameterValue("highQuality") != nullptr);
-  return *getRawParameterValue("highQuality");
+  return (*getRawParameterValue("highQuality") > 0.5f);
 }
