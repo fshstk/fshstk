@@ -54,8 +54,8 @@ PluginEditor::PluginEditor(PluginProcessor& p, juce::AudioProcessorValueTreeStat
   toolTipWin.setMillisecondsBeforeTipAppears(500);
   toolTipWin.setOpaque(false);
 
-  cbNormalizationAtachement.reset(new ComboBoxAttachment(
-    valueTreeState, "useSN3D", *title.getOutputWidgetPtr()->getNormCbPointer()));
+  // cbNormalizationAtachement.reset(new ComboBoxAttachment(
+  //   valueTreeState, "useSN3D", *title.getOutputWidgetPtr()->getNormCbPointer()));
   cbOrderAtachement.reset(new ComboBoxAttachment(
     valueTreeState, "orderSetting", *title.getOutputWidgetPtr()->getOrderCbPointer()));
 

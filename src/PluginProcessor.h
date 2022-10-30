@@ -49,5 +49,5 @@ private:
   bool processorUpdatingParams = false;
 
   juce::AudioBuffer<float> bufferCopy;
-  Quaternion quaternionDirection;
+  Quaternion direction;
 };

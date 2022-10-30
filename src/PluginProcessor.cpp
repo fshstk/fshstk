@@ -31,8 +31,8 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
   const float widthInRadiansQuarter{ juce::degreesToRadians(params.width()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
-  const ::Quaternion quatL = quaternionDirection * quatLRot;
-  const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
+  const ::Quaternion quatL = direction * quatLRot;
+  const ::Quaternion quatR = direction * conj(quatLRot);
 
   const auto left = cartesian(quatL);
   const auto right = cartesian(quatR);
@@ -46,23 +46,23 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 void PluginProcessor::updateQuaternions()
 {
   const auto rawYPR = params.getYPR();
-  quaternionDirection = fromYPR({
+  direction = fromYPR({
     .yaw = degreesToRadians(rawYPR.yaw),
     .pitch = -degreesToRadians(rawYPR.pitch),
     .roll = degreesToRadians(rawYPR.roll),
   });
   // updating not active params:
   processorUpdatingParams = true;
-  params.setQuaternion(quaternionDirection);
+  params.setQuaternion(direction);
   processorUpdatingParams = false;
 }
 
 void PluginProcessor::updateEuler()
 {
-  quaternionDirection = normalize(params.getQuaternion());
+  direction = normalize(params.getQuaternion());
   // updating not active params:
   processorUpdatingParams = true;
-  params.setYPR(toYPR(quaternionDirection));
+  params.setYPR(toYPR(direction));
   processorUpdatingParams = false;
 }
 
@@ -84,8 +84,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 
   const float widthInRadiansQuarter{ degreesToRadians(params.width()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
-  const ::Quaternion quatL = quaternionDirection * quatLRot;
-  const ::Quaternion quatR = quaternionDirection * conj(quatLRot);
+  const ::Quaternion quatL = direction * quatLRot;
+  const ::Quaternion quatR = direction * conj(quatLRot);
 
   const auto left = cartesian(quatL);
   const auto right = cartesian(quatR);
@@ -105,10 +105,10 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
       SHEval(ambisonicOrder, left.x, left.y, left.z, SHL);
       SHEval(ambisonicOrder, right.x, right.y, right.z, SHR);
 
-      if (params.useSN3D()) {
-        juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
-        juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
-      }
+      // if (params.useSN3D()) {
+      juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
+      juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
+      // }
     }
     const float* leftIn = bufferCopy.getReadPointer(0);
     const float* rightIn = bufferCopy.getReadPointer(1);
@@ -189,10 +189,10 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
         buffer.addSample(ch, i, sample * SHR[ch]);
     }
 
-    if (params.useSN3D() > 0.5f) {
-      for (int ch = 0; ch < nChOut; ++ch) {
-        buffer.applyGain(ch, 0, L, n3d2sn3d[ch]);
-      }
+    // if (params.useSN3D() > 0.5f) {
+    for (int ch = 0; ch < nChOut; ++ch) {
+      buffer.applyGain(ch, 0, L, n3d2sn3d[ch]);
+      // }
 
       juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
       juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);

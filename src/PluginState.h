@@ -20,6 +20,5 @@ public:
 
   int orderSetting();
   float width();
-  bool useSN3D();
   bool highQuality();
 };

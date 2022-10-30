@@ -24,6 +24,8 @@ std::string stringForOrder(const float ambiParam)
 
 auto createParameterLayout()
 {
+  // TODO: change to RangedAudioParameter
+
   const auto makeParam = [](auto... args) {
     return std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(args...);
   };
@@ -36,14 +38,6 @@ auto createParameterLayout()
               0.0f,
               &stringForOrder,
               nullptr),
-    makeParam(
-      "useSN3D",
-      "Normalization",
-      "",
-      juce::NormalisableRange<float>(0.0f, 1.0f, 1.0f),
-      1.0f,
-      [](float value) { return (value >= 0.5f) ? "SN3D" : "N3D"; },
-      nullptr),
     makeParam(
       "qw",
       "Quaternion W",
@@ -135,7 +129,6 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 void PluginState::addListeners(juce::AudioProcessorValueTreeState::Listener& listener)
 {
   addParameterListener("orderSetting", &listener);
-  addParameterListener("useSN3D", &listener);
   addParameterListener("qw", &listener);
   addParameterListener("qx", &listener);
   addParameterListener("qy", &listener);
@@ -163,12 +156,6 @@ int PluginState::orderSetting()
 {
   assert(getRawParameterValue("orderSetting") != nullptr);
   return static_cast<int>(*getRawParameterValue("orderSetting"));
-}
-
-bool PluginState::useSN3D()
-{
-  assert(getRawParameterValue("useSN3D") != nullptr);
-  return (*getRawParameterValue("useSN3D") > 0.5f);
 }
 
 Quaternion PluginState::getQuaternion()

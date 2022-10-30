@@ -62,7 +62,7 @@ private:
   std::unique_ptr<SliderAttachment> elevationAttachment;
   std::unique_ptr<SliderAttachment> rollAttachment;
   std::unique_ptr<SliderAttachment> widthAttachment;
-  std::unique_ptr<ComboBoxAttachment> cbNormalizationAtachement;
+  // std::unique_ptr<ComboBoxAttachment> cbNormalizationAtachement;
   std::unique_ptr<ComboBoxAttachment> cbOrderAtachement;
 
   juce::TooltipWindow toolTipWin;
