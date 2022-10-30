@@ -45,12 +45,6 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
   positionHasChanged = true; // just to be sure
 }
 
-void PluginProcessor::releaseResources()
-{
-  // When playback stops, you can use this as an opportunity to free up any
-  // spare memory, etc.
-}
-
 void PluginProcessor::updateQuaternions()
 {
   YawPitchRoll ypr;
