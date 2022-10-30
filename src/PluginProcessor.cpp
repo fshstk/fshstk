@@ -43,16 +43,6 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
   positionHasChanged = true; // just to be sure
 }
 
-void PluginProcessor::updateQuaternions()
-{
-  const auto rawYPR = params.getYPR();
-  params.setQuaternion(normalize(fromYPR({
-    .yaw = degreesToRadians(rawYPR.yaw),
-    .pitch = -degreesToRadians(rawYPR.pitch),
-    .roll = degreesToRadians(rawYPR.roll),
-  })));
-}
-
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
   // we don't check order anymore...?
@@ -81,108 +71,27 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
   const auto leftSpherical = cartesianToSpherical(left);
   const auto rightSpherical = cartesianToSpherical(right);
 
-  if (params.highQuality()) // no high-quality
-  {
-    if (positionHasChanged.compareAndSetBool(false, true)) {
-      smoothAzimuthL.setCurrentAndTargetValue(leftSpherical.azimuth);
-      smoothElevationL.setCurrentAndTargetValue(leftSpherical.elevation);
-      smoothAzimuthR.setCurrentAndTargetValue(rightSpherical.azimuth);
-      smoothElevationR.setCurrentAndTargetValue(rightSpherical.elevation);
+  if (positionHasChanged.compareAndSetBool(false, true)) {
+    smoothAzimuthL.setCurrentAndTargetValue(leftSpherical.azimuth);
+    smoothElevationL.setCurrentAndTargetValue(leftSpherical.elevation);
+    smoothAzimuthR.setCurrentAndTargetValue(rightSpherical.azimuth);
+    smoothElevationR.setCurrentAndTargetValue(rightSpherical.elevation);
 
-      SHEval(ambisonicOrder, left.x, left.y, left.z, SHL);
-      SHEval(ambisonicOrder, right.x, right.y, right.z, SHR);
+    SHEval(ambisonicOrder, left.x, left.y, left.z, SHL);
+    SHEval(ambisonicOrder, right.x, right.y, right.z, SHR);
 
-      // if (params.useSN3D()) {
-      juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
-      juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
-      // }
-    }
-    const float* leftIn = bufferCopy.getReadPointer(0);
-    const float* rightIn = bufferCopy.getReadPointer(1);
-    for (int i = 0; i < nChOut; ++i) {
-      buffer.copyFromWithRamp(i, 0, leftIn, buffer.getNumSamples(), _SHL[i], SHL[i]);
-      buffer.addFromWithRamp(i, 0, rightIn, buffer.getNumSamples(), _SHR[i], SHR[i]);
-    }
-  } else // high-quality sampling
-  {
-    if (smoothAzimuthL.getTargetValue() - leftSpherical.azimuth > juce::MathConstants<float>::pi)
-      smoothAzimuthL.setCurrentAndTargetValue(smoothAzimuthL.getTargetValue() -
-                                              2.0f * juce::MathConstants<float>::pi);
-    else if (leftSpherical.azimuth - smoothAzimuthL.getTargetValue() >
-             juce::MathConstants<float>::pi)
-      smoothAzimuthL.setCurrentAndTargetValue(smoothAzimuthL.getTargetValue() +
-                                              2.0f * juce::MathConstants<float>::pi);
-
-    if (smoothElevationL.getTargetValue() - leftSpherical.elevation >
-        juce::MathConstants<float>::pi)
-      smoothElevationL.setCurrentAndTargetValue(smoothElevationL.getTargetValue() -
-                                                2.0f * juce::MathConstants<float>::pi);
-    else if (leftSpherical.elevation - smoothElevationL.getTargetValue() >
-             juce::MathConstants<float>::pi)
-      smoothElevationL.setCurrentAndTargetValue(smoothElevationL.getTargetValue() +
-                                                2.0f * juce::MathConstants<float>::pi);
-
-    if (smoothAzimuthR.getTargetValue() - rightSpherical.azimuth > juce::MathConstants<float>::pi)
-      smoothAzimuthR.setCurrentAndTargetValue(smoothAzimuthR.getTargetValue() -
-                                              2.0f * juce::MathConstants<float>::pi);
-    else if (rightSpherical.azimuth - smoothAzimuthR.getTargetValue() >
-             juce::MathConstants<float>::pi)
-      smoothAzimuthR.setCurrentAndTargetValue(smoothAzimuthR.getTargetValue() +
-                                              2.0f * juce::MathConstants<float>::pi);
-
-    if (smoothElevationR.getTargetValue() - rightSpherical.elevation >
-        juce::MathConstants<float>::pi)
-      smoothElevationR.setCurrentAndTargetValue(smoothElevationR.getTargetValue() -
-                                                2.0f * juce::MathConstants<float>::pi);
-    else if (rightSpherical.elevation - smoothElevationR.getTargetValue() >
-             juce::MathConstants<float>::pi)
-      smoothElevationR.setCurrentAndTargetValue(smoothElevationR.getTargetValue() +
-                                                2.0f * juce::MathConstants<float>::pi);
-
-    smoothAzimuthL.setTargetValue(leftSpherical.azimuth);
-    smoothElevationL.setTargetValue(leftSpherical.elevation);
-    smoothAzimuthR.setTargetValue(rightSpherical.azimuth);
-    smoothElevationR.setTargetValue(rightSpherical.elevation);
-
-    for (int i = 0; i < L; ++i) // left
-    {
-      const float azimuth = smoothAzimuthL.getNextValue();
-      const float elevation = smoothElevationL.getNextValue();
-      float sample = bufferCopy.getSample(0, i);
-
-      const auto pos = sphericalToCartesian({
-        .azimuth = azimuth,
-        .elevation = elevation,
-      });
-      SHEval(ambisonicOrder, pos.x, pos.y, pos.z, SHL);
-
-      for (int ch = 0; ch < nChOut; ++ch)
-        buffer.setSample(ch, i, sample * SHL[ch]);
-    }
-
-    for (int i = 0; i < L; ++i) // right
-    {
-      const float azimuth = smoothAzimuthR.getNextValue();
-      const float elevation = smoothElevationR.getNextValue();
-      float sample = bufferCopy.getSample(1, i);
-
-      const auto pos = sphericalToCartesian({
-        .azimuth = azimuth,
-        .elevation = elevation,
-      });
-      SHEval(ambisonicOrder, pos.x, pos.y, pos.z, SHR);
-
-      for (int ch = 0; ch < nChOut; ++ch)
-        buffer.addSample(ch, i, sample * SHR[ch]);
-    }
-
-    for (int ch = 0; ch < nChOut; ++ch) {
-      buffer.applyGain(ch, 0, L, n3d2sn3d[ch]);
-
-      juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
-      juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
-    }
+    // if (params.useSN3D()) {
+    juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
+    juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
+    // }
   }
+  const float* leftIn = bufferCopy.getReadPointer(0);
+  const float* rightIn = bufferCopy.getReadPointer(1);
+  for (int i = 0; i < nChOut; ++i) {
+    buffer.copyFromWithRamp(i, 0, leftIn, buffer.getNumSamples(), _SHL[i], SHL[i]);
+    buffer.addFromWithRamp(i, 0, rightIn, buffer.getNumSamples(), _SHR[i], SHR[i]);
+  }
+
   juce::FloatVectorOperations::copy(_SHL, SHL, nChOut);
   juce::FloatVectorOperations::copy(_SHR, SHR, nChOut);
 }
@@ -195,7 +104,6 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor()
 void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
   if (parameterID == "azimuth" || parameterID == "elevation" || parameterID == "roll") {
-    updateQuaternions();
     updatedPositionData(true);
     positionHasChanged = true;
     return;

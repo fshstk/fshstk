@@ -44,9 +44,8 @@ private:
   PluginProcessor& processor;
   juce::AudioProcessorValueTreeState& valueTreeState;
 
-  juce::GroupComponent quatGroup, ypGroup, settingsGroup;
-  ReverseSlider azimuthSlider, elevationSlider, rollSlider, widthSlider, qwSlider, qxSlider,
-    qySlider, qzSlider;
+  juce::GroupComponent ypGroup, settingsGroup;
+  ReverseSlider azimuthSlider, elevationSlider, rollSlider, widthSlider;
   juce::ComboBox inputChooser;
 
   SpherePanner sphere;
@@ -54,10 +53,6 @@ private:
   SpherePanner::RollWidthParameterElement leftElement;
   SpherePanner::RollWidthParameterElement rightElement;
 
-  std::unique_ptr<SliderAttachment> qwAttachment;
-  std::unique_ptr<SliderAttachment> qxAttachment;
-  std::unique_ptr<SliderAttachment> qyAttachment;
-  std::unique_ptr<SliderAttachment> qzAttachment;
   std::unique_ptr<SliderAttachment> azimuthAttachment;
   std::unique_ptr<SliderAttachment> elevationAttachment;
   std::unique_ptr<SliderAttachment> rollAttachment;
@@ -68,7 +63,5 @@ private:
   juce::TooltipWindow toolTipWin;
 
   // labels
-  SimpleLabel lbAzimuth, lbElevation, lbRoll, lblWidth, lbW, lbX, lbY, lbZ;
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
+  SimpleLabel lbAzimuth, lbElevation, lbRoll, lblWidth;
 };

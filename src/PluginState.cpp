@@ -39,42 +39,6 @@ auto createParameterLayout()
               &stringForOrder,
               nullptr),
     makeParam(
-      "qw",
-      "Quaternion W",
-      "",
-      juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
-      1.0,
-      [](float value) { return juce::String(value, 2); },
-      nullptr,
-      true),
-    makeParam(
-      "qx",
-      "Quaternion X",
-      "",
-      juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
-      0.0,
-      [](float value) { return juce::String(value, 2); },
-      nullptr,
-      true),
-    makeParam(
-      "qy",
-      "Quaternion Y",
-      "",
-      juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
-      0.0,
-      [](float value) { return juce::String(value, 2); },
-      nullptr,
-      true),
-    makeParam(
-      "qz",
-      "Quaternion Z",
-      "",
-      juce::NormalisableRange<float>(-1.0f, 1.0f, 0.001f),
-      0.0,
-      [](float value) { return juce::String(value, 2); },
-      nullptr,
-      true),
-    makeParam(
       "azimuth",
       "Azimuth Angle",
       juce::CharPointer_UTF8(R"(°)"),
@@ -109,14 +73,6 @@ auto createParameterLayout()
       0.0,
       [](float value) { return juce::String(value, 2); },
       nullptr),
-    makeParam(
-      "highQuality",
-      "Sample-wise Panning",
-      "",
-      juce::NormalisableRange<float>(0.0f, 1.0f, 1.0f),
-      0.0f,
-      [](float value) { return value < 0.5f ? "OFF" : "ON"; },
-      nullptr),
   };
 }
 } // namespace
@@ -129,15 +85,10 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 void PluginState::addListeners(juce::AudioProcessorValueTreeState::Listener& listener)
 {
   addParameterListener("orderSetting", &listener);
-  addParameterListener("qw", &listener);
-  addParameterListener("qx", &listener);
-  addParameterListener("qy", &listener);
-  addParameterListener("qz", &listener);
   addParameterListener("azimuth", &listener);
   addParameterListener("elevation", &listener);
   addParameterListener("roll", &listener);
   addParameterListener("width", &listener);
-  // addParameterListener("highQuality", &listener);
 }
 
 juce::XmlElement PluginState::getState()
@@ -160,28 +111,17 @@ int PluginState::orderSetting()
 
 Quaternion PluginState::getQuaternion()
 {
-  assert(getRawParameterValue("qw") != nullptr);
-  assert(getRawParameterValue("qx") != nullptr);
-  assert(getRawParameterValue("qy") != nullptr);
-  assert(getRawParameterValue("qz") != nullptr);
-  return {
-    .w = *getRawParameterValue("qw"),
-    .x = *getRawParameterValue("qx"),
-    .y = *getRawParameterValue("qy"),
-    .z = *getRawParameterValue("qz"),
-  };
+  const auto rawYPR = getYPR();
+  return fromYPR({
+    .yaw = juce::degreesToRadians(rawYPR.yaw),
+    .pitch = -juce::degreesToRadians(rawYPR.pitch),
+    .roll = juce::degreesToRadians(rawYPR.roll),
+  });
 }
 
 void PluginState::setQuaternion(Quaternion newVal)
 {
-  assert(getParameter("qw") != nullptr);
-  assert(getParameter("qx") != nullptr);
-  assert(getParameter("qy") != nullptr);
-  assert(getParameter("qz") != nullptr);
-  getParameter("qw")->setValueNotifyingHost(getParameterRange("qw").convertTo0to1(newVal.w));
-  getParameter("qx")->setValueNotifyingHost(getParameterRange("qx").convertTo0to1(newVal.x));
-  getParameter("qy")->setValueNotifyingHost(getParameterRange("qy").convertTo0to1(newVal.y));
-  getParameter("qz")->setValueNotifyingHost(getParameterRange("qz").convertTo0to1(newVal.z));
+  setYPR(toYPR(normalize(newVal)));
 }
 
 YawPitchRoll PluginState::getYPR()
@@ -214,10 +154,4 @@ float PluginState::width()
 {
   assert(getRawParameterValue("width") != nullptr);
   return *getRawParameterValue("width");
-}
-
-bool PluginState::highQuality()
-{
-  assert(getRawParameterValue("highQuality") != nullptr);
-  return (*getRawParameterValue("highQuality") > 0.5f);
 }

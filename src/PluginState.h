@@ -20,5 +20,4 @@ public:
 
   int orderSetting();
   float width();
-  bool highQuality();
 };

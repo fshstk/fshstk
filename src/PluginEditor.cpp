@@ -100,38 +100,6 @@ PluginEditor::PluginEditor(PluginProcessor& p, juce::AudioProcessorValueTreeStat
   rollSlider.setTooltip("Roll angle");
   rollSlider.setTextValueSuffix(juce::CharPointer_UTF8(R"(°)"));
 
-  // ====================== QUATERNION GROUP
-  quatGroup.setText("Quaternions");
-  quatGroup.setTextLabelPosition(juce::Justification::centredLeft);
-  quatGroup.setColour(juce::GroupComponent::outlineColourId, globalLaF.ClSeperator);
-  quatGroup.setColour(juce::GroupComponent::textColourId, juce::Colours::white);
-  addAndMakeVisible(&quatGroup);
-  quatGroup.setVisible(true);
-
-  addAndMakeVisible(&qwSlider);
-  qwAttachment.reset(new SliderAttachment(valueTreeState, "qw", qwSlider));
-  qwSlider.setSliderStyle(juce::Slider::LinearHorizontal);
-  qwSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 50, 15);
-  qwSlider.setColour(juce::Slider::rotarySliderOutlineColourId, globalLaF.ClWidgetColours[0]);
-
-  addAndMakeVisible(&qxSlider);
-  qxAttachment.reset(new SliderAttachment(valueTreeState, "qx", qxSlider));
-  qxSlider.setSliderStyle(juce::Slider::LinearHorizontal);
-  qxSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 50, 15);
-  qxSlider.setColour(juce::Slider::rotarySliderOutlineColourId, globalLaF.ClWidgetColours[0]);
-
-  addAndMakeVisible(&qySlider);
-  qyAttachment.reset(new SliderAttachment(valueTreeState, "qy", qySlider));
-  qySlider.setSliderStyle(juce::Slider::LinearHorizontal);
-  qySlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 50, 15);
-  qySlider.setColour(juce::Slider::rotarySliderOutlineColourId, globalLaF.ClWidgetColours[0]);
-
-  addAndMakeVisible(&qzSlider);
-  qzAttachment.reset(new SliderAttachment(valueTreeState, "qz", qzSlider));
-  qzSlider.setSliderStyle(juce::Slider::LinearHorizontal);
-  qzSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 50, 15);
-  qzSlider.setColour(juce::Slider::rotarySliderOutlineColourId, globalLaF.ClWidgetColours[0]);
-
   // =========================== SETTINGS GROUP
   addAndMakeVisible(&settingsGroup);
   settingsGroup.setText("Settings");
@@ -163,18 +131,6 @@ PluginEditor::PluginEditor(PluginProcessor& p, juce::AudioProcessorValueTreeStat
 
   addAndMakeVisible(&lblWidth);
   lblWidth.setText("Width");
-
-  addAndMakeVisible(&lbW);
-  lbW.setText("W");
-
-  addAndMakeVisible(&lbX);
-  lbX.setText("X");
-
-  addAndMakeVisible(&lbY);
-  lbY.setText("Y");
-
-  addAndMakeVisible(&lbZ);
-  lbZ.setText("Z");
 
   // KeyListener
   addKeyListener(this);
@@ -273,28 +229,6 @@ void PluginEditor::resized()
 
   // ------------- Quaternion ------------------------
   juce::Rectangle<int> quatArea(sideBarArea.removeFromTop(165));
-  quatGroup.setBounds(quatArea);
-  quatArea.removeFromTop(25); // for box headline
-
-  sliderRow = quatArea.removeFromTop(sliderHeight);
-  qwSlider.setBounds(sliderRow.removeFromRight(185 - labelWidth));
-  lbW.setBounds(sliderRow);
-  quatArea.removeFromTop(sliderSpacing);
-
-  sliderRow = quatArea.removeFromTop(sliderHeight);
-  qxSlider.setBounds(sliderRow.removeFromRight(185 - labelWidth));
-  lbX.setBounds(sliderRow);
-  quatArea.removeFromTop(sliderSpacing);
-
-  sliderRow = quatArea.removeFromTop(sliderHeight);
-  qySlider.setBounds(sliderRow.removeFromRight(185 - labelWidth));
-  lbY.setBounds(sliderRow);
-  quatArea.removeFromTop(sliderSpacing);
-
-  sliderRow = quatArea.removeFromTop(sliderHeight);
-  qzSlider.setBounds(sliderRow.removeFromRight(185 - labelWidth));
-  lbZ.setBounds(sliderRow);
-  quatArea.removeFromTop(sliderSpacing);
 
   // ============== SIDEBAR LEFT ====================
 
