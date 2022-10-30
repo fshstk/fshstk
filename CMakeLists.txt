@@ -12,6 +12,9 @@ project(StereoEncoder
 
 include(Dependencies.cmake)
 
+# VST_SDK_PATH is defined in Dependencies.cmake:
+juce_set_vst2_sdk_path(${VST_SDK_PATH})
+
 enable_testing()
 
 add_subdirectory(roboto)
@@ -25,12 +28,13 @@ juce_add_plugin(${CMAKE_PROJECT_NAME}
   IS_SYNTH                  FALSE
   NEEDS_MIDI_INPUT          FALSE
 
-  FORMATS                   VST3 Standalone
+  FORMATS                   VST Standalone
   COPY_PLUGIN_AFTER_BUILD   TRUE
 )
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
-  JUCE_VST3_CAN_REPLACE_VST2=0
+  # Uncomment this if you want to build VST3 plugins without the VST2 SDK:
+  # JUCE_VST3_CAN_REPLACE_VST2=0
 
   # Disabling the splash screen is only legal if you purchase a JUCE license, or
   # if you license your project using the GNU Public License.
