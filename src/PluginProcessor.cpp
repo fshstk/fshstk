@@ -31,8 +31,8 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
   const float widthInRadiansQuarter{ juce::degreesToRadians(params.width()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
-  const ::Quaternion quatL = direction * quatLRot;
-  const ::Quaternion quatR = direction * conj(quatLRot);
+  const ::Quaternion quatL = params.getQuaternion() * quatLRot;
+  const ::Quaternion quatR = params.getQuaternion() * conj(quatLRot);
 
   const auto left = cartesian(quatL);
   const auto right = cartesian(quatR);
@@ -46,24 +46,11 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 void PluginProcessor::updateQuaternions()
 {
   const auto rawYPR = params.getYPR();
-  direction = fromYPR({
+  params.setQuaternion(normalize(fromYPR({
     .yaw = degreesToRadians(rawYPR.yaw),
     .pitch = -degreesToRadians(rawYPR.pitch),
     .roll = degreesToRadians(rawYPR.roll),
-  });
-  // updating not active params:
-  processorUpdatingParams = true;
-  params.setQuaternion(direction);
-  processorUpdatingParams = false;
-}
-
-void PluginProcessor::updateEuler()
-{
-  direction = normalize(params.getQuaternion());
-  // updating not active params:
-  processorUpdatingParams = true;
-  params.setYPR(toYPR(direction));
-  processorUpdatingParams = false;
+  })));
 }
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
@@ -84,8 +71,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 
   const float widthInRadiansQuarter{ degreesToRadians(params.width()) / 4.0f };
   const ::Quaternion quatLRot{ cos(widthInRadiansQuarter), 0.0f, 0.0f, sin(widthInRadiansQuarter) };
-  const ::Quaternion quatL = direction * quatLRot;
-  const ::Quaternion quatR = direction * conj(quatLRot);
+  const ::Quaternion quatL = params.getQuaternion() * quatLRot;
+  const ::Quaternion quatR = params.getQuaternion() * conj(quatLRot);
 
   const auto left = cartesian(quatL);
   const auto right = cartesian(quatR);
@@ -189,10 +176,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
         buffer.addSample(ch, i, sample * SHR[ch]);
     }
 
-    // if (params.useSN3D() > 0.5f) {
     for (int ch = 0; ch < nChOut; ++ch) {
       buffer.applyGain(ch, 0, L, n3d2sn3d[ch]);
-      // }
 
       juce::FloatVectorOperations::multiply(SHL, SHL, &n3d2sn3d[0], nChOut);
       juce::FloatVectorOperations::multiply(SHR, SHR, &n3d2sn3d[0], nChOut);
@@ -209,27 +194,21 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor()
 
 void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
-  if (!processorUpdatingParams) {
-    if (parameterID == "qw" || parameterID == "qx" || parameterID == "qy" || parameterID == "qz") {
-      sphericalInput = false;
-      updateEuler();
-      updatedPositionData(true);
-      positionHasChanged = true;
-    } else if (parameterID == "azimuth" || parameterID == "elevation" || parameterID == "roll") {
-      sphericalInput = true;
-      updateQuaternions();
-      updatedPositionData(true);
-      positionHasChanged = true;
-    } else if (parameterID == "width") {
-      updatedPositionData(true);
-      positionHasChanged = true;
-    }
+  if (parameterID == "azimuth" || parameterID == "elevation" || parameterID == "roll") {
+    updateQuaternions();
+    updatedPositionData(true);
+    positionHasChanged = true;
+    return;
+  }
+  if (parameterID == "width") {
+    updatedPositionData(true);
+    positionHasChanged = true;
+    return;
   }
   if (parameterID == "orderSetting") {
     // userChangedIOSettings = true;
     positionHasChanged = true;
-  } else if (parameterID == "useSN3D") {
-    positionHasChanged = true;
+    return;
   }
 }
 
