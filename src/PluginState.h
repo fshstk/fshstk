@@ -7,16 +7,16 @@ class PluginState : public juce::AudioProcessorValueTreeState
 {
 public:
   PluginState(juce::AudioProcessor&);
-  void addListeners(juce::AudioProcessorValueTreeState::Listener& listener);
+  void addListeners(juce::AudioProcessorValueTreeState::Listener&);
 
   juce::XmlElement getState();
-  void setState(const juce::XmlElement& xml);
+  void setState(const juce::XmlElement&);
 
   Quaternion getQuaternion();
-  void setQuaternion(Quaternion newVal);
+  void setQuaternion(Quaternion);
 
   YawPitchRoll getYPR();
-  void setYPR(YawPitchRoll newVal);
+  void setYPR(YawPitchRoll);
 
   int orderSetting();
   float width();
