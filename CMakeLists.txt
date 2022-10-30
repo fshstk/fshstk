@@ -3,10 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-# Cross-compile for x86 on Apple M1 machines:
-set(CMAKE_OSX_ARCHITECTURES x86_64)
-
-project(StereoEncoder
+project(FishCoder
     VERSION     0.0.1
     LANGUAGES   CXX)
 
@@ -47,9 +44,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   juce::juce_audio_utils
   RobotoFont
 
-  kfr
-  kfr_dft
-  kfr_io
+  # kfr
+  # kfr_dft
+  # kfr_io
 
   # juce::juce_recommended_config_flags
   # juce::juce_recommended_lto_flags
