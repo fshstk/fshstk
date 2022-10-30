@@ -47,41 +47,28 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
 void PluginProcessor::updateQuaternions()
 {
-  YawPitchRoll ypr;
-  ypr.yaw = degreesToRadians(params.azimuth().load());
-  ypr.pitch = -degreesToRadians(params.elevation().load()); // pitch
-  ypr.roll = degreesToRadians(params.roll().load());
-
-  // updating not active params
-  quaternionDirection = fromYPR(ypr);
+  quaternionDirection = fromYPR({
+    .yaw = degreesToRadians(params.azimuth().load()),
+    .pitch = -degreesToRadians(params.elevation().load()),
+    .roll = degreesToRadians(params.roll().load()),
+  });
+  // updating not active params:
   processorUpdatingParams = true;
-  params.getParameter("qw")->setValueNotifyingHost(
-    params.getParameterRange("qw").convertTo0to1(quaternionDirection.w));
-  params.getParameter("qx")->setValueNotifyingHost(
-    params.getParameterRange("qx").convertTo0to1(quaternionDirection.x));
-  params.getParameter("qy")->setValueNotifyingHost(
-    params.getParameterRange("qy").convertTo0to1(quaternionDirection.y));
-  params.getParameter("qz")->setValueNotifyingHost(
-    params.getParameterRange("qz").convertTo0to1(quaternionDirection.z));
+  params.setQuaternion(quaternionDirection);
   processorUpdatingParams = false;
 }
 
 void PluginProcessor::updateEuler()
 {
-  YawPitchRoll ypr;
-  quaternionDirection = ::Quaternion{ params.qw(), params.qx(), params.qy(), params.qz() };
-  quaternionDirection = normalize(quaternionDirection);
-  ypr = toYPR(quaternionDirection);
-
-  // updating not active params
+  quaternionDirection = normalize({
+    .w = params.qw(),
+    .x = params.qx(),
+    .y = params.qy(),
+    .z = params.qz(),
+  });
+  // updating not active params:
   processorUpdatingParams = true;
-  params.getParameter("azimuth")->setValueNotifyingHost(
-    params.getParameterRange("azimuth").convertTo0to1(radiansToDegrees(ypr.yaw)));
-  params.getParameter("elevation")
-    ->setValueNotifyingHost(
-      params.getParameterRange("elevation").convertTo0to1(-radiansToDegrees(ypr.pitch)));
-  params.getParameter("roll")->setValueNotifyingHost(
-    params.getParameterRange("roll").convertTo0to1(radiansToDegrees(ypr.roll)));
+  params.setYPR(toYPR(quaternionDirection));
   processorUpdatingParams = false;
 }
 
