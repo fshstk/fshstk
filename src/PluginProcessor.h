@@ -19,12 +19,6 @@ public:
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
   void getStateInformation(juce::MemoryBlock& destData) override;
   void setStateInformation(const void* data, int sizeInBytes) override;
-  void parameterChanged(const juce::String& parameterID, float newValue) override;
-
-  // --
-
-  bool updatedPositionData() { return _updatedPositionData.get(); }
-  void updatedPositionData(bool newVal) { _updatedPositionData = newVal; }
 
 private:
   void updateQuaternions();
@@ -33,18 +27,10 @@ private:
 private:
   PluginState params;
 
-  juce::LinearSmoothedValue<float> smoothAzimuthL;
-  juce::LinearSmoothedValue<float> smoothAzimuthR;
-  juce::LinearSmoothedValue<float> smoothElevationL;
-  juce::LinearSmoothedValue<float> smoothElevationR;
-
-  float SHL[64];
-  float SHR[64];
-  float _SHL[64];
-  float _SHR[64];
-
-  juce::Atomic<bool> _updatedPositionData = true;
-  juce::Atomic<bool> positionHasChanged = true;
+  float SHL_current[64];
+  float SHR_current[64];
+  float SHL_old[64];
+  float SHR_old[64];
 
   juce::AudioBuffer<float> bufferCopy;
 };
