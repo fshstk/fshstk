@@ -139,6 +139,7 @@ std::array<float, 36> harmonics(const SphericalVector& vec, Normalization norm)
     case Normalization::SN3D:
       return toFloats(harmonics_sn3d(x, y, z));
     default:
+      assert(false);
       return {};
   }
 }
