@@ -13,8 +13,8 @@ SphericalVector cartesianToSpherical(const juce::Vector3D<float>& v)
 juce::Vector3D<float> sphericalToCartesian(const SphericalVector& v)
 {
   return {
-    v.radius * cos(v.elevation) * cos(v.azimuth),
-    v.radius * cos(v.elevation) * sin(v.azimuth),
-    v.radius * sin(v.elevation),
+    static_cast<float>(v.radius * cos(v.elevation) * cos(v.azimuth)),
+    static_cast<float>(v.radius * cos(v.elevation) * sin(v.azimuth)),
+    static_cast<float>(v.radius * sin(v.elevation)),
   };
 }
