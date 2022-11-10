@@ -168,10 +168,8 @@ void PluginEditor::timerCallback()
   const auto outputMaxOrder = 7;
   title.setMaxSize({ inputNumChannels, outputMaxOrder });
 
-  if (processor.updatedPositionData()) {
-    processor.updatedPositionData(false);
-    sphere.repaint();
-  }
+  // Previously checked if position data was updated here:
+  sphere.repaint();
 }
 
 void PluginEditor::resized()
