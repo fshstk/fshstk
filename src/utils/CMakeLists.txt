@@ -3,10 +3,9 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-  Main.cpp
-  PluginEditor.cpp
-  PluginProcessor.cpp
-  PluginState.cpp
+  efficientSHvanilla.cpp
+  Quaternion.cpp
+  YawPitchRoll.cpp
+  SphericalHarmonics.cpp
+  SphericalVector.cpp
 )
-
-add_subdirectory(utils)
