@@ -5,7 +5,7 @@
 PluginProcessor::PluginProcessor()
   : params(*this)
 {
-  params.addListeners(*this);
+  // params.addListeners(*this);
   juce::FloatVectorOperations::clear(SHL_current, 64);
   juce::FloatVectorOperations::clear(SHR_current, 64);
 }

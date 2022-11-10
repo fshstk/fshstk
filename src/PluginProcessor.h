@@ -7,9 +7,8 @@
 #include "utils/n3d2sn3d.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
-class PluginProcessor
-  : public StereoToAmbiPluginBase
-  , public juce::AudioProcessorValueTreeState::Listener
+class PluginProcessor : public StereoToAmbiPluginBase
+// , public juce::AudioProcessorValueTreeState::Listener
 {
 public:
   PluginProcessor();
