@@ -2,4 +2,10 @@
 #include "SphericalVector.h"
 #include <array>
 
-std::array<double, 36> harmonics(const SphericalVector& vec);
+enum class Normalization
+{
+  N3D,
+  SN3D,
+};
+
+std::array<double, 36> harmonics(const SphericalVector&, Normalization = Normalization::SN3D);
