@@ -72,6 +72,7 @@ std::array<double, 36> harmonics_n3d(double x, double y, double z)
 }
 
 // Same as N3D above, except we divide each element by a factor of sqrt(2 * order + 1):
+// "AmbiX - A Suggested Ambisonics Format" (Zotter et al, 2011)
 // http://iem.kug.ac.at/fileadmin/media/iem/projects/2011/ambisonics11_nachbar_zotter_sontacchi_deleflie.pdf
 std::array<double, 36> harmonics_sn3d(double x, double y, double z)
 {
