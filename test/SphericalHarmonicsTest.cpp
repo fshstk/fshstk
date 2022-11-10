@@ -2,6 +2,7 @@
 
 #include "utils/SphericalHarmonics.h"
 #include "SphericalVector.h"
+#include "n3d2sn3d.h"
 #include "utils/efficientSHvanilla.h"
 #include <catch2/catch.hpp>
 
@@ -18,12 +19,16 @@ TEST_CASE("harmonics")
 {
   const auto v = SphericalVector{ .azimuth = 2.9, .elevation = 1.8 };
 
-  auto old_version = std::array<float, 36>{};
+  const auto old_calculation = [&]() {
+    auto output = std::array<float, 36>{};
+    const auto cartesian = sphericalToCartesian(v);
+    SHEval5(cartesian.x, cartesian.y, cartesian.z, &output[0]);
+    juce::FloatVectorOperations::multiply(&output[0], &n3d2sn3d[0], 36);
+    return output;
+  };
 
-  const auto cartesian = sphericalToCartesian(v);
-  SHEval5(cartesian.x, cartesian.y, cartesian.z, &old_version[0]);
-
-  const auto new_version = harmonics(v);
+  const auto old_version = old_calculation();
+  const auto new_version = harmonics(v, Normalization::SN3D);
 
   printArrays(old_version, new_version);
 
@@ -34,7 +39,7 @@ TEST_CASE("harmonics")
 
   BENCHMARK("Spherical Harmonics old way")
   {
-    return SHEval5(cartesian.x, cartesian.y, cartesian.z, &old_version[0]);
+    return old_calculation();
   };
 
   BENCHMARK("Spherical Harmonics new way")
