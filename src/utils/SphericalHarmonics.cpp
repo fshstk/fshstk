@@ -46,7 +46,7 @@ std::array<double, 36> harmonics(double x, double y, double z)
     (3 * sqrt(70)) / (8 * sqrt(pi)) * ((3 * x * x * y * z) - y * y * y * z),
     (3 * sqrt(5) / (4 * sqrt(pi))) * ((7 * x * y * z * z) - x * y),
     (3 * sqrt(10) / (8 * sqrt(pi))) * ((7 * y * z * z * z) - (3 * y * z)),
-    (3 / (16 * sqrt(pi))) * ((35 * z * z * z * z) - (30 * z * z + 3)),
+    3 * (35 * QUART(z) - 30 * SQ(z) + 3) / (16 * sqrt(pi)),
     (3 * sqrt(10) / (8 * sqrt(pi))) * ((7 * x * z * z * z) - (3 * x * z)),
     3 * sqrt(5) * (SQ(x) - SQ(y)) * (-1 + 7 * SQ(z)) / (8 * sqrt(pi)),
     3 * sqrt(2) * sqrt(35) * x * (SQ(x) - 3 * SQ(y)) * z / (8 * sqrt(pi)),
