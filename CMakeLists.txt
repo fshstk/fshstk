@@ -44,13 +44,16 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   juce::juce_audio_utils
   RobotoFont
 
+  # Boost::math
+  # shevalcodegen
   # kfr
   # kfr_dft
   # kfr_io
+  gcem
 
-  # juce::juce_recommended_config_flags
-  # juce::juce_recommended_lto_flags
-  # juce::juce_recommended_warning_flags
+  juce::juce_recommended_config_flags
+  juce::juce_recommended_lto_flags
+  juce::juce_recommended_warning_flags
 )
 
 add_subdirectory(src)

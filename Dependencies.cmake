@@ -51,3 +51,36 @@ FetchContent_MakeAvailable(Catch2)
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
 include(Catch)
+
+################################################################################
+# Boost - All-purpose library that includes spherical harmonics
+################################################################################
+
+# FetchContent_Declare(
+#   Boost
+#   GIT_REPOSITORY https://github.com/boostorg/boost.git
+#   GIT_TAG        boost-1.80.0
+# )
+# FetchContent_MakeAvailable(Boost)
+
+################################################################################
+# SHeval - Constexpr evaluation of spherical harmonic functions
+################################################################################
+
+# FetchContent_Declare(
+#   SHeval
+#   GIT_REPOSITORY https://github.com/magnetica-studio/efficient-spherical-harmonic-evaluation
+#   GIT_TAG        a0dfba76750634756b501fa2e2aa3262d87eda94
+# )
+# FetchContent_MakeAvailable(SHeval)
+
+################################################################################
+# GCEM - Generalized Constexpr Math library
+###############################################################################
+
+FetchContent_Declare(
+  GCEM
+  GIT_REPOSITORY https://github.com/kthohr/gcem
+  GIT_TAG        v1.16.0
+)
+FetchContent_MakeAvailable(GCEM)
