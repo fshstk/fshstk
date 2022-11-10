@@ -8,7 +8,6 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 
 class PluginProcessor : public StereoToAmbiPluginBase
-// , public juce::AudioProcessorValueTreeState::Listener
 {
 public:
   PluginProcessor();
@@ -20,16 +19,12 @@ public:
   void setStateInformation(const void* data, int sizeInBytes) override;
 
 private:
-  void updateQuaternions();
-  void updateEuler();
-
-private:
   PluginState params;
 
-  float SHL_current[64];
-  float SHR_current[64];
-  float SHL_old[64];
-  float SHR_old[64];
+  std::array<float, 36> SHL_current;
+  std::array<float, 36> SHR_current;
+  std::array<float, 36> SHL_old;
+  std::array<float, 36> SHR_old;
 
   juce::AudioBuffer<float> bufferCopy;
 };

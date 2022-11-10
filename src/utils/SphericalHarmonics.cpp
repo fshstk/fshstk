@@ -120,17 +120,24 @@ std::array<double, 36> harmonics_sn3d(double x, double y, double z)
     3 * sqrt(14) * x * (QUART(x) - 10 * SQ(y) * SQ(x) + 5 * QUART(y)) / (32 * sqrt(pi)),
   };
 }
+
+template<size_t N>
+std::array<float, N> toFloats(std::array<double, N> double_array)
+{
+  std::array<float, 36> float_array;
+  std::copy(double_array.cbegin(), double_array.cend(), float_array.begin());
+  return float_array;
+}
 } // namespace
 
-std::array<double, 36> harmonics(const SphericalVector& vec, Normalization norm)
+std::array<float, 36> harmonics(const SphericalVector& vec, Normalization norm)
 {
   const auto [x, y, z] = toXYZ(vec);
-
   switch (norm) {
     case Normalization::N3D:
-      return harmonics_n3d(x, y, z);
+      return toFloats(harmonics_n3d(x, y, z));
     case Normalization::SN3D:
-      return harmonics_sn3d(x, y, z);
+      return toFloats(harmonics_sn3d(x, y, z));
     default:
       return {};
   }
