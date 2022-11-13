@@ -77,19 +77,19 @@ std::array<double, 36> harmonics_n3d(double x, double y, double z)
 std::array<double, 36> harmonics_sn3d(double x, double y, double z)
 {
   return {
-    // order 0:
+    // order 0 (unity):
     1 / (2 * sqrt(pi)),
-    // order 1:
+    // order 1 (1/sqrt(3)):
     y / (2 * sqrt(pi)),
     z / (2 * sqrt(pi)),
     x / (2 * sqrt(pi)),
-    // order 2:
+    // order 2 (1/sqrt(5)):
     sqrt(3) * y * x / (2 * sqrt(pi)),
     sqrt(3) * y * z / (2 * sqrt(pi)),
     (3 * SQ(z) - 1) / (4 * sqrt(pi)),
     sqrt(3) * x * z / (2 * sqrt(pi)),
     sqrt(3) * (SQ(x) - SQ(y)) / (4 * sqrt(pi)),
-    // order 3:
+    // order 3 (1/sqrt(7)):
     sqrt(10) * y * (3 * SQ(x) - SQ(y)) / (8 * sqrt(pi)),
     sqrt(15) * y * x * z / (2 * sqrt(pi)),
     sqrt(6) * y * (-1 + 5 * SQ(z)) / (8 * sqrt(pi)),
@@ -97,7 +97,7 @@ std::array<double, 36> harmonics_sn3d(double x, double y, double z)
     sqrt(6) * x * (-1 + 5 * SQ(z)) / (8 * sqrt(pi)),
     sqrt(15) * (SQ(x) - SQ(y)) * z / (4 * sqrt(pi)),
     sqrt(10) * x * (SQ(x) - 3 * SQ(y)) / (8 * sqrt(pi)),
-    // order 4:
+    // order 4 (1/sqrt(9) = 1/3):
     sqrt(35) * y * x * (SQ(x) - SQ(y)) / (4 * sqrt(pi)),
     sqrt(2) * sqrt(35) * y * (3 * SQ(x) - SQ(y)) * z / (8 * sqrt(pi)),
     sqrt(5) * y * x * (-1 + 7 * SQ(z)) / (4 * sqrt(pi)),
@@ -107,7 +107,7 @@ std::array<double, 36> harmonics_sn3d(double x, double y, double z)
     sqrt(5) * (SQ(x) - SQ(y)) * (-1 + 7 * SQ(z)) / (8 * sqrt(pi)),
     sqrt(2) * sqrt(35) * x * (SQ(x) - 3 * SQ(y)) * z / (8 * sqrt(pi)),
     sqrt(35) * (QUART(x) - 6 * SQ(y) * SQ(x) + QUART(y)) / (16 * sqrt(pi)),
-    // order 5:
+    // order 5 (1/sqrt(11)):
     3 * sqrt(14) * y * (5 * QUART(x) - 10 * SQ(y) * SQ(x) + QUART(y)) / (32 * sqrt(pi)),
     3 * sqrt(35) * y * x * (SQ(x) - SQ(y)) * z / (4 * sqrt(pi)),
     sqrt(70) * y * (3 * SQ(x) - SQ(y)) * (-1 + 9 * SQ(z)) / (32 * sqrt(pi)),
