@@ -42,7 +42,7 @@ PluginProcessor::PluginProcessor()
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
   const auto ambisonicOrder = 5;
-  const auto newCoefficients = Coefficients{
+  const auto newCoefficients = std::array{
     harmonics(params.vectorLeft()),
     harmonics(params.vectorRight()),
   };
