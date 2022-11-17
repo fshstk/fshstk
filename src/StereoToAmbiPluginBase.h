@@ -24,6 +24,7 @@ public:
            layouts.getMainInputChannelSet() == juce::AudioChannelSet::stereo();
   }
 
+  void prepareToPlay(double, int) override {}
   void releaseResources() override {}
 
   const juce::String getName() const override { return JucePlugin_Name; }

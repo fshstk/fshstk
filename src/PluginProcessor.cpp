@@ -39,12 +39,6 @@ PluginProcessor::PluginProcessor()
 {
 }
 
-void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
-{
-  juce::ignoreUnused(sampleRate);
-  bufferBackup.setSize(2, samplesPerBlock);
-}
-
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
   const auto ambisonicOrder = 5;
@@ -52,7 +46,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
     harmonics(params.vectorLeft()),
     harmonics(params.vectorRight()),
   };
-  bufferBackup = buffer;
+  const auto bufferBackup = buffer;
   populateOutputBuffer(bufferBackup, buffer, oldCoefficients, newCoefficients, ambisonicOrder);
   oldCoefficients = newCoefficients;
 }
