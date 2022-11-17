@@ -1,8 +1,6 @@
 add_executable(UnitTests TestMain.cpp)
 
 target_sources(UnitTests PRIVATE
-  QuaternionTest.cpp
-  YawPitchRollTest.cpp
   SphericalVectorTest.cpp
   SphericalHarmonicsTest.cpp
 )
