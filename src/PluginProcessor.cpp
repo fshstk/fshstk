@@ -9,12 +9,6 @@ using Coefficients = std::array<std::array<float, 36>, 2>;
 namespace {
 const auto maxInputChannels = 2;
 
-void backupCoefficients(const Coefficients& source, Coefficients& dest)
-{
-  juce::FloatVectorOperations::copy(&dest[0][0], &source[0][0], 36);
-  juce::FloatVectorOperations::copy(&dest[1][0], &source[1][0], 36);
-}
-
 void populateOutputBuffer(const juce::AudioBuffer<float>& source,
                           juce::AudioBuffer<float>& dest,
                           int ambisonicOrder,
@@ -80,7 +74,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 
   backupBuffer(buffer, bufferBackup, numInputChannels);
   populateOutputBuffer(bufferBackup, buffer, ambisonicOrder, oldCoefficients, newCoefficients);
-  backupCoefficients(newCoefficients, oldCoefficients);
+  oldCoefficients = newCoefficients;
 }
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
