@@ -21,7 +21,7 @@ class PluginEditor
 {
 public:
   PluginEditor(PluginProcessor&, juce::AudioProcessorValueTreeState&);
-  ~PluginEditor();
+  ~PluginEditor() override;
 
   void paint(juce::Graphics&) override;
   void resized() override;
