@@ -58,14 +58,11 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor()
 
 void PluginProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
-  const auto xml = params.getState();
-  copyXmlToBinary(xml, destData);
+  copyXmlToBinary(params.getState(), destData);
 }
 
 void PluginProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
-  const auto xml = getXmlFromBinary(data, sizeInBytes);
-  if (!xml)
-    return;
-  params.setState(*xml);
+  if (const auto xml = getXmlFromBinary(data, sizeInBytes))
+    params.setState(*xml);
 }
