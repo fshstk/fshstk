@@ -7,15 +7,13 @@
 using Coefficients = std::array<std::array<float, 36>, 2>;
 
 namespace {
-const auto maxInputChannels = 2;
-
 void populateOutputBuffer(const juce::AudioBuffer<float>& source,
                           juce::AudioBuffer<float>& dest,
-                          int ambisonicOrder,
                           Coefficients oldCoeffs,
-                          Coefficients newCoeffs)
+                          Coefficients newCoeffs,
+                          size_t ambisonicOrder = 5)
 {
-  const auto numChannels = static_cast<size_t>((ambisonicOrder + 1) * (ambisonicOrder + 1));
+  const auto numChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
   assert(source.getNumSamples() <= dest.getNumSamples());
   assert(numChannels <= static_cast<size_t>(dest.getNumChannels()));
 
@@ -34,20 +32,6 @@ void populateOutputBuffer(const juce::AudioBuffer<float>& source,
                          newCoeffs[1][ch]);
   }
 }
-
-void backupBuffer(const juce::AudioBuffer<float>& source,
-                  juce::AudioBuffer<float>& dest,
-                  size_t numChannels)
-{
-  // TODO: doesn't deal with mono signals?
-  assert(source.getNumSamples() <= dest.getNumSamples());
-  assert(numChannels <= static_cast<size_t>(source.getNumChannels()));
-  assert(numChannels <= static_cast<size_t>(dest.getNumChannels()));
-
-  for (auto ch = 0U; ch < numChannels; ++ch)
-    dest.copyFrom(
-      static_cast<int>(ch), 0, source.getReadPointer(static_cast<int>(ch)), source.getNumSamples());
-}
 } // namespace
 
 PluginProcessor::PluginProcessor()
@@ -63,17 +47,13 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-  const auto numInputChannels =
-    static_cast<size_t>(std::min(getTotalNumInputChannels(), maxInputChannels));
   const auto ambisonicOrder = 5;
-
   const auto newCoefficients = Coefficients{
     harmonics(params.vectorLeft()),
     harmonics(params.vectorRight()),
   };
-
-  backupBuffer(buffer, bufferBackup, numInputChannels);
-  populateOutputBuffer(bufferBackup, buffer, ambisonicOrder, oldCoefficients, newCoefficients);
+  bufferBackup = buffer;
+  populateOutputBuffer(bufferBackup, buffer, oldCoefficients, newCoefficients, ambisonicOrder);
   oldCoefficients = newCoefficients;
 }
 
