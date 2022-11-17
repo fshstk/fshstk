@@ -94,8 +94,7 @@ void PluginState::addListeners(juce::AudioProcessorValueTreeState::Listener& lis
 
 juce::XmlElement PluginState::getState()
 {
-  auto state = copyState();
-  return *state.createXml();
+  return *copyState().createXml();
 }
 
 void PluginState::setState(const juce::XmlElement& xml)
