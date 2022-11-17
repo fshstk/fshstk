@@ -1,48 +1,94 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "SphericalHarmonics.h"
+#include "SphericalVector.h"
+#include "YawPitchRoll.h"
+
+using Coefficients = std::array<std::array<float, 36>, 2>;
+
+namespace {
+const auto maxInputChannels = 2;
+const auto maxOutputChannels = 36;
+
+Coefficients evaluateCoefficients(SphericalVector v, float width)
+{
+  const auto left =
+    SphericalVector{ .azimuth = v.azimuth - width / 2.0f, .elevation = v.elevation };
+  const auto right =
+    SphericalVector{ .azimuth = v.azimuth - width / 2.0f, .elevation = v.elevation };
+  return { harmonics(left), harmonics(right) };
+}
+
+void backupCoefficients(const Coefficients& source, Coefficients& dest)
+{
+  juce::FloatVectorOperations::copy(&dest[0][0], &source[0][0], 36);
+  juce::FloatVectorOperations::copy(&dest[1][0], &source[1][0], 36);
+}
+
+void populateOutputBuffer(const juce::AudioBuffer<float>& source,
+                          juce::AudioBuffer<float>& dest,
+                          int ambisonicOrder,
+                          Coefficients oldCoeffs,
+                          Coefficients newCoeffs)
+{
+  const auto numChannels = static_cast<size_t>((ambisonicOrder + 1) * (ambisonicOrder + 1));
+  assert(source.getNumSamples() <= dest.getNumSamples());
+  assert(numChannels <= static_cast<size_t>(dest.getNumChannels()));
+
+  for (auto ch = 0U; ch < numChannels; ++ch) {
+    dest.copyFromWithRamp(static_cast<int>(ch),
+                          0,
+                          source.getReadPointer(0),
+                          dest.getNumSamples(),
+                          oldCoeffs[0][ch],
+                          newCoeffs[0][ch]);
+    dest.addFromWithRamp(static_cast<int>(ch),
+                         0,
+                         source.getReadPointer(1),
+                         dest.getNumSamples(),
+                         oldCoeffs[1][ch],
+                         newCoeffs[1][ch]);
+  }
+}
+
+void backupBuffer(const juce::AudioBuffer<float>& source,
+                  juce::AudioBuffer<float>& dest,
+                  size_t numChannels)
+{
+  // TODO: doesn't deal with mono signals?
+  assert(source.getNumSamples() <= dest.getNumSamples());
+  assert(numChannels <= static_cast<size_t>(source.getNumChannels()));
+  assert(numChannels <= static_cast<size_t>(dest.getNumChannels()));
+
+  for (auto ch = 0U; ch < numChannels; ++ch)
+    dest.copyFrom(
+      static_cast<int>(ch), 0, source.getReadPointer(static_cast<int>(ch)), source.getNumSamples());
+}
+} // namespace
 
 PluginProcessor::PluginProcessor()
   : params(*this)
 {
-  juce::FloatVectorOperations::clear(&SHL_current[0], 36);
-  juce::FloatVectorOperations::clear(&SHR_current[0], 36);
 }
 
 void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
   juce::ignoreUnused(sampleRate);
-  bufferCopy.setSize(2, samplesPerBlock);
+  bufferBackup.setSize(2, samplesPerBlock);
 }
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-  const auto maxInputChannels = 2;
-  const auto maxOutputChannels = 36;
-  const auto numInputChannels = std::min(getTotalNumInputChannels(), maxInputChannels);
-  const auto numOutputChannels = std::min(getTotalNumOutputChannels(), maxOutputChannels);
+  const auto numInputChannels =
+    static_cast<size_t>(std::min(getTotalNumInputChannels(), maxInputChannels));
+  const auto ambisonicOrder = 5;
 
-  // EVALUATE COEFFICIENTS:
-  const auto halfWidth = juce::degreesToRadians(params.width() / 2);
   const auto ypr = params.getYPR();
-  SHL_current = harmonics({ .azimuth = ypr.yaw - 0 * halfWidth, .elevation = ypr.pitch });
-  SHR_current = harmonics({ .azimuth = ypr.yaw + 0 * halfWidth, .elevation = ypr.pitch });
-
-  // COPY BUFFER (DOESN'T DEAL WITH MONO SIGNALS):
-  for (int i = 0; i < numInputChannels; ++i)
-    bufferCopy.copyFrom(i, 0, buffer.getReadPointer(i), buffer.getNumSamples());
-
-  // COPY OUTPUT INTO BUFFER, FADING BETWEEN PREVIOUS AND CURRENT COEFFICIENTS:
-  for (auto i = 0; i < numOutputChannels; ++i) {
-    buffer.copyFromWithRamp(
-      i, 0, bufferCopy.getReadPointer(0), buffer.getNumSamples(), SHL_old[i], SHL_current[i]);
-    buffer.addFromWithRamp(
-      i, 0, bufferCopy.getReadPointer(1), buffer.getNumSamples(), SHR_old[i], SHR_current[i]);
-  }
-
-  // COPY SHL/SHR INTO SHL_old/SHR_old:
-  juce::FloatVectorOperations::copy(&SHL_old[0], &SHL_current[0], 36);
-  juce::FloatVectorOperations::copy(&SHR_old[0], &SHR_current[0], 36);
+  const auto sphericalHarmonics =
+    evaluateCoefficients({ .azimuth = ypr.yaw, .elevation = ypr.pitch }, params.width());
+  backupBuffer(buffer, bufferBackup, numInputChannels);
+  populateOutputBuffer(bufferBackup, buffer, ambisonicOrder, coefficientBackup, sphericalHarmonics);
+  backupCoefficients(sphericalHarmonics, coefficientBackup);
 }
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()

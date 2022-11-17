@@ -20,11 +20,6 @@ public:
 
 private:
   PluginState params;
-
-  std::array<float, 36> SHL_current;
-  std::array<float, 36> SHR_current;
-  std::array<float, 36> SHL_old;
-  std::array<float, 36> SHR_old;
-
-  juce::AudioBuffer<float> bufferCopy;
+  std::array<std::array<float, 36>, 2> coefficientBackup;
+  juce::AudioBuffer<float> bufferBackup;
 };
