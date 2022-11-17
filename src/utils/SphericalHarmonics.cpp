@@ -10,12 +10,20 @@ constexpr auto pi = M_PI;
 #define QUART(n) (n * n * n * n)
 
 namespace {
+auto degreesToRadians(double deg)
+{
+  return deg * pi / 180.0;
+}
+
 std::array<double, 3> toXYZ(const SphericalVector& v)
 {
+  const auto el = degreesToRadians(v.elevation);
+  const auto az = degreesToRadians(v.azimuth);
+
   return {
-    std::cos(v.elevation) * std::cos(v.azimuth),
-    std::cos(v.elevation) * std::sin(v.azimuth),
-    std::sin(v.elevation),
+    std::cos(el) * std::cos(az),
+    std::cos(el) * std::sin(az),
+    std::sin(el),
   };
 }
 
