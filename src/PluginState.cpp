@@ -1,4 +1,5 @@
 #include "PluginState.h"
+#include "SphericalVector.h"
 
 namespace {
 
@@ -103,55 +104,34 @@ void PluginState::setState(const juce::XmlElement& xml)
     replaceState(juce::ValueTree::fromXml(xml));
 }
 
-int PluginState::orderSetting()
-{
-  assert(getRawParameterValue("orderSetting") != nullptr);
-  return static_cast<int>(*getRawParameterValue("orderSetting"));
-}
-
-Quaternion PluginState::getQuaternion()
-{
-  const auto rawYPR = getYPR();
-  return fromYPR({
-    .yaw = juce::degreesToRadians(rawYPR.yaw),
-    .pitch = -juce::degreesToRadians(rawYPR.pitch),
-    .roll = juce::degreesToRadians(rawYPR.roll),
-  });
-}
-
-void PluginState::setQuaternion(Quaternion newVal)
-{
-  setYPR(toYPR(normalize(newVal)));
-}
-
-YawPitchRoll PluginState::getYPR()
+SphericalVector PluginState::vectorLeft()
 {
   assert(getRawParameterValue("azimuth") != nullptr);
   assert(getRawParameterValue("elevation") != nullptr);
-  assert(getRawParameterValue("roll") != nullptr);
+  assert(getRawParameterValue("width") != nullptr);
+
+  const auto& az = *getRawParameterValue("azimuth");
+  const auto& el = *getRawParameterValue("elevation");
+  const auto& width = *getRawParameterValue("width");
+
   return {
-    .yaw = *getRawParameterValue("azimuth"),
-    .pitch = *getRawParameterValue("elevation"),
-    .roll = *getRawParameterValue("roll"),
+    .azimuth = az + 0.5f * width,
+    .elevation = el,
   };
 }
 
-void PluginState::setYPR(YawPitchRoll newVal)
+SphericalVector PluginState::vectorRight()
 {
-  assert(getParameter("azimuth") != nullptr);
-  assert(getParameter("elevation") != nullptr);
-  assert(getParameter("roll") != nullptr);
-  getParameter("azimuth")->setValueNotifyingHost(
-    getParameterRange("azimuth").convertTo0to1(juce::radiansToDegrees(newVal.yaw)));
-  getParameter("elevation")
-    ->setValueNotifyingHost(
-      getParameterRange("elevation").convertTo0to1(-juce::radiansToDegrees(newVal.pitch)));
-  getParameter("roll")->setValueNotifyingHost(
-    getParameterRange("roll").convertTo0to1(juce::radiansToDegrees(newVal.roll)));
-}
-
-float PluginState::width()
-{
+  assert(getRawParameterValue("azimuth") != nullptr);
+  assert(getRawParameterValue("elevation") != nullptr);
   assert(getRawParameterValue("width") != nullptr);
-  return *getRawParameterValue("width");
+
+  const auto& az = *getRawParameterValue("azimuth");
+  const auto& el = *getRawParameterValue("elevation");
+  const auto& width = *getRawParameterValue("width");
+
+  return {
+    .azimuth = az + 0.5f * width,
+    .elevation = el,
+  };
 }

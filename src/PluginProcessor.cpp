@@ -8,16 +8,6 @@ using Coefficients = std::array<std::array<float, 36>, 2>;
 
 namespace {
 const auto maxInputChannels = 2;
-const auto maxOutputChannels = 36;
-
-Coefficients evaluateCoefficients(SphericalVector v, float width)
-{
-  const auto left =
-    SphericalVector{ .azimuth = v.azimuth - width / 2.0f, .elevation = v.elevation };
-  const auto right =
-    SphericalVector{ .azimuth = v.azimuth - width / 2.0f, .elevation = v.elevation };
-  return { harmonics(left), harmonics(right) };
-}
 
 void backupCoefficients(const Coefficients& source, Coefficients& dest)
 {
@@ -83,12 +73,14 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
     static_cast<size_t>(std::min(getTotalNumInputChannels(), maxInputChannels));
   const auto ambisonicOrder = 5;
 
-  const auto ypr = params.getYPR();
-  const auto sphericalHarmonics =
-    evaluateCoefficients({ .azimuth = ypr.yaw, .elevation = ypr.pitch }, params.width());
+  const auto newCoefficients = Coefficients{
+    harmonics(params.vectorLeft()),
+    harmonics(params.vectorRight()),
+  };
+
   backupBuffer(buffer, bufferBackup, numInputChannels);
-  populateOutputBuffer(bufferBackup, buffer, ambisonicOrder, coefficientBackup, sphericalHarmonics);
-  backupCoefficients(sphericalHarmonics, coefficientBackup);
+  populateOutputBuffer(bufferBackup, buffer, ambisonicOrder, oldCoefficients, newCoefficients);
+  backupCoefficients(newCoefficients, oldCoefficients);
 }
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()

@@ -20,6 +20,6 @@ public:
 
 private:
   PluginState params;
-  std::array<std::array<float, 36>, 2> coefficientBackup;
+  std::array<std::array<float, 36>, 2> oldCoefficients;
   juce::AudioBuffer<float> bufferBackup;
 };
