@@ -1,5 +1,4 @@
 #include "PluginState.h"
-#include "SphericalVector.h"
 
 namespace {
 
