@@ -2,6 +2,7 @@
 #include "PluginEditor.h"
 #include "SphericalHarmonics.h"
 #include "SphericalVector.h"
+#include <fmt/format.h>
 
 using Coefficients = std::array<std::array<float, 36>, 2>;
 
@@ -14,7 +15,13 @@ void populateOutputBuffer(const juce::AudioBuffer<float>& source,
 {
   const auto numChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
   assert(source.getNumSamples() <= dest.getNumSamples());
-  assert(numChannels <= static_cast<size_t>(dest.getNumChannels()));
+
+  if (numChannels > static_cast<size_t>(dest.getNumChannels()))
+    DBG(fmt::format(
+      "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
+      ambisonicOrder,
+      numChannels,
+      dest.getNumChannels()));
 
   for (auto ch = 0U; ch < numChannels; ++ch) {
     dest.copyFromWithRamp(static_cast<int>(ch),
