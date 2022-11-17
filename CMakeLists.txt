@@ -49,8 +49,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   # kfr
   # kfr_dft
   # kfr_io
-  gcem
-
+  # gcem
+  fmt
+  
   juce::juce_recommended_config_flags
   juce::juce_recommended_lto_flags
   juce::juce_recommended_warning_flags

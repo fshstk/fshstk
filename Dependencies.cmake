@@ -78,9 +78,20 @@ include(Catch)
 # GCEM - Generalized Constexpr Math library
 ###############################################################################
 
+# FetchContent_Declare(
+#   GCEM
+#   GIT_REPOSITORY https://github.com/kthohr/gcem
+#   GIT_TAG        v1.16.0
+# )
+# FetchContent_MakeAvailable(GCEM)
+
+################################################################################
+# GCEM - Generalized Constexpr Math library
+###############################################################################
+
 FetchContent_Declare(
-  GCEM
-  GIT_REPOSITORY https://github.com/kthohr/gcem
-  GIT_TAG        v1.16.0
+  FMT
+  GIT_REPOSITORY https://github.com/fmtlib/fmt
+  GIT_TAG        9.1.0
 )
-FetchContent_MakeAvailable(GCEM)
+FetchContent_MakeAvailable(FMT)
