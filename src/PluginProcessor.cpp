@@ -53,7 +53,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
     harmonics(params.vectorRight()),
   };
   const auto bufferBackup = buffer;
-  populateOutputBuffer(bufferBackup, buffer, oldCoefficients, newCoefficients, ambisonicOrder);
+  // populateOutputBuffer(bufferBackup, buffer, oldCoefficients, newCoefficients, ambisonicOrder);
   oldCoefficients = newCoefficients;
 }
 
