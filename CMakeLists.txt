@@ -14,7 +14,7 @@ juce_set_vst2_sdk_path(${VST_SDK_PATH})
 
 enable_testing()
 
-add_subdirectory(roboto)
+add_subdirectory(fonts)
 
 juce_add_plugin(${CMAKE_PROJECT_NAME}
   COMPANY_NAME              fshstk
@@ -42,6 +42,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   juce::juce_audio_utils
+  Fonts
   RobotoFont
 
   fmt

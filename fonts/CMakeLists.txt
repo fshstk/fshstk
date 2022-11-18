@@ -8,3 +8,11 @@ juce_add_binary_data(RobotoFont
     Roboto-Light.ttf
     Roboto-Medium.ttf
     Roboto-Regular.ttf)
+
+juce_add_binary_data(Fonts
+  HEADER_NAME
+    Fonts.h
+  SOURCES
+    JockeyOne.ttf
+    JollyLodger.ttf
+)
