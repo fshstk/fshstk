@@ -3,10 +3,6 @@
 
 struct SphericalVector
 {
-  float azimuth = 0.0;
-  float elevation = 0.0;
-  float radius = 1.0;
+  double azimuth = 0.0;
+  double elevation = 0.0;
 };
-
-SphericalVector cartesianToSpherical(const juce::Vector3D<float>& v);
-juce::Vector3D<float> sphericalToCartesian(const SphericalVector& v);
