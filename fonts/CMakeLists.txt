@@ -12,6 +12,8 @@ juce_add_binary_data(RobotoFont
 juce_add_binary_data(Fonts
   HEADER_NAME
     Fonts.h
+  NAMESPACE
+    BinaryData
   SOURCES
     JockeyOne.ttf
     JollyLodger.ttf
