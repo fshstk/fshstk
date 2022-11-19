@@ -1,8 +1,7 @@
 #include "PluginEditor.h"
 #include "Fonts.h"
 #include "sections/Bottom.h"
-#include "sections/MidBottom.h"
-#include "sections/MidTop.h"
+#include "sections/Middle.h"
 #include "sections/Top.h"
 
 namespace {
@@ -20,8 +19,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   : juce::AudioProcessorEditor(&p)
 {
   sections["top"] = std::make_unique<Top>();
-  sections["midTop"] = std::make_unique<MidTop>();
-  sections["midBottom"] = std::make_unique<MidBottom>();
+  sections["middle"] = std::make_unique<Middle>();
   sections["bottom"] = std::make_unique<Bottom>();
 
   for (auto&& section : sections)
@@ -43,17 +41,14 @@ void PluginEditor::resized()
   auto area = getLocalBounds();
 
   const auto top = area.removeFromTop(3 * gridSize);
-  const auto bottom = area.removeFromBottom(4 * gridSize);
-  const auto midBottom = area.removeFromBottom(4 * gridSize);
-  const auto midTop = area;
+  const auto bottom = area.removeFromBottom(8 * gridSize);
+  const auto middle = area;
 
   assert(sections["top"].get() != nullptr);
+  assert(sections["middle"].get() != nullptr);
   assert(sections["bottom"].get() != nullptr);
-  assert(sections["midBottom"].get() != nullptr);
-  assert(sections["midTop"].get() != nullptr);
 
   sections["top"]->setBounds(top);
+  sections["middle"]->setBounds(middle);
   sections["bottom"]->setBounds(bottom);
-  sections["midBottom"]->setBounds(midBottom);
-  sections["midTop"]->setBounds(midTop);
 }
