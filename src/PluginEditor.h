@@ -1,6 +1,7 @@
 #pragma once
 #include "PluginProcessor.h"
 #include <juce_audio_processors/juce_audio_processors.h>
+#include <unordered_map>
 
 class PluginEditor : public juce::AudioProcessorEditor
 {
@@ -10,4 +11,7 @@ public:
 
   void paint(juce::Graphics&) override;
   void resized() override;
+
+private:
+  std::unordered_map<std::string, std::unique_ptr<juce::Component>> sections;
 };
