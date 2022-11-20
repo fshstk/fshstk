@@ -3,7 +3,6 @@
 
 namespace {
 const auto github = juce::URL{ "https://github.com/fshstk/" };
-const auto margin = 0;
 const auto infoCircleGlyph = juce::CharPointer_UTF8{ "\uf05a" };
 } // namespace
 
@@ -19,5 +18,6 @@ void InfoButton::paintButton(juce::Graphics& g, const bool highlighted, const bo
 
   g.setColour(guiColors::foreground);
   g.setFont(guiFonts::fontawesome_solid);
-  g.drawText(infoCircleGlyph, getLocalBounds().reduced(margin), juce::Justification::centred);
+  g.setFont(20);
+  g.drawText(infoCircleGlyph, getLocalBounds(), juce::Justification::centred);
 }
