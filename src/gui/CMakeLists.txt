@@ -7,3 +7,4 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 add_subdirectory(components)
+add_subdirectory(sections)
