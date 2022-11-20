@@ -17,4 +17,6 @@ juce_add_binary_data(Fonts
   SOURCES
     JockeyOne.ttf
     JollyLodger.ttf
+    FontAwesome6-Free-Regular.otf
+    FontAwesome6-Free-Solid.otf
 )

@@ -11,4 +11,6 @@ struct guiFonts
 {
   static const juce::Typeface::Ptr title;
   static const juce::Typeface::Ptr body;
+  static const juce::Typeface::Ptr fontawesome_regular;
+  static const juce::Typeface::Ptr fontawesome_solid;
 };
