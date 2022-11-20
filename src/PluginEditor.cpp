@@ -4,11 +4,6 @@
 #include "sections/Middle.h"
 #include "sections/Top.h"
 
-namespace {
-const auto width = 415;
-const auto height = 475;
-} // namespace
-
 PluginEditor::PluginEditor(PluginProcessor& p)
   : juce::AudioProcessorEditor(&p)
 {
@@ -21,7 +16,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
   // Calling setSize() will immediatiely invoke resized(), even inside the
   // constructor, so we need to leave it for last:
-  setSize(width, height);
+  setSize(editorWidth, editorHeight);
 }
 
 void PluginEditor::paint(juce::Graphics& g)
@@ -31,11 +26,10 @@ void PluginEditor::paint(juce::Graphics& g)
 
 void PluginEditor::resized()
 {
-  const auto gridSize = height / 20;
   auto area = getLocalBounds();
 
-  const auto top = area.removeFromTop(3 * gridSize);
-  const auto bottom = area.removeFromBottom(8 * gridSize);
+  const auto top = area.removeFromTop(3 * editorGridSize);
+  const auto bottom = area.removeFromBottom(8 * editorGridSize);
   const auto middle = area;
 
   assert(sections["top"].get() != nullptr);

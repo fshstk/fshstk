@@ -14,3 +14,8 @@ struct guiFonts
   static const juce::Typeface::Ptr fontawesome_regular;
   static const juce::Typeface::Ptr fontawesome_solid;
 };
+
+const auto editorWidth = 415;
+const auto editorHeight = 475;
+
+const auto editorGridSize = editorHeight / 20;
