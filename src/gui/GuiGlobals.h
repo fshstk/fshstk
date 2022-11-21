@@ -5,6 +5,7 @@ struct guiColors
 {
   inline static const juce::Colour background = { 48, 48, 48 };
   inline static const juce::Colour foreground = { 218, 218, 218 };
+  inline static const juce::Colour transparent = { 0.0f, 0.0f, 0.0f, 0.0f };
 };
 
 struct guiFonts

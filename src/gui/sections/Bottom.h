@@ -10,5 +10,5 @@ public:
   void resized() override;
 
 private:
-  SimpleKnob testKnob;
+  SimpleKnob testKnob{ "elevation" };
 };
