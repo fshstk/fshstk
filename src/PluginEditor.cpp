@@ -11,8 +11,8 @@ PluginEditor::PluginEditor(PluginProcessor& p)
   sections["middle"] = std::make_unique<Middle>();
   sections["bottom"] = std::make_unique<Bottom>();
 
-  for (auto&& section : sections)
-    addAndMakeVisible(section.second.get());
+  for (const auto& [_, section] : sections)
+    addAndMakeVisible(section.get());
 
   // Calling setSize() will immediatiely invoke resized(), even inside the
   // constructor, so we need to leave it for last:
