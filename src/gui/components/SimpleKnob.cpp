@@ -5,7 +5,6 @@ namespace {
 const auto radius = editorGridSize;
 const auto lineThickness = 4;
 const auto fontSize = 18;
-const auto range = juce::degreesToRadians(270.0);
 
 template<typename T>
 juce::Point<float> convertPoint(const juce::Point<T> p)
@@ -35,10 +34,11 @@ juce::Path indicator(const juce::Point<float> center, const float angle)
 }
 } // namespace
 
-SimpleKnob::SimpleKnob(const juce::String& name)
+SimpleKnob::SimpleKnob(const juce::String& name, const double knobRangeDegrees)
   : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag,
                  juce::Slider::TextEntryBoxPosition::TextBoxAbove)
   , labelText(name)
+  , knobRangeRadians(juce::degreesToRadians(knobRangeDegrees))
 {
   setColour(ColourIds::textBoxOutlineColourId, guiColors::transparent);
   setLookAndFeel(&knobStyle);
@@ -47,7 +47,7 @@ SimpleKnob::SimpleKnob(const juce::String& name)
 void SimpleKnob::paint(juce::Graphics& g)
 {
   const auto center = convertPoint(getLocalBounds().getCentre());
-  const auto angle = range * (valueToProportionOfLength(getValue()) - 0.5);
+  const auto angle = knobRangeRadians * (valueToProportionOfLength(getValue()) - 0.5);
 
   g.setColour(guiColors::foreground);
   g.fillPath(knob(center));
@@ -63,4 +63,26 @@ void SimpleKnob::paint(juce::Graphics& g)
 juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
 {
   return juce::Font{ guiFonts::body }.withHeight(fontSize);
+}
+
+juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& slider)
+{
+  // Callers are expected to take ownership of label:
+  auto label = new juce::Label();
+
+  label->setJustificationType(juce::Justification::centred);
+  label->setKeyboardType(juce::TextInputTarget::decimalKeyboard);
+
+  label->setColour(juce::Label::textColourId, guiColors::foreground);
+  label->setColour(juce::TextEditor::textColourId, guiColors::foreground);
+
+  label->setColour(juce::Label::backgroundColourId, guiColors::transparent);
+  label->setColour(juce::TextEditor::backgroundColourId, guiColors::transparent);
+
+  label->setColour(juce::Label::outlineColourId, guiColors::transparent);
+  label->setColour(juce::TextEditor::outlineColourId, guiColors::transparent);
+
+  label->setColour(juce::TextEditor::highlightColourId, guiColors::highlight);
+
+  return label;
 }

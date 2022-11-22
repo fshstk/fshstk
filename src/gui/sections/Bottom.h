@@ -1,4 +1,5 @@
 #pragma once
+#include "OrderKnob.h"
 #include "SimpleKnob.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -11,4 +12,5 @@ public:
 
 private:
   SimpleKnob testKnob{ "elevation" };
+  OrderKnob orderKnob;
 };
