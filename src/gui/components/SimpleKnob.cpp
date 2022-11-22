@@ -65,23 +65,11 @@ juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
   return juce::Font{ guiFonts::body }.withHeight(fontSize);
 }
 
-juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider&)
+juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
 {
-  // Callers are expected to take ownership of label:
-  auto label = new juce::Label();
+  auto* label = juce::LookAndFeel_V4::createSliderTextBox(s);
 
-  label->setJustificationType(juce::Justification::centred);
-  label->setKeyboardType(juce::TextInputTarget::decimalKeyboard);
-
-  label->setColour(juce::Label::textColourId, guiColors::foreground);
-  label->setColour(juce::TextEditor::textColourId, guiColors::foreground);
-
-  label->setColour(juce::Label::backgroundColourId, guiColors::transparent);
   label->setColour(juce::TextEditor::backgroundColourId, guiColors::transparent);
-
-  label->setColour(juce::Label::outlineColourId, guiColors::transparent);
-  label->setColour(juce::TextEditor::outlineColourId, guiColors::transparent);
-
   label->setColour(juce::TextEditor::highlightColourId, guiColors::highlight);
 
   return label;
