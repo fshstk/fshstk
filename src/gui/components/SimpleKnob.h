@@ -14,6 +14,6 @@ private:
   class KnobStyle : public juce::LookAndFeel_V4
   {
     juce::Font getLabelFont(juce::Label&) override;
-    juce::Label* createSliderTextBox(juce::Slider& slider) override;
+    juce::Label* createSliderTextBox(juce::Slider&) override;
   } knobStyle;
 };

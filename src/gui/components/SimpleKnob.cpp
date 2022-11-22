@@ -65,7 +65,7 @@ juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
   return juce::Font{ guiFonts::body }.withHeight(fontSize);
 }
 
-juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& slider)
+juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider&)
 {
   // Callers are expected to take ownership of label:
   auto label = new juce::Label();
