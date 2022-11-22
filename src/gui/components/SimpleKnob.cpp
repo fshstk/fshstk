@@ -40,7 +40,6 @@ SimpleKnob::SimpleKnob(const juce::String& name, const double knobRangeDegrees)
   , labelText(name)
   , knobRangeRadians(juce::degreesToRadians(knobRangeDegrees))
 {
-  setColour(ColourIds::textBoxOutlineColourId, guiColors::transparent);
   setLookAndFeel(&knobStyle);
 }
 
@@ -67,8 +66,9 @@ juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
 
 juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
 {
-  auto* label = juce::LookAndFeel_V4::createSliderTextBox(s);
+  auto* label = juce::LookAndFeel_V2::createSliderTextBox(s);
 
+  label->setColour(juce::Label::outlineColourId, guiColors::transparent);
   label->setColour(juce::TextEditor::backgroundColourId, guiColors::transparent);
   label->setColour(juce::TextEditor::highlightColourId, guiColors::highlight);
 
