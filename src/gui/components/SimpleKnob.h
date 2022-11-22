@@ -15,5 +15,6 @@ private:
   {
     juce::Font getLabelFont(juce::Label&) override;
     juce::Label* createSliderTextBox(juce::Slider&) override;
-  } knobStyle;
+  };
+  KnobStyle knobStyle;
 };
