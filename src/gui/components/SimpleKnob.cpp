@@ -68,9 +68,12 @@ juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
 {
   auto* label = juce::LookAndFeel_V2::createSliderTextBox(s);
 
-  label->setColour(juce::Label::outlineColourId, guiColors::transparent);
   label->setColour(juce::TextEditor::backgroundColourId, guiColors::transparent);
-  label->setColour(juce::TextEditor::highlightColourId, guiColors::highlight);
+
+  label->setColour(juce::Label::outlineColourId, guiColors::transparent);
+  label->setColour(juce::TextEditor::focusedOutlineColourId, guiColors::foreground);
+  label->setColour(juce::TextEditor::highlightColourId, guiColors::foreground);
+  label->setColour(juce::TextEditor::highlightedTextColourId, guiColors::background);
 
   return label;
 }
