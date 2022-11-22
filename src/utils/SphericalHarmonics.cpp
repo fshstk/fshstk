@@ -43,7 +43,7 @@ std::array<double, 3> toXYZ(const SphericalVector& v)
 }
 
 // These are the cartesian polynomial versions of the spherical harmonics up to 5th order,
-// taken straight from "Stupid Spherical Harmonics (SH) Tricks" (Peter-Pike Sloan, 2008):
+// taken straight from "Stupid Spherical Harmonics (SH) Tricks" (Sloan, 2008):
 // http://www.ppsloan.org/publications/
 // (Condon-Shortley phase, which alternates the sign of every component, has been removed.)
 std::array<double, 36> harmonics_n3d(double x, double y, double z)
