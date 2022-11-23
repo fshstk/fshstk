@@ -5,7 +5,6 @@
 
 namespace {
 const auto lineThickness = 4;
-const auto marginBetweenTextAndKnob = 17;
 
 juce::Path createKnob(const juce::Point<float> center)
 {
@@ -28,15 +27,6 @@ juce::Path createIndicator(const juce::Point<float> center, const float angle)
   p.applyTransform(juce::AffineTransform::rotation(angle, center.getX(), center.getY()));
   return p;
 }
-
-juce::Path createLabel(juce::Point<float> center, juce::String text)
-{
-  auto path = pathFromText(text, center);
-  path.applyTransform(
-    juce::AffineTransform::translation(0, guiSizes::knobRadius + marginBetweenTextAndKnob));
-  return path;
-}
-
 } // namespace
 
 SimpleKnob::SimpleKnob(const juce::String& name, const double knobRangeDegrees)
@@ -55,7 +45,9 @@ void SimpleKnob::paint(juce::Graphics& g)
 
   g.setColour(guiColors::foreground);
   g.fillPath(createKnob(center));
-  g.fillPath(createLabel(center, labelText));
+
+  g.setFont(guiFonts::body);
+  g.drawText(labelText, getLocalBounds(), juce::Justification::centredBottom);
 
   g.setColour(guiColors::background);
   g.fillPath(createIndicator(center, static_cast<float>(angle)));
