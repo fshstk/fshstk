@@ -1,12 +1,13 @@
 #include "SimpleKnob.h"
 #include "GuiGlobals.h"
+#include "PathFromText.h"
 #include "PointToFloat.h"
 
 namespace {
 const auto lineThickness = 4;
 const auto marginBetweenTextAndKnob = 17;
 
-juce::Path knob(const juce::Point<float> center)
+juce::Path createKnob(const juce::Point<float> center)
 {
   const auto corner =
     juce::Point{ center.getX() - guiSizes::knobRadius, center.getY() - guiSizes::knobRadius };
@@ -17,7 +18,7 @@ juce::Path knob(const juce::Point<float> center)
   return p;
 }
 
-juce::Path indicator(const juce::Point<float> center, const float angle)
+juce::Path createIndicator(const juce::Point<float> center, const float angle)
 {
   const auto corner = juce::Point{ center.getX() - lineThickness / 2.0f, center.getY() };
   const auto length = guiSizes::knobRadius;
@@ -30,20 +31,7 @@ juce::Path indicator(const juce::Point<float> center, const float angle)
 
 juce::Path createLabel(juce::Point<float> center, juce::String text)
 {
-  // Line width just needs to be a constant that's definitely big enough to fit
-  // the string we want to draw:
-  const auto lineWidth = 100.0f;
-
-  auto glyphs = juce::GlyphArrangement{};
-  glyphs.addJustifiedText(guiFonts::body,
-                          text,
-                          center.getX() - lineWidth / 2.0f,
-                          center.getY(),
-                          lineWidth,
-                          juce::Justification::centred);
-
-  auto path = juce::Path{};
-  glyphs.createPath(path);
+  auto path = pathFromText(text, center);
   path.applyTransform(
     juce::AffineTransform::translation(0, guiSizes::knobRadius + marginBetweenTextAndKnob));
   return path;
@@ -66,13 +54,11 @@ void SimpleKnob::paint(juce::Graphics& g)
   const auto angle = knobRangeRadians * (valueToProportionOfLength(getValue()) - 0.5);
 
   g.setColour(guiColors::foreground);
-  g.fillPath(knob(center));
-
-  g.setFont(guiFonts::body);
+  g.fillPath(createKnob(center));
   g.fillPath(createLabel(center, labelText));
 
   g.setColour(guiColors::background);
-  g.fillPath(indicator(center, static_cast<float>(angle)));
+  g.fillPath(createIndicator(center, static_cast<float>(angle)));
 }
 
 juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)

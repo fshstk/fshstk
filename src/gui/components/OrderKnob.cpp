@@ -1,5 +1,6 @@
 #include "OrderKnob.h"
 #include "GuiGlobals.h"
+#include "PathFromText.h"
 #include "PointToFloat.h"
 
 namespace {
@@ -16,20 +17,7 @@ float orderTextAngle(int order)
 
 juce::Path orderText(int order, juce::Point<float> center)
 {
-  // Line width just needs to be a constant that's definitely big enough to fit
-  // the string we want to draw:
-  const auto lineWidth = 100.0f;
-
-  auto glyphs = juce::GlyphArrangement{};
-  glyphs.addJustifiedText(guiFonts::body,
-                          juce::String{ order },
-                          center.getX() - lineWidth / 2.0f,
-                          center.getY(),
-                          lineWidth,
-                          juce::Justification::centred);
-
-  auto path = juce::Path{};
-  glyphs.createPath(path);
+  auto path = pathFromText(juce::String{ order }, center);
   path.applyTransform(juce::AffineTransform{}
                         .translated(0, -(guiSizes::knobRadius + marginBetweenTextAndKnob))
                         .rotated(orderTextAngle(order), center.getX(), center.getY()));
