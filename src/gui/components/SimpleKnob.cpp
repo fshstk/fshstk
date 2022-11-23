@@ -3,13 +3,13 @@
 #include "PointToFloat.h"
 
 namespace {
-const auto radius = guiSizes::editorGridSize;
 const auto lineThickness = 4;
 
 juce::Path knob(const juce::Point<float> center)
 {
-  const auto corner = juce::Point{ center.getX() - radius, center.getY() - radius };
-  const auto size = radius * 2;
+  const auto corner =
+    juce::Point{ center.getX() - guiSizes::knobRadius, center.getY() - guiSizes::knobRadius };
+  const auto size = guiSizes::knobRadius * 2;
 
   auto p = juce::Path{};
   p.addEllipse(corner.getX(), corner.getY(), size, size);
@@ -19,7 +19,7 @@ juce::Path knob(const juce::Point<float> center)
 juce::Path indicator(const juce::Point<float> center, const float angle)
 {
   const auto corner = juce::Point{ center.getX() - lineThickness / 2.0f, center.getY() };
-  const auto length = radius;
+  const auto length = guiSizes::knobRadius;
 
   auto p = juce::Path{};
   p.addRectangle(corner.getX(), corner.getY(), lineThickness, length * -1);

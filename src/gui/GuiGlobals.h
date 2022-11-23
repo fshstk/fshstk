@@ -21,4 +21,5 @@ struct guiSizes
   static inline const auto editorWidth = 415;
   static inline const auto editorHeight = 475;
   static inline const auto editorGridSize = editorHeight / 20;
+  static inline const auto knobRadius = guiSizes::editorGridSize;
 };

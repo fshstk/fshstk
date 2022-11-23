@@ -5,34 +5,34 @@
 namespace {
 const auto orderRange = std::pair{ 0, 5 };
 const auto knobRangeDegrees = 120.0f;
+const auto marginBetweenTextAndKnob = 7;
 
-juce::Path orderNumber(int order, juce::Point<float> center)
+float angleForText(int order)
 {
-  auto path = juce::Path{};
-  auto glyphs = juce::GlyphArrangement{};
+  const auto numSteps = orderRange.second - orderRange.first;
+  return juce::degreesToRadians(knobRangeDegrees *
+                                (static_cast<float>(order - orderRange.first) / numSteps - 0.5f));
+}
 
-  const auto nSteps = orderRange.second - orderRange.first;
-  const auto angle = juce::degreesToRadians(knobRangeDegrees) *
-                     (static_cast<float>(order - orderRange.first) / (nSteps - 0) - 0.5f);
-
+juce::Path textForOrder(int order, juce::Point<float> center)
+{
   // Line width just needs to be a constant that's definitely big enough to fit
   // the string we want to draw:
   const auto lineWidth = 100.0f;
 
-  const auto radius = guiSizes::editorGridSize;
-  const auto margin = 7;
-
+  auto glyphs = juce::GlyphArrangement{};
   glyphs.addJustifiedText(guiFonts::body,
                           juce::String{ order },
                           center.getX() - lineWidth / 2.0f,
                           center.getY(),
                           lineWidth,
                           juce::Justification::horizontallyCentred);
-  glyphs.createPath(path);
 
+  auto path = juce::Path{};
+  glyphs.createPath(path);
   path.applyTransform(juce::AffineTransform{}
-                        .translated(0, -(radius + margin))
-                        .rotated(angle, center.getX(), center.getY()));
+                        .translated(0, -(guiSizes::knobRadius + marginBetweenTextAndKnob))
+                        .rotated(angleForText(order), center.getX(), center.getY()));
   return path;
 }
 } // namespace
@@ -53,5 +53,5 @@ void OrderKnob::paint(juce::Graphics& g)
 
   g.setColour(guiColors::foreground);
   for (auto order = orderRange.first; order <= orderRange.second; ++order)
-    g.fillPath(orderNumber(order, center));
+    g.fillPath(textForOrder(order, center));
 }
