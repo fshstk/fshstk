@@ -11,10 +11,10 @@ struct guiColors
 
 struct guiFonts
 {
-  static const juce::Typeface::Ptr title;
-  static const juce::Typeface::Ptr body;
-  static const juce::Typeface::Ptr fontawesome_regular;
-  static const juce::Typeface::Ptr fontawesome_solid;
+  static const juce::Font title;
+  static const juce::Font body;
+  static const juce::Font fontawesome_regular;
+  static const juce::Font fontawesome_solid;
 };
 
 const auto editorWidth = 415;

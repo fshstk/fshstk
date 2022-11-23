@@ -10,7 +10,6 @@ void Top::paint(juce::Graphics& g)
 {
   g.setColour(guiColors::foreground);
   g.setFont(guiFonts::title);
-  g.setFont(64);
   g.drawText("fishCoder", getLocalBounds(), juce::Justification::centred);
 }
 

@@ -4,7 +4,6 @@
 namespace {
 const auto radius = editorGridSize;
 const auto lineThickness = 4;
-const auto fontSize = 18;
 
 template<typename T>
 juce::Point<float> convertPoint(const juce::Point<T> p)
@@ -52,7 +51,6 @@ void SimpleKnob::paint(juce::Graphics& g)
   g.fillPath(knob(center));
 
   g.setFont(guiFonts::body);
-  g.setFont(fontSize);
   g.drawText(labelText, getLocalBounds(), juce::Justification::centredBottom);
 
   g.setColour(guiColors::background);
@@ -61,7 +59,7 @@ void SimpleKnob::paint(juce::Graphics& g)
 
 juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
 {
-  return juce::Font{ guiFonts::body }.withHeight(fontSize);
+  return guiFonts::body;
 }
 
 juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)

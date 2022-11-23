@@ -17,7 +17,6 @@ void InfoButton::paintButton(juce::Graphics& g, const bool highlighted, const bo
   juce::ignoreUnused(active);
 
   g.setColour(guiColors::foreground);
-  g.setFont(guiFonts::fontawesome_solid);
-  g.setFont(20);
+  g.setFont(guiFonts::fontawesome_solid.withHeight(20.0f));
   g.drawText(infoCircleGlyph, getLocalBounds(), juce::Justification::centred);
 }
