@@ -2,7 +2,7 @@
 
 Bottom::Bottom()
 {
-  // addAndMakeVisible(testKnob);
+  addAndMakeVisible(testKnob);
   addAndMakeVisible(orderKnob);
 }
 
@@ -13,6 +13,7 @@ void Bottom::paint(juce::Graphics&)
 
 void Bottom::resized()
 {
-  // testKnob.setBounds(getLocalBounds().reduced(50));
-  orderKnob.setBounds(getLocalBounds().reduced(50));
+  auto area = getLocalBounds();
+  testKnob.setBounds(area.removeFromLeft(getLocalBounds().getWidth() / 2));
+  orderKnob.setBounds(area);
 }
