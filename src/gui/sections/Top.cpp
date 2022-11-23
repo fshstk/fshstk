@@ -15,7 +15,7 @@ void Top::paint(juce::Graphics& g)
 
 void Top::resized()
 {
-  const auto buttonSize = 1 * editorGridSize;
+  const auto buttonSize = guiSizes::editorGridSize;
   const auto infoArea = getLocalBounds().removeFromRight(buttonSize).removeFromTop(buttonSize);
   infoButton.setBounds(infoArea);
 }

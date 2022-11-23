@@ -16,7 +16,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
   // Calling setSize() will immediatiely invoke resized(), even inside the
   // constructor, so we need to leave it for last:
-  setSize(editorWidth, editorHeight);
+  setSize(guiSizes::editorWidth, guiSizes::editorHeight);
 }
 
 void PluginEditor::paint(juce::Graphics& g)
@@ -28,8 +28,8 @@ void PluginEditor::resized()
 {
   auto area = getLocalBounds();
 
-  const auto top = area.removeFromTop(3 * editorGridSize);
-  const auto bottom = area.removeFromBottom(8 * editorGridSize);
+  const auto top = area.removeFromTop(3 * guiSizes::editorGridSize);
+  const auto bottom = area.removeFromBottom(8 * guiSizes::editorGridSize);
   const auto middle = area;
 
   assert(sections["top"].get() != nullptr);

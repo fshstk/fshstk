@@ -2,7 +2,7 @@
 #include "GuiGlobals.h"
 
 namespace {
-const auto radius = editorGridSize;
+const auto radius = guiSizes::editorGridSize;
 const auto lineThickness = 4;
 
 template<typename T>
