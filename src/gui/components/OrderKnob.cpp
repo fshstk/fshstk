@@ -7,14 +7,14 @@ const auto orderRange = std::pair{ 0, 5 };
 const auto knobRangeDegrees = 120.0f;
 const auto marginBetweenTextAndKnob = 7;
 
-float angleForText(int order)
+float orderTextAngle(int order)
 {
   const auto numSteps = orderRange.second - orderRange.first;
   return juce::degreesToRadians(knobRangeDegrees *
                                 (static_cast<float>(order - orderRange.first) / numSteps - 0.5f));
 }
 
-juce::Path textForOrder(int order, juce::Point<float> center)
+juce::Path orderText(int order, juce::Point<float> center)
 {
   // Line width just needs to be a constant that's definitely big enough to fit
   // the string we want to draw:
@@ -32,7 +32,7 @@ juce::Path textForOrder(int order, juce::Point<float> center)
   glyphs.createPath(path);
   path.applyTransform(juce::AffineTransform{}
                         .translated(0, -(guiSizes::knobRadius + marginBetweenTextAndKnob))
-                        .rotated(angleForText(order), center.getX(), center.getY()));
+                        .rotated(orderTextAngle(order), center.getX(), center.getY()));
   return path;
 }
 } // namespace
@@ -53,5 +53,5 @@ void OrderKnob::paint(juce::Graphics& g)
 
   g.setColour(guiColors::foreground);
   for (auto order = orderRange.first; order <= orderRange.second; ++order)
-    g.fillPath(textForOrder(order, center));
+    g.fillPath(orderText(order, center));
 }
