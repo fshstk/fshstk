@@ -1,5 +1,6 @@
 #include "OrderKnob.h"
 #include "GuiGlobals.h"
+#include "PointToFloat.h"
 
 namespace {
 const auto orderRange = std::pair{ 0, 5 };
@@ -48,8 +49,7 @@ void OrderKnob::paint(juce::Graphics& g)
 {
   SimpleKnob::paint(g);
 
-  const auto center = juce::Point{ static_cast<float>(getLocalBounds().getCentreX()),
-                                   static_cast<float>(getLocalBounds().getCentreY()) };
+  const auto center = pointToFloat(getLocalBounds().getCentre());
 
   g.setColour(guiColors::foreground);
   for (auto order = orderRange.first; order <= orderRange.second; ++order)

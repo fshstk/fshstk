@@ -1,15 +1,10 @@
 #include "SimpleKnob.h"
 #include "GuiGlobals.h"
+#include "PointToFloat.h"
 
 namespace {
 const auto radius = guiSizes::editorGridSize;
 const auto lineThickness = 4;
-
-template<typename T>
-juce::Point<float> convertPoint(const juce::Point<T> p)
-{
-  return { static_cast<float>(p.getX()), static_cast<float>(p.getY()) };
-}
 
 juce::Path knob(const juce::Point<float> center)
 {
@@ -44,7 +39,7 @@ SimpleKnob::SimpleKnob(const juce::String& name, const double knobRangeDegrees)
 
 void SimpleKnob::paint(juce::Graphics& g)
 {
-  const auto center = convertPoint(getLocalBounds().getCentre());
+  const auto center = pointToFloat(getLocalBounds().getCentre());
   const auto angle = knobRangeRadians * (valueToProportionOfLength(getValue()) - 0.5);
 
   g.setColour(guiColors::foreground);
