@@ -26,7 +26,7 @@ juce::Path orderText(int order, juce::Point<float> center)
                           center.getX() - lineWidth / 2.0f,
                           center.getY(),
                           lineWidth,
-                          juce::Justification::horizontallyCentred);
+                          juce::Justification::centred);
 
   auto path = juce::Path{};
   glyphs.createPath(path);
