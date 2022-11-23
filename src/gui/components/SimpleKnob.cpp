@@ -4,6 +4,7 @@
 
 namespace {
 const auto lineThickness = 4;
+const auto marginBetweenTextAndKnob = 17;
 
 juce::Path knob(const juce::Point<float> center)
 {
@@ -26,6 +27,28 @@ juce::Path indicator(const juce::Point<float> center, const float angle)
   p.applyTransform(juce::AffineTransform::rotation(angle, center.getX(), center.getY()));
   return p;
 }
+
+juce::Path createLabel(juce::Point<float> center, juce::String text)
+{
+  // Line width just needs to be a constant that's definitely big enough to fit
+  // the string we want to draw:
+  const auto lineWidth = 100.0f;
+
+  auto glyphs = juce::GlyphArrangement{};
+  glyphs.addJustifiedText(guiFonts::body,
+                          text,
+                          center.getX() - lineWidth / 2.0f,
+                          center.getY(),
+                          lineWidth,
+                          juce::Justification::centred);
+
+  auto path = juce::Path{};
+  glyphs.createPath(path);
+  path.applyTransform(
+    juce::AffineTransform::translation(0, guiSizes::knobRadius + marginBetweenTextAndKnob));
+  return path;
+}
+
 } // namespace
 
 SimpleKnob::SimpleKnob(const juce::String& name, const double knobRangeDegrees)
@@ -46,7 +69,7 @@ void SimpleKnob::paint(juce::Graphics& g)
   g.fillPath(knob(center));
 
   g.setFont(guiFonts::body);
-  g.drawText(labelText, getLocalBounds(), juce::Justification::centredBottom);
+  g.fillPath(createLabel(center, labelText));
 
   g.setColour(guiColors::background);
   g.fillPath(indicator(center, static_cast<float>(angle)));
