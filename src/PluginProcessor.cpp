@@ -7,35 +7,34 @@
 using Coefficients = std::array<std::array<float, 36>, 2>;
 
 namespace {
-void populateOutputBuffer(const juce::AudioBuffer<float>& source,
-                          juce::AudioBuffer<float>& dest,
+void populateOutputBuffer(juce::AudioBuffer<float>& buffer,
                           Coefficients oldCoeffs,
                           Coefficients newCoeffs,
                           size_t ambisonicOrder = 5)
 {
+  const auto bufferBackup = buffer;
   const auto numChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
-  assert(source.getNumSamples() <= dest.getNumSamples());
 
-  if (numChannels > static_cast<size_t>(dest.getNumChannels()))
+  if (numChannels > static_cast<size_t>(buffer.getNumChannels()))
     DBG(fmt::format(
       "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
       ambisonicOrder,
       numChannels,
-      dest.getNumChannels()));
+      buffer.getNumChannels()));
 
   for (auto ch = 0U; ch < numChannels; ++ch) {
-    dest.copyFromWithRamp(static_cast<int>(ch),
-                          0,
-                          source.getReadPointer(0),
-                          dest.getNumSamples(),
-                          oldCoeffs[0][ch],
-                          newCoeffs[0][ch]);
-    dest.addFromWithRamp(static_cast<int>(ch),
-                         0,
-                         source.getReadPointer(1),
-                         dest.getNumSamples(),
-                         oldCoeffs[1][ch],
-                         newCoeffs[1][ch]);
+    buffer.copyFromWithRamp(static_cast<int>(ch),
+                            0,
+                            bufferBackup.getReadPointer(0),
+                            buffer.getNumSamples(),
+                            oldCoeffs[0][ch],
+                            newCoeffs[0][ch]);
+    buffer.addFromWithRamp(static_cast<int>(ch),
+                           0,
+                           bufferBackup.getReadPointer(1),
+                           buffer.getNumSamples(),
+                           oldCoeffs[1][ch],
+                           newCoeffs[1][ch]);
   }
 }
 } // namespace
@@ -55,9 +54,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
   //   harmonics(params.vectorRight()),
   // };
 
-  // TODO: pack bufferBackup into populateOutputBuffer
-  // const auto bufferBackup = buffer;
-  // populateOutputBuffer(bufferBackup, buffer, oldCoefficients, newCoefficients, ambisonicOrder);
+  // populateOutputBuffer(
+  //   buffer, oldCoefficients, newCoefficients, static_cast<size_t>(*ambisonicOrder));
   // oldCoefficients = newCoefficients;
 }
 
