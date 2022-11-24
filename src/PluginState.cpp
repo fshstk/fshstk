@@ -2,7 +2,6 @@
 #include <fmt/format.h>
 
 namespace {
-
 juce::String displayDegrees(const float angle, const int)
 {
   const auto prefix = (angle > 0) ? "+" : "";
