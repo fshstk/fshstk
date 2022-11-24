@@ -8,6 +8,12 @@ juce::String displayDegrees(const float angle, const int)
   return fmt::format("{}{:.1f}°", prefix, angle);
 }
 
+juce::String displayDecibels(const float dB, const int)
+{
+  const auto prefix = (dB >= 0) ? "+" : "";
+  return fmt::format("{}{:.1f} dB", prefix, dB);
+}
+
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
   return {
@@ -28,6 +34,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
       juce::NormalisableRange{ 0.0f, 180.0f },
       0.0f,
       juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
+    std::make_unique<juce::AudioParameterFloat>(
+      "gain",
+      "Gain",
+      juce::NormalisableRange{ -12.0f, +12.0f },
+      0.0f,
+      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDecibels)),
   };
 }
 } // namespace

@@ -16,4 +16,5 @@ public:
 private:
   PluginState params;
   std::array<std::array<float, 36>, 2> oldCoefficients;
+  float oldGain;
 };

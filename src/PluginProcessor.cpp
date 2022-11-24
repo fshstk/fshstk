@@ -14,15 +14,16 @@ void populateOutputBuffer(juce::AudioBuffer<float>& buffer,
 {
   const auto bufferBackup = buffer;
   const auto numChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
+  const auto availableChannels = static_cast<size_t>(buffer.getNumChannels());
 
-  if (numChannels > static_cast<size_t>(buffer.getNumChannels()))
+  if (numChannels > availableChannels)
     DBG(fmt::format(
       "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
       ambisonicOrder,
       numChannels,
-      buffer.getNumChannels()));
+      availableChannels));
 
-  for (auto ch = 0U; ch < numChannels; ++ch) {
+  for (auto ch = 0U; ch < std::min(numChannels, availableChannels); ++ch) {
     buffer.copyFromWithRamp(static_cast<int>(ch),
                             0,
                             bufferBackup.getReadPointer(0),
@@ -46,17 +47,24 @@ PluginProcessor::PluginProcessor()
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-  // const auto ambisonicOrder = params.getRawParameterValue("order");
-  // assert(ambisonicOrder != nullptr);
+  const auto ambisonicOrder = params.getRawParameterValue("order");
+  const auto gain = params.getRawParameterValue("gain");
 
-  // const auto newCoefficients = std::array{
-  //   harmonics(params.vectorLeft()),
-  //   harmonics(params.vectorRight()),
-  // };
+  assert(ambisonicOrder != nullptr);
+  assert(gain != nullptr);
 
-  // populateOutputBuffer(
-  //   buffer, oldCoefficients, newCoefficients, static_cast<size_t>(*ambisonicOrder));
-  // oldCoefficients = newCoefficients;
+  const auto newCoefficients = std::array{
+    harmonics(params.vectorLeft()),
+    harmonics(params.vectorRight()),
+  };
+
+  populateOutputBuffer(
+    buffer, oldCoefficients, newCoefficients, static_cast<size_t>(*ambisonicOrder));
+  oldCoefficients = newCoefficients;
+
+  const auto currentGain = juce::Decibels::decibelsToGain(static_cast<float>(*gain));
+  buffer.applyGainRamp(0, buffer.getNumSamples(), oldGain, currentGain);
+  oldGain = currentGain;
 }
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
