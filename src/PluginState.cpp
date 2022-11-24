@@ -1,18 +1,34 @@
 #include "PluginState.h"
+#include <fmt/format.h>
 
 namespace {
 
-const auto orderRange = std::pair{ 0, 5 };
+juce::String displayDegrees(const float angle, const int)
+{
+  const auto prefix = (angle > 0) ? "+" : "";
+  return fmt::format("{}{:.1f}°", prefix, angle);
+}
 
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
   return {
-    std::make_unique<juce::AudioParameterInt>(
-      "order", "Ambisonics Order", orderRange.first, orderRange.second, orderRange.second),
+    std::make_unique<juce::AudioParameterInt>("order",
+                                              "Ambisonics Order",
+                                              PluginState::orderRange.first,
+                                              PluginState::orderRange.second,
+                                              PluginState::orderRange.second),
     std::make_unique<juce::AudioParameterFloat>(
-      "azimuth", "Azimuth", juce::NormalisableRange{ -180.0f, 180.0f }, 0.0f),
+      "azimuth",
+      "Azimuth",
+      juce::NormalisableRange{ -180.0f, 180.0f },
+      0.0f,
+      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
     std::make_unique<juce::AudioParameterFloat>(
-      "elevation", "Elevation", juce::NormalisableRange{ 0.0f, 180.0f }, 0.0f),
+      "elevation",
+      "Elevation",
+      juce::NormalisableRange{ 0.0f, 180.0f },
+      0.0f,
+      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
   };
 }
 } // namespace
@@ -20,13 +36,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 PluginState::PluginState(juce::AudioProcessor& parent)
   : AudioProcessorValueTreeState(parent, nullptr, "Parameters", createParameterLayout())
 {
-}
-
-void PluginState::addListeners(juce::AudioProcessorValueTreeState::Listener& listener)
-{
-  addParameterListener("order", &listener);
-  addParameterListener("azimuth", &listener);
-  addParameterListener("elevation", &listener);
 }
 
 juce::XmlElement PluginState::getState()
