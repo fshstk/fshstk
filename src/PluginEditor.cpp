@@ -6,7 +6,6 @@
 
 PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(&p)
-  , params(s)
 {
   sections["top"] = std::make_unique<Top>();
   sections["middle"] = std::make_unique<Middle>();

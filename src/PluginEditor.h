@@ -14,6 +14,5 @@ public:
   void resized() override;
 
 private:
-  PluginState& params;
   std::unordered_map<std::string, std::unique_ptr<juce::Component>> sections;
 };
