@@ -12,7 +12,7 @@ public:
 
 private:
   SimpleKnob elevationKnob{ "elevation" };
-  SimpleKnob azimuthKnob{ "azimuth", 360.0 };
+  SimpleKnob azimuthKnob{ "azimuth", 360.0, SimpleKnob::Behavior::Endless };
   OrderKnob orderKnob;
 
   const PluginState::SliderAttachment elevationAttachment;

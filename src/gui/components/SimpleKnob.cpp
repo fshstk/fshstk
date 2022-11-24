@@ -29,13 +29,17 @@ juce::Path createIndicator(const juce::Point<float> center, const float angle)
 }
 } // namespace
 
-SimpleKnob::SimpleKnob(const juce::String& name, const double knobRangeDegrees)
+SimpleKnob::SimpleKnob(const juce::String& name,
+                       const double knobRangeDegrees,
+                       const Behavior behavior)
   : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag,
                  juce::Slider::TextEntryBoxPosition::TextBoxAbove)
   , labelText(name)
   , knobRangeRadians(juce::degreesToRadians(knobRangeDegrees))
 {
   setLookAndFeel(&knobStyle);
+  setRotaryParameters(
+    0, juce::degreesToRadians(static_cast<float>(knobRangeDegrees)), behavior == Behavior::Bounded);
 }
 
 void SimpleKnob::paint(juce::Graphics& g)

@@ -4,7 +4,15 @@
 class SimpleKnob : public juce::Slider
 {
 public:
-  SimpleKnob(const juce::String& name, double knobRangeDegrees = 270.0);
+  enum class Behavior
+  {
+    Bounded,
+    Endless
+  };
+
+  SimpleKnob(const juce::String& name,
+             double knobRangeDegrees = 270.0,
+             Behavior = Behavior::Bounded);
   void paint(juce::Graphics& g) override;
 
 private:
