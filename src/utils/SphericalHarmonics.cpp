@@ -1,4 +1,5 @@
 #include "SphericalHarmonics.h"
+#include "SphericalVector.h"
 #include <cmath>
 #include <complex>
 
@@ -30,10 +31,13 @@ auto degreesToRadians(double deg)
   return deg * pi / 180.0;
 }
 
-std::array<double, 3> toXYZ(const SphericalVector& v)
+std::array<double, 3> toXYZ(const SphericalVector& v, bool flipAzimuth = true)
 {
+  // The coefficients are based on a coordinate system where azimuth is defined in the anticlockwise
+  // direction. However, it is more intuitive to display azimuth as being in the clockwise
+  // direction, so we flip the sign of the azimuth by default:
+  const auto az = flipAzimuth ? -degreesToRadians(v.azimuth) : +degreesToRadians(v.azimuth);
   const auto el = degreesToRadians(v.elevation);
-  const auto az = degreesToRadians(v.azimuth);
 
   return {
     std::cos(el) * std::cos(az),
