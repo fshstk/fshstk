@@ -4,12 +4,13 @@
 #include "sections/Middle.h"
 #include "sections/Top.h"
 
-PluginEditor::PluginEditor(PluginProcessor& p)
+PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(&p)
+  , params(s)
 {
   sections["top"] = std::make_unique<Top>();
   sections["middle"] = std::make_unique<Middle>();
-  sections["bottom"] = std::make_unique<Bottom>();
+  sections["bottom"] = std::make_unique<Bottom>(s);
 
   for (const auto& [_, section] : sections)
     addAndMakeVisible(section.get());

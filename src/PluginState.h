@@ -5,12 +5,12 @@
 class PluginState : public juce::AudioProcessorValueTreeState
 {
 public:
-  PluginState(juce::AudioProcessor&);
+  explicit PluginState(juce::AudioProcessor&);
   void addListeners(juce::AudioProcessorValueTreeState::Listener&);
 
   juce::XmlElement getState();
   void setState(const juce::XmlElement&);
 
-  SphericalVector vectorLeft();
-  SphericalVector vectorRight();
+  SphericalVector vectorLeft() const;
+  SphericalVector vectorRight() const;
 };

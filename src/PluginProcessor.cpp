@@ -47,19 +47,23 @@ PluginProcessor::PluginProcessor()
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-  const auto ambisonicOrder = 5;
-  const auto newCoefficients = std::array{
-    harmonics(params.vectorLeft()),
-    harmonics(params.vectorRight()),
-  };
-  const auto bufferBackup = buffer;
+  // const auto ambisonicOrder = params.getRawParameterValue("order");
+  // assert(ambisonicOrder != nullptr);
+
+  // const auto newCoefficients = std::array{
+  //   harmonics(params.vectorLeft()),
+  //   harmonics(params.vectorRight()),
+  // };
+
+  // TODO: pack bufferBackup into populateOutputBuffer
+  // const auto bufferBackup = buffer;
   // populateOutputBuffer(bufferBackup, buffer, oldCoefficients, newCoefficients, ambisonicOrder);
-  oldCoefficients = newCoefficients;
+  // oldCoefficients = newCoefficients;
 }
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
 {
-  return new PluginEditor(*this);
+  return new PluginEditor(*this, params);
 }
 
 void PluginProcessor::getStateInformation(juce::MemoryBlock& destData)
