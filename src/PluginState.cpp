@@ -13,7 +13,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
   return {
     std::make_unique<juce::AudioParameterInt>("order",
-                                              "Ambisonics Order",
+                                              "Order",
                                               PluginState::orderRange.first,
                                               PluginState::orderRange.second,
                                               PluginState::orderRange.second),
