@@ -57,6 +57,11 @@ void SimpleKnob::paint(juce::Graphics& g)
   g.fillPath(createIndicator(center, static_cast<float>(angle)));
 }
 
+void SimpleKnob::attach(PluginState& state, juce::String paramID)
+{
+  knobAttachment = std::make_unique<PluginState::SliderAttachment>(state, paramID, *this);
+}
+
 juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
 {
   return guiFonts::body;

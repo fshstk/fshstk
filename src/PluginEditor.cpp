@@ -8,7 +8,7 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(&p)
 {
   sections["top"] = std::make_unique<Top>();
-  sections["middle"] = std::make_unique<Middle>();
+  sections["middle"] = std::make_unique<Middle>(s);
   sections["bottom"] = std::make_unique<Bottom>(s);
 
   for (const auto& [_, section] : sections)
