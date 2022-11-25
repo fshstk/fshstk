@@ -1,4 +1,5 @@
 #include "Middle.h"
+#include "GuiGlobals.h"
 
 Middle::Middle(PluginState& s)
 {
@@ -11,7 +12,7 @@ Middle::Middle(PluginState& s)
 
 void Middle::resized()
 {
-  auto area = getLocalBounds().reduced(20);
-  gainKnob.setBounds(area.removeFromLeft(getLocalBounds().getWidth() / 2));
-  orderKnob.setBounds(area);
+  auto area = getLocalBounds().removeFromTop(guiSizes::editorGridSize * 4);
+  orderKnob.setBounds(area.removeFromLeft(guiSizes::editorGridSize * 6));
+  gainKnob.setBounds(area.removeFromRight(guiSizes::editorGridSize * 6));
 }
