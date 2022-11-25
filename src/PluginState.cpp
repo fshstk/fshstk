@@ -31,7 +31,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
     std::make_unique<juce::AudioParameterFloat>(
       "elevation",
       "Elevation",
-      juce::NormalisableRange{ 0.0f, 180.0f },
+      juce::NormalisableRange{ 0.0f, 90.0f },
       0.0f,
       juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
     std::make_unique<juce::AudioParameterFloat>(
