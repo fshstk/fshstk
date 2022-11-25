@@ -13,6 +13,7 @@ void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
                           Coefficients newCoeffs,
                           size_t ambisonicOrder = 5)
 {
+  // TODO: this copies the entire buffer, but we really only need the first two channels...
   const auto bufferBackup = buffer;
   const auto numChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
   const auto availableChannels = static_cast<size_t>(buffer.getNumChannels());
