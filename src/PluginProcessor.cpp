@@ -7,7 +7,8 @@
 using Coefficients = std::array<std::array<float, 36>, 2>;
 
 namespace {
-void populateOutputBuffer(juce::AudioBuffer<float>& buffer,
+template<typename T>
+void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
                           Coefficients oldCoeffs,
                           Coefficients newCoeffs,
                           size_t ambisonicOrder = 5)
