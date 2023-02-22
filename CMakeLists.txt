@@ -18,7 +18,7 @@ add_subdirectory(fonts)
 
 juce_add_plugin(${CMAKE_PROJECT_NAME}
   COMPANY_NAME              fshstk
-  PLUGIN_MANUFACTURER_CODE  Fabi
+  PLUGIN_MANUFACTURER_CODE  Fstk
   PLUGIN_CODE               StEn
 
   # NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail:
