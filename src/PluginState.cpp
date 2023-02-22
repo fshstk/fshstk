@@ -23,14 +23,26 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
                                               PluginState::orderRange.second,
                                               PluginState::orderRange.second),
     std::make_unique<juce::AudioParameterFloat>(
-      "azimuth",
-      "Azimuth",
+      "azimuth left",
+      "Azimuth (L)",
       juce::NormalisableRange{ -180.0f, 180.0f },
       0.0f,
       juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
     std::make_unique<juce::AudioParameterFloat>(
-      "elevation",
-      "Elevation",
+      "azimuth right",
+      "Azimuth (R)",
+      juce::NormalisableRange{ -180.0f, 180.0f },
+      0.0f,
+      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
+    std::make_unique<juce::AudioParameterFloat>(
+      "elevation left",
+      "Elevation (L)",
+      juce::NormalisableRange{ 0.0f, 90.0f },
+      0.0f,
+      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
+    std::make_unique<juce::AudioParameterFloat>(
+      "elevation right",
+      "Elevation (R)",
       juce::NormalisableRange{ 0.0f, 90.0f },
       0.0f,
       juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
@@ -62,32 +74,23 @@ void PluginState::setState(const juce::XmlElement& xml)
 
 SphericalVector PluginState::vectorLeft() const
 {
-  assert(getRawParameterValue("azimuth") != nullptr);
-  assert(getRawParameterValue("elevation") != nullptr);
-  // assert(getRawParameterValue("width") != nullptr);
+  assert(getRawParameterValue("azimuth left") != nullptr);
+  assert(getRawParameterValue("elevation left") != nullptr);
 
-  const auto& az = *getRawParameterValue("azimuth");
-  const auto& el = *getRawParameterValue("elevation");
-  const auto width = 0.0f;
+  const auto& az = *getRawParameterValue("azimuth left");
+  const auto& el = *getRawParameterValue("elevation left");
 
-  return {
-    .azimuth = az - 0.5f * width,
-    .elevation = el,
-  };
+  return { .azimuth = az, .elevation = el };
 }
 
 SphericalVector PluginState::vectorRight() const
 {
-  assert(getRawParameterValue("azimuth") != nullptr);
-  assert(getRawParameterValue("elevation") != nullptr);
-  // assert(getRawParameterValue("width") != nullptr);
+  assert(getRawParameterValue("azimuth right") != nullptr);
+  assert(getRawParameterValue("elevation right") != nullptr);
 
-  const auto& az = *getRawParameterValue("azimuth");
-  const auto& el = *getRawParameterValue("elevation");
+  const auto& az = *getRawParameterValue("azimuth right");
+  const auto& el = *getRawParameterValue("elevation right");
   const auto width = 0.0f;
 
-  return {
-    .azimuth = az + 0.5f * width,
-    .elevation = el,
-  };
+  return { .azimuth = az, .elevation = el };
 }
