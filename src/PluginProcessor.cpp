@@ -18,6 +18,9 @@ void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
   const auto numChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
   const auto availableChannels = static_cast<size_t>(buffer.getNumChannels());
 
+  assert(oldCoeffs.size() == newCoeffs.size());
+  assert(numChannels <= newCoeffs.size());
+
   if (numChannels > availableChannels)
     DBG(fmt::format(
       "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
