@@ -2,7 +2,6 @@
 #include "SphericalVector.h"
 #include <cassert>
 #include <cmath>
-#include <complex>
 
 using std::sqrt;
 

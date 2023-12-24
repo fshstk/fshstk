@@ -1,6 +1,5 @@
 #include "SimpleKnob.h"
 #include "GuiGlobals.h"
-#include "PathFromText.h"
 #include "PointToFloat.h"
 
 namespace {

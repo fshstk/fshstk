@@ -1,7 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "SphericalHarmonics.h"
-#include "SphericalVector.h"
 #include <cassert>
 #include <fmt/format.h>
 

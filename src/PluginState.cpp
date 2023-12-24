@@ -91,7 +91,6 @@ SphericalVector PluginState::vectorRight() const
 
   const auto& az = *getRawParameterValue("azimuth right");
   const auto& el = *getRawParameterValue("elevation right");
-  const auto width = 0.0f;
 
   return { .azimuth = az, .elevation = el };
 }
