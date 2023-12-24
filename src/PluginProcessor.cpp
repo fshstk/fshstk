@@ -2,6 +2,7 @@
 #include "PluginEditor.h"
 #include "SphericalHarmonics.h"
 #include "SphericalVector.h"
+#include <cassert>
 #include <fmt/format.h>
 
 using Coefficients = std::array<std::array<float, 36>, 2>;

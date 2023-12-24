@@ -1,4 +1,5 @@
 #include "PluginState.h"
+#include <cassert>
 #include <fmt/format.h>
 
 namespace {

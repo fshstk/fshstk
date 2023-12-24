@@ -3,6 +3,7 @@
 #include "PathFromText.h"
 #include "PluginState.h"
 #include "PointToFloat.h"
+#include <cassert>
 
 namespace {
 const auto knobRangeDegrees = 120.0f;

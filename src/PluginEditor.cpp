@@ -3,6 +3,7 @@
 #include "sections/Bottom.h"
 #include "sections/Middle.h"
 #include "sections/Top.h"
+#include <cassert>
 
 PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(&p)

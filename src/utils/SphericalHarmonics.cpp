@@ -1,5 +1,6 @@
 #include "SphericalHarmonics.h"
 #include "SphericalVector.h"
+#include <cassert>
 #include <cmath>
 #include <complex>
 
