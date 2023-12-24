@@ -40,6 +40,13 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
   JUCE_DISPLAY_SPLASH_SCREEN=0
 )
 
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
+  -Wall
+  -Wextra
+  -Wpedantic
+  -Werror
+)
+
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
   juce::juce_audio_utils
   Fonts
