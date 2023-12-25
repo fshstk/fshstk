@@ -1,6 +1,5 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include <cassert>
 #include <fmt/format.h>
 #include <juce_dsp/juce_dsp.h>
 
@@ -35,7 +34,12 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
   const auto availableOutputChannels = static_cast<size_t>(buffer.getNumChannels());
   const auto requiredOutputChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
 
-  assert(availableOutputChannels >= requiredOutputChannels); // TODO: fail gracefully
+  if (requiredOutputChannels > availableOutputChannels)
+    DBG(fmt::format(
+      "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
+      ambisonicOrder,
+      requiredOutputChannels,
+      availableOutputChannels));
 
   const auto bufferSize = buffer.getNumSamples();
   for (auto i = 0; i < bufferSize; ++i) {
@@ -45,10 +49,18 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
     const auto leftCoeffs = _leftEncoder.getCoefficientsForNextSample();
     const auto rightCoeffs = _rightEncoder.getCoefficientsForNextSample();
 
-    assert(leftCoeffs.size() >= requiredOutputChannels);  // TODO: fail gracefully
-    assert(rightCoeffs.size() >= requiredOutputChannels); // TODO: fail gracefully
+    if (requiredOutputChannels > leftCoeffs.size() || requiredOutputChannels > rightCoeffs.size())
+      DBG(fmt::format("WARNING: ambisonics order {} requires {} encoder coefficients, "
+                      "but only {} (left)/{} (right) coefficients were returned",
+                      ambisonicOrder,
+                      requiredOutputChannels,
+                      leftCoeffs.size(),
+                      rightCoeffs.size()));
 
-    for (auto ch = 0U; ch < requiredOutputChannels; ++ch) {
+    const auto channelsToProcess = juce::jmin(
+      availableOutputChannels, requiredOutputChannels, leftCoeffs.size(), rightCoeffs.size());
+
+    for (auto ch = 0U; ch < channelsToProcess; ++ch) {
       const auto leftOutputSample = leftInputSample * leftCoeffs[ch];
       const auto rightOutputSample = rightInputSample * rightCoeffs[ch];
       buffer.setSample(static_cast<int>(ch), i, leftOutputSample + rightOutputSample);
