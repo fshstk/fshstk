@@ -11,7 +11,7 @@ public:
     juce::AudioChannelSet outputs;
   };
 
-  PluginBase(Config&& conf)
+  explicit PluginBase(const Config& conf)
     : AudioProcessor(JucePlugin_IsSynth ? BusesProperties().withOutput("Output", conf.outputs, true)
                                         : BusesProperties()
                                             .withInput("Input", conf.inputs, true)
