@@ -4,49 +4,6 @@
 #include <cassert>
 #include <fmt/format.h>
 
-using Coefficients = std::array<std::array<float, 36>, 2>;
-
-namespace {
-template<typename T>
-void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
-                          Coefficients oldCoeffs,
-                          Coefficients newCoeffs,
-                          size_t ambisonicOrder = 5)
-{
-  // TODO: this copies the entire buffer, but we really only need the first two channels...
-  const auto bufferBackup = buffer;
-  const auto numChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
-  const auto availableChannels = static_cast<size_t>(buffer.getNumChannels());
-
-  assert(oldCoeffs.size() == newCoeffs.size());
-
-  for (const auto& c : newCoeffs)
-    assert(numChannels <= c.size());
-
-  if (numChannels > availableChannels)
-    DBG(fmt::format(
-      "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
-      ambisonicOrder,
-      numChannels,
-      availableChannels));
-
-  for (auto ch = 0U; ch < std::min(numChannels, availableChannels); ++ch) {
-    buffer.copyFromWithRamp(static_cast<int>(ch),
-                            0,
-                            bufferBackup.getReadPointer(0),
-                            buffer.getNumSamples(),
-                            oldCoeffs[0][ch],
-                            newCoeffs[0][ch]);
-    buffer.addFromWithRamp(static_cast<int>(ch),
-                           0,
-                           bufferBackup.getReadPointer(1),
-                           buffer.getNumSamples(),
-                           oldCoeffs[1][ch],
-                           newCoeffs[1][ch]);
-  }
-}
-} // namespace
-
 PluginProcessor::PluginProcessor()
   : PluginBase({
       .inputs = juce::AudioChannelSet::stereo(),
@@ -55,23 +12,48 @@ PluginProcessor::PluginProcessor()
 {
 }
 
+void PluginProcessor::prepareToPlay(double sampleRate, int maxBlockSize)
+{
+  juce::ignoreUnused(maxBlockSize);
+  _leftEncoder.setSampleRate(sampleRate);
+  _rightEncoder.setSampleRate(sampleRate);
+}
+
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
+  // TODO: use PluginState API to get these directly instead of pointers:
   const auto ambisonicOrder = params.getRawParameterValue("order");
   const auto gain = params.getRawParameterValue("gain");
 
   assert(ambisonicOrder != nullptr);
   assert(gain != nullptr);
 
-  const auto newCoefficients = std::array{
-    harmonics(params.vectorLeft()),
-    harmonics(params.vectorRight()),
-  };
+  _leftEncoder.setDirection(params.vectorLeft());
+  _rightEncoder.setDirection(params.vectorRight());
 
-  populateOutputBuffer(
-    buffer, oldCoefficients, newCoefficients, static_cast<size_t>(*ambisonicOrder));
-  oldCoefficients = newCoefficients;
+  const auto availableOutputChannels = static_cast<size_t>(buffer.getNumChannels());
+  const auto requiredOutputChannels =
+    (static_cast<size_t>(*ambisonicOrder) + 1) * (static_cast<size_t>(*ambisonicOrder) + 1);
+  assert(availableOutputChannels >= requiredOutputChannels); // TODO: fail gracefully
 
+  for (auto i = 0; i < buffer.getNumSamples(); ++i) {
+    const auto leftInputSample = buffer.getSample(0, i);
+    const auto rightInputSample = buffer.getSample(1, i);
+
+    const auto leftCoeffs = _leftEncoder.getCoefficientsForNextSample();
+    const auto rightCoeffs = _rightEncoder.getCoefficientsForNextSample();
+
+    assert(leftCoeffs.size() >= requiredOutputChannels);  // TODO: fail gracefully
+    assert(rightCoeffs.size() >= requiredOutputChannels); // TODO: fail gracefully
+
+    for (auto ch = 0U; ch < requiredOutputChannels; ++ch) {
+      const auto leftOutputSample = leftInputSample * leftCoeffs[ch];
+      const auto rightOutputSample = rightInputSample * rightCoeffs[ch];
+      buffer.setSample(static_cast<int>(ch), i, leftOutputSample + rightOutputSample);
+    }
+  }
+
+  // TODO: use gain object instead of manually applying gain ramp:
   const auto currentGain = juce::Decibels::decibelsToGain(static_cast<float>(*gain));
   buffer.applyGainRamp(0, buffer.getNumSamples(), oldGain, currentGain);
   oldGain = currentGain;
