@@ -1,6 +1,5 @@
 #pragma once
 #include "EnvelopeFollower.h"
-#include "SphericalHarmonics.h"
 #include "SphericalVector.h"
 
 class AmbisonicEncoder

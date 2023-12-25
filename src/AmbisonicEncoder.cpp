@@ -1,4 +1,5 @@
 #include "AmbisonicEncoder.h"
+#include "SphericalHarmonics.h"
 #include <cassert>
 
 auto AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, numChannels>
