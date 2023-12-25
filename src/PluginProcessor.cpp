@@ -35,7 +35,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
     (static_cast<size_t>(*ambisonicOrder) + 1) * (static_cast<size_t>(*ambisonicOrder) + 1);
   assert(availableOutputChannels >= requiredOutputChannels); // TODO: fail gracefully
 
-  for (auto i = 0; i < buffer.getNumSamples(); ++i) {
+  const auto bufferSize = buffer.getNumSamples();
+  for (auto i = 0; i < bufferSize; ++i) {
     const auto leftInputSample = buffer.getSample(0, i);
     const auto rightInputSample = buffer.getSample(1, i);
 
