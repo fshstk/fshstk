@@ -2,6 +2,7 @@
 #include "AmbisonicEncoder.h"
 #include "PluginBase.h"
 #include "PluginState.h"
+#include <juce_dsp/juce_dsp.h>
 
 class PluginProcessor : public PluginBase<PluginState>
 {
@@ -14,5 +15,5 @@ public:
 private:
   AmbisonicEncoder _leftEncoder;
   AmbisonicEncoder _rightEncoder;
-  float oldGain;
+  juce::dsp::Gain<float> _gain;
 };

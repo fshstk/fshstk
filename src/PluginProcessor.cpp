@@ -2,6 +2,7 @@
 #include "PluginEditor.h"
 #include <cassert>
 #include <fmt/format.h>
+#include <juce_dsp/juce_dsp.h>
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
@@ -14,25 +15,26 @@ PluginProcessor::PluginProcessor()
 void PluginProcessor::prepareToPlay(double sampleRate, int maxBlockSize)
 {
   juce::ignoreUnused(maxBlockSize);
+
   _leftEncoder.setSampleRate(sampleRate);
   _rightEncoder.setSampleRate(sampleRate);
+
+  _gain.prepare({
+    .sampleRate = sampleRate,
+    .maximumBlockSize = static_cast<juce::uint32>(maxBlockSize),
+    .numChannels = static_cast<juce::uint32>(getTotalNumOutputChannels()),
+  });
 }
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-  // TODO: use PluginState API to get these directly instead of pointers:
-  const auto ambisonicOrder = params.getRawParameterValue("order");
-  const auto gain = params.getRawParameterValue("gain");
-
-  assert(ambisonicOrder != nullptr);
-  assert(gain != nullptr);
-
   _leftEncoder.setDirection(params.vectorLeft());
   _rightEncoder.setDirection(params.vectorLeft());
 
+  const auto ambisonicOrder = params.ambiOrder();
   const auto availableOutputChannels = static_cast<size_t>(buffer.getNumChannels());
-  const auto requiredOutputChannels =
-    (static_cast<size_t>(*ambisonicOrder) + 1) * (static_cast<size_t>(*ambisonicOrder) + 1);
+  const auto requiredOutputChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
+
   assert(availableOutputChannels >= requiredOutputChannels); // TODO: fail gracefully
 
   const auto bufferSize = buffer.getNumSamples();
@@ -53,10 +55,10 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
     }
   }
 
-  // TODO: use gain object instead of manually applying gain ramp:
-  const auto currentGain = juce::Decibels::decibelsToGain(static_cast<float>(*gain));
-  buffer.applyGainRamp(0, buffer.getNumSamples(), oldGain, currentGain);
-  oldGain = currentGain;
+  auto block = juce::dsp::AudioBlock<float>{ buffer };
+  auto context = juce::dsp::ProcessContextReplacing<float>{ block };
+  _gain.setGainDecibels(params.gain());
+  _gain.process(context);
 }
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
