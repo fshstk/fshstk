@@ -1,29 +1,33 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
-template<typename PluginState>
-class StereoToAmbiPluginBase : public juce::AudioProcessor
+template<class PluginStateType>
+class PluginBase : public juce::AudioProcessor
 {
 public:
-  StereoToAmbiPluginBase()
-    : AudioProcessor(JucePlugin_IsSynth
-                       ? BusesProperties().withOutput("Output",
-                                                      juce::AudioChannelSet::discreteChannels(64),
-                                                      true)
-                       : BusesProperties()
-                           .withInput("Input", juce::AudioChannelSet::stereo(), true)
-                           .withOutput("Output", juce::AudioChannelSet::discreteChannels(64), true))
+  struct Config
+  {
+    juce::AudioChannelSet inputs;
+    juce::AudioChannelSet outputs;
+  };
+
+  PluginBase(Config&& conf)
+    : AudioProcessor(JucePlugin_IsSynth ? BusesProperties().withOutput("Output", conf.outputs, true)
+                                        : BusesProperties()
+                                            .withInput("Input", conf.inputs, true)
+                                            .withOutput("Output", conf.outputs, true))
     , params(*this)
+    , _conf(conf)
   {
   }
 
   bool isBusesLayoutSupported(const BusesLayout& layouts) const override
   {
     if (JucePlugin_IsSynth)
-      return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::discreteChannels(64);
+      return layouts.getMainOutputChannelSet() == _conf.outputs;
 
-    return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::discreteChannels(64) &&
-           layouts.getMainInputChannelSet() == juce::AudioChannelSet::stereo();
+    return layouts.getMainOutputChannelSet() == _conf.outputs &&
+           layouts.getMainInputChannelSet() == _conf.inputs;
   }
 
   void prepareToPlay(double, int) override {}
@@ -61,5 +65,8 @@ public:
   }
 
 protected:
-  PluginState params;
+  PluginStateType params;
+
+private:
+  Config _conf;
 };

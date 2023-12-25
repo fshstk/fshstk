@@ -1,11 +1,13 @@
 #pragma once
+#include "PluginBase.h"
 #include "PluginState.h"
 #include "SphericalVector.h"
-#include "StereoToAmbiPluginBase.h"
 
-class PluginProcessor : public StereoToAmbiPluginBase<PluginState>
+class PluginProcessor : public PluginBase<PluginState>
 {
 public:
+  PluginProcessor();
+
   juce::AudioProcessorEditor* createEditor() override;
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 

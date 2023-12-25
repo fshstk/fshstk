@@ -47,6 +47,14 @@ void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
 }
 } // namespace
 
+PluginProcessor::PluginProcessor()
+  : PluginBase<PluginState>({
+      .inputs = juce::AudioChannelSet::stereo(),
+      .outputs = juce::AudioChannelSet::ambisonic(5),
+    })
+{
+}
+
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
   const auto ambisonicOrder = params.getRawParameterValue("order");
