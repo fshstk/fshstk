@@ -19,7 +19,9 @@ void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
   const auto availableChannels = static_cast<size_t>(buffer.getNumChannels());
 
   assert(oldCoeffs.size() == newCoeffs.size());
-  assert(numChannels <= newCoeffs.size());
+
+  for (const auto& c : newCoeffs)
+    assert(numChannels <= c.size());
 
   if (numChannels > availableChannels)
     DBG(fmt::format(
