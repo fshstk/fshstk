@@ -7,6 +7,8 @@ class PluginState : public PluginStateBase
 public:
   explicit PluginState(juce::AudioProcessor&);
 
+  auto ambiOrder() const -> size_t;
+  auto gain() const -> float;
   SphericalVector vectorLeft() const;
   SphericalVector vectorRight() const;
 

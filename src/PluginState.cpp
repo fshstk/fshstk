@@ -62,24 +62,34 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
+auto PluginState::ambiOrder() const -> size_t
+{
+  const auto* const order = getRawParameterValue("order");
+  assert(order != nullptr);
+  return static_cast<size_t>(*order);
+}
+
+auto PluginState::gain() const -> float
+{
+  const auto* const gain = getRawParameterValue("gain");
+  assert(gain != nullptr);
+  return *gain;
+}
+
 SphericalVector PluginState::vectorLeft() const
 {
-  assert(getRawParameterValue("azimuth left") != nullptr);
-  assert(getRawParameterValue("elevation left") != nullptr);
-
-  const auto& az = *getRawParameterValue("azimuth left");
-  const auto& el = *getRawParameterValue("elevation left");
-
-  return { .azimuth = az, .elevation = el };
+  const auto* const az = getRawParameterValue("azimuth left");
+  const auto* const el = getRawParameterValue("elevation left");
+  assert(az != nullptr);
+  assert(el != nullptr);
+  return { .azimuth = *az, .elevation = *el };
 }
 
 SphericalVector PluginState::vectorRight() const
 {
-  assert(getRawParameterValue("azimuth right") != nullptr);
-  assert(getRawParameterValue("elevation right") != nullptr);
-
-  const auto& az = *getRawParameterValue("azimuth right");
-  const auto& el = *getRawParameterValue("elevation right");
-
-  return { .azimuth = az, .elevation = el };
+  const auto* const az = getRawParameterValue("azimuth right");
+  const auto* const el = getRawParameterValue("elevation right");
+  assert(az != nullptr);
+  assert(el != nullptr);
+  return { .azimuth = *az, .elevation = *el };
 }
