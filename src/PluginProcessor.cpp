@@ -45,11 +45,6 @@ void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
 }
 } // namespace
 
-PluginProcessor::PluginProcessor()
-  : params(*this)
-{
-}
-
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
   const auto ambisonicOrder = params.getRawParameterValue("order");
@@ -75,15 +70,4 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
 {
   return new PluginEditor(*this, params);
-}
-
-void PluginProcessor::getStateInformation(juce::MemoryBlock& destData)
-{
-  copyXmlToBinary(params.getState(), destData);
-}
-
-void PluginProcessor::setStateInformation(const void* data, int sizeInBytes)
-{
-  if (const auto xml = getXmlFromBinary(data, sizeInBytes))
-    params.setState(*xml);
 }

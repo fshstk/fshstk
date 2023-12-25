@@ -1,6 +1,7 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
+template<typename PluginState>
 class StereoToAmbiPluginBase : public juce::AudioProcessor
 {
 public:
@@ -12,6 +13,7 @@ public:
                        : BusesProperties()
                            .withInput("Input", juce::AudioChannelSet::stereo(), true)
                            .withOutput("Output", juce::AudioChannelSet::discreteChannels(64), true))
+    , params(*this)
   {
   }
 
@@ -46,6 +48,18 @@ public:
 
   void setCurrentProgram(int) override {}
   void changeProgramName(int, const juce::String&) override {}
-  void getStateInformation(juce::MemoryBlock&) override {}
-  void setStateInformation(const void*, int) override {}
+
+  void getStateInformation(juce::MemoryBlock& destData) override
+  {
+    copyXmlToBinary(params.getState(), destData);
+  }
+
+  void setStateInformation(const void* data, int sizeInBytes) override
+  {
+    if (const auto xml = getXmlFromBinary(data, sizeInBytes))
+      params.setState(*xml);
+  }
+
+protected:
+  PluginState params;
 };

@@ -58,25 +58,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 } // namespace
 
 PluginState::PluginState(juce::AudioProcessor& parent)
-  : AudioProcessorValueTreeState(parent, nullptr, "Parameters", createParameterLayout())
+  : PluginStateBase(parent, createParameterLayout())
 {
-}
-
-juce::XmlElement PluginState::getState()
-{
-  if (const auto xml = copyState().createXml(); xml != nullptr)
-    return *xml;
-
-  DBG("WARNING: getState() could not retrieve state object");
-  return juce::XmlElement{ "" };
-}
-
-void PluginState::setState(const juce::XmlElement& xml)
-{
-  if (xml.hasTagName(state.getType()))
-    replaceState(juce::ValueTree::fromXml(xml));
-  else
-    DBG("WARNING: setState() received invalid state object");
 }
 
 SphericalVector PluginState::vectorLeft() const
