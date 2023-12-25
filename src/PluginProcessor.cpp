@@ -48,7 +48,7 @@ void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
 } // namespace
 
 PluginProcessor::PluginProcessor()
-  : PluginBase<PluginState>({
+  : PluginBase({
       .inputs = juce::AudioChannelSet::stereo(),
       .outputs = juce::AudioChannelSet::ambisonic(5),
     })
