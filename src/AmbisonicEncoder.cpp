@@ -1,22 +1,24 @@
 #include "AmbisonicEncoder.h"
+#include <cassert>
 
 auto AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, numChannels>
 {
-  // TODO: could also pass in sample and return encoded sample
-  return harmonics({
-    .azimuth = _azimuth.getNextValue(),
-    .elevation = _elevation.getNextValue(),
-  });
+  auto result = std::array<float, numChannels>{};
+  for (auto i = 0U; i < _coefficients.size(); ++i)
+    result[i] = static_cast<float>(_coefficients[i].getNextValue());
+  return result;
 }
 
 void AmbisonicEncoder::setDirection(const SphericalVector& dir)
 {
-  _azimuth.setTargetValue(dir.azimuth);
-  _elevation.setTargetValue(dir.elevation);
+  const auto targetCoefficients = harmonics(dir);
+  assert(targetCoefficients.size() == _coefficients.size());
+  for (auto i = 0U; i < targetCoefficients.size(); ++i)
+    _coefficients[i].setTargetValue(targetCoefficients[i]);
 }
 
 void AmbisonicEncoder::setSampleRate(double sampleRate)
 {
-  _azimuth.setSampleRate(sampleRate);
-  _elevation.setSampleRate(sampleRate);
+  for (auto& follower : _coefficients)
+    follower.setSampleRate(sampleRate);
 }
