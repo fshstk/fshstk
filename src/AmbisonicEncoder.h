@@ -6,7 +6,9 @@
 class AmbisonicEncoder
 {
 public:
-  auto getCoefficientsForNextSample() -> std::array<float, 36>;
+  static constexpr auto numChannels = 36;
+
+  auto getCoefficientsForNextSample() -> std::array<float, numChannels>;
   void setDirection(const SphericalVector& dir);
   void setSampleRate(double sampleRate);
 

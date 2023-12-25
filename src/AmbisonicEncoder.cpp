@@ -1,6 +1,6 @@
 #include "AmbisonicEncoder.h"
 
-auto AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, 36>
+auto AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, numChannels>
 {
   // TODO: could also pass in sample and return encoded sample
   return harmonics({
