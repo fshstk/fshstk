@@ -1,7 +1,6 @@
 #pragma once
 #include "PluginBase.h"
 #include "PluginState.h"
-#include "SphericalVector.h"
 
 class PluginProcessor : public PluginBase<PluginState>
 {
