@@ -1,6 +1,5 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "SphericalHarmonics.h"
 #include <cassert>
 #include <fmt/format.h>
 
@@ -29,7 +28,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
   assert(gain != nullptr);
 
   _leftEncoder.setDirection(params.vectorLeft());
-  _rightEncoder.setDirection(params.vectorRight());
+  _rightEncoder.setDirection(params.vectorLeft());
 
   const auto availableOutputChannels = static_cast<size_t>(buffer.getNumChannels());
   const auto requiredOutputChannels =
