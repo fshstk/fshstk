@@ -23,7 +23,7 @@ void populateOutputBuffer(juce::AudioBuffer<T>& buffer,
 
   if (numChannels > availableChannels)
     DBG(fmt::format(
-      "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
+      "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
       ambisonicOrder,
       numChannels,
       availableChannels));
