@@ -28,7 +28,7 @@ void PluginProcessor::prepareToPlay(double sampleRate, int maxBlockSize)
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
   _leftEncoder.setDirection(params.vectorLeft());
-  _rightEncoder.setDirection(params.vectorLeft());
+  _rightEncoder.setDirection(params.vectorRight());
 
   const auto ambisonicOrder = params.ambiOrder();
   const auto availableOutputChannels = static_cast<size_t>(buffer.getNumChannels());
