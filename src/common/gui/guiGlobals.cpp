@@ -1,4 +1,4 @@
-#include "GuiGlobals.h"
+#include "guiGlobals.h"
 #include "Fonts.h"
 
 const juce::Font guiFonts::title =

@@ -1,6 +1,6 @@
 #include "Bottom.h"
-#include "GuiGlobals.h"
 #include "PluginState.h"
+#include "guiGlobals.h"
 
 Bottom::Bottom(PluginState& s)
 {

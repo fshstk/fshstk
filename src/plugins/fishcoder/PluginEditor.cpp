@@ -1,5 +1,5 @@
 #include "PluginEditor.h"
-#include "GuiGlobals.h"
+#include "guiGlobals.h"
 #include "sections/Bottom.h"
 #include "sections/Middle.h"
 #include "sections/Top.h"

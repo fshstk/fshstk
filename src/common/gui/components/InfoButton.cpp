@@ -1,5 +1,5 @@
 #include "InfoButton.h"
-#include "GuiGlobals.h"
+#include "guiGlobals.h"
 
 namespace {
 const auto github = juce::URL{ "https://github.com/fshstk/" };

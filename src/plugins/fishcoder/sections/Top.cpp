@@ -1,5 +1,5 @@
 #include "Top.h"
-#include "GuiGlobals.h"
+#include "guiGlobals.h"
 
 Top::Top()
 {

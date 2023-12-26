@@ -1,6 +1,6 @@
 #include "SimpleKnob.h"
-#include "GuiGlobals.h"
-#include "PointToFloat.h"
+#include "guiGlobals.h"
+#include "pointToFloat.h"
 
 namespace {
 const auto lineThickness = 4;

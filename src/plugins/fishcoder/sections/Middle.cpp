@@ -1,5 +1,5 @@
 #include "Middle.h"
-#include "GuiGlobals.h"
+#include "guiGlobals.h"
 
 Middle::Middle(PluginState& s)
 {

@@ -1,5 +1,5 @@
-#include "PathFromText.h"
-#include "GuiGlobals.h"
+#include "pathFromText.h"
+#include "guiGlobals.h"
 
 juce::Path pathFromText(const juce::String text, const juce::Point<float> center)
 {

@@ -1,8 +1,8 @@
 #include "OrderKnob.h"
-#include "GuiGlobals.h"
-#include "PathFromText.h"
-#include "PointToFloat.h"
 #include "gui/components/OrderKnob.h"
+#include "guiGlobals.h"
+#include "pathFromText.h"
+#include "pointToFloat.h"
 #include <cassert>
 
 namespace {

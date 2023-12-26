@@ -3,8 +3,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
-  GuiGlobals.cpp
-  PathFromText.cpp
+  guiGlobals.cpp
+  pathFromText.cpp
 )
 
 add_subdirectory(components)
