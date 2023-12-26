@@ -3,11 +3,6 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-  Main.cpp
-  PluginEditor.cpp
-  PluginProcessor.cpp
-  PluginState.cpp
 )
 
-add_subdirectory(gui)
-add_subdirectory(common)
+add_subdirectory(utils)
