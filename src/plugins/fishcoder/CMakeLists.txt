@@ -3,16 +3,15 @@ project(FishCoder
   LANGUAGES   CXX)
 
 juce_add_plugin(${PROJECT_NAME}
-  COMPANY_NAME              fshstk
-  PLUGIN_MANUFACTURER_CODE  Fstk
   PLUGIN_CODE               StEn
-
-  # NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail:
   IS_SYNTH                  FALSE
   NEEDS_MIDI_INPUT          FALSE
+  # (NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail)
 
-  FORMATS                   VST Standalone
-  COPY_PLUGIN_AFTER_BUILD   TRUE
+  COMPANY_NAME              ${FISH_COMPANY_NAME}
+  PLUGIN_MANUFACTURER_CODE  ${FISH_PLUGIN_MANUFACTURER_CODE}
+  FORMATS                   ${FISH_PLUGIN_FORMATS}
+  COPY_PLUGIN_AFTER_BUILD   ${FISH_COPY_PLUGINS}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
