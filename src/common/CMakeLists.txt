@@ -11,12 +11,21 @@ target_compile_options(${PROJECT_NAME} PUBLIC
   -Werror
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  juce::juce_audio_utils
-  Fonts
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+  # Uncomment this if you want to build VST3 plugins without the VST2 SDK:
+  # JUCE_VST3_CAN_REPLACE_VST2=0
 
+  # Disabling the splash screen is only legal if you purchase a JUCE license, or
+  # if you license your project using the GNU Public License.
+  # - https://www.gnu.org/licenses
+  # - https://juce.com/juce-6-licence
+  JUCE_DISPLAY_SPLASH_SCREEN=0
+)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  Fonts
   fmt
-  
+  juce::juce_audio_utils
   juce::juce_recommended_config_flags
   juce::juce_recommended_lto_flags
   juce::juce_recommended_warning_flags
