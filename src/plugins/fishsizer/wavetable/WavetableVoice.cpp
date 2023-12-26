@@ -3,7 +3,7 @@
 #include <cassert>
 
 namespace {
-void addSampleToAllChannels(juce::AudioBuffer<float> audio, int position, float sample)
+void addSampleToAllChannels(juce::AudioBuffer<float>& audio, int position, float sample)
 {
   const auto numChannels = audio.getNumChannels();
   for (auto ch = 0; ch < numChannels; ++ch)
