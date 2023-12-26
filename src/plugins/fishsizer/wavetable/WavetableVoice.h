@@ -1,4 +1,5 @@
 #pragma once
+#include "AmbisonicEncoder.h"
 #include "WavetableSound.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_dsp/juce_dsp.h>
@@ -19,6 +20,8 @@ public:
 private:
   auto calculateNextSample() -> float;
   void reset();
+
+  AmbisonicEncoder encoder;
 
   double phase = 0.0;
   double deltaPhase = 0.0;

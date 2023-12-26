@@ -2,7 +2,7 @@
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
-      .outputs = juce::AudioChannelSet::stereo(),
+      .outputs = juce::AudioChannelSet::ambisonic(5),
     })
   , synth(params)
 {

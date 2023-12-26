@@ -1,13 +1,38 @@
 #include "WavetableVoice.h"
+#include "AmbisonicEncoder.h"
 #include "WavetableSound.h"
 #include <cassert>
 
 namespace {
-void addSampleToAllChannels(juce::AudioBuffer<float>& audio, int position, float sample)
+void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
+                            AmbisonicEncoder& encoder,
+                            int position,
+                            float sample)
 {
-  const auto numChannels = audio.getNumChannels();
-  for (auto ch = 0; ch < numChannels; ++ch)
-    audio.addSample(ch, position, sample);
+  const auto coeffs = encoder.getCoefficientsForNextSample();
+
+  const auto numChannelsAvailable = static_cast<size_t>(audio.getNumChannels());
+  const auto numChannelsToProcess = juce::jmin(coeffs.size(), numChannelsAvailable);
+
+  for (auto ch = 0U; ch < numChannelsToProcess; ++ch)
+    audio.addSample(static_cast<int>(ch), position, sample * coeffs[ch]);
+}
+
+SphericalVector midiNoteToDirection(int midiNote)
+{
+  // TODO: experiment with elevation to velocity mapping
+  const auto midiNoteMin = 0;
+  const auto midiNoteMax = 127;
+  const auto azimuthMin = -180.0;
+  const auto azimuthMax = +180.0;
+  return {
+    .azimuth = juce::jmap(static_cast<double>(midiNote),
+                          static_cast<double>(midiNoteMin),
+                          static_cast<double>(midiNoteMax),
+                          azimuthMin,
+                          azimuthMax),
+    .elevation = 0.0,
+  };
 }
 } // namespace
 
@@ -29,6 +54,9 @@ void WavetableVoice::startNote(int midiNote,
 
   phase = 0.0;
   deltaPhase = 0.0;
+
+  encoder.setSampleRate(getSampleRate());
+  encoder.setDirection(midiNoteToDirection(midiNote));
 
   ampEnv.setSampleRate(getSampleRate());
   ampEnv.setParameters(sound->ampEnvParams());
@@ -75,7 +103,7 @@ void WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
     return;
 
   for (auto position = startSample; position < startSample + numSamples; ++position)
-    addSampleToAllChannels(audio, position, calculateNextSample());
+    addSampleToAllChannels(audio, encoder, position, calculateNextSample());
 
   if (!ampEnv.isActive())
     reset();
