@@ -3,9 +3,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
-  GuiGlobals.cpp
-  PathFromText.cpp
+  InfoButton.cpp
+  OrderKnob.cpp
+  SimpleKnob.cpp
 )
-
-add_subdirectory(components)
-add_subdirectory(sections)

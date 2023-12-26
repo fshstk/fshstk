@@ -29,4 +29,4 @@ target_sources(${PROJECT_NAME} PRIVATE
   PluginState.cpp
 )
 
-add_subdirectory(gui)
+add_subdirectory(sections)

@@ -1,5 +1,5 @@
 #pragma once
-#include "PluginState.h"
+#include "PluginStateBase.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class SimpleKnob : public juce::Slider
@@ -16,12 +16,12 @@ public:
              Behavior = Behavior::Bounded);
   void paint(juce::Graphics& g) override;
 
-  void attach(PluginState&, juce::String paramID);
+  void attach(PluginStateBase&, juce::String paramID);
 
 private:
   const juce::String labelText;
   const double knobRangeRadians;
-  std::unique_ptr<PluginState::SliderAttachment> knobAttachment;
+  std::unique_ptr<PluginStateBase::SliderAttachment> knobAttachment;
 
   class KnobStyle : public juce::LookAndFeel_V4
   {

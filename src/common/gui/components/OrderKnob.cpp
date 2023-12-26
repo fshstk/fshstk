@@ -1,8 +1,8 @@
 #include "OrderKnob.h"
 #include "GuiGlobals.h"
 #include "PathFromText.h"
-#include "PluginState.h"
 #include "PointToFloat.h"
+#include "gui/components/OrderKnob.h"
 #include <cassert>
 
 namespace {
@@ -11,10 +11,9 @@ const auto marginBetweenTextAndKnob = 7;
 
 float orderTextAngle(int order)
 {
-  const auto numSteps = PluginState::orderRange.second - PluginState::orderRange.first;
+  const auto numSteps = OrderKnob::orderRange.second - OrderKnob::orderRange.first;
   return juce::degreesToRadians(
-    knobRangeDegrees *
-    (static_cast<float>(order - PluginState::orderRange.first) / numSteps - 0.5f));
+    knobRangeDegrees * (static_cast<float>(order - OrderKnob::orderRange.first) / numSteps - 0.5f));
 }
 
 juce::Path orderText(int order, juce::Point<float> center)
@@ -30,8 +29,8 @@ juce::Path orderText(int order, juce::Point<float> center)
 OrderKnob::OrderKnob()
   : SimpleKnob("order", knobRangeDegrees)
 {
-  assert(PluginState::orderRange.second > PluginState::orderRange.first);
-  setRange(PluginState::orderRange.first, PluginState::orderRange.second, 1);
+  assert(orderRange.second > orderRange.first);
+  setRange(orderRange.first, orderRange.second, 1);
   setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, {}, {}, {});
 }
 
@@ -42,6 +41,6 @@ void OrderKnob::paint(juce::Graphics& g)
   const auto center = pointToFloat(getLocalBounds().getCentre());
 
   g.setColour(guiColors::foreground);
-  for (auto order = PluginState::orderRange.first; order <= PluginState::orderRange.second; ++order)
+  for (auto order = orderRange.first; order <= orderRange.second; ++order)
     g.fillPath(orderText(order, center));
 }
