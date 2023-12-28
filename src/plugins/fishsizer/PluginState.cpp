@@ -60,6 +60,17 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
+auto PluginState::getSoundParams() const -> WavetableSound::Params
+{
+  return {
+    .ampEnv = getAmpEnv(),
+    .filtEnv = getFiltEnv(),
+    .filtEnvAmount = getFiltModAmt(),
+    .cutoffFreq = getFilterCutoff(),
+    .resonance = getFilterResonance(),
+  };
+}
+
 auto PluginState::getAmpEnv() const -> juce::ADSR::Parameters
 {
   const auto* const a = getRawParameterValue("amp_attack");

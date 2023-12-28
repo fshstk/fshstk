@@ -1,12 +1,14 @@
 #pragma once
-#include "PluginState.h"
+#include "WavetableSound.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 
 class WavetableSynth : public juce::Synthesiser
 {
 public:
-  explicit WavetableSynth(const PluginState&);
+  WavetableSynth();
+  void setSoundParams(const WavetableSound::Params&);
 
 private:
   const int numVoices = 20;
+  WavetableSound* _sound;
 };

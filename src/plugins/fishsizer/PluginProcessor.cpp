@@ -4,7 +4,6 @@ PluginProcessor::PluginProcessor()
   : PluginBase({
       .outputs = juce::AudioChannelSet::ambisonic(5),
     })
-  , synth(params)
 {
 }
 
@@ -17,5 +16,6 @@ void PluginProcessor::prepareToPlay(double sampleRate, int bufferSize)
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
 {
   audio.clear();
+  synth.setSoundParams(params.getSoundParams());
   synth.renderNextBlock(audio, midi, 0, audio.getNumSamples());
 }

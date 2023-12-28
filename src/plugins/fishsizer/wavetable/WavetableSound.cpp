@@ -1,5 +1,4 @@
 #include "WavetableSound.h"
-#include "PluginState.h"
 #include <cassert>
 #include <numbers>
 
@@ -41,8 +40,7 @@ auto triangle()
 }
 } // namespace
 
-WavetableSound::WavetableSound(const PluginState& s, WavetableSound::WaveType type)
-  : params(s)
+WavetableSound::WavetableSound(WavetableSound::WaveType type)
 {
   switch (type) {
     using enum WaveType;
@@ -103,27 +101,12 @@ auto WavetableSound::get(double phase) const -> float
   return static_cast<float>(interpolatedSample);
 }
 
-auto WavetableSound::ampEnvParams() const -> juce::ADSR::Parameters
+void WavetableSound::setParams(const Params& p)
 {
-  return params.getAmpEnv();
+  _params = p;
 }
 
-auto WavetableSound::filtEnvParams() const -> juce::ADSR::Parameters
+auto WavetableSound::getParams() const -> Params
 {
-  return params.getFiltEnv();
-}
-
-auto WavetableSound::filtEnvAmount() const -> float
-{
-  return params.getFiltModAmt();
-}
-
-auto WavetableSound::cutoffFreq() const -> float
-{
-  return params.getFilterCutoff();
-}
-
-auto WavetableSound::resonance() const -> float
-{
-  return params.getFilterResonance();
+  return _params;
 }

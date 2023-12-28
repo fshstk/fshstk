@@ -57,6 +57,7 @@ void WavetableVoice::startNote(int midiNote,
 
   sound = dynamic_cast<WavetableSound*>(soundToUse);
   assert(sound != nullptr);
+  const auto params = sound->getParams();
 
   phase = 0.0;
   deltaPhase = 0.0;
@@ -65,11 +66,11 @@ void WavetableVoice::startNote(int midiNote,
   encoder.setDirection(midiNoteToDirection(midiNote));
 
   ampEnv.setSampleRate(getSampleRate());
-  ampEnv.setParameters(sound->ampEnvParams());
+  ampEnv.setParameters(params.ampEnv);
   ampEnv.noteOn();
 
   filtEnv.setSampleRate(getSampleRate());
-  filtEnv.setParameters(sound->filtEnvParams());
+  filtEnv.setParameters(params.filtEnv);
   filtEnv.noteOn();
 
   filter.prepare({ .sampleRate = getSampleRate(), .maximumBlockSize = 1, .numChannels = 1 });
@@ -118,11 +119,12 @@ void WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
 auto WavetableVoice::calculateNextSample() -> float
 {
   assert(sound != nullptr);
+  const auto params = sound->getParams();
   const auto sample = sound->get(phase) * ampEnv.getNextSample();
   phase += deltaPhase;
 
-  filter.setCutoffFrequency(sound->cutoffFreq() + sound->filtEnvAmount() * filtEnv.getNextSample());
-  filter.setResonance(sound->resonance());
+  filter.setCutoffFrequency(params.cutoffFreq + params.filtEnvAmount * filtEnv.getNextSample());
+  filter.setResonance(params.resonance);
   return filter.processSample(0, sample);
 }
 
