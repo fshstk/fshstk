@@ -27,5 +27,3 @@ target_sources(${PROJECT_NAME} PRIVATE
   PluginProcessor.cpp
   PluginState.cpp
 )
-
-add_subdirectory(wavetable)
