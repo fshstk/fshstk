@@ -58,8 +58,6 @@ public:
 
     for (int ch = 0; ch < fdnSize; ++ch) {
       delayBufferVector[ch]->clear();
-      lowShelfFilters[ch]->reset();
-      highShelfFilters[ch]->reset();
     }
   }
 
@@ -130,14 +128,6 @@ public:
 
           if (channel < nChannels)
             delayData[delayPos] += inSample;
-        }
-
-        if (!freeze) {
-          // apply shelving filters
-          delayData[delayPos] =
-            highShelfFilters[channel]->processSingleSampleRaw(delayData[delayPos]);
-          delayData[delayPos] =
-            lowShelfFilters[channel]->processSingleSampleRaw(delayData[delayPos]);
         }
 
         if (channel < nChannels) {
@@ -251,8 +241,6 @@ private:
   juce::dsp::ProcessSpec spec = { -1, 0, 0 };
 
   juce::OwnedArray<juce::AudioBuffer<float>> delayBufferVector;
-  juce::OwnedArray<juce::IIRFilter> highShelfFilters;
-  juce::OwnedArray<juce::IIRFilter> lowShelfFilters;
   juce::Array<int> delayPositionVector;
   juce::Array<float> feedbackGainVector;
   juce::Array<float> transferVector;
@@ -370,33 +358,12 @@ private:
         delayPositionVector.set(channel, 0);
     }
     updateFeedBackGainVector();
-    updateFilterCoefficients();
   }
 
   void updateFeedBackGainVector()
   {
     for (int channel = 0; channel < fdnSize; ++channel) {
       feedbackGainVector.set(channel, channelGainConversion(channel, overallGain));
-    }
-  }
-
-  void updateFilterCoefficients()
-  {
-    if (spec.sampleRate > 0) {
-      // update shelving filter parameters
-      for (int channel = 0; channel < fdnSize; ++channel) {
-        lowShelfFilters[channel]->setCoefficients(juce::IIRCoefficients::makeLowShelf(
-          spec.sampleRate,
-          juce::jmin(0.5 * spec.sampleRate, static_cast<double>(lowShelfParameters.frequency)),
-          lowShelfParameters.q,
-          channelGainConversion(channel, lowShelfParameters.linearGain)));
-
-        highShelfFilters[channel]->setCoefficients(juce::IIRCoefficients::makeHighShelf(
-          spec.sampleRate,
-          juce::jmin(0.5 * spec.sampleRate, static_cast<double>(highShelfParameters.frequency)),
-          highShelfParameters.q,
-          channelGainConversion(channel, highShelfParameters.linearGain)));
-      }
     }
   }
 
@@ -407,14 +374,10 @@ private:
       if (fdnSize < newSize) {
         for (int i = 0; i < diff; i++) {
           delayBufferVector.add(new juce::AudioBuffer<float>());
-          highShelfFilters.add(new juce::IIRFilter());
-          lowShelfFilters.add(new juce::IIRFilter());
         }
       } else {
         // TODO: what happens if newSize == 0?;
         delayBufferVector.removeLast(diff);
-        highShelfFilters.removeLast(diff);
-        lowShelfFilters.removeLast(diff);
       }
     }
     delayPositionVector.resize(newSize);
