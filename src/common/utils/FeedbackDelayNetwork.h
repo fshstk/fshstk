@@ -18,23 +18,14 @@ public:
     big = 64
   };
 
-  struct FilterParameter
-  {
-    float frequency = 1000.0f;
-    float linearGain = 1.0f;
-    float q = 0.707f;
-  };
-
   FeedbackDelayNetwork(FdnSize size = big);
   void setDryWet(float newDryWet);
   void prepare(const juce::dsp::ProcessSpec& newSpec) override;
   void process(const juce::dsp::ProcessContextReplacing<float>& context) override;
   void setDelayLength(int newDelayLength);
   void reset() override;
-  void setFilterParameter(FilterParameter lowShelf, FilterParameter highShelf);
   void setT60InSeconds(float reverbTime);
   void setOverallGainPerSecond(float gainPerSecond);
-  void getT60ForFrequencyArray(double* frequencies, double* t60Data, size_t numSamples);
   void setFreeze(bool shouldFreeze);
   void setFdnSize(FdnSize size);
   const FdnSize getFdnSize();
@@ -47,8 +38,6 @@ private:
   juce::Array<float> transferVector;
   std::vector<int> primeNumbers;
   std::vector<int> indices;
-  FilterParameter lowShelfParameters;
-  FilterParameter highShelfParameters;
   float dryWet;
   float delayLength = 20;
   float overallGain;
@@ -59,10 +48,6 @@ private:
   {
     bool dryWetChanged = false;
     float newDryWet = 0;
-
-    bool filterParametersChanged = false;
-    FilterParameter newLowShelfParams;
-    FilterParameter newHighShelfParams;
 
     bool delayLengthChanged = false;
     int newDelayLength = 20;

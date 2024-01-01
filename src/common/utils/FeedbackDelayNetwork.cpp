@@ -46,13 +46,6 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
     params.dryWetChanged = false;
   }
 
-  if (params.filterParametersChanged) {
-    lowShelfParameters = params.newLowShelfParams;
-    highShelfParameters = params.newHighShelfParams;
-    params.needParameterUpdate = true;
-    params.filterParametersChanged = false;
-  }
-
   if (params.networkSizeChanged) {
     fdnSize = params.newNetworkSize;
     params.needParameterUpdate = true;
@@ -144,13 +137,6 @@ void FeedbackDelayNetwork::setDelayLength(int newDelayLength)
 
 void FeedbackDelayNetwork::reset() {}
 
-void FeedbackDelayNetwork::setFilterParameter(FilterParameter lowShelf, FilterParameter highShelf)
-{
-  params.newLowShelfParams = lowShelf;
-  params.newHighShelfParams = highShelf;
-  params.filterParametersChanged = true;
-}
-
 void FeedbackDelayNetwork::setT60InSeconds(float reverbTime)
 {
   double temp;
@@ -164,38 +150,6 @@ void FeedbackDelayNetwork::setOverallGainPerSecond(float gainPerSecond)
 {
   params.newOverallGain = gainPerSecond;
   params.overallGainChanged = true;
-}
-
-void FeedbackDelayNetwork::getT60ForFrequencyArray(double* frequencies,
-                                                   double* t60Data,
-                                                   size_t numSamples)
-{
-  juce::dsp::IIR::Coefficients<float> coefficients;
-  coefficients = *IIR::Coefficients<float>::makeLowShelf(
-    spec.sampleRate,
-    static_cast<float>(
-      juce::jmin(0.5 * spec.sampleRate, static_cast<double>(lowShelfParameters.frequency))),
-    lowShelfParameters.q,
-    lowShelfParameters.linearGain);
-
-  std::vector<double> temp;
-  temp.resize(numSamples);
-
-  coefficients.getMagnitudeForFrequencyArray(frequencies, t60Data, numSamples, spec.sampleRate);
-  coefficients = *IIR::Coefficients<float>::makeHighShelf(
-    spec.sampleRate,
-    static_cast<float>(
-      juce::jmin(0.5 * spec.sampleRate, static_cast<double>(highShelfParameters.frequency))),
-    highShelfParameters.q,
-    highShelfParameters.linearGain);
-  coefficients.getMagnitudeForFrequencyArray(frequencies, &temp[0], numSamples, spec.sampleRate);
-
-  juce::FloatVectorOperations::multiply(&temp[0], t60Data, static_cast<int>(numSamples));
-  juce::FloatVectorOperations::multiply(&temp[0], overallGain, static_cast<int>(numSamples));
-
-  for (auto i = 0U; i < numSamples; ++i) {
-    t60Data[i] = -3.0 / log10(temp[i]);
-  }
 }
 
 void FeedbackDelayNetwork::setFreeze(bool shouldFreeze)
