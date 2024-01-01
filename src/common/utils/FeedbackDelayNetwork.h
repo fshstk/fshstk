@@ -26,19 +26,20 @@ public:
   };
 
   FeedbackDelayNetwork(FdnSize size = big);
-  void setDryWet(float newDryWet);
   void prepare(const juce::dsp::ProcessSpec& newSpec) override;
   void process(const juce::dsp::ProcessContextReplacing<float>& context) override;
-  void setDelayLength(int newDelayLength);
   void reset() override;
+  void setParams(const Params&);
+
+private:
+  void setDryWet(float newDryWet);
+  void setDelayLength(int newDelayLength);
   void setT60InSeconds(float reverbTime);
   void setOverallGainPerSecond(float gainPerSecond);
   void setFreeze(bool shouldFreeze);
   void setFdnSize(FdnSize size);
   const FdnSize getFdnSize();
-  void setParams(const Params&);
 
-private:
   juce::dsp::ProcessSpec spec = { -1, 0, 0 };
   juce::OwnedArray<juce::AudioBuffer<float>> delayBufferVector;
   juce::Array<int> delayPositionVector;
