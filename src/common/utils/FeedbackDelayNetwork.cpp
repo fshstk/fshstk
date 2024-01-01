@@ -1,8 +1,6 @@
 #include "FeedbackDelayNetwork.h"
 #include "fwht.h"
 
-using namespace juce::dsp;
-
 FeedbackDelayNetwork::FeedbackDelayNetwork(FdnSize size)
 {
   updateFdnSize(size);
