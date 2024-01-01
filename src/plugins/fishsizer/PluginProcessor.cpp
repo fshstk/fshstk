@@ -24,8 +24,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBu
   synth.setSoundParams(params.getSoundParams());
   synth.renderNextBlock(audio, midi, 0, audio.getNumSamples());
 
-  if (params.reverbOn()) {
-    auto block = juce::dsp::AudioBlock<float>{ audio };
-    reverb.process(juce::dsp::ProcessContextReplacing<float>{ block });
-  }
+  reverb.setParams(params.getReverbParams());
+  auto block = juce::dsp::AudioBlock<float>{ audio };
+  reverb.process(juce::dsp::ProcessContextReplacing<float>{ block });
 }

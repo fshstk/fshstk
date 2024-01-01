@@ -1,4 +1,5 @@
 #pragma once
+#include "FeedbackDelayNetwork.h"
 #include "PluginStateBase.h"
 #include "WavetableSound.h"
 #include <juce_dsp/juce_dsp.h>
@@ -8,7 +9,7 @@ class PluginState : public PluginStateBase
 public:
   explicit PluginState(juce::AudioProcessor&);
   auto getSoundParams() const -> WavetableSound::Params;
-  auto reverbOn() const -> bool;
+  auto getReverbParams() const -> FeedbackDelayNetwork::Params;
 
 private:
   auto getAmpEnv() const -> juce::ADSR::Parameters;

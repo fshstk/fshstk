@@ -18,6 +18,13 @@ public:
     big = 64
   };
 
+  struct Params
+  {
+    float roomSize;
+    float revTime;
+    float dryWet;
+  };
+
   FeedbackDelayNetwork(FdnSize size = big);
   void setDryWet(float newDryWet);
   void prepare(const juce::dsp::ProcessSpec& newSpec) override;
@@ -29,6 +36,7 @@ public:
   void setFreeze(bool shouldFreeze);
   void setFdnSize(FdnSize size);
   const FdnSize getFdnSize();
+  void setParams(const Params&);
 
 private:
   juce::dsp::ProcessSpec spec = { -1, 0, 0 };

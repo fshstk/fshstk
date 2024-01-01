@@ -51,8 +51,21 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
                                                 juce::NormalisableRange{ 0.0f, 1.0f },
                                                 0.707f,
                                                 juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterBool>(
-      "reverb", "Reverb", false, juce::AudioParameterBoolAttributes{}),
+    std::make_unique<juce::AudioParameterFloat>("rev_size",
+                                                "Reverb Room Size",
+                                                juce::NormalisableRange<float>(1.0f, 30.0f, 1.0f),
+                                                20.0f,
+                                                juce::AudioParameterFloatAttributes{}),
+    std::make_unique<juce::AudioParameterFloat>("rev_time",
+                                                "Reverb Time",
+                                                juce::NormalisableRange<float>(0.1f, 9.0f, 0.1f),
+                                                5.f,
+                                                juce::AudioParameterFloatAttributes{}),
+    std::make_unique<juce::AudioParameterFloat>("rev_drywet",
+                                                "Reverb Dry/Wet",
+                                                juce::NormalisableRange<float>(0.f, 1.f, 0.01f),
+                                                0.5f,
+                                                juce::AudioParameterFloatAttributes{}),
   };
 }
 } // namespace
@@ -70,6 +83,23 @@ auto PluginState::getSoundParams() const -> WavetableSound::Params
     .filtEnvAmount = getFiltModAmt(),
     .cutoffFreq = getFilterCutoff(),
     .resonance = getFilterResonance(),
+  };
+}
+
+auto PluginState::getReverbParams() const -> FeedbackDelayNetwork::Params
+{
+  const auto* const size = getRawParameterValue("rev_size");
+  const auto* const time = getRawParameterValue("rev_time");
+  const auto* const drywet = getRawParameterValue("rev_drywet");
+
+  assert(size != nullptr);
+  assert(time != nullptr);
+  assert(drywet != nullptr);
+
+  return {
+    .roomSize = *size,
+    .revTime = *time,
+    .dryWet = *drywet,
   };
 }
 
@@ -120,11 +150,4 @@ auto PluginState::getFilterResonance() const -> float
   const auto* const res = getRawParameterValue("filt_resonance");
   assert(res != nullptr);
   return *res;
-}
-
-auto PluginState::reverbOn() const -> bool
-{
-  const auto* const reverb = getRawParameterValue("reverb");
-  assert(reverb != nullptr);
-  return (*reverb > 0.5f) ? true : false;
 }

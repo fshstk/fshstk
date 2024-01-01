@@ -278,3 +278,10 @@ void FeedbackDelayNetwork::updateFdnSize(FdnSize newSize)
   transferVector.resize(newSize);
   fdnSize = newSize;
 }
+
+void FeedbackDelayNetwork::setParams(const Params& p)
+{
+  setDelayLength(static_cast<int>(p.roomSize));
+  setDryWet(p.dryWet);
+  setT60InSeconds(p.revTime);
+}
