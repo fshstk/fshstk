@@ -53,7 +53,7 @@ public:
   {
     spec = newSpec;
 
-    indices = indexGen(fdnSize, delayLength);
+    indices = indexGen(fdnSize, static_cast<int>(delayLength));
     updateParameterSettings();
 
     for (int ch = 0; ch < fdnSize; ++ch) {
@@ -88,8 +88,8 @@ public:
     }
 
     if (params.delayLengthChanged) {
-      delayLength = params.newDelayLength;
-      indices = indexGen(fdnSize, delayLength);
+      delayLength = static_cast<float>(params.newDelayLength);
+      indices = indexGen(fdnSize, static_cast<int>(delayLength));
       params.needParameterUpdate = true;
       params.delayLengthChanged = false;
     }
@@ -119,7 +119,7 @@ public:
       // apply delay to each channel for one time sample
       for (int channel = 0; channel < fdnSize; ++channel) {
         const int idx = std::min(channel, nChannels - 1);
-        float* const channelData = buffer.getChannelPointer(idx);
+        float* const channelData = buffer.getChannelPointer(static_cast<size_t>(idx));
         float* const delayData = delayBufferVector[channel]->getWritePointer(0);
 
         int delayPos = delayPositionVector[channel];
@@ -151,7 +151,7 @@ public:
       }
 
       // perform fast walsh hadamard transform
-      fwht(transferVector.getRawDataPointer(), transferVector.size());
+      fwht(transferVector.getRawDataPointer(), static_cast<unsigned>(transferVector.size()));
 
       // write back into delay buffer
       // increment the delay buffer pointer
@@ -190,7 +190,7 @@ public:
     double temp;
     double t = double(reverbTime);
     temp = -60.0 / (20.0 * t);
-    params.newOverallGain = pow(10.0, temp);
+    params.newOverallGain = static_cast<float>(pow(10.0, temp));
     params.overallGainChanged = true;
   }
 
@@ -205,7 +205,8 @@ public:
     juce::dsp::IIR::Coefficients<float> coefficients;
     coefficients = *IIR::Coefficients<float>::makeLowShelf(
       spec.sampleRate,
-      juce::jmin(0.5 * spec.sampleRate, static_cast<double>(lowShelfParameters.frequency)),
+      static_cast<float>(
+        juce::jmin(0.5 * spec.sampleRate, static_cast<double>(lowShelfParameters.frequency))),
       lowShelfParameters.q,
       lowShelfParameters.linearGain);
 
@@ -215,7 +216,8 @@ public:
     coefficients.getMagnitudeForFrequencyArray(frequencies, t60Data, numSamples, spec.sampleRate);
     coefficients = *IIR::Coefficients<float>::makeHighShelf(
       spec.sampleRate,
-      juce::jmin(0.5 * spec.sampleRate, static_cast<double>(highShelfParameters.frequency)),
+      static_cast<float>(
+        juce::jmin(0.5 * spec.sampleRate, static_cast<double>(highShelfParameters.frequency))),
       highShelfParameters.q,
       highShelfParameters.linearGain);
     coefficients.getMagnitudeForFrequencyArray(frequencies, &temp[0], numSamples, spec.sampleRate);
@@ -223,7 +225,7 @@ public:
     juce::FloatVectorOperations::multiply(&temp[0], t60Data, static_cast<int>(numSamples));
     juce::FloatVectorOperations::multiply(&temp[0], overallGain, static_cast<int>(numSamples));
 
-    for (int i = 0; i < numSamples; ++i) {
+    for (auto i = 0U; i < numSamples; ++i) {
       t60Data[i] = -3.0 / log10(temp[i]);
     }
   }
@@ -292,7 +294,9 @@ private:
   inline int delayLengthConversion(int channel)
   {
     // we divide by 10 to get better range for room size setting
-    float delayLenMillisec = primeNumbers[indices[channel]] / 10.f;
+    float delayLenMillisec =
+      static_cast<float>(primeNumbers[static_cast<size_t>(indices[static_cast<size_t>(channel)])]) /
+      10.f;
     return int(delayLenMillisec / 1000.f * spec.sampleRate); // convert to samples
   }
 
@@ -301,34 +305,35 @@ private:
     int delayLenSamples = delayLengthConversion(channel);
 
     double length = double(delayLenSamples) / double(spec.sampleRate);
-    return pow(gain, length);
+    return static_cast<float>(pow(gain, length));
   }
 
-  std::vector<int> indexGen(FdnSize nChannels, int delayLength)
+  std::vector<int> indexGen(FdnSize nChannels, int delayLength_)
   {
-    const int firstIncrement = delayLength / 10;
-    const int finalIncrement = delayLength;
+    const int firstIncrement = delayLength_ / 10;
+    const int finalIncrement = delayLength_;
 
-    std::vector<int> indices;
+    std::vector<int> indices_;
 
     if (firstIncrement < 1)
-      indices.push_back(1.f);
+      indices_.push_back(1.f);
     else
-      indices.push_back(firstIncrement);
+      indices_.push_back(firstIncrement);
 
     float increment;
     int index;
 
     for (int i = 1; i < nChannels; i++) {
-      increment = firstIncrement + abs(finalIncrement - firstIncrement) / float(nChannels) * i;
+      increment = static_cast<float>(firstIncrement + abs(finalIncrement - firstIncrement)) /
+                  float(nChannels) * static_cast<float>(i);
 
       if (increment < 1)
         increment = 1.f;
 
-      index = int(round(indices[i - 1] + increment));
-      indices.push_back(index);
+      index = int(round(static_cast<float>(indices_[static_cast<size_t>(i) - 1]) + increment));
+      indices_.push_back(index);
     }
-    return indices;
+    return indices_;
   }
 
   std::vector<int> primeNumGen(int count)
@@ -336,7 +341,7 @@ private:
     std::vector<int> series;
 
     int range = 3;
-    while (series.size() < count) {
+    while (series.size() < static_cast<size_t>(count)) {
       bool is_prime = true;
       for (int i = 2; i < range; i++) {
         if (range % i == 0) {
@@ -355,7 +360,7 @@ private:
 
   inline void updateParameterSettings()
   {
-    indices = indexGen(fdnSize, delayLength);
+    indices = indexGen(fdnSize, static_cast<int>(delayLength));
 
     for (int channel = 0; channel < fdnSize; ++channel) {
       // update multichannel delay parameters
