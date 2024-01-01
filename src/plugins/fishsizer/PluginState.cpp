@@ -51,6 +51,8 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
                                                 juce::NormalisableRange{ 0.0f, 1.0f },
                                                 0.707f,
                                                 juce::AudioParameterFloatAttributes{}),
+    std::make_unique<juce::AudioParameterBool>(
+      "reverb", "Reverb", false, juce::AudioParameterBoolAttributes{}),
   };
 }
 } // namespace
@@ -118,4 +120,11 @@ auto PluginState::getFilterResonance() const -> float
   const auto* const res = getRawParameterValue("filt_resonance");
   assert(res != nullptr);
   return *res;
+}
+
+auto PluginState::reverbOn() const -> bool
+{
+  const auto* const reverb = getRawParameterValue("reverb");
+  assert(reverb != nullptr);
+  return (*reverb > 0.5f) ? true : false;
 }

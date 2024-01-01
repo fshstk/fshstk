@@ -9,8 +9,13 @@ PluginProcessor::PluginProcessor()
 
 void PluginProcessor::prepareToPlay(double sampleRate, int bufferSize)
 {
-  juce::ignoreUnused(bufferSize);
   synth.setCurrentPlaybackSampleRate(sampleRate);
+  reverb.prepare({
+    .sampleRate = sampleRate,
+    .maximumBlockSize = static_cast<juce::uint32>(bufferSize),
+    .numChannels = 36,
+    // .numChannels = 64,
+  });
 }
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
@@ -18,4 +23,9 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBu
   audio.clear();
   synth.setSoundParams(params.getSoundParams());
   synth.renderNextBlock(audio, midi, 0, audio.getNumSamples());
+
+  if (params.reverbOn()) {
+    auto block = juce::dsp::AudioBlock<float>{ audio };
+    reverb.process(juce::dsp::ProcessContextReplacing<float>{ block });
+  }
 }

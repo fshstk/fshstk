@@ -8,6 +8,7 @@ class PluginState : public PluginStateBase
 public:
   explicit PluginState(juce::AudioProcessor&);
   auto getSoundParams() const -> WavetableSound::Params;
+  auto reverbOn() const -> bool;
 
 private:
   auto getAmpEnv() const -> juce::ADSR::Parameters;

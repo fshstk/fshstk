@@ -1,4 +1,5 @@
 #pragma once
+#include "FeedbackDelayNetwork.h"
 #include "PluginBase.h"
 #include "PluginState.h"
 #include "WavetableSynth.h"
@@ -12,4 +13,5 @@ public:
 
 private:
   WavetableSynth synth;
+  FeedbackDelayNetwork reverb;
 };
