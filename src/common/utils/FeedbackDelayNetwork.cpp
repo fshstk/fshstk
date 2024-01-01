@@ -144,32 +144,6 @@ void FeedbackDelayNetwork::setT60InSeconds(float reverbTime)
   params.overallGainChanged = true;
 }
 
-void FeedbackDelayNetwork::setOverallGainPerSecond(float gainPerSecond)
-{
-  params.newOverallGain = gainPerSecond;
-  params.overallGainChanged = true;
-}
-
-void FeedbackDelayNetwork::setFreeze(bool shouldFreeze)
-{
-  freeze = shouldFreeze;
-  if (freeze)
-    DBG("freeze is true");
-}
-
-void FeedbackDelayNetwork::setFdnSize(FeedbackDelayNetwork::FdnSize size)
-{
-  if (fdnSize != size) {
-    params.newNetworkSize = size;
-    params.networkSizeChanged = true;
-  }
-}
-
-const FeedbackDelayNetwork::FdnSize FeedbackDelayNetwork::getFdnSize()
-{
-  return params.newNetworkSize;
-}
-
 inline int FeedbackDelayNetwork::delayLengthConversion(int channel)
 {
   // we divide by 10 to get better range for room size setting
