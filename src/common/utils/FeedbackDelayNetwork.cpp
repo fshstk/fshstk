@@ -118,16 +118,14 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
   }
 }
 
-int FeedbackDelayNetwork::delayLengthConversion(int channel)
+int FeedbackDelayNetwork::delayLengthConversion(size_t channel)
 {
   // we divide by 10 to get better range for room size setting
-  float delayLenMillisec =
-    static_cast<float>(primeNumbers[static_cast<size_t>(indices[static_cast<size_t>(channel)])]) /
-    10.f;
+  float delayLenMillisec = static_cast<float>(primeNumbers[indices[channel]]) / 10.f;
   return int(delayLenMillisec / 1000.f * sampleRate); // convert to samples
 }
 
-float FeedbackDelayNetwork::channelGainConversion(int channel, float gain)
+float FeedbackDelayNetwork::channelGainConversion(size_t channel, float gain)
 {
   int delayLenSamples = delayLengthConversion(channel);
 
@@ -139,18 +137,17 @@ void FeedbackDelayNetwork::updateParameterSettings()
 {
   indices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
-  for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
+  for (auto channel = 0U; channel < fdnSize; ++channel) {
     // update multichannel delay parameters
     int delayLenSamples = delayLengthConversion(channel);
-    delayBufferVector[static_cast<size_t>(channel)].setSize(1, delayLenSamples, true, true, true);
-    if (delayPositionVector[static_cast<size_t>(channel)] >=
-        delayBufferVector[static_cast<size_t>(channel)].getNumSamples())
-      delayPositionVector[static_cast<size_t>(channel)] = 0;
+    delayBufferVector[channel].setSize(1, delayLenSamples, true, true, true);
+    if (delayPositionVector[channel] >= delayBufferVector[channel].getNumSamples())
+      delayPositionVector[channel] = 0;
   }
 
   const auto gain = reverbTimeToGain(params.revTime);
-  for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel)
-    feedbackGainVector[static_cast<size_t>(channel)] = channelGainConversion(channel, gain);
+  for (auto channel = 0U; channel < fdnSize; ++channel)
+    feedbackGainVector[channel] = channelGainConversion(channel, gain);
 }
 
 void FeedbackDelayNetwork::setParams(const Params& p)

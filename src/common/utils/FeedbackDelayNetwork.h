@@ -31,8 +31,8 @@ private:
   double sampleRate;
 
   void reset() override {}
-  int delayLengthConversion(int channel);
-  float channelGainConversion(int channel, float gain);
+  int delayLengthConversion(size_t channel);
+  float channelGainConversion(size_t channel, float gain);
   void updateParameterSettings();
   void updateFeedBackGainVector();
 };
