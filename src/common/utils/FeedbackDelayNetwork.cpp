@@ -68,10 +68,7 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
 
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 {
-  sampleRate = spec.sampleRate;
-  indices = generateIndices(fdnSize, static_cast<int>(params.roomSize));
-  updateParameterSettings();
-
+  setSampleRate(spec.sampleRate);
   for (auto ch = 0U; ch < fdnSize; ++ch)
     delayBufferVector[ch].clear();
 }
@@ -157,11 +154,7 @@ void FeedbackDelayNetwork::updateParameterSettings()
         delayBufferVector[static_cast<size_t>(channel)].getNumSamples())
       delayPositionVector[static_cast<size_t>(channel)] = 0;
   }
-  updateFeedBackGainVector();
-}
 
-void FeedbackDelayNetwork::updateFeedBackGainVector()
-{
   const auto overallGain = t60InSeconds(params.revTime);
   for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel)
     feedbackGainVector[static_cast<size_t>(channel)] = channelGainConversion(channel, overallGain);
@@ -170,6 +163,11 @@ void FeedbackDelayNetwork::updateFeedBackGainVector()
 void FeedbackDelayNetwork::setParams(const Params& p)
 {
   params = p;
-  indices = generateIndices(fdnSize, static_cast<int>(params.roomSize));
+  updateParameterSettings();
+}
+
+void FeedbackDelayNetwork::setSampleRate(double newSampleRate)
+{
+  sampleRate = newSampleRate;
   updateParameterSettings();
 }

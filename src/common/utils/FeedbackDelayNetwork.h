@@ -15,6 +15,7 @@ public:
   void prepare(const juce::dsp::ProcessSpec& newSpec) override;
   void process(const juce::dsp::ProcessContextReplacing<float>& context) override;
   void setParams(const Params&);
+  void setSampleRate(double);
 
 private:
   static constexpr size_t fdnSize = 64;
