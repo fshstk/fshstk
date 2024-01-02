@@ -26,32 +26,26 @@ auto generatePrimes(size_t count, unsigned startWith = 2)
   return primes;
 }
 
-std::vector<int> generateIndices(size_t nChannels, int delayLength_)
+auto generateIndices(size_t numIndices, unsigned delayLength)
 {
-  const int firstIncrement = delayLength_ / 10;
-  const int finalIncrement = delayLength_;
+  std::vector<size_t> indices;
+  indices.reserve(numIndices);
 
-  std::vector<int> indices_;
+  const auto roundedDivision = [](size_t a, size_t b) {
+    return static_cast<size_t>(std::round(static_cast<float>(a) / static_cast<float>(b)));
+  };
 
-  if (firstIncrement < 1)
-    indices_.push_back(1.f);
-  else
-    indices_.push_back(firstIncrement);
+  const auto firstIncrement = delayLength / 10UL;
+  const auto firstIndex = std::max(firstIncrement, 1UL);
+  indices.push_back(firstIndex);
 
-  float increment;
-  int index;
-
-  for (auto i = 1U; i < nChannels; i++) {
-    increment = static_cast<float>(firstIncrement + abs(finalIncrement - firstIncrement)) /
-                float(nChannels) * static_cast<float>(i);
-
-    if (increment < 1)
-      increment = 1.f;
-
-    index = int(round(static_cast<float>(indices_[static_cast<size_t>(i) - 1]) + increment));
-    indices_.push_back(index);
+  for (auto i = 1U; i < numIndices; i++) {
+    const auto increment = roundedDivision(i * delayLength, numIndices);
+    const auto index = indices.back() + std::max(increment, 1UL);
+    indices.push_back(index);
   }
-  return indices_;
+
+  return indices;
 }
 
 float t60InSeconds(float reverbTime)
@@ -146,7 +140,7 @@ float FeedbackDelayNetwork::channelGainConversion(int channel, float gain)
 
 void FeedbackDelayNetwork::updateParameterSettings()
 {
-  indices = generateIndices(fdnSize, static_cast<int>(params.roomSize));
+  indices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
   for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
     // update multichannel delay parameters

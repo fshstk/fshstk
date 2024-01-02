@@ -25,7 +25,7 @@ private:
   std::array<float, fdnSize> transferVector;
 
   std::vector<int> primeNumbers;
-  std::vector<int> indices;
+  std::vector<size_t> indices;
 
   Params params;
   double sampleRate;
