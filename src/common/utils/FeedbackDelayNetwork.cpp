@@ -106,7 +106,7 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
       float* const channelData = buffer.getChannelPointer(static_cast<size_t>(idx));
       float* const delayData = delayBufferVector[channel]->getWritePointer(0);
 
-      int delayPos = delayPositionVector[channel];
+      int delayPos = delayPositionVector[static_cast<size_t>(channel)];
 
       const float inSample = channelData[i];
       // data exchange between IO buffer and delay buffer
@@ -118,11 +118,12 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
         channelData[i] = delayData[delayPos] * dryWet;
         channelData[i] += inSample * dryGain;
       }
-      transferVector.set(channel, delayData[delayPos] * feedbackGainVector[channel]);
+      transferVector[static_cast<size_t>(channel)] =
+        delayData[delayPos] * feedbackGainVector[static_cast<size_t>(channel)];
     }
 
     // perform fast walsh hadamard transform
-    fwht(transferVector.getRawDataPointer(), static_cast<unsigned>(transferVector.size()));
+    fwht(transferVector.data(), static_cast<unsigned>(transferVector.size()));
 
     // write back into delay buffer
     // increment the delay buffer pointer
@@ -130,14 +131,14 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
       float* const delayData =
         delayBufferVector[channel]->getWritePointer(0); // the buffer is single channel
 
-      int delayPos = delayPositionVector[channel];
+      int delayPos = delayPositionVector[static_cast<size_t>(channel)];
 
-      delayData[delayPos] = transferVector[channel];
+      delayData[delayPos] = transferVector[static_cast<size_t>(channel)];
 
       if (++delayPos >= delayBufferVector[channel]->getNumSamples())
         delayPos = 0;
 
-      delayPositionVector.set(channel, delayPos);
+      delayPositionVector[static_cast<size_t>(channel)] = delayPos;
     }
   }
 }
@@ -174,17 +175,17 @@ void FeedbackDelayNetwork::updateParameterSettings()
     // update multichannel delay parameters
     int delayLenSamples = delayLengthConversion(channel);
     delayBufferVector[channel]->setSize(1, delayLenSamples, true, true, true);
-    if (delayPositionVector[channel] >= delayBufferVector[channel]->getNumSamples())
-      delayPositionVector.set(channel, 0);
+    if (delayPositionVector[static_cast<size_t>(channel)] >=
+        delayBufferVector[channel]->getNumSamples())
+      delayPositionVector[static_cast<size_t>(channel)] = 0;
   }
   updateFeedBackGainVector();
 }
 
 void FeedbackDelayNetwork::updateFeedBackGainVector()
 {
-  for (int channel = 0; channel < fdnSize; ++channel) {
-    feedbackGainVector.set(channel, channelGainConversion(channel, overallGain));
-  }
+  for (int channel = 0; channel < fdnSize; ++channel)
+    feedbackGainVector[static_cast<size_t>(channel)] = channelGainConversion(channel, overallGain);
 }
 
 void FeedbackDelayNetwork::updateFdnSize(FdnSize newSize)

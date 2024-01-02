@@ -37,9 +37,9 @@ private:
   void setDryWet(float newDryWet);
 
   juce::OwnedArray<juce::AudioBuffer<float>> delayBufferVector;
-  juce::Array<int> delayPositionVector;
-  juce::Array<float> feedbackGainVector;
-  juce::Array<float> transferVector;
+  std::vector<int> delayPositionVector;
+  std::vector<float> feedbackGainVector;
+  std::vector<float> transferVector;
   std::vector<int> primeNumbers;
   std::vector<int> indices;
   float dryWet;
