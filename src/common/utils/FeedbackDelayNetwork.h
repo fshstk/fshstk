@@ -6,18 +6,6 @@ class FeedbackDelayNetwork : private juce::dsp::ProcessorBase
   static constexpr int maxDelayLength = 30;
 
 public:
-  enum FdnSize
-  {
-    uninitialized = 0,
-    ato = 1,
-    femto = 2,
-    pico = 4,
-    nano = 8,
-    tiny = 16,
-    small = 32,
-    big = 64
-  };
-
   struct Params
   {
     float roomSize;
@@ -40,7 +28,7 @@ private:
   float dryWet;
   float delayLength = 20;
   float overallGain;
-  FdnSize fdnSize = uninitialized;
+  static constexpr size_t fdnSize = 64;
   double sampleRate;
 
   void reset() override;
@@ -48,5 +36,5 @@ private:
   float channelGainConversion(int channel, float gain);
   void updateParameterSettings();
   void updateFeedBackGainVector();
-  void updateFdnSize(FdnSize newSize);
+  void initFdn();
 };

@@ -24,7 +24,7 @@ std::vector<int> generatePrimes(int count)
   return series;
 }
 
-std::vector<int> generateIndices(FeedbackDelayNetwork::FdnSize nChannels, int delayLength_)
+std::vector<int> generateIndices(size_t nChannels, int delayLength_)
 {
   const int firstIncrement = delayLength_ / 10;
   const int finalIncrement = delayLength_;
@@ -39,7 +39,7 @@ std::vector<int> generateIndices(FeedbackDelayNetwork::FdnSize nChannels, int de
   float increment;
   int index;
 
-  for (int i = 1; i < nChannels; i++) {
+  for (auto i = 1U; i < nChannels; i++) {
     increment = static_cast<float>(firstIncrement + abs(finalIncrement - firstIncrement)) /
                 float(nChannels) * static_cast<float>(i);
 
@@ -64,7 +64,7 @@ float t60InSeconds(float reverbTime)
 FeedbackDelayNetwork::FeedbackDelayNetwork()
   : primeNumbers(generatePrimes(5'000))
 {
-  updateFdnSize(big);
+  initFdn();
 }
 
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
@@ -73,8 +73,8 @@ void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
   indices = generateIndices(fdnSize, static_cast<int>(delayLength));
   updateParameterSettings();
 
-  for (int ch = 0; ch < fdnSize; ++ch)
-    delayBufferVector[ch]->clear();
+  for (auto ch = 0U; ch < fdnSize; ++ch)
+    delayBufferVector[static_cast<int>(ch)]->clear();
 }
 
 void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
@@ -87,7 +87,7 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
 
   for (int i = 0; i < numSamples; ++i) {
     // apply delay to each channel for one time sample
-    for (int channel = 0; channel < fdnSize; ++channel) {
+    for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
       const int idx = std::min(channel, nChannels - 1);
       float* const channelData = buffer.getChannelPointer(static_cast<size_t>(idx));
       float* const delayData = delayBufferVector[channel]->getWritePointer(0);
@@ -113,7 +113,7 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
 
     // write back into delay buffer
     // increment the delay buffer pointer
-    for (int channel = 0; channel < fdnSize; ++channel) {
+    for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
       float* const delayData =
         delayBufferVector[channel]->getWritePointer(0); // the buffer is single channel
 
@@ -152,7 +152,7 @@ void FeedbackDelayNetwork::updateParameterSettings()
 {
   indices = generateIndices(fdnSize, static_cast<int>(delayLength));
 
-  for (int channel = 0; channel < fdnSize; ++channel) {
+  for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
     // update multichannel delay parameters
     int delayLenSamples = delayLengthConversion(channel);
     delayBufferVector[channel]->setSize(1, delayLenSamples, true, true, true);
@@ -165,27 +165,18 @@ void FeedbackDelayNetwork::updateParameterSettings()
 
 void FeedbackDelayNetwork::updateFeedBackGainVector()
 {
-  for (int channel = 0; channel < fdnSize; ++channel)
+  for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel)
     feedbackGainVector[static_cast<size_t>(channel)] = channelGainConversion(channel, overallGain);
 }
 
-void FeedbackDelayNetwork::updateFdnSize(FdnSize newSize)
+void FeedbackDelayNetwork::initFdn()
 {
-  if (fdnSize != newSize) {
-    const int diff = newSize - delayBufferVector.size();
-    if (fdnSize < newSize) {
-      for (int i = 0; i < diff; i++) {
-        delayBufferVector.add(new juce::AudioBuffer<float>());
-      }
-    } else {
-      // TODO: what happens if newSize == 0?;
-      delayBufferVector.removeLast(diff);
-    }
-  }
-  delayPositionVector.resize(newSize);
-  feedbackGainVector.resize(newSize);
-  transferVector.resize(newSize);
-  fdnSize = newSize;
+  for (auto i = 0U; i < fdnSize; i++)
+    delayBufferVector.add(new juce::AudioBuffer<float>());
+
+  delayPositionVector.resize(fdnSize);
+  feedbackGainVector.resize(fdnSize);
+  transferVector.resize(fdnSize);
 }
 
 void FeedbackDelayNetwork::setParams(const Params& p)
