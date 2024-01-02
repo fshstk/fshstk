@@ -1,9 +1,9 @@
 #include "FeedbackDelayNetwork.h"
 #include "fwht.h"
 
-FeedbackDelayNetwork::FeedbackDelayNetwork(FdnSize size)
+FeedbackDelayNetwork::FeedbackDelayNetwork()
 {
-  updateFdnSize(size);
+  updateFdnSize(big);
   setDelayLength(20);
   dryWet = 0.5f;
   primeNumbers = primeNumGen(5000);

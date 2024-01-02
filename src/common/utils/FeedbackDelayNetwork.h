@@ -25,7 +25,7 @@ public:
     float dryWet;
   };
 
-  FeedbackDelayNetwork(FdnSize size = big);
+  FeedbackDelayNetwork();
   void prepare(const juce::dsp::ProcessSpec& newSpec) override;
   void process(const juce::dsp::ProcessContextReplacing<float>& context) override;
   void setParams(const Params&);
