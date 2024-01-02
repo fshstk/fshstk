@@ -48,12 +48,9 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
   return indices;
 }
 
-float t60InSeconds(float reverbTime)
+float reverbTimeToGain(float reverbTime)
 {
-  double temp;
-  double t = double(reverbTime);
-  temp = -60.0 / (20.0 * t);
-  return static_cast<float>(pow(10.0, temp));
+  return juce::Decibels::decibelsToGain(-60.0f / reverbTime);
 }
 } // namespace
 
@@ -151,9 +148,9 @@ void FeedbackDelayNetwork::updateParameterSettings()
       delayPositionVector[static_cast<size_t>(channel)] = 0;
   }
 
-  const auto overallGain = t60InSeconds(params.revTime);
+  const auto gain = reverbTimeToGain(params.revTime);
   for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel)
-    feedbackGainVector[static_cast<size_t>(channel)] = channelGainConversion(channel, overallGain);
+    feedbackGainVector[static_cast<size_t>(channel)] = channelGainConversion(channel, gain);
 }
 
 void FeedbackDelayNetwork::setParams(const Params& p)
