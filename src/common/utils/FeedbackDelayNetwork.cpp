@@ -4,53 +4,39 @@
 FeedbackDelayNetwork::FeedbackDelayNetwork()
 {
   updateFdnSize(big);
-  setDelayLength(20);
-  dryWet = 0.5f;
   primeNumbers = primeNumGen(5000);
-  overallGain = 0.1f;
 }
 
 void FeedbackDelayNetwork::setDryWet(float newDryWet)
 {
-  if (newDryWet < 0.f)
-    params.newDryWet = 0.f;
-  else if (newDryWet > 1.f)
-    params.newDryWet = 1.f;
-  else
-    params.newDryWet = newDryWet;
+  params.newDryWet = newDryWet;
 }
 
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 {
   sampleRate = spec.sampleRate;
-
   indices = indexGen(fdnSize, static_cast<int>(delayLength));
   updateParameterSettings();
 
-  for (int ch = 0; ch < fdnSize; ++ch) {
+  for (int ch = 0; ch < fdnSize; ++ch)
     delayBufferVector[ch]->clear();
-  }
 }
 
 void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
 {
   dryWet = params.newDryWet;
-
   fdnSize = params.newNetworkSize;
   updateFdnSize(fdnSize);
-
   delayLength = static_cast<float>(params.newDelayLength);
   indices = indexGen(fdnSize, static_cast<int>(delayLength));
-
   overallGain = params.newOverallGain;
 
   updateParameterSettings();
 
   juce::dsp::AudioBlock<float>& buffer = context.getOutputBlock();
 
-  const int nChannels = static_cast<int>(buffer.getNumChannels());
-  const int numSamples = static_cast<int>(buffer.getNumSamples());
-
+  const auto nChannels = static_cast<int>(buffer.getNumChannels());
+  const auto numSamples = static_cast<int>(buffer.getNumSamples());
   const auto dryGain = 1.0f - dryWet;
 
   for (int i = 0; i < numSamples; ++i) {
