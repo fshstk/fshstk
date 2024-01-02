@@ -1,7 +1,7 @@
 #pragma once
 #include <juce_dsp/juce_dsp.h>
 
-class FeedbackDelayNetwork : private juce::dsp::ProcessorBase
+class FeedbackDelayNetwork
 {
 public:
   struct Params
@@ -12,10 +12,10 @@ public:
   };
 
   FeedbackDelayNetwork();
-  void prepare(const juce::dsp::ProcessSpec& newSpec) override;
-  void process(const juce::dsp::ProcessContextReplacing<float>& context) override;
   void setParams(const Params&);
   void setSampleRate(double);
+  void reset();
+  void process(juce::AudioBuffer<float>&);
 
 private:
   static constexpr size_t fdnSize = 64;
@@ -30,6 +30,5 @@ private:
   Params params;
   double sampleRate;
 
-  void reset() override {}
   void updateParameterSettings();
 };

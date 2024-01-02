@@ -54,28 +54,19 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
 {
 }
 
-void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
+void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 {
-  setSampleRate(spec.sampleRate);
-  for (auto& buf : delayBufferVector)
-    buf.clear();
-}
-
-void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
-{
-  auto& buffer = context.getOutputBlock();
-  const auto numChannels = buffer.getNumChannels();
-  const auto numSamples = static_cast<int>(buffer.getNumSamples());
+  const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
+  const auto numSamples = buffer.getNumSamples();
 
   for (int i = 0; i < numSamples; ++i) {
     for (auto channel = 0UL; channel < fdnSize; ++channel) {
-      const auto idx = std::min(channel, numChannels - 1);
-
       auto* const delayData = delayBufferVector[channel].getWritePointer(0);
       const auto delayPos = delayPositionVector[channel];
 
       if (channel < numChannels) {
-        auto* const channelData = buffer.getChannelPointer(idx);
+        const auto idx = std::min(channel, numChannels - 1);
+        auto* const channelData = buffer.getWritePointer(static_cast<int>(idx));
 
         const auto inSample = channelData[i];
         delayData[delayPos] += inSample;
@@ -135,4 +126,10 @@ void FeedbackDelayNetwork::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   updateParameterSettings();
+}
+
+void FeedbackDelayNetwork::reset()
+{
+  for (auto& buffer : delayBufferVector)
+    buffer.clear();
 }
