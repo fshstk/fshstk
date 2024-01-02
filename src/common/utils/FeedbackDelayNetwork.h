@@ -24,7 +24,7 @@ private:
   std::array<float, fdnSize> feedbackGainVector;
   std::array<float, fdnSize> transferVector;
 
-  std::vector<int> primeNumbers;
+  std::vector<unsigned> primeNumbers;
   std::vector<size_t> indices;
 
   Params params;
