@@ -47,11 +47,6 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
 
   return indices;
 }
-
-float reverbTimeToGain(float reverbTime)
-{
-  return juce::Decibels::decibelsToGain(-60.0f / reverbTime);
-}
 } // namespace
 
 FeedbackDelayNetwork::FeedbackDelayNetwork()
@@ -118,36 +113,25 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
   }
 }
 
-int FeedbackDelayNetwork::delayLengthConversion(size_t channel)
-{
-  // we divide by 10 to get better range for room size setting
-  float delayLenMillisec = static_cast<float>(primeNumbers[indices[channel]]) / 10.f;
-  return int(delayLenMillisec / 1000.f * sampleRate); // convert to samples
-}
-
-float FeedbackDelayNetwork::channelGainConversion(size_t channel, float gain)
-{
-  int delayLenSamples = delayLengthConversion(channel);
-
-  double length = double(delayLenSamples) / double(sampleRate);
-  return static_cast<float>(pow(gain, length));
-}
-
 void FeedbackDelayNetwork::updateParameterSettings()
 {
   indices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
   for (auto channel = 0U; channel < fdnSize; ++channel) {
-    // update multichannel delay parameters
-    int delayLenSamples = delayLengthConversion(channel);
-    delayBufferVector[channel].setSize(1, delayLenSamples, true, true, true);
+    // TODO: why divide by 10 to get better range for room size setting
+    const auto delayLengthMilliseconds = 0.1 * primeNumbers[indices[channel]];
+    const auto delayLengthSeconds = 0.001 * delayLengthMilliseconds;
+    const auto delayLengthSamples = static_cast<int>(delayLengthSeconds * sampleRate);
+
+    delayBufferVector[channel].setSize(1, delayLengthSamples, true, true, true);
+
     if (delayPositionVector[channel] >= delayBufferVector[channel].getNumSamples())
       delayPositionVector[channel] = 0;
-  }
 
-  const auto gain = reverbTimeToGain(params.revTime);
-  for (auto channel = 0U; channel < fdnSize; ++channel)
-    feedbackGainVector[channel] = channelGainConversion(channel, gain);
+    const auto gain = juce::Decibels::decibelsToGain(-60.0 / params.revTime);
+    const auto feedback = std::pow(gain, delayLengthSeconds);
+    feedbackGainVector[channel] = static_cast<float>(feedback);
+  }
 }
 
 void FeedbackDelayNetwork::setParams(const Params& p)
