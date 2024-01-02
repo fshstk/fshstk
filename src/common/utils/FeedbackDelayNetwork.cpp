@@ -20,9 +20,9 @@ void FeedbackDelayNetwork::setDryWet(float newDryWet)
     params.newDryWet = newDryWet;
 }
 
-void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& newSpec)
+void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 {
-  spec = newSpec;
+  sampleRate = spec.sampleRate;
 
   indices = indexGen(fdnSize, static_cast<int>(delayLength));
   updateParameterSettings();
@@ -117,14 +117,14 @@ inline int FeedbackDelayNetwork::delayLengthConversion(int channel)
   float delayLenMillisec =
     static_cast<float>(primeNumbers[static_cast<size_t>(indices[static_cast<size_t>(channel)])]) /
     10.f;
-  return int(delayLenMillisec / 1000.f * spec.sampleRate); // convert to samples
+  return int(delayLenMillisec / 1000.f * sampleRate); // convert to samples
 }
 
 inline float FeedbackDelayNetwork::channelGainConversion(int channel, float gain)
 {
   int delayLenSamples = delayLengthConversion(channel);
 
-  double length = double(delayLenSamples) / double(spec.sampleRate);
+  double length = double(delayLenSamples) / double(sampleRate);
   return static_cast<float>(pow(gain, length));
 }
 

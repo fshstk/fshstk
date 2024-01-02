@@ -37,7 +37,6 @@ private:
   void setDryWet(float newDryWet);
   void setT60InSeconds(float reverbTime);
 
-  juce::dsp::ProcessSpec spec = { -1, 0, 0 };
   juce::OwnedArray<juce::AudioBuffer<float>> delayBufferVector;
   juce::Array<int> delayPositionVector;
   juce::Array<float> feedbackGainVector;
@@ -48,6 +47,7 @@ private:
   float delayLength = 20;
   float overallGain;
   FdnSize fdnSize = uninitialized;
+  double sampleRate;
 
   struct UpdateStruct
   {
