@@ -128,8 +128,6 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
   }
 }
 
-void FeedbackDelayNetwork::reset() {}
-
 int FeedbackDelayNetwork::delayLengthConversion(int channel)
 {
   // we divide by 10 to get better range for room size setting

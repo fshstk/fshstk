@@ -29,7 +29,7 @@ private:
   Params params;
   double sampleRate;
 
-  void reset() override;
+  void reset() override {}
   int delayLengthConversion(int channel);
   float channelGainConversion(int channel, float gain);
   void updateParameterSettings();
