@@ -63,52 +63,43 @@ void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 
 void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
 {
-  juce::dsp::AudioBlock<float>& buffer = context.getOutputBlock();
-
-  const auto nChannels = static_cast<int>(buffer.getNumChannels());
+  auto& buffer = context.getOutputBlock();
+  const auto numChannels = buffer.getNumChannels();
   const auto numSamples = static_cast<int>(buffer.getNumSamples());
-  const auto dryGain = 1.0f - params.dryWet;
 
   for (int i = 0; i < numSamples; ++i) {
-    // apply delay to each channel for one time sample
-    for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
-      const int idx = std::min(channel, nChannels - 1);
-      float* const channelData = buffer.getChannelPointer(static_cast<size_t>(idx));
-      float* const delayData = delayBufferVector[static_cast<size_t>(channel)].getWritePointer(0);
+    for (auto channel = 0UL; channel < fdnSize; ++channel) {
+      const auto idx = std::min(channel, numChannels - 1);
 
-      int delayPos = delayPositionVector[static_cast<size_t>(channel)];
+      auto* const delayData = delayBufferVector[channel].getWritePointer(0);
+      const auto delayPos = delayPositionVector[channel];
 
-      const float inSample = channelData[i];
-      // data exchange between IO buffer and delay buffer
+      if (channel < numChannels) {
+        auto* const channelData = buffer.getChannelPointer(idx);
 
-      if (channel < nChannels)
+        const auto inSample = channelData[i];
         delayData[delayPos] += inSample;
 
-      if (channel < nChannels) {
-        channelData[i] = delayData[delayPos] * params.dryWet;
-        channelData[i] += inSample * dryGain;
+        const auto wetGain = params.dryWet;
+        const auto dryGain = 1.0f - params.dryWet;
+        channelData[i] = (inSample * dryGain) + (delayData[delayPos] * wetGain);
       }
-      transferVector[static_cast<size_t>(channel)] =
-        delayData[delayPos] * feedbackGainVector[static_cast<size_t>(channel)];
+
+      transferVector[channel] = delayData[delayPos] * feedbackGainVector[channel];
     }
 
-    // perform fast walsh hadamard transform
     fwht(transferVector.data(), static_cast<unsigned>(transferVector.size()));
 
-    // write back into delay buffer
-    // increment the delay buffer pointer
-    for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
-      float* const delayData = delayBufferVector[static_cast<size_t>(channel)].getWritePointer(
-        0); // the buffer is single channel
+    for (auto channel = 0U; channel < fdnSize; ++channel) {
+      auto* const delayData = delayBufferVector[channel].getWritePointer(0);
+      auto delayPos = delayPositionVector[channel];
 
-      int delayPos = delayPositionVector[static_cast<size_t>(channel)];
+      delayData[delayPos] = transferVector[channel];
 
-      delayData[delayPos] = transferVector[static_cast<size_t>(channel)];
-
-      if (++delayPos >= delayBufferVector[static_cast<size_t>(channel)].getNumSamples())
+      if (++delayPos >= delayBufferVector[channel].getNumSamples())
         delayPos = 0;
 
-      delayPositionVector[static_cast<size_t>(channel)] = delayPos;
+      delayPositionVector[channel] = delayPos;
     }
   }
 }
