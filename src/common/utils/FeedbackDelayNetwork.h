@@ -3,8 +3,6 @@
 
 class FeedbackDelayNetwork : private juce::dsp::ProcessorBase
 {
-  static constexpr int maxDelayLength = 30;
-
 public:
   struct Params
   {
