@@ -20,15 +20,17 @@ public:
 
 private:
   juce::OwnedArray<juce::AudioBuffer<float>> delayBufferVector;
-  std::vector<int> delayPositionVector;
-  std::vector<float> feedbackGainVector;
-  std::vector<float> transferVector;
+
+  static constexpr size_t fdnSize = 64;
+  std::array<int, fdnSize> delayPositionVector;
+  std::array<float, fdnSize> feedbackGainVector;
+  std::array<float, fdnSize> transferVector;
+
   std::vector<int> primeNumbers;
   std::vector<int> indices;
   float dryWet;
   float delayLength = 20;
   float overallGain;
-  static constexpr size_t fdnSize = 64;
   double sampleRate;
 
   void reset() override;

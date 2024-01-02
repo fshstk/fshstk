@@ -173,10 +173,6 @@ void FeedbackDelayNetwork::initFdn()
 {
   for (auto i = 0U; i < fdnSize; i++)
     delayBufferVector.add(new juce::AudioBuffer<float>());
-
-  delayPositionVector.resize(fdnSize);
-  feedbackGainVector.resize(fdnSize);
-  transferVector.resize(fdnSize);
 }
 
 void FeedbackDelayNetwork::setParams(const Params& p)
