@@ -51,6 +51,14 @@ std::vector<int> generateIndices(FeedbackDelayNetwork::FdnSize nChannels, int de
   }
   return indices_;
 }
+
+float t60InSeconds(float reverbTime)
+{
+  double temp;
+  double t = double(reverbTime);
+  temp = -60.0 / (20.0 * t);
+  return static_cast<float>(pow(10.0, temp));
+}
 } // namespace
 
 FeedbackDelayNetwork::FeedbackDelayNetwork()
@@ -141,14 +149,6 @@ void FeedbackDelayNetwork::setDelayLength(int newDelayLength)
 
 void FeedbackDelayNetwork::reset() {}
 
-void FeedbackDelayNetwork::setT60InSeconds(float reverbTime)
-{
-  double temp;
-  double t = double(reverbTime);
-  temp = -60.0 / (20.0 * t);
-  params.newOverallGain = static_cast<float>(pow(10.0, temp));
-}
-
 int FeedbackDelayNetwork::delayLengthConversion(int channel)
 {
   // we divide by 10 to get better range for room size setting
@@ -208,7 +208,7 @@ void FeedbackDelayNetwork::updateFdnSize(FdnSize newSize)
 
 void FeedbackDelayNetwork::setParams(const Params& p)
 {
-  setDelayLength(static_cast<int>(p.roomSize));
-  setDryWet(p.dryWet);
-  setT60InSeconds(p.revTime);
+  params.newDelayLength = static_cast<int>(p.roomSize);
+  params.newDryWet = p.dryWet;
+  params.newOverallGain = t60InSeconds(p.revTime);
 }

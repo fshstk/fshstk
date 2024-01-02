@@ -35,7 +35,6 @@ private:
 
   void setDelayLength(int newDelayLength);
   void setDryWet(float newDryWet);
-  void setT60InSeconds(float reverbTime);
 
   juce::OwnedArray<juce::AudioBuffer<float>> delayBufferVector;
   juce::Array<int> delayPositionVector;
