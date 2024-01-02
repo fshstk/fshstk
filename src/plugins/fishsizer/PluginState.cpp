@@ -75,7 +75,7 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
-auto PluginState::getSoundParams() const -> WavetableSound::Params
+auto PluginState::getSynthParams() const -> WavetableSound::Params
 {
   return {
     .ampEnv = getAmpEnv(),

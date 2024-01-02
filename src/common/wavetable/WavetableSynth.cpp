@@ -12,7 +12,7 @@ WavetableSynth::WavetableSynth()
   addSound(_sound);
 }
 
-void WavetableSynth::setSoundParams(const WavetableSound::Params& p)
+void WavetableSynth::setParams(const WavetableSound::Params& p)
 {
   _sound->setParams(p);
 }

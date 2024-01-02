@@ -19,7 +19,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBu
 {
   audio.clear();
 
-  synth.setSoundParams(params.getSoundParams());
+  synth.setParams(params.getSynthParams());
   synth.renderNextBlock(audio, midi, 0, audio.getNumSamples());
 
   reverb.setParams(params.getReverbParams());

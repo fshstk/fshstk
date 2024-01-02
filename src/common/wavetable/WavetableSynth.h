@@ -6,7 +6,7 @@ class WavetableSynth : public juce::Synthesiser
 {
 public:
   WavetableSynth();
-  void setSoundParams(const WavetableSound::Params&);
+  void setParams(const WavetableSound::Params&);
 
 private:
   const int numVoices = 20;

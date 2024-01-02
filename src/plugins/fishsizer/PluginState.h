@@ -8,7 +8,7 @@ class PluginState : public PluginStateBase
 {
 public:
   explicit PluginState(juce::AudioProcessor&);
-  auto getSoundParams() const -> WavetableSound::Params;
+  auto getSynthParams() const -> WavetableSound::Params;
   auto getReverbParams() const -> FeedbackDelayNetwork::Params;
 
 private:
