@@ -64,7 +64,6 @@ float t60InSeconds(float reverbTime)
 FeedbackDelayNetwork::FeedbackDelayNetwork()
   : primeNumbers(generatePrimes(5'000))
 {
-  initFdn();
 }
 
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
@@ -74,7 +73,7 @@ void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
   updateParameterSettings();
 
   for (auto ch = 0U; ch < fdnSize; ++ch)
-    delayBufferVector[static_cast<int>(ch)]->clear();
+    delayBufferVector[ch].clear();
 }
 
 void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
@@ -90,7 +89,7 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
     for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
       const int idx = std::min(channel, nChannels - 1);
       float* const channelData = buffer.getChannelPointer(static_cast<size_t>(idx));
-      float* const delayData = delayBufferVector[channel]->getWritePointer(0);
+      float* const delayData = delayBufferVector[static_cast<size_t>(channel)].getWritePointer(0);
 
       int delayPos = delayPositionVector[static_cast<size_t>(channel)];
 
@@ -114,14 +113,14 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
     // write back into delay buffer
     // increment the delay buffer pointer
     for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
-      float* const delayData =
-        delayBufferVector[channel]->getWritePointer(0); // the buffer is single channel
+      float* const delayData = delayBufferVector[static_cast<size_t>(channel)].getWritePointer(
+        0); // the buffer is single channel
 
       int delayPos = delayPositionVector[static_cast<size_t>(channel)];
 
       delayData[delayPos] = transferVector[static_cast<size_t>(channel)];
 
-      if (++delayPos >= delayBufferVector[channel]->getNumSamples())
+      if (++delayPos >= delayBufferVector[static_cast<size_t>(channel)].getNumSamples())
         delayPos = 0;
 
       delayPositionVector[static_cast<size_t>(channel)] = delayPos;
@@ -155,9 +154,9 @@ void FeedbackDelayNetwork::updateParameterSettings()
   for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
     // update multichannel delay parameters
     int delayLenSamples = delayLengthConversion(channel);
-    delayBufferVector[channel]->setSize(1, delayLenSamples, true, true, true);
+    delayBufferVector[static_cast<size_t>(channel)].setSize(1, delayLenSamples, true, true, true);
     if (delayPositionVector[static_cast<size_t>(channel)] >=
-        delayBufferVector[channel]->getNumSamples())
+        delayBufferVector[static_cast<size_t>(channel)].getNumSamples())
       delayPositionVector[static_cast<size_t>(channel)] = 0;
   }
   updateFeedBackGainVector();
@@ -167,12 +166,6 @@ void FeedbackDelayNetwork::updateFeedBackGainVector()
 {
   for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel)
     feedbackGainVector[static_cast<size_t>(channel)] = channelGainConversion(channel, overallGain);
-}
-
-void FeedbackDelayNetwork::initFdn()
-{
-  for (auto i = 0U; i < fdnSize; i++)
-    delayBufferVector.add(new juce::AudioBuffer<float>());
 }
 
 void FeedbackDelayNetwork::setParams(const Params& p)

@@ -19,9 +19,8 @@ public:
   void setParams(const Params&);
 
 private:
-  juce::OwnedArray<juce::AudioBuffer<float>> delayBufferVector;
-
   static constexpr size_t fdnSize = 64;
+  std::array<juce::AudioBuffer<float>, fdnSize> delayBufferVector;
   std::array<int, fdnSize> delayPositionVector;
   std::array<float, fdnSize> feedbackGainVector;
   std::array<float, fdnSize> transferVector;
@@ -38,5 +37,4 @@ private:
   float channelGainConversion(int channel, float gain);
   void updateParameterSettings();
   void updateFeedBackGainVector();
-  void initFdn();
 };
