@@ -36,8 +36,6 @@ void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& newSpec)
 
 void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
 {
-  juce::ScopedNoDenormals noDenormals;
-
   // parameter change thread safety
   if (params.dryWetChanged) {
     dryWet = params.newDryWet;
