@@ -2,7 +2,7 @@
 #include "fwht.h"
 
 namespace {
-std::vector<int> generatePrimes(int count)
+std::vector<int> generatePrimes(int count = 5'000)
 {
   std::vector<int> series;
 
@@ -62,7 +62,7 @@ float t60InSeconds(float reverbTime)
 } // namespace
 
 FeedbackDelayNetwork::FeedbackDelayNetwork()
-  : primeNumbers(generatePrimes(5'000))
+  : primeNumbers(generatePrimes())
 {
 }
 
