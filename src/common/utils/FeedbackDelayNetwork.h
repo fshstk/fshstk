@@ -19,9 +19,9 @@ public:
 
 private:
   static constexpr size_t fdnSize = 64;
-  std::array<juce::AudioBuffer<float>, fdnSize> delayBufferVector;
-  std::array<int, fdnSize> delayPositionVector;
-  std::array<float, fdnSize> feedbackGainVector;
+  std::array<juce::AudioBuffer<float>, fdnSize> delayBuffers;
+  std::array<int, fdnSize> delayPositions;
+  std::array<float, fdnSize> feedbackGains;
   std::array<float, fdnSize> transferVector;
 
   std::vector<unsigned> primeNumbers;

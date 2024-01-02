@@ -61,8 +61,8 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 
   for (int i = 0; i < numSamples; ++i) {
     for (auto channel = 0UL; channel < fdnSize; ++channel) {
-      auto* const delayData = delayBufferVector[channel].getWritePointer(0);
-      const auto delayPos = delayPositionVector[channel];
+      auto* const delayData = delayBuffers[channel].getWritePointer(0);
+      const auto delayPos = delayPositions[channel];
 
       if (channel < numChannels) {
         const auto idx = std::min(channel, numChannels - 1);
@@ -76,21 +76,21 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
         channelData[i] = (inSample * dryGain) + (delayData[delayPos] * wetGain);
       }
 
-      transferVector[channel] = delayData[delayPos] * feedbackGainVector[channel];
+      transferVector[channel] = delayData[delayPos] * feedbackGains[channel];
     }
 
     fwht(transferVector.data(), static_cast<unsigned>(transferVector.size()));
 
     for (auto channel = 0U; channel < fdnSize; ++channel) {
-      auto* const delayData = delayBufferVector[channel].getWritePointer(0);
-      auto delayPos = delayPositionVector[channel];
+      auto* const delayData = delayBuffers[channel].getWritePointer(0);
+      auto delayPos = delayPositions[channel];
 
       delayData[delayPos] = transferVector[channel];
 
-      if (++delayPos >= delayBufferVector[channel].getNumSamples())
+      if (++delayPos >= delayBuffers[channel].getNumSamples())
         delayPos = 0;
 
-      delayPositionVector[channel] = delayPos;
+      delayPositions[channel] = delayPos;
     }
   }
 }
@@ -105,14 +105,14 @@ void FeedbackDelayNetwork::updateParameterSettings()
     const auto delayLengthSeconds = 0.001 * delayLengthMilliseconds;
     const auto delayLengthSamples = static_cast<int>(delayLengthSeconds * sampleRate);
 
-    delayBufferVector[channel].setSize(1, delayLengthSamples, true, true, true);
+    delayBuffers[channel].setSize(1, delayLengthSamples, true, true, true);
 
-    if (delayPositionVector[channel] >= delayBufferVector[channel].getNumSamples())
-      delayPositionVector[channel] = 0;
+    if (delayPositions[channel] >= delayBuffers[channel].getNumSamples())
+      delayPositions[channel] = 0;
 
     const auto gain = juce::Decibels::decibelsToGain(-60.0 / params.revTime);
     const auto feedback = std::pow(gain, delayLengthSeconds);
-    feedbackGainVector[channel] = static_cast<float>(feedback);
+    feedbackGains[channel] = static_cast<float>(feedback);
   }
 }
 
@@ -130,6 +130,6 @@ void FeedbackDelayNetwork::setSampleRate(double newSampleRate)
 
 void FeedbackDelayNetwork::reset()
 {
-  for (auto& buffer : delayBufferVector)
+  for (auto& buffer : delayBuffers)
     buffer.clear();
 }
