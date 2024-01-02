@@ -67,11 +67,6 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
   updateFdnSize(big);
 }
 
-void FeedbackDelayNetwork::setDryWet(float newDryWet)
-{
-  params.newDryWet = newDryWet;
-}
-
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 {
   sampleRate = spec.sampleRate;
@@ -141,11 +136,6 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
       delayPositionVector[static_cast<size_t>(channel)] = delayPos;
     }
   }
-}
-
-void FeedbackDelayNetwork::setDelayLength(int newDelayLength)
-{
-  params.newDelayLength = juce::jmin(newDelayLength, maxDelayLength);
 }
 
 void FeedbackDelayNetwork::reset() {}

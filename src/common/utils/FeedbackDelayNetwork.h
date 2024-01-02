@@ -31,11 +31,6 @@ public:
   void setParams(const Params&);
 
 private:
-  void reset() override;
-
-  void setDelayLength(int newDelayLength);
-  void setDryWet(float newDryWet);
-
   juce::OwnedArray<juce::AudioBuffer<float>> delayBufferVector;
   std::vector<int> delayPositionVector;
   std::vector<float> feedbackGainVector;
@@ -58,6 +53,7 @@ private:
 
   UpdateStruct params;
 
+  void reset() override;
   int delayLengthConversion(int channel);
   float channelGainConversion(int channel, float gain);
   void updateParameterSettings();
