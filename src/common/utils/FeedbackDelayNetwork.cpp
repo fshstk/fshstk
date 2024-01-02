@@ -69,7 +69,7 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 {
   sampleRate = spec.sampleRate;
-  indices = generateIndices(fdnSize, static_cast<int>(delayLength));
+  indices = generateIndices(fdnSize, static_cast<int>(params.roomSize));
   updateParameterSettings();
 
   for (auto ch = 0U; ch < fdnSize; ++ch)
@@ -82,7 +82,7 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
 
   const auto nChannels = static_cast<int>(buffer.getNumChannels());
   const auto numSamples = static_cast<int>(buffer.getNumSamples());
-  const auto dryGain = 1.0f - dryWet;
+  const auto dryGain = 1.0f - params.dryWet;
 
   for (int i = 0; i < numSamples; ++i) {
     // apply delay to each channel for one time sample
@@ -100,7 +100,7 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
         delayData[delayPos] += inSample;
 
       if (channel < nChannels) {
-        channelData[i] = delayData[delayPos] * dryWet;
+        channelData[i] = delayData[delayPos] * params.dryWet;
         channelData[i] += inSample * dryGain;
       }
       transferVector[static_cast<size_t>(channel)] =
@@ -149,7 +149,7 @@ float FeedbackDelayNetwork::channelGainConversion(int channel, float gain)
 
 void FeedbackDelayNetwork::updateParameterSettings()
 {
-  indices = generateIndices(fdnSize, static_cast<int>(delayLength));
+  indices = generateIndices(fdnSize, static_cast<int>(params.roomSize));
 
   for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel) {
     // update multichannel delay parameters
@@ -164,16 +164,14 @@ void FeedbackDelayNetwork::updateParameterSettings()
 
 void FeedbackDelayNetwork::updateFeedBackGainVector()
 {
+  const auto overallGain = t60InSeconds(params.revTime);
   for (int channel = 0; channel < static_cast<int>(fdnSize); ++channel)
     feedbackGainVector[static_cast<size_t>(channel)] = channelGainConversion(channel, overallGain);
 }
 
 void FeedbackDelayNetwork::setParams(const Params& p)
 {
-  delayLength = static_cast<float>(static_cast<int>(p.roomSize));
-  indices = generateIndices(fdnSize, static_cast<int>(delayLength));
-  dryWet = p.dryWet;
-  overallGain = t60InSeconds(p.revTime);
-
+  params = p;
+  indices = generateIndices(fdnSize, static_cast<int>(params.roomSize));
   updateParameterSettings();
 }

@@ -27,9 +27,8 @@ private:
 
   std::vector<int> primeNumbers;
   std::vector<int> indices;
-  float dryWet;
-  float delayLength = 20;
-  float overallGain;
+
+  Params params;
   double sampleRate;
 
   void reset() override;
