@@ -1,10 +1,62 @@
 #include "FeedbackDelayNetwork.h"
 #include "fwht.h"
 
+namespace {
+std::vector<int> generatePrimes(int count)
+{
+  std::vector<int> series;
+
+  int range = 3;
+  while (series.size() < static_cast<size_t>(count)) {
+    bool is_prime = true;
+    for (int i = 2; i < range; i++) {
+      if (range % i == 0) {
+        is_prime = false;
+        break;
+      }
+    }
+
+    if (is_prime)
+      series.push_back(range);
+
+    range++;
+  }
+  return series;
+}
+
+std::vector<int> generateIndices(FeedbackDelayNetwork::FdnSize nChannels, int delayLength_)
+{
+  const int firstIncrement = delayLength_ / 10;
+  const int finalIncrement = delayLength_;
+
+  std::vector<int> indices_;
+
+  if (firstIncrement < 1)
+    indices_.push_back(1.f);
+  else
+    indices_.push_back(firstIncrement);
+
+  float increment;
+  int index;
+
+  for (int i = 1; i < nChannels; i++) {
+    increment = static_cast<float>(firstIncrement + abs(finalIncrement - firstIncrement)) /
+                float(nChannels) * static_cast<float>(i);
+
+    if (increment < 1)
+      increment = 1.f;
+
+    index = int(round(static_cast<float>(indices_[static_cast<size_t>(i) - 1]) + increment));
+    indices_.push_back(index);
+  }
+  return indices_;
+}
+} // namespace
+
 FeedbackDelayNetwork::FeedbackDelayNetwork()
+  : primeNumbers(generatePrimes(5'000))
 {
   updateFdnSize(big);
-  primeNumbers = primeNumGen(5000);
 }
 
 void FeedbackDelayNetwork::setDryWet(float newDryWet)
@@ -15,7 +67,7 @@ void FeedbackDelayNetwork::setDryWet(float newDryWet)
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 {
   sampleRate = spec.sampleRate;
-  indices = indexGen(fdnSize, static_cast<int>(delayLength));
+  indices = generateIndices(fdnSize, static_cast<int>(delayLength));
   updateParameterSettings();
 
   for (int ch = 0; ch < fdnSize; ++ch)
@@ -28,7 +80,7 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
   fdnSize = params.newNetworkSize;
   updateFdnSize(fdnSize);
   delayLength = static_cast<float>(params.newDelayLength);
-  indices = indexGen(fdnSize, static_cast<int>(delayLength));
+  indices = generateIndices(fdnSize, static_cast<int>(delayLength));
   overallGain = params.newOverallGain;
 
   updateParameterSettings();
@@ -114,59 +166,9 @@ inline float FeedbackDelayNetwork::channelGainConversion(int channel, float gain
   return static_cast<float>(pow(gain, length));
 }
 
-std::vector<int> FeedbackDelayNetwork::indexGen(FdnSize nChannels, int delayLength_)
-{
-  const int firstIncrement = delayLength_ / 10;
-  const int finalIncrement = delayLength_;
-
-  std::vector<int> indices_;
-
-  if (firstIncrement < 1)
-    indices_.push_back(1.f);
-  else
-    indices_.push_back(firstIncrement);
-
-  float increment;
-  int index;
-
-  for (int i = 1; i < nChannels; i++) {
-    increment = static_cast<float>(firstIncrement + abs(finalIncrement - firstIncrement)) /
-                float(nChannels) * static_cast<float>(i);
-
-    if (increment < 1)
-      increment = 1.f;
-
-    index = int(round(static_cast<float>(indices_[static_cast<size_t>(i) - 1]) + increment));
-    indices_.push_back(index);
-  }
-  return indices_;
-}
-
-std::vector<int> FeedbackDelayNetwork::primeNumGen(int count)
-{
-  std::vector<int> series;
-
-  int range = 3;
-  while (series.size() < static_cast<size_t>(count)) {
-    bool is_prime = true;
-    for (int i = 2; i < range; i++) {
-      if (range % i == 0) {
-        is_prime = false;
-        break;
-      }
-    }
-
-    if (is_prime)
-      series.push_back(range);
-
-    range++;
-  }
-  return series;
-}
-
 inline void FeedbackDelayNetwork::updateParameterSettings()
 {
-  indices = indexGen(fdnSize, static_cast<int>(delayLength));
+  indices = generateIndices(fdnSize, static_cast<int>(delayLength));
 
   for (int channel = 0; channel < fdnSize; ++channel) {
     // update multichannel delay parameters

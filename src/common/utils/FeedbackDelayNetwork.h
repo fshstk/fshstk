@@ -61,8 +61,6 @@ private:
 
   inline int delayLengthConversion(int channel);
   inline float channelGainConversion(int channel, float gain);
-  std::vector<int> indexGen(FdnSize nChannels, int delayLength_);
-  std::vector<int> primeNumGen(int count);
   inline void updateParameterSettings();
   void updateFeedBackGainVector();
   void updateFdnSize(FdnSize newSize);
