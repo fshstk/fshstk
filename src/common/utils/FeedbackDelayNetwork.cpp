@@ -69,8 +69,8 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 {
   setSampleRate(spec.sampleRate);
-  for (auto ch = 0U; ch < fdnSize; ++ch)
-    delayBufferVector[ch].clear();
+  for (auto& buf : delayBufferVector)
+    buf.clear();
 }
 
 void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
