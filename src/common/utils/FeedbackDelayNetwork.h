@@ -59,9 +59,9 @@ private:
 
   UpdateStruct params;
 
-  inline int delayLengthConversion(int channel);
-  inline float channelGainConversion(int channel, float gain);
-  inline void updateParameterSettings();
+  int delayLengthConversion(int channel);
+  float channelGainConversion(int channel, float gain);
+  void updateParameterSettings();
   void updateFeedBackGainVector();
   void updateFdnSize(FdnSize newSize);
 };

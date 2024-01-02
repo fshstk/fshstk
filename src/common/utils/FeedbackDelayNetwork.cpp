@@ -149,7 +149,7 @@ void FeedbackDelayNetwork::setT60InSeconds(float reverbTime)
   params.newOverallGain = static_cast<float>(pow(10.0, temp));
 }
 
-inline int FeedbackDelayNetwork::delayLengthConversion(int channel)
+int FeedbackDelayNetwork::delayLengthConversion(int channel)
 {
   // we divide by 10 to get better range for room size setting
   float delayLenMillisec =
@@ -158,7 +158,7 @@ inline int FeedbackDelayNetwork::delayLengthConversion(int channel)
   return int(delayLenMillisec / 1000.f * sampleRate); // convert to samples
 }
 
-inline float FeedbackDelayNetwork::channelGainConversion(int channel, float gain)
+float FeedbackDelayNetwork::channelGainConversion(int channel, float gain)
 {
   int delayLenSamples = delayLengthConversion(channel);
 
@@ -166,7 +166,7 @@ inline float FeedbackDelayNetwork::channelGainConversion(int channel, float gain
   return static_cast<float>(pow(gain, length));
 }
 
-inline void FeedbackDelayNetwork::updateParameterSettings()
+void FeedbackDelayNetwork::updateParameterSettings()
 {
   indices = generateIndices(fdnSize, static_cast<int>(delayLength));
 
