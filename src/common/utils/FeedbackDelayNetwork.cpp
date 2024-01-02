@@ -73,11 +73,7 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
   const int nChannels = static_cast<int>(buffer.getNumChannels());
   const int numSamples = static_cast<int>(buffer.getNumSamples());
 
-  float dryGain;
-  if (freeze)
-    dryGain = dryWet;
-  else
-    dryGain = 1.0f - dryWet;
+  const auto dryGain = 1.0f - dryWet;
 
   for (int i = 0; i < numSamples; ++i) {
     // apply delay to each channel for one time sample
@@ -89,21 +85,16 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
       int delayPos = delayPositionVector[channel];
 
       const float inSample = channelData[i];
-      if (!freeze) {
-        // data exchange between IO buffer and delay buffer
+      // data exchange between IO buffer and delay buffer
 
-        if (channel < nChannels)
-          delayData[delayPos] += inSample;
-      }
+      if (channel < nChannels)
+        delayData[delayPos] += inSample;
 
       if (channel < nChannels) {
         channelData[i] = delayData[delayPos] * dryWet;
         channelData[i] += inSample * dryGain;
       }
-      if (!freeze)
-        transferVector.set(channel, delayData[delayPos] * feedbackGainVector[channel]);
-      else
-        transferVector.set(channel, delayData[delayPos]);
+      transferVector.set(channel, delayData[delayPos] * feedbackGainVector[channel]);
     }
 
     // perform fast walsh hadamard transform

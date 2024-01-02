@@ -47,7 +47,6 @@ private:
   float dryWet;
   float delayLength = 20;
   float overallGain;
-  bool freeze = false;
   FdnSize fdnSize = uninitialized;
 
   struct UpdateStruct
