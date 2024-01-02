@@ -18,8 +18,6 @@ void FeedbackDelayNetwork::setDryWet(float newDryWet)
     params.newDryWet = 1.f;
   else
     params.newDryWet = newDryWet;
-
-  params.dryWetChanged = true;
 }
 
 void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& newSpec)
@@ -36,35 +34,17 @@ void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& newSpec)
 
 void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
 {
-  // parameter change thread safety
-  if (params.dryWetChanged) {
-    dryWet = params.newDryWet;
-    params.dryWetChanged = false;
-  }
+  dryWet = params.newDryWet;
 
-  if (params.networkSizeChanged) {
-    fdnSize = params.newNetworkSize;
-    params.needParameterUpdate = true;
-    params.networkSizeChanged = false;
-    updateFdnSize(fdnSize);
-  }
+  fdnSize = params.newNetworkSize;
+  updateFdnSize(fdnSize);
 
-  if (params.delayLengthChanged) {
-    delayLength = static_cast<float>(params.newDelayLength);
-    indices = indexGen(fdnSize, static_cast<int>(delayLength));
-    params.needParameterUpdate = true;
-    params.delayLengthChanged = false;
-  }
+  delayLength = static_cast<float>(params.newDelayLength);
+  indices = indexGen(fdnSize, static_cast<int>(delayLength));
 
-  if (params.overallGainChanged) {
-    overallGain = params.newOverallGain;
-    params.overallGainChanged = false;
-    params.needParameterUpdate = true;
-  }
+  overallGain = params.newOverallGain;
 
-  if (params.needParameterUpdate)
-    updateParameterSettings();
-  params.needParameterUpdate = false;
+  updateParameterSettings();
 
   juce::dsp::AudioBlock<float>& buffer = context.getOutputBlock();
 
@@ -119,7 +99,6 @@ void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<floa
 void FeedbackDelayNetwork::setDelayLength(int newDelayLength)
 {
   params.newDelayLength = juce::jmin(newDelayLength, maxDelayLength);
-  params.delayLengthChanged = true;
 }
 
 void FeedbackDelayNetwork::reset() {}
@@ -130,7 +109,6 @@ void FeedbackDelayNetwork::setT60InSeconds(float reverbTime)
   double t = double(reverbTime);
   temp = -60.0 / (20.0 * t);
   params.newOverallGain = static_cast<float>(pow(10.0, temp));
-  params.overallGainChanged = true;
 }
 
 inline int FeedbackDelayNetwork::delayLengthConversion(int channel)

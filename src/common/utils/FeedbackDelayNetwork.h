@@ -51,19 +51,10 @@ private:
 
   struct UpdateStruct
   {
-    bool dryWetChanged = false;
     float newDryWet = 0;
-
-    bool delayLengthChanged = false;
     int newDelayLength = 20;
-
-    bool networkSizeChanged = false;
     FdnSize newNetworkSize = FdnSize::big;
-
-    bool overallGainChanged = false;
     float newOverallGain = 0.5;
-
-    bool needParameterUpdate = false;
   };
 
   UpdateStruct params;
