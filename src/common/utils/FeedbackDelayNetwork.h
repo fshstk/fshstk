@@ -43,16 +43,6 @@ private:
   FdnSize fdnSize = uninitialized;
   double sampleRate;
 
-  struct UpdateStruct
-  {
-    float newDryWet = 0;
-    int newDelayLength = 20;
-    FdnSize newNetworkSize = FdnSize::big;
-    float newOverallGain = 0.5;
-  };
-
-  UpdateStruct params;
-
   void reset() override;
   int delayLengthConversion(int channel);
   float channelGainConversion(int channel, float gain);

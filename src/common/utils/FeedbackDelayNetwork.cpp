@@ -79,15 +79,6 @@ void FeedbackDelayNetwork::prepare(const juce::dsp::ProcessSpec& spec)
 
 void FeedbackDelayNetwork::process(const juce::dsp::ProcessContextReplacing<float>& context)
 {
-  dryWet = params.newDryWet;
-  fdnSize = params.newNetworkSize;
-  updateFdnSize(fdnSize);
-  delayLength = static_cast<float>(params.newDelayLength);
-  indices = generateIndices(fdnSize, static_cast<int>(delayLength));
-  overallGain = params.newOverallGain;
-
-  updateParameterSettings();
-
   juce::dsp::AudioBlock<float>& buffer = context.getOutputBlock();
 
   const auto nChannels = static_cast<int>(buffer.getNumChannels());
@@ -199,7 +190,10 @@ void FeedbackDelayNetwork::updateFdnSize(FdnSize newSize)
 
 void FeedbackDelayNetwork::setParams(const Params& p)
 {
-  params.newDelayLength = static_cast<int>(p.roomSize);
-  params.newDryWet = p.dryWet;
-  params.newOverallGain = t60InSeconds(p.revTime);
+  delayLength = static_cast<float>(static_cast<int>(p.roomSize));
+  indices = generateIndices(fdnSize, static_cast<int>(delayLength));
+  dryWet = p.dryWet;
+  overallGain = t60InSeconds(p.revTime);
+
+  updateParameterSettings();
 }
