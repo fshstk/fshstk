@@ -2,26 +2,28 @@
 #include "fwht.h"
 
 namespace {
-std::vector<int> generatePrimes(int count = 5'000)
+auto generatePrimes(size_t count, unsigned startWith = 2)
 {
-  std::vector<int> series;
+  std::vector<int> primes;
+  primes.reserve(count);
 
-  int range = 3;
-  while (series.size() < static_cast<size_t>(count)) {
-    bool is_prime = true;
-    for (int i = 2; i < range; i++) {
-      if (range % i == 0) {
-        is_prime = false;
-        break;
-      }
-    }
+  const auto isPrime = [](unsigned n) {
+    if (n == 0 || n == 1)
+      return false;
+    for (auto i = 2U; i * i <= n; ++i)
+      if (n % i == 0)
+        return false;
+    return true;
+  };
 
-    if (is_prime)
-      series.push_back(range);
-
-    range++;
+  auto i = (startWith % 2 == 0) ? startWith + 1 : startWith;
+  while (primes.size() < count) {
+    if (isPrime(i))
+      primes.push_back(static_cast<int>(i));
+    i += 2;
   }
-  return series;
+
+  return primes;
 }
 
 std::vector<int> generateIndices(size_t nChannels, int delayLength_)
@@ -62,7 +64,7 @@ float t60InSeconds(float reverbTime)
 } // namespace
 
 FeedbackDelayNetwork::FeedbackDelayNetwork()
-  : primeNumbers(generatePrimes())
+  : primeNumbers(generatePrimes(5'000, 3))
 {
 }
 
