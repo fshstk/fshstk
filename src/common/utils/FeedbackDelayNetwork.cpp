@@ -62,7 +62,7 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
   for (int i = 0; i < numSamples; ++i) {
     for (auto channel = 0UL; channel < fdnSize; ++channel) {
       auto* const delayData = delayBuffers[channel].getWritePointer(0);
-      const auto delayPos = delayPositions[channel];
+      const auto delayPos = delayBufferIndices[channel];
 
       if (channel < numChannels) {
         const auto idx = std::min(channel, numChannels - 1);
@@ -83,32 +83,30 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 
     for (auto channel = 0U; channel < fdnSize; ++channel) {
       auto* const delayData = delayBuffers[channel].getWritePointer(0);
-      auto delayPos = delayPositions[channel];
+      delayData[delayBufferIndices[channel]] = transferVector[channel];
 
-      delayData[delayPos] = transferVector[channel];
+      delayBufferIndices[channel]++;
 
-      if (++delayPos >= delayBuffers[channel].getNumSamples())
-        delayPos = 0;
-
-      delayPositions[channel] = delayPos;
+      if (delayBufferIndices[channel] >= delayBuffers[channel].getNumSamples())
+        delayBufferIndices[channel] = 0;
     }
   }
 }
 
 void FeedbackDelayNetwork::updateParameterSettings()
 {
-  indices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
+  primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
   for (auto channel = 0U; channel < fdnSize; ++channel) {
     // TODO: why divide by 10 to get better range for room size setting
-    const auto delayLengthMilliseconds = 0.1 * primeNumbers[indices[channel]];
+    const auto delayLengthMilliseconds = 0.1 * primeNumbers[primeIndices[channel]];
     const auto delayLengthSeconds = 0.001 * delayLengthMilliseconds;
     const auto delayLengthSamples = static_cast<int>(delayLengthSeconds * sampleRate);
 
     delayBuffers[channel].setSize(1, delayLengthSamples, true, true, true);
 
-    if (delayPositions[channel] >= delayBuffers[channel].getNumSamples())
-      delayPositions[channel] = 0;
+    if (delayBufferIndices[channel] >= delayBuffers[channel].getNumSamples())
+      delayBufferIndices[channel] = 0;
 
     const auto gain = juce::Decibels::decibelsToGain(-60.0 / params.revTime);
     const auto feedback = std::pow(gain, delayLengthSeconds);
