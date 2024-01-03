@@ -39,6 +39,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_sources(${PROJECT_NAME} PRIVATE
 )
 
+add_subdirectory(fx)
 add_subdirectory(gui)
 add_subdirectory(utils)
 add_subdirectory(wavetable)
