@@ -22,8 +22,8 @@ private:
   static constexpr size_t fdnSize = 64;
 
   std::array<IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains;
-  std::array<float, fdnSize> transferVector;
+  std::array<float, fdnSize> feedbackGains = {};
+  std::array<float, fdnSize> transferVector = {};
 
   std::vector<unsigned> primeNumbers;
   std::vector<size_t> primeIndices;

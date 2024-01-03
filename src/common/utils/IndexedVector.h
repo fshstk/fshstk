@@ -13,6 +13,6 @@ public:
   void clear() { std::fill(data.begin(), data.end(), 0.0f); }
 
 private:
-  size_t index;
+  size_t index = 0;
   std::vector<float> data;
 };
