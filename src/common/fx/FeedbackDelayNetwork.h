@@ -5,6 +5,8 @@
 class FeedbackDelayNetwork
 {
 public:
+  static constexpr size_t fdnSize = 64;
+
   struct Params
   {
     float roomSize;
@@ -19,8 +21,6 @@ public:
   void process(juce::AudioBuffer<float>&);
 
 private:
-  static constexpr size_t fdnSize = 64;
-
   std::array<IndexedVector, fdnSize> delayBuffers;
   std::array<float, fdnSize> feedbackGains = {};
   std::array<float, fdnSize> transferVector = {};

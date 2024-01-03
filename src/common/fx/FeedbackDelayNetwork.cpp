@@ -1,5 +1,4 @@
 #include "FeedbackDelayNetwork.h"
-#include "fwht.h"
 
 namespace {
 auto generatePrimes(size_t count, unsigned startWith = 2)
@@ -47,6 +46,28 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
 
   return indices;
 }
+
+void fwht(std::array<float, FeedbackDelayNetwork::fdnSize>& data)
+{
+  static_assert(FeedbackDelayNetwork::fdnSize == 64, "FDN size must be power of 2");
+  const auto numElements = data.size();
+  const auto logSize = static_cast<unsigned>(std::log2(numElements));
+
+  for (unsigned i = 0; i < logSize; ++i)
+    for (unsigned j = 0; j < data.size(); j += (1 << (i + 1)))
+      for (unsigned k = 0; k < (1 << i); ++k) {
+        const auto x = j + k;
+        const auto y = j + k + (1 << i);
+        const auto a = data[x];
+        const auto b = data[y];
+        data[x] = a + b;
+        data[y] = a - b;
+      }
+
+  const auto norm = std::sqrt(static_cast<float>(numElements));
+  for (auto i = 0U; i < numElements; ++i)
+    data[i] /= norm;
+}
 } // namespace
 
 FeedbackDelayNetwork::FeedbackDelayNetwork()
@@ -74,7 +95,7 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
     for (auto channel = 0UL; channel < transferVector.size(); ++channel)
       transferVector[channel] = delayBuffers[channel].get() * feedbackGains[channel];
 
-    fwht(transferVector.data(), static_cast<unsigned>(transferVector.size()));
+    fwht(transferVector);
 
     for (auto channel = 0U; channel < delayBuffers.size(); ++channel) {
       delayBuffers[channel].set(transferVector[channel]);
