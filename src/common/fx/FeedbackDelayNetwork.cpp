@@ -60,23 +60,22 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
   const auto numSamples = buffer.getNumSamples();
 
   for (int i = 0; i < numSamples; ++i) {
-    for (auto channel = 0UL; channel < fdnSize; ++channel) {
-      if (channel < numChannels) {
-        const auto input = buffer.getSample(static_cast<int>(channel), i);
-        delayBuffers[channel].add(input);
+    for (auto channel = 0UL; channel < numChannels; ++channel) {
+      const auto input = buffer.getSample(static_cast<int>(channel), i);
+      delayBuffers[channel].add(input);
 
-        const auto wetGain = params.dryWet;
-        const auto dryGain = 1.0f - params.dryWet;
-        const auto output = (input * dryGain) + (delayBuffers[channel].get() * wetGain);
-        buffer.setSample(static_cast<int>(channel), i, output);
-      }
-
-      transferVector[channel] = delayBuffers[channel].get() * feedbackGains[channel];
+      const auto wetGain = params.dryWet;
+      const auto dryGain = 1.0f - params.dryWet;
+      const auto output = (input * dryGain) + (delayBuffers[channel].get() * wetGain);
+      buffer.setSample(static_cast<int>(channel), i, output);
     }
+
+    for (auto channel = 0UL; channel < transferVector.size(); ++channel)
+      transferVector[channel] = delayBuffers[channel].get() * feedbackGains[channel];
 
     fwht(transferVector.data(), static_cast<unsigned>(transferVector.size()));
 
-    for (auto channel = 0U; channel < fdnSize; ++channel) {
+    for (auto channel = 0U; channel < delayBuffers.size(); ++channel) {
       delayBuffers[channel].set(transferVector[channel]);
       delayBuffers[channel].increment();
     }
