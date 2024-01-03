@@ -1,4 +1,5 @@
 #pragma once
+#include "IndexedVector.h"
 #include <juce_dsp/juce_dsp.h>
 
 class FeedbackDelayNetwork
@@ -20,9 +21,7 @@ public:
 private:
   static constexpr size_t fdnSize = 64;
 
-  std::array<juce::AudioBuffer<float>, fdnSize> delayBuffers;
-  std::array<size_t, fdnSize> delayIndices;
-
+  std::array<IndexedVector, fdnSize> delayBuffers;
   std::array<float, fdnSize> feedbackGains;
   std::array<float, fdnSize> transferVector;
 
