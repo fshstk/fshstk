@@ -106,7 +106,7 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 
 void FeedbackDelayNetwork::updateParameterSettings()
 {
-  primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
+  const auto primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
   for (auto channel = 0U; channel < fdnSize; ++channel) {
     // TODO: why divide by 10 to get better range for room size setting

@@ -24,9 +24,7 @@ private:
   std::array<IndexedVector, fdnSize> delayBuffers;
   std::array<float, fdnSize> feedbackGains = {};
   std::array<float, fdnSize> transferVector = {};
-
   std::vector<unsigned> primeNumbers;
-  std::vector<size_t> primeIndices;
 
   Params params;
   double sampleRate;
