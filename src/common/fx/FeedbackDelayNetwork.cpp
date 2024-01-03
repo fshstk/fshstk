@@ -52,6 +52,7 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
 FeedbackDelayNetwork::FeedbackDelayNetwork()
   : primeNumbers(generatePrimes(5'000, 3))
 {
+  updateParameterSettings();
 }
 
 void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
