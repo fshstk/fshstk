@@ -21,7 +21,7 @@ private:
   static constexpr size_t fdnSize = 64;
 
   std::array<juce::AudioBuffer<float>, fdnSize> delayBuffers;
-  std::array<int, fdnSize> delayBufferIndices;
+  std::array<size_t, fdnSize> delayIndices;
 
   std::array<float, fdnSize> feedbackGains;
   std::array<float, fdnSize> transferVector;

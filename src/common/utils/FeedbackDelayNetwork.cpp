@@ -62,33 +62,32 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
   for (int i = 0; i < numSamples; ++i) {
     for (auto channel = 0UL; channel < fdnSize; ++channel) {
       auto* const delayData = delayBuffers[channel].getWritePointer(0);
-      const auto delayPos = delayBufferIndices[channel];
 
       if (channel < numChannels) {
         const auto idx = std::min(channel, numChannels - 1);
         auto* const channelData = buffer.getWritePointer(static_cast<int>(idx));
 
         const auto inSample = channelData[i];
-        delayData[delayPos] += inSample;
+        delayData[delayIndices[channel]] += inSample;
 
         const auto wetGain = params.dryWet;
         const auto dryGain = 1.0f - params.dryWet;
-        channelData[i] = (inSample * dryGain) + (delayData[delayPos] * wetGain);
+        channelData[i] = (inSample * dryGain) + (delayData[delayIndices[channel]] * wetGain);
       }
 
-      transferVector[channel] = delayData[delayPos] * feedbackGains[channel];
+      transferVector[channel] = delayData[delayIndices[channel]] * feedbackGains[channel];
     }
 
     fwht(transferVector.data(), static_cast<unsigned>(transferVector.size()));
 
     for (auto channel = 0U; channel < fdnSize; ++channel) {
       auto* const delayData = delayBuffers[channel].getWritePointer(0);
-      delayData[delayBufferIndices[channel]] = transferVector[channel];
+      delayData[delayIndices[channel]] = transferVector[channel];
 
-      delayBufferIndices[channel]++;
+      delayIndices[channel]++;
 
-      if (delayBufferIndices[channel] >= delayBuffers[channel].getNumSamples())
-        delayBufferIndices[channel] = 0;
+      if (delayIndices[channel] >= static_cast<size_t>(delayBuffers[channel].getNumSamples()))
+        delayIndices[channel] = 0;
     }
   }
 }
@@ -104,9 +103,6 @@ void FeedbackDelayNetwork::updateParameterSettings()
     const auto delayLengthSamples = static_cast<int>(delayLengthSeconds * sampleRate);
 
     delayBuffers[channel].setSize(1, delayLengthSamples, true, true, true);
-
-    if (delayBufferIndices[channel] >= delayBuffers[channel].getNumSamples())
-      delayBufferIndices[channel] = 0;
 
     const auto gain = juce::Decibels::decibelsToGain(-60.0 / params.revTime);
     const auto feedback = std::pow(gain, delayLengthSeconds);
