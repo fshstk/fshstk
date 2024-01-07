@@ -69,4 +69,5 @@ protected:
 
 private:
   Config _conf;
+  juce::ScopedNoDenormals _disableDenormals;
 };
