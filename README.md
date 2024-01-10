@@ -10,5 +10,5 @@
             █████     ██████  ████ █████    ██    ██    ██████   ░░█████  ████ █████
           ░░░░░     ░░░░░░  ░░░░ ░░░░░    ░░    ░░    ░░░░░░     ░░░░░  ░░░░ ░░░░░
 
-          fantastic  spatial  holophonic               software    tool      kit
+         fantastic  spatial  holophonic                software    tool    kit
 ```
