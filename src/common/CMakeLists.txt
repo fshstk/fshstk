@@ -19,11 +19,11 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-project(fishLib
+project(fshlib
     VERSION     ${CMAKE_PROJECT_VERSION}
     LANGUAGES   CXX)
 
-add_library(${PROJECT_NAME} STATIC)
+add_library(fshlib STATIC)
 
 target_compile_options(${PROJECT_NAME} PUBLIC
   -Wall

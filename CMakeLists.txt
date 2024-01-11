@@ -21,17 +21,17 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-project(fishSuite
+project(fshstk
     VERSION     0.0.1
     LANGUAGES   CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-set(FISH_COMPANY_NAME fshstk)
-set(FISH_MANUFACTURER_CODE Fstk)
-set(FISH_PLUGIN_FORMATS VST Standalone)
-set(FISH_COPY_PLUGINS TRUE)
+set(FSH_COMPANY_NAME fshstk)
+set(FSH_MANUFACTURER_CODE Fstk)
+set(FSH_PLUGIN_FORMATS VST Standalone)
+set(FSH_COPY_PLUGINS TRUE)
 
 include(Dependencies.cmake)
 
