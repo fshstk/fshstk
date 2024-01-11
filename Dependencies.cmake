@@ -39,3 +39,15 @@ FetchContent_Declare(
   GIT_TAG        10.1.1
 )
 FetchContent_MakeAvailable(FMT)
+
+################################################################################
+# spdlog - C++ Logging Library
+################################################################################
+
+FetchContent_Declare(
+  spdlog
+  GIT_REPOSITORY https://github.com/gabime/spdlog
+  GIT_TAG        v1.12.0
+)
+set(SPDLOG_FMT_EXTERNAL ON)
+FetchContent_MakeAvailable(spdlog)

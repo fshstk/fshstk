@@ -25,6 +25,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME} PUBLIC
   Fonts
   fmt
+  spdlog::spdlog
   juce::juce_audio_utils
   juce::juce_dsp
   juce::juce_recommended_config_flags
