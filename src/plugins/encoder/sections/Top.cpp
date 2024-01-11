@@ -31,7 +31,7 @@ void Top::paint(juce::Graphics& g)
 {
   g.setColour(fsh::guiColors::foreground);
   g.setFont(fsh::guiFonts::title);
-  g.drawText("fishCoder", getLocalBounds(), juce::Justification::centred);
+  g.drawText("fsh::encoder", getLocalBounds(), juce::Justification::centred);
 }
 
 void Top::resized()

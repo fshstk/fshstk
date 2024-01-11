@@ -19,5 +19,5 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-add_subdirectory(fishcoder)
-add_subdirectory(fishsizer)
+add_subdirectory(encoder)
+add_subdirectory(synth1)

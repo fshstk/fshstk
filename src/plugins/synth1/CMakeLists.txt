@@ -19,14 +19,14 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-project(FishCoder
+project(synth1
   VERSION     ${CMAKE_PROJECT_VERSION}
   LANGUAGES   CXX)
 
 juce_add_plugin(${PROJECT_NAME}
-  PLUGIN_CODE               StEn
-  IS_SYNTH                  FALSE
-  NEEDS_MIDI_INPUT          FALSE
+  PLUGIN_CODE               fhS1
+  IS_SYNTH                  TRUE
+  NEEDS_MIDI_INPUT          TRUE
   # (NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail)
 
   COMPANY_NAME              ${FSH_COMPANY_NAME}
@@ -45,9 +45,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_sources(${PROJECT_NAME} PRIVATE
   main.cpp
-  PluginEditor.cpp
   PluginProcessor.cpp
   PluginState.cpp
 )
-
-add_subdirectory(sections)

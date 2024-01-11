@@ -19,14 +19,14 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-project(FishSizer
+project(encoder
   VERSION     ${CMAKE_PROJECT_VERSION}
   LANGUAGES   CXX)
 
 juce_add_plugin(${PROJECT_NAME}
-  PLUGIN_CODE               FSzr
-  IS_SYNTH                  TRUE
-  NEEDS_MIDI_INPUT          TRUE
+  PLUGIN_CODE               fhEN
+  IS_SYNTH                  FALSE
+  NEEDS_MIDI_INPUT          FALSE
   # (NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail)
 
   COMPANY_NAME              ${FSH_COMPANY_NAME}
@@ -45,6 +45,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_sources(${PROJECT_NAME} PRIVATE
   main.cpp
+  PluginEditor.cpp
   PluginProcessor.cpp
   PluginState.cpp
 )
+
+add_subdirectory(sections)
