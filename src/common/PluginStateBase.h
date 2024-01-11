@@ -1,5 +1,6 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
+#include <spdlog/spdlog.h>
 
 class PluginStateBase : public juce::AudioProcessorValueTreeState
 {
@@ -15,7 +16,7 @@ public:
     if (const auto xml = copyState().createXml(); xml != nullptr)
       return *xml;
 
-    DBG("WARNING: getState() could not retrieve state object");
+    spdlog::warn("getState() could not retrieve state object");
     return juce::XmlElement{ "" };
   }
 
@@ -24,6 +25,6 @@ public:
     if (xml.hasTagName(state.getType()))
       replaceState(juce::ValueTree::fromXml(xml));
     else
-      DBG("WARNING: setState() received invalid state object");
+      spdlog::warn("setState() received invalid state object");
   }
 };

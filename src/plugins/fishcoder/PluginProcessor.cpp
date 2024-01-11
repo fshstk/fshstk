@@ -1,7 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include <fmt/format.h>
 #include <juce_dsp/juce_dsp.h>
+#include <spdlog/spdlog.h>
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
@@ -35,11 +35,10 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
   const auto requiredOutputChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
 
   if (requiredOutputChannels > availableOutputChannels)
-    DBG(fmt::format(
-      "WARNING: ambisonics order {} requires {} output channels, but only {} are available",
-      ambisonicOrder,
-      requiredOutputChannels,
-      availableOutputChannels));
+    spdlog::warn("ambisonics order {} requires {} output channels, but only {} are available",
+                 ambisonicOrder,
+                 requiredOutputChannels,
+                 availableOutputChannels);
 
   const auto bufferSize = buffer.getNumSamples();
   for (auto i = 0; i < bufferSize; ++i) {
@@ -50,12 +49,12 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
     const auto rightCoeffs = _rightEncoder.getCoefficientsForNextSample();
 
     if (requiredOutputChannels > leftCoeffs.size() || requiredOutputChannels > rightCoeffs.size())
-      DBG(fmt::format("WARNING: ambisonics order {} requires {} encoder coefficients, "
-                      "but only {} (left)/{} (right) coefficients were returned",
-                      ambisonicOrder,
-                      requiredOutputChannels,
-                      leftCoeffs.size(),
-                      rightCoeffs.size()));
+      spdlog::warn("ambisonics order {} requires {} encoder coefficients, "
+                   "but only {} (left)/{} (right) coefficients were returned",
+                   ambisonicOrder,
+                   requiredOutputChannels,
+                   leftCoeffs.size(),
+                   rightCoeffs.size());
 
     const auto channelsToProcess = juce::jmin(
       availableOutputChannels, requiredOutputChannels, leftCoeffs.size(), rightCoeffs.size());

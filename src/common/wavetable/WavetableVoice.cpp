@@ -2,7 +2,7 @@
 #include "AmbisonicEncoder.h"
 #include "WavetableSound.h"
 #include <cassert>
-#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 
 namespace {
 void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
@@ -15,10 +15,10 @@ void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
   const auto numChannelsToProcess = juce::jmin(coeffs.size(), numChannelsAvailable);
 
   if (numChannelsAvailable < coeffs.size())
-    DBG(fmt::format("WARNING: encoder provided {} ambisonics coefficients, "
-                    "but only {} channels are available",
-                    coeffs.size(),
-                    numChannelsAvailable));
+    spdlog::warn("encoder provided {} ambisonics coefficients, "
+                 "but only {} channels are available",
+                 coeffs.size(),
+                 numChannelsAvailable);
 
   for (auto ch = 0U; ch < numChannelsToProcess; ++ch)
     audio.addSample(static_cast<int>(ch), position, sample * coeffs[ch]);
