@@ -1,7 +1,6 @@
 # the fantastic spatial holophonic software toolkit
 
-![build](https://github.com/fshstk/fshstk/actions/workflows/build.yml/badge.svg)
-![clang-format](https://github.com/fshstk/fshstk/actions/workflows/clang-format.yml/badge.svg)
+![ci](https://github.com/fshstk/fshstk/actions/workflows/ci.yml/badge.svg)
 
 ```text
               ██████          █████                              █████    █████
