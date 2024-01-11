@@ -8,6 +8,7 @@ include(FetchContent)
 # JUCE - AU/VST plugin framework
 ################################################################################
 
+message(STATUS "Fetching JUCE...")
 FetchContent_Declare(
   JUCE
   GIT_REPOSITORY https://github.com/juce-framework/JUCE
@@ -18,6 +19,7 @@ FetchContent_MakeAvailable(JUCE)
 # some point in Juce 5.
 # Here we grab the last commit before the SDK was removed and make it available
 # via the VST_SDK_PATH variable:
+message(STATUS "Fetching VST2 SDK...")
 FetchContent_Declare(
   JUCE_VST
   GIT_REPOSITORY https://github.com/juce-framework/JUCE
@@ -33,6 +35,7 @@ set(VST_SDK_PATH
 # FMT - C++ String Formatting
 ################################################################################
 
+message(STATUS "Fetching FMT...")
 FetchContent_Declare(
   FMT
   GIT_REPOSITORY https://github.com/fmtlib/fmt
@@ -44,6 +47,7 @@ FetchContent_MakeAvailable(FMT)
 # spdlog - C++ Logging Library
 ################################################################################
 
+message(STATUS "Fetching spdlog...")
 FetchContent_Declare(
   spdlog
   GIT_REPOSITORY https://github.com/gabime/spdlog
