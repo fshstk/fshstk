@@ -31,5 +31,5 @@ public:
   void resized() override;
 
 private:
-  InfoButton infoButton;
+  fsh::InfoButton infoButton;
 };

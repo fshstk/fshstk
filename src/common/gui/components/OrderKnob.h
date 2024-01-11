@@ -22,6 +22,7 @@
 #pragma once
 #include "SimpleKnob.h"
 
+namespace fsh {
 class OrderKnob : public SimpleKnob
 {
 public:
@@ -30,3 +31,4 @@ public:
 
   inline static const std::pair<int, int> orderRange{ 0, 5 };
 };
+} // namespace fsh

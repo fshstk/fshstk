@@ -23,6 +23,7 @@
 #include "PluginStateBase.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
+namespace fsh {
 class SimpleKnob : public juce::Slider
 {
 public:
@@ -51,3 +52,4 @@ private:
   };
   KnobStyle knobStyle;
 };
+} // namespace fsh

@@ -61,7 +61,7 @@ auto triangle()
 }
 } // namespace
 
-WavetableSound::WavetableSound(WavetableSound::WaveType type)
+fsh::WavetableSound::WavetableSound(WavetableSound::WaveType type)
 {
   switch (type) {
     using enum WaveType;
@@ -88,19 +88,19 @@ WavetableSound::WavetableSound(WavetableSound::WaveType type)
   }
 }
 
-auto WavetableSound::appliesToNote(int midiNote) -> bool
+auto fsh::WavetableSound::appliesToNote(int midiNote) -> bool
 {
   juce::ignoreUnused(midiNote);
   return true;
 }
 
-auto WavetableSound::appliesToChannel(int midiChannel) -> bool
+auto fsh::WavetableSound::appliesToChannel(int midiChannel) -> bool
 {
   juce::ignoreUnused(midiChannel);
   return true;
 }
 
-auto WavetableSound::get(double phase) const -> float
+auto fsh::WavetableSound::get(double phase) const -> float
 {
   assert(!wavetable.empty());
 
@@ -122,12 +122,12 @@ auto WavetableSound::get(double phase) const -> float
   return static_cast<float>(interpolatedSample);
 }
 
-void WavetableSound::setParams(const Params& p)
+void fsh::WavetableSound::setParams(const Params& p)
 {
   _params = p;
 }
 
-auto WavetableSound::getParams() const -> Params
+auto fsh::WavetableSound::getParams() const -> Params
 {
   return _params;
 }

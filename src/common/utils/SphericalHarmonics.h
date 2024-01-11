@@ -23,6 +23,7 @@
 #include "SphericalVector.h"
 #include <array>
 
+namespace fsh {
 enum class Normalization
 {
   N3D,
@@ -30,3 +31,4 @@ enum class Normalization
 };
 
 std::array<float, 36> harmonics(const SphericalVector&, Normalization = Normalization::SN3D);
+} // namespace fsh

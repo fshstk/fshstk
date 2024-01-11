@@ -27,12 +27,12 @@ const auto github = juce::URL{ "https://github.com/fshstk/" };
 const auto infoCircleGlyph = juce::CharPointer_UTF8{ "\uf05a" };
 } // namespace
 
-InfoButton::InfoButton()
+fsh::InfoButton::InfoButton()
 {
   setURL(github);
 }
 
-void InfoButton::paintButton(juce::Graphics& g, const bool highlighted, const bool active)
+void fsh::InfoButton::paintButton(juce::Graphics& g, const bool highlighted, const bool active)
 {
   juce::ignoreUnused(highlighted);
   juce::ignoreUnused(active);

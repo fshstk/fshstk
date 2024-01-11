@@ -33,7 +33,7 @@ Middle::Middle(PluginState& s)
 
 void Middle::resized()
 {
-  auto area = getLocalBounds().removeFromTop(guiSizes::editorGridSize * 4);
-  orderKnob.setBounds(area.removeFromLeft(guiSizes::editorGridSize * 6));
-  gainKnob.setBounds(area.removeFromRight(guiSizes::editorGridSize * 6));
+  auto area = getLocalBounds().removeFromTop(fsh::guiSizes::editorGridSize * 4);
+  orderKnob.setBounds(area.removeFromLeft(fsh::guiSizes::editorGridSize * 6));
+  gainKnob.setBounds(area.removeFromRight(fsh::guiSizes::editorGridSize * 6));
 }

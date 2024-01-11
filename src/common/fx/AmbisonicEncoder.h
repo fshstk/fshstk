@@ -23,6 +23,7 @@
 #include "EnvelopeFollower.h"
 #include "SphericalVector.h"
 
+namespace fsh {
 class AmbisonicEncoder
 {
 public:
@@ -35,3 +36,4 @@ public:
 private:
   std::array<EnvelopeFollower, numChannels> _coefficients;
 };
+} // namespace fsh

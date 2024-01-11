@@ -23,6 +23,7 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_dsp/juce_dsp.h>
 
+namespace fsh {
 class WavetableSound : public juce::SynthesiserSound
 {
 public:
@@ -61,3 +62,4 @@ private:
   std::vector<double> wavetable;
   Params _params;
 };
+} // namespace fsh

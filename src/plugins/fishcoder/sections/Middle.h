@@ -32,6 +32,6 @@ public:
   void resized() override;
 
 private:
-  SimpleKnob gainKnob{ "gain", 120.0 };
-  OrderKnob orderKnob;
+  fsh::SimpleKnob gainKnob{ "gain", 120.0 };
+  fsh::OrderKnob orderKnob;
 };

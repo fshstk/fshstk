@@ -22,7 +22,7 @@
 #include "pathFromText.h"
 #include "guiGlobals.h"
 
-juce::Path pathFromText(const juce::String text, const juce::Point<float> center)
+juce::Path fsh::pathFromText(const juce::String text, const juce::Point<float> center)
 {
   // Line width just needs to be a constant that's definitely big enough to fit
   // the string we want to draw:

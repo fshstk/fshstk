@@ -22,8 +22,10 @@
 #pragma once
 #include <juce_opengl/juce_opengl.h>
 
+namespace fsh {
 struct SphericalVector
 {
   double azimuth = 0.0;
   double elevation = 0.0;
 };
+} // namespace fsh

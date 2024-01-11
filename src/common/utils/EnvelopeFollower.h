@@ -21,6 +21,7 @@
 
 #pragma once
 
+namespace fsh {
 class EnvelopeFollower
 {
 public:
@@ -49,3 +50,4 @@ private:
 
   double _sampleRate;
 };
+} // namespace fsh

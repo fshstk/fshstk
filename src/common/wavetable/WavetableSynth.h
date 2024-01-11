@@ -23,6 +23,7 @@
 #include "WavetableSound.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 
+namespace fsh {
 class WavetableSynth : public juce::Synthesiser
 {
 public:
@@ -33,3 +34,4 @@ private:
   const int numVoices = 20;
   WavetableSound* _sound;
 };
+} // namespace fsh

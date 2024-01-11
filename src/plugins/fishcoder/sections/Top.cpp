@@ -29,14 +29,14 @@ Top::Top()
 
 void Top::paint(juce::Graphics& g)
 {
-  g.setColour(guiColors::foreground);
-  g.setFont(guiFonts::title);
+  g.setColour(fsh::guiColors::foreground);
+  g.setFont(fsh::guiFonts::title);
   g.drawText("fishCoder", getLocalBounds(), juce::Justification::centred);
 }
 
 void Top::resized()
 {
-  const auto buttonSize = guiSizes::editorGridSize;
+  const auto buttonSize = fsh::guiSizes::editorGridSize;
   const auto infoArea = getLocalBounds().removeFromRight(buttonSize).removeFromTop(buttonSize);
   infoButton.setBounds(infoArea);
 }

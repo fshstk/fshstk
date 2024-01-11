@@ -25,6 +25,7 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_dsp/juce_dsp.h>
 
+namespace fsh {
 class WavetableVoice : public juce::SynthesiserVoice
 {
 public:
@@ -53,3 +54,4 @@ private:
   juce::ADSR ampEnv;
   juce::ADSR filtEnv;
 };
+} // namespace fsh

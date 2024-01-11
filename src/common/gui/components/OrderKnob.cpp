@@ -32,22 +32,23 @@ const auto marginBetweenTextAndKnob = 7;
 
 float orderTextAngle(int order)
 {
-  const auto numSteps = OrderKnob::orderRange.second - OrderKnob::orderRange.first;
+  const auto numSteps = fsh::OrderKnob::orderRange.second - fsh::OrderKnob::orderRange.first;
   return juce::degreesToRadians(
-    knobRangeDegrees * (static_cast<float>(order - OrderKnob::orderRange.first) / numSteps - 0.5f));
+    knobRangeDegrees *
+    (static_cast<float>(order - fsh::OrderKnob::orderRange.first) / numSteps - 0.5f));
 }
 
 juce::Path orderText(int order, juce::Point<float> center)
 {
-  auto path = pathFromText(juce::String{ order }, center);
+  auto path = fsh::pathFromText(juce::String{ order }, center);
   path.applyTransform(juce::AffineTransform{}
-                        .translated(0, -(guiSizes::knobRadius + marginBetweenTextAndKnob))
+                        .translated(0, -(fsh::guiSizes::knobRadius + marginBetweenTextAndKnob))
                         .rotated(orderTextAngle(order), center.getX(), center.getY()));
   return path;
 }
 } // namespace
 
-OrderKnob::OrderKnob()
+fsh::OrderKnob::OrderKnob()
   : SimpleKnob("order", knobRangeDegrees)
 {
   assert(orderRange.second > orderRange.first);
@@ -55,7 +56,7 @@ OrderKnob::OrderKnob()
   setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, {}, {}, {});
 }
 
-void OrderKnob::paint(juce::Graphics& g)
+void fsh::OrderKnob::paint(juce::Graphics& g)
 {
   SimpleKnob::paint(g);
 

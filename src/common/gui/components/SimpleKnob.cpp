@@ -28,9 +28,9 @@ const auto lineThickness = 4;
 
 juce::Path createKnob(const juce::Point<float> center)
 {
-  const auto corner =
-    juce::Point{ center.getX() - guiSizes::knobRadius, center.getY() - guiSizes::knobRadius };
-  const auto size = guiSizes::knobRadius * 2;
+  const auto corner = juce::Point{ center.getX() - fsh::guiSizes::knobRadius,
+                                   center.getY() - fsh::guiSizes::knobRadius };
+  const auto size = fsh::guiSizes::knobRadius * 2;
 
   auto p = juce::Path{};
   p.addEllipse(corner.getX(), corner.getY(), size, size);
@@ -40,7 +40,7 @@ juce::Path createKnob(const juce::Point<float> center)
 juce::Path createIndicator(const juce::Point<float> center, const float angle)
 {
   const auto corner = juce::Point{ center.getX() - lineThickness / 2.0f, center.getY() };
-  const auto length = guiSizes::knobRadius;
+  const auto length = fsh::guiSizes::knobRadius;
 
   auto p = juce::Path{};
   p.addRectangle(corner.getX(), corner.getY(), lineThickness, length * -1);
@@ -49,9 +49,9 @@ juce::Path createIndicator(const juce::Point<float> center, const float angle)
 }
 } // namespace
 
-SimpleKnob::SimpleKnob(const juce::String& name,
-                       const double knobRangeDegrees,
-                       const Behavior behavior)
+fsh::SimpleKnob::SimpleKnob(const juce::String& name,
+                            const double knobRangeDegrees,
+                            const Behavior behavior)
   : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag,
                  juce::Slider::TextEntryBoxPosition::TextBoxAbove)
   , labelText(name)
@@ -62,7 +62,7 @@ SimpleKnob::SimpleKnob(const juce::String& name,
     0, juce::degreesToRadians(static_cast<float>(knobRangeDegrees)), behavior == Behavior::Bounded);
 }
 
-void SimpleKnob::paint(juce::Graphics& g)
+void fsh::SimpleKnob::paint(juce::Graphics& g)
 {
   const auto center = pointToFloat(getLocalBounds().getCentre());
   const auto angle = knobRangeRadians * (valueToProportionOfLength(getValue()) - 0.5);
@@ -77,17 +77,17 @@ void SimpleKnob::paint(juce::Graphics& g)
   g.fillPath(createIndicator(center, static_cast<float>(angle)));
 }
 
-void SimpleKnob::attach(PluginStateBase& state, juce::String paramID)
+void fsh::SimpleKnob::attach(PluginStateBase& state, juce::String paramID)
 {
   knobAttachment = std::make_unique<PluginStateBase::SliderAttachment>(state, paramID, *this);
 }
 
-juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
+juce::Font fsh::SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
 {
   return guiFonts::body;
 }
 
-juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
+juce::Label* fsh::SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
 {
   auto* label = juce::LookAndFeel_V2::createSliderTextBox(s);
   label->setColour(juce::TextEditor::backgroundColourId, guiColors::transparent);

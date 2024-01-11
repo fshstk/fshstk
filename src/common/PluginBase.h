@@ -22,6 +22,7 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
+namespace fsh {
 template<class PluginStateType>
 class PluginBase : public juce::AudioProcessor
 {
@@ -92,3 +93,4 @@ private:
   Config _conf;
   juce::ScopedNoDenormals _disableDenormals;
 };
+} // namespace fsh

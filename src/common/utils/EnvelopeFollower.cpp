@@ -22,7 +22,7 @@
 #include "EnvelopeFollower.h"
 #include <cmath>
 
-auto EnvelopeFollower::getNextValue() -> double
+auto fsh::EnvelopeFollower::getNextValue() -> double
 {
   if (_targetValue > _currentValue)
     _currentValue += (_targetValue - _currentValue) * _coeffAttack;
@@ -31,30 +31,30 @@ auto EnvelopeFollower::getNextValue() -> double
   return _currentValue;
 }
 
-void EnvelopeFollower::setTargetValue(double target)
+void fsh::EnvelopeFollower::setTargetValue(double target)
 {
   _targetValue = target;
 }
 
-void EnvelopeFollower::setSampleRate(double sampleRate)
+void fsh::EnvelopeFollower::setSampleRate(double sampleRate)
 {
   _sampleRate = sampleRate;
   calculateCoefficients();
 }
 
-void EnvelopeFollower::setParams(const Params& params)
+void fsh::EnvelopeFollower::setParams(const Params& params)
 {
   _params = params;
   calculateCoefficients();
 }
 
-void EnvelopeFollower::reset()
+void fsh::EnvelopeFollower::reset()
 {
   _currentValue = 0.0;
   _targetValue = 0.0;
 }
 
-void EnvelopeFollower::calculateCoefficients()
+void fsh::EnvelopeFollower::calculateCoefficients()
 {
   _coeffAttack = (_params.attackTimeMilliseconds > 0.0 && _sampleRate > 0.0)
                    ? 1.0 - std::exp(-1.0 / (0.001 * _params.attackTimeMilliseconds * _sampleRate))

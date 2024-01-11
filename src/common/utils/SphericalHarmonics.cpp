@@ -52,7 +52,7 @@ auto degreesToRadians(double deg)
   return deg * pi / 180.0;
 }
 
-std::array<double, 3> toXYZ(const SphericalVector& v, bool flipAzimuth = true)
+std::array<double, 3> toXYZ(const fsh::SphericalVector& v, bool flipAzimuth = true)
 {
   // The coefficients are based on a coordinate system where azimuth is defined in the anticlockwise
   // direction. However, it is more intuitive to display azimuth as being in the clockwise
@@ -179,7 +179,7 @@ std::array<float, N> toFloats(std::array<double, N> double_array)
 }
 } // namespace
 
-std::array<float, 36> harmonics(const SphericalVector& vec, Normalization norm)
+std::array<float, 36> fsh::harmonics(const SphericalVector& vec, Normalization norm)
 {
   const auto [x, y, z] = toXYZ(vec);
   switch (norm) {

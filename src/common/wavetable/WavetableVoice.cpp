@@ -27,7 +27,7 @@
 
 namespace {
 void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
-                            AmbisonicEncoder& encoder,
+                            fsh::AmbisonicEncoder& encoder,
                             int position,
                             float sample)
 {
@@ -45,7 +45,7 @@ void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
     audio.addSample(static_cast<int>(ch), position, sample * coeffs[ch]);
 }
 
-SphericalVector midiNoteToDirection(int midiNote)
+fsh::SphericalVector midiNoteToDirection(int midiNote)
 {
   // TODO: experiment with elevation to velocity mapping
   const auto midiNoteMin = 0;
@@ -63,15 +63,15 @@ SphericalVector midiNoteToDirection(int midiNote)
 }
 } // namespace
 
-auto WavetableVoice::canPlaySound(juce::SynthesiserSound* soundToUse) -> bool
+auto fsh::WavetableVoice::canPlaySound(juce::SynthesiserSound* soundToUse) -> bool
 {
   return dynamic_cast<WavetableSound*>(soundToUse) != nullptr;
 }
 
-void WavetableVoice::startNote(int midiNote,
-                               float vel,
-                               juce::SynthesiserSound* soundToUse,
-                               int pitchWhlPos)
+void fsh::WavetableVoice::startNote(int midiNote,
+                                    float vel,
+                                    juce::SynthesiserSound* soundToUse,
+                                    int pitchWhlPos)
 {
   juce::ignoreUnused(vel);
   juce::ignoreUnused(pitchWhlPos);
@@ -101,7 +101,7 @@ void WavetableVoice::startNote(int midiNote,
   deltaPhase = freq / getSampleRate();
 }
 
-void WavetableVoice::stopNote(float vel, bool allowTailOff)
+void fsh::WavetableVoice::stopNote(float vel, bool allowTailOff)
 {
   juce::ignoreUnused(vel);
 
@@ -112,20 +112,20 @@ void WavetableVoice::stopNote(float vel, bool allowTailOff)
     reset();
 }
 
-void WavetableVoice::pitchWheelMoved(int pitchWhlPos)
+void fsh::WavetableVoice::pitchWheelMoved(int pitchWhlPos)
 {
   juce::ignoreUnused(pitchWhlPos);
 }
 
-void WavetableVoice::controllerMoved(int numCC, int val)
+void fsh::WavetableVoice::controllerMoved(int numCC, int val)
 {
   juce::ignoreUnused(numCC);
   juce::ignoreUnused(val);
 }
 
-void WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
-                                     int startSample,
-                                     int numSamples)
+void fsh::WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
+                                          int startSample,
+                                          int numSamples)
 {
   if (!ampEnv.isActive())
     return;
@@ -137,7 +137,7 @@ void WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
     reset();
 }
 
-auto WavetableVoice::calculateNextSample() -> float
+auto fsh::WavetableVoice::calculateNextSample() -> float
 {
   assert(sound != nullptr);
   const auto params = sound->getParams();
@@ -149,7 +149,7 @@ auto WavetableVoice::calculateNextSample() -> float
   return filter.processSample(0, sample);
 }
 
-void WavetableVoice::reset()
+void fsh::WavetableVoice::reset()
 {
   ampEnv.reset();
   filtEnv.reset();

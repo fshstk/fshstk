@@ -23,6 +23,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <spdlog/spdlog.h>
 
+namespace fsh {
 class PluginStateBase : public juce::AudioProcessorValueTreeState
 {
 public:
@@ -49,3 +50,4 @@ public:
       spdlog::warn("setState() received invalid state object");
   }
 };
+} // namespace fsh

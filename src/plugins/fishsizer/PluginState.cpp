@@ -96,7 +96,7 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
-auto PluginState::getSynthParams() const -> WavetableSound::Params
+auto PluginState::getSynthParams() const -> fsh::WavetableSound::Params
 {
   return {
     .ampEnv = getAmpEnv(),
@@ -107,7 +107,7 @@ auto PluginState::getSynthParams() const -> WavetableSound::Params
   };
 }
 
-auto PluginState::getReverbParams() const -> FeedbackDelayNetwork::Params
+auto PluginState::getReverbParams() const -> fsh::FeedbackDelayNetwork::Params
 {
   const auto* const size = getRawParameterValue("rev_size");
   const auto* const time = getRawParameterValue("rev_time");

@@ -23,6 +23,7 @@
 #include "IndexedVector.h"
 #include <juce_dsp/juce_dsp.h>
 
+namespace fsh {
 class FeedbackDelayNetwork
 {
 public:
@@ -52,3 +53,4 @@ private:
 
   void updateParameterSettings();
 };
+} // namespace fsh

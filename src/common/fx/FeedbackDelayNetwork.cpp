@@ -68,9 +68,9 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
   return indices;
 }
 
-void fwht(std::array<float, FeedbackDelayNetwork::fdnSize>& data)
+void fwht(std::array<float, fsh::FeedbackDelayNetwork::fdnSize>& data)
 {
-  static_assert(FeedbackDelayNetwork::fdnSize == 64, "FDN size must be power of 2");
+  static_assert(fsh::FeedbackDelayNetwork::fdnSize == 64, "FDN size must be power of 2");
   const auto numElements = data.size();
   const auto logSize = static_cast<unsigned>(std::log2(numElements));
 
@@ -91,13 +91,13 @@ void fwht(std::array<float, FeedbackDelayNetwork::fdnSize>& data)
 }
 } // namespace
 
-FeedbackDelayNetwork::FeedbackDelayNetwork()
+fsh::FeedbackDelayNetwork::FeedbackDelayNetwork()
   : primeNumbers(generatePrimes(5'000, 3))
 {
   updateParameterSettings();
 }
 
-void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
+void fsh::FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 {
   const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
   const auto numSamples = buffer.getNumSamples();
@@ -125,7 +125,7 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
   }
 }
 
-void FeedbackDelayNetwork::updateParameterSettings()
+void fsh::FeedbackDelayNetwork::updateParameterSettings()
 {
   const auto primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
@@ -143,19 +143,19 @@ void FeedbackDelayNetwork::updateParameterSettings()
   }
 }
 
-void FeedbackDelayNetwork::setParams(const Params& p)
+void fsh::FeedbackDelayNetwork::setParams(const Params& p)
 {
   params = p;
   updateParameterSettings();
 }
 
-void FeedbackDelayNetwork::setSampleRate(double newSampleRate)
+void fsh::FeedbackDelayNetwork::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   updateParameterSettings();
 }
 
-void FeedbackDelayNetwork::reset()
+void fsh::FeedbackDelayNetwork::reset()
 {
   for (auto& buffer : delayBuffers)
     buffer.clear();

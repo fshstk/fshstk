@@ -22,6 +22,7 @@
 #pragma once
 #include <juce_gui_basics/juce_gui_basics.h>
 
+namespace fsh {
 struct guiColors
 {
   inline static const juce::Colour background{ 48, 48, 48 };
@@ -44,3 +45,4 @@ struct guiSizes
   static inline const auto editorGridSize = editorHeight / 20;
   static inline const auto knobRadius = guiSizes::editorGridSize;
 };
+} // namespace fsh

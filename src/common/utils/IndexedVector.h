@@ -22,6 +22,7 @@
 #pragma once
 #include <vector>
 
+namespace fsh {
 class IndexedVector
 {
 public:
@@ -37,3 +38,4 @@ private:
   size_t index = 0;
   std::vector<float> data;
 };
+} // namespace fsh

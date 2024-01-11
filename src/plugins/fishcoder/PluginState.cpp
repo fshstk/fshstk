@@ -97,7 +97,7 @@ auto PluginState::gain() const -> float
   return *gain;
 }
 
-SphericalVector PluginState::vectorLeft() const
+fsh::SphericalVector PluginState::vectorLeft() const
 {
   const auto* const az = getRawParameterValue("azimuth left");
   const auto* const el = getRawParameterValue("elevation left");
@@ -106,7 +106,7 @@ SphericalVector PluginState::vectorLeft() const
   return { .azimuth = *az, .elevation = *el };
 }
 
-SphericalVector PluginState::vectorRight() const
+fsh::SphericalVector PluginState::vectorRight() const
 {
   const auto* const az = getRawParameterValue("azimuth right");
   const auto* const el = getRawParameterValue("elevation right");
