@@ -27,10 +27,15 @@ add_library(fshlib STATIC)
 
 target_compile_options(${PROJECT_NAME} PUBLIC
   -Wall
+)
+
+if(NOT MSVC)
+target_compile_options(${PROJECT_NAME} PUBLIC
   -Wextra
   -Wpedantic
   -Werror
 )
+endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
   # Uncomment this if you want to build VST3 plugins without the VST2 SDK:
