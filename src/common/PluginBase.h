@@ -52,8 +52,15 @@ public:
            layouts.getMainInputChannelSet() == _conf.inputs;
   }
 
-  void prepareToPlay(double, int) override {}
-  void releaseResources() override {}
+  void prepareToPlay(double, int) override
+  {
+    // Intentionally empty override
+  }
+
+  void releaseResources() override
+  {
+    // Intentionally empty override
+  }
 
   const juce::String getName() const override { return JucePlugin_Name; }
   double getTailLengthSeconds() const override { return 0.0; }
@@ -72,8 +79,15 @@ public:
   int getCurrentProgram() override { return 0; }
   const juce::String getProgramName(int) override { return {}; }
 
-  void setCurrentProgram(int) override {}
-  void changeProgramName(int, const juce::String&) override {}
+  void setCurrentProgram(int) override
+  {
+    // Intentionally empty override
+  }
+
+  void changeProgramName(int, const juce::String&) override
+  {
+    // Intentionally empty override
+  }
 
   void getStateInformation(juce::MemoryBlock& destData) override
   {

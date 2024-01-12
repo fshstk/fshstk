@@ -47,7 +47,6 @@ void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
 
 fsh::SphericalVector midiNoteToDirection(int midiNote)
 {
-  // TODO: experiment with elevation to velocity mapping
   const auto midiNoteMin = 0;
   const auto midiNoteMax = 127;
   const auto azimuthMin = -180.0;

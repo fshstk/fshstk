@@ -27,7 +27,6 @@ namespace fsh {
 class WavetableSound : public juce::SynthesiserSound
 {
 public:
-  // TODO: this could also live in WavetableSynth.h?
   struct Params
   {
     juce::ADSR::Parameters ampEnv;
