@@ -93,6 +93,13 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
   _gain.process(context);
 }
 
+void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiBuffer& midi)
+{
+  juce::ignoreUnused(midi);
+  audio.clear();
+  spdlog::critical("double precision not supported");
+}
+
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
 {
   return new PluginEditor(*this, params);

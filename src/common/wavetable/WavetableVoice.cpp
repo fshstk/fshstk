@@ -137,6 +137,16 @@ void fsh::WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
     reset();
 }
 
+void fsh::WavetableVoice::renderNextBlock(juce::AudioBuffer<double>& audio,
+                                          int startSample,
+                                          int numSamples)
+{
+  juce::ignoreUnused(startSample);
+  juce::ignoreUnused(numSamples);
+  audio.clear();
+  spdlog::critical("double precision not supported");
+}
+
 auto fsh::WavetableVoice::calculateNextSample() -> float
 {
   assert(sound != nullptr);

@@ -32,6 +32,7 @@ public:
   juce::AudioProcessorEditor* createEditor() override;
   void prepareToPlay(double sampleRate, int maxBlockSize) override;
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+  void processBlock(juce::AudioBuffer<double>&, juce::MidiBuffer&) override;
 
 private:
   fsh::AmbisonicEncoder _leftEncoder;

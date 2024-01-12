@@ -61,7 +61,7 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
 
   for (auto i = 1U; i < numIndices; i++) {
     const auto increment = roundedDivision(i * delayLength, numIndices);
-    const auto index = indices.back() + std::max(increment, 1UL);
+    const auto index = indices.back() + std::max(increment, size_t{ 1 });
     indices.push_back(index);
   }
 
@@ -74,9 +74,9 @@ void fwht(std::array<float, fsh::FeedbackDelayNetwork::fdnSize>& data)
   const auto numElements = data.size();
   const auto logSize = static_cast<unsigned>(std::log2(numElements));
 
-  for (unsigned i = 0; i < logSize; ++i)
-    for (unsigned j = 0; j < data.size(); j += (1 << (i + 1)))
-      for (unsigned k = 0; k < (1 << i); ++k) {
+  for (auto i = 0U; i < logSize; ++i)
+    for (auto j = 0U; j < data.size(); j += (1 << (i + 1)))
+      for (auto k = 0U; k < (1U << i); ++k) {
         const auto x = j + k;
         const auto y = j + k + (1 << i);
         const auto a = data[x];

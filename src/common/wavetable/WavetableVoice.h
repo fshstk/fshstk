@@ -38,6 +38,7 @@ public:
   void controllerMoved(int numCC, int val) override;
 
   void renderNextBlock(juce::AudioBuffer<float>&, int startSample, int numSamples) override;
+  void renderNextBlock(juce::AudioBuffer<double>&, int startSample, int numSamples) override;
 
 private:
   auto calculateNextSample() -> float;

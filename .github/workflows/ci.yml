@@ -30,6 +30,7 @@ env:
 
 jobs:
   clang-format:
+    name: Check formatting
     runs-on: ubuntu-latest
 
     steps:

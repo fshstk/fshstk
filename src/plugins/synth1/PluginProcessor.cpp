@@ -20,9 +20,11 @@
 ***************************************************************************************************/
 
 #include "PluginProcessor.h"
+#include <spdlog/spdlog.h>
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
+      .inputs = {},
       .outputs = juce::AudioChannelSet::ambisonic(5),
     })
 {
@@ -43,4 +45,11 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBu
   synth.renderNextBlock(audio, midi, 0, audio.getNumSamples());
   reverb.setParams(params.getReverbParams());
   reverb.process(audio);
+}
+
+void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiBuffer& midi)
+{
+  juce::ignoreUnused(midi);
+  audio.clear();
+  spdlog::critical("double precision not supported");
 }

@@ -33,6 +33,11 @@ set(FSH_MANUFACTURER_CODE Fstk)
 set(FSH_PLUGIN_FORMATS VST Standalone)
 set(FSH_COPY_PLUGINS TRUE)
 
+if(LINUX)
+# Required by spdlog:
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+endif()
+
 include(Dependencies.cmake)
 
 # VST_SDK_PATH is defined in Dependencies.cmake:
