@@ -61,7 +61,7 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
 
   for (auto i = 1U; i < numIndices; i++) {
     const auto increment = roundedDivision(i * delayLength, numIndices);
-    const auto index = indices.back() + std::max(increment, 1UL);
+    const auto index = indices.back() + std::max(increment, size_t{ 1 });
     indices.push_back(index);
   }
 
