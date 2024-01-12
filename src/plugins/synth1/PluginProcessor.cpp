@@ -24,6 +24,7 @@
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
+      .inputs = {},
       .outputs = juce::AudioChannelSet::ambisonic(5),
     })
 {
