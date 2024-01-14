@@ -20,7 +20,6 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "OrderKnob.h"
 #include "PluginState.h"
 #include "SimpleKnob.h"
 #include <juce_gui_basics/juce_gui_basics.h>

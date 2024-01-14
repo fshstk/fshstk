@@ -39,11 +39,7 @@ juce::String displayDecibels(const float dB, const int)
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
   return {
-    std::make_unique<juce::AudioParameterInt>("order",
-                                              "Order",
-                                              PluginState::orderRange.first,
-                                              PluginState::orderRange.second,
-                                              PluginState::orderRange.second),
+    std::make_unique<juce::AudioParameterFloat>("order", "Spatial Resolution", 0.0f, 5.0f, 5.0f),
     std::make_unique<juce::AudioParameterFloat>(
       "azimuth left",
       "Azimuth (L)",
@@ -83,11 +79,11 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
-auto PluginState::ambiOrder() const -> size_t
+auto PluginState::ambiOrder() const -> float
 {
   const auto* const order = getRawParameterValue("order");
   assert(order != nullptr);
-  return static_cast<size_t>(*order);
+  return *order;
 }
 
 auto PluginState::gain() const -> float

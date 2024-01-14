@@ -27,13 +27,24 @@ namespace fsh {
 class AmbisonicEncoder
 {
 public:
-  static constexpr auto numChannels = 36;
+  struct Params
+  {
+    SphericalVector direction = { .azimuth = 0.0f, .elevation = 0.0f };
+    float order = 5.0f;
+  };
+
+  static constexpr auto minOrder = 0;
+  static constexpr auto maxOrder = 5;
+  static constexpr auto numChannels = 36; // (maxOrder + 1) ^ 2
 
   auto getCoefficientsForNextSample() -> std::array<float, numChannels>;
-  void setDirection(const SphericalVector&);
+  void setParams(const Params&);
   void setSampleRate(double sampleRate);
 
 private:
+  void updateCoefficients();
+
+  Params _params;
   std::array<EnvelopeFollower, numChannels> _coefficients;
 };
 } // namespace fsh

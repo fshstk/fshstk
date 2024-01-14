@@ -83,7 +83,7 @@ void fsh::WavetableVoice::startNote(int midiNote,
   deltaPhase = 0.0;
 
   encoder.setSampleRate(getSampleRate());
-  encoder.setDirection(midiNoteToDirection(midiNote));
+  encoder.setParams({ .direction = midiNoteToDirection(midiNote), .order = 5.0f });
 
   ampEnv.setSampleRate(getSampleRate());
   ampEnv.setParameters(params.ampEnv);
