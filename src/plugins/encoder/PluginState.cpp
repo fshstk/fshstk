@@ -68,7 +68,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
       "gain",
       "Gain",
       juce::NormalisableRange{ -12.0f, +12.0f },
-      0.0f,
+      10.0f,
       juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDecibels)),
   };
 }
