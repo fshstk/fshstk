@@ -38,6 +38,11 @@ if(LINUX)
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 endif()
 
+if(APPLE)
+# Build universal binaries on Mac:
+set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+endif()
+
 include(Dependencies.cmake)
 
 # VST_SDK_PATH is defined in Dependencies.cmake:
