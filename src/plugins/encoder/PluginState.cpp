@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "PluginState.h"
+#include "SphericalHarmonics.h"
 #include <cassert>
 #include <fmt/format.h>
 
@@ -39,11 +40,8 @@ juce::String displayDecibels(const float dB, const int)
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
   return {
-    std::make_unique<juce::AudioParameterInt>("order",
-                                              "Order",
-                                              PluginState::orderRange.first,
-                                              PluginState::orderRange.second,
-                                              PluginState::orderRange.second),
+    std::make_unique<juce::AudioParameterFloat>(
+      "order", "Spatial Resolution", 0.0f, fsh::maxAmbiOrder, fsh::maxAmbiOrder),
     std::make_unique<juce::AudioParameterFloat>(
       "azimuth left",
       "Azimuth (L)",
@@ -72,7 +70,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
       "gain",
       "Gain",
       juce::NormalisableRange{ -12.0f, +12.0f },
-      0.0f,
+      10.0f,
       juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDecibels)),
   };
 }
@@ -83,11 +81,11 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
-auto PluginState::ambiOrder() const -> size_t
+auto PluginState::ambiOrder() const -> float
 {
   const auto* const order = getRawParameterValue("order");
   assert(order != nullptr);
-  return static_cast<size_t>(*order);
+  return *order;
 }
 
 auto PluginState::gain() const -> float

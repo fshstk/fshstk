@@ -21,19 +21,27 @@
 
 #pragma once
 #include "EnvelopeFollower.h"
+#include "SphericalHarmonics.h"
 #include "SphericalVector.h"
 
 namespace fsh {
 class AmbisonicEncoder
 {
 public:
-  static constexpr auto numChannels = 36;
+  struct Params
+  {
+    SphericalVector direction = { .azimuth = 0.0f, .elevation = 0.0f };
+    float order = 5.0f;
+  };
 
-  auto getCoefficientsForNextSample() -> std::array<float, numChannels>;
-  void setDirection(const SphericalVector&);
+  auto getCoefficientsForNextSample() -> std::array<float, maxNumChannels>;
+  void setParams(const Params&);
   void setSampleRate(double sampleRate);
 
 private:
-  std::array<EnvelopeFollower, numChannels> _coefficients;
+  void updateCoefficients();
+
+  Params _params;
+  std::array<EnvelopeFollower, maxNumChannels> _coefficients;
 };
 } // namespace fsh

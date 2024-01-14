@@ -22,25 +22,58 @@
 #include "AmbisonicEncoder.h"
 #include "SphericalHarmonics.h"
 #include <cassert>
+#include <spdlog/spdlog.h>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, numChannels>
+auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
 {
-  auto result = std::array<float, numChannels>{};
+  auto result = std::array<float, maxNumChannels>{};
   for (auto i = 0U; i < _coefficients.size(); ++i)
     result[i] = static_cast<float>(_coefficients[i].getNextValue());
   return result;
-}
-
-void fsh::AmbisonicEncoder::setDirection(const SphericalVector& dir)
-{
-  const auto targetCoefficients = harmonics(dir);
-  assert(targetCoefficients.size() == _coefficients.size());
-  for (auto i = 0U; i < targetCoefficients.size(); ++i)
-    _coefficients[i].setTargetValue(targetCoefficients[i]);
 }
 
 void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
 {
   for (auto& follower : _coefficients)
     follower.setSampleRate(sampleRate);
+}
+
+void fsh::AmbisonicEncoder::setParams(const Params& params)
+{
+  _params = params;
+
+  if (_params.order < 0) {
+    spdlog::warn("order {} is negative, setting to zero");
+    _params.order = 0;
+  }
+
+  if (_params.order > maxAmbiOrder) {
+    spdlog::warn("order {} exceeds maximum order {}, clamping", _params.order, maxAmbiOrder);
+    _params.order = maxAmbiOrder;
+  }
+
+  updateCoefficients();
+}
+
+void fsh::AmbisonicEncoder::updateCoefficients()
+{
+  const auto wholeOrder = static_cast<size_t>(_params.order);
+  const auto fadeGain = _params.order - static_cast<float>(wholeOrder);
+
+  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
+  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
+
+  const auto targetCoefficients = harmonics(_params.direction);
+
+  // TODO: should be compile time assertion:
+  assert(targetCoefficients.size() == _coefficients.size());
+
+  for (auto i = 0U; i < _coefficients.size(); ++i) {
+    if (i < fullGainChannels)
+      _coefficients[i].setTargetValue(targetCoefficients[i]);
+    else if (i < reducedGainChannels)
+      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
+    else
+      _coefficients[i].setTargetValue(0.0f);
+  }
 }

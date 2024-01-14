@@ -30,5 +30,10 @@ enum class Normalization
   SN3D,
 };
 
-std::array<float, 36> harmonics(const SphericalVector&, Normalization = Normalization::SN3D);
+// TODO: maybe define these in a file with a better name:
+constexpr auto maxAmbiOrder = 5;
+constexpr auto maxNumChannels = (maxAmbiOrder + 1) * (maxAmbiOrder + 1);
+
+std::array<float, maxNumChannels> harmonics(const SphericalVector&,
+                                            Normalization = Normalization::SN3D);
 } // namespace fsh

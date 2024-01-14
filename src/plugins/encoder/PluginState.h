@@ -28,10 +28,8 @@ class PluginState : public fsh::PluginStateBase
 public:
   explicit PluginState(juce::AudioProcessor&);
 
-  auto ambiOrder() const -> size_t;
+  auto ambiOrder() const -> float;
   auto gain() const -> float;
   fsh::SphericalVector vectorLeft() const;
   fsh::SphericalVector vectorRight() const;
-
-  inline static const std::pair<int, int> orderRange{ 0, 5 };
 };

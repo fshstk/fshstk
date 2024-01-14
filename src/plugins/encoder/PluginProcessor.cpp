@@ -48,20 +48,11 @@ void PluginProcessor::prepareToPlay(double sampleRate, int maxBlockSize)
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-  _leftEncoder.setDirection(params.vectorLeft());
-  _rightEncoder.setDirection(params.vectorRight());
-
-  const auto ambisonicOrder = params.ambiOrder();
-  const auto availableOutputChannels = static_cast<size_t>(buffer.getNumChannels());
-  const auto requiredOutputChannels = (ambisonicOrder + 1) * (ambisonicOrder + 1);
-
-  if (requiredOutputChannels > availableOutputChannels)
-    spdlog::warn("ambisonics order {} requires {} output channels, but only {} are available",
-                 ambisonicOrder,
-                 requiredOutputChannels,
-                 availableOutputChannels);
+  _leftEncoder.setParams({ .direction = params.vectorLeft(), .order = params.ambiOrder() });
+  _rightEncoder.setParams({ .direction = params.vectorRight(), .order = params.ambiOrder() });
 
   const auto bufferSize = buffer.getNumSamples();
+  const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
   for (auto i = 0; i < bufferSize; ++i) {
     const auto leftInputSample = buffer.getSample(0, i);
     const auto rightInputSample = buffer.getSample(1, i);
@@ -69,16 +60,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
     const auto leftCoeffs = _leftEncoder.getCoefficientsForNextSample();
     const auto rightCoeffs = _rightEncoder.getCoefficientsForNextSample();
 
-    if (requiredOutputChannels > leftCoeffs.size() || requiredOutputChannels > rightCoeffs.size())
-      spdlog::warn("ambisonics order {} requires {} encoder coefficients, "
-                   "but only {} (left)/{} (right) coefficients were returned",
-                   ambisonicOrder,
-                   requiredOutputChannels,
-                   leftCoeffs.size(),
-                   rightCoeffs.size());
-
-    const auto channelsToProcess = juce::jmin(
-      availableOutputChannels, requiredOutputChannels, leftCoeffs.size(), rightCoeffs.size());
+    const auto channelsToProcess = juce::jmin(numChannels, leftCoeffs.size(), rightCoeffs.size());
 
     for (auto ch = 0U; ch < channelsToProcess; ++ch) {
       const auto leftOutputSample = leftInputSample * leftCoeffs[ch];

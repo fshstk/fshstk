@@ -20,7 +20,6 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "OrderKnob.h"
 #include "PluginState.h"
 #include "SimpleKnob.h"
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -33,5 +32,5 @@ public:
 
 private:
   fsh::SimpleKnob gainKnob{ "gain", 120.0 };
-  fsh::OrderKnob orderKnob;
+  fsh::SimpleKnob orderKnob{ "3d resolution", 120.0 };
 };
