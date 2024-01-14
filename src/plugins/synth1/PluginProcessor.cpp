@@ -20,12 +20,13 @@
 ***************************************************************************************************/
 
 #include "PluginProcessor.h"
+#include "SphericalHarmonics.h"
 #include <spdlog/spdlog.h>
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
       .inputs = {},
-      .outputs = juce::AudioChannelSet::ambisonic(5),
+      .outputs = juce::AudioChannelSet::ambisonic(fsh::maxAmbiOrder),
     })
 {
 }
