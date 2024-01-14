@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "PluginState.h"
+#include "SphericalHarmonics.h"
 #include <cassert>
 #include <fmt/format.h>
 
@@ -39,7 +40,8 @@ juce::String displayDecibels(const float dB, const int)
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
   return {
-    std::make_unique<juce::AudioParameterFloat>("order", "Spatial Resolution", 0.0f, 5.0f, 5.0f),
+    std::make_unique<juce::AudioParameterFloat>(
+      "order", "Spatial Resolution", 0.0f, fsh::maxAmbiOrder, fsh::maxAmbiOrder),
     std::make_unique<juce::AudioParameterFloat>(
       "azimuth left",
       "Azimuth (L)",

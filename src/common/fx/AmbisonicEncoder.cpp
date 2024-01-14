@@ -24,9 +24,9 @@
 #include <cassert>
 #include <spdlog/spdlog.h>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, numChannels>
+auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
 {
-  auto result = std::array<float, numChannels>{};
+  auto result = std::array<float, maxNumChannels>{};
   for (auto i = 0U; i < _coefficients.size(); ++i)
     result[i] = static_cast<float>(_coefficients[i].getNextValue());
   return result;
@@ -42,14 +42,14 @@ void fsh::AmbisonicEncoder::setParams(const Params& params)
 {
   _params = params;
 
-  if (_params.order < minOrder) {
-    spdlog::warn("order {} is below minimum order {}, clamping", _params.order, minOrder);
-    _params.order = minOrder;
+  if (_params.order < 0) {
+    spdlog::warn("order {} is negative, setting to zero");
+    _params.order = 0;
   }
 
-  if (_params.order > maxOrder) {
-    spdlog::warn("order {} exceeds maximum order {}, clamping", _params.order, maxOrder);
-    _params.order = maxOrder;
+  if (_params.order > maxAmbiOrder) {
+    spdlog::warn("order {} exceeds maximum order {}, clamping", _params.order, maxAmbiOrder);
+    _params.order = maxAmbiOrder;
   }
 
   updateCoefficients();

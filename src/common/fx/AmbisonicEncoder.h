@@ -21,6 +21,7 @@
 
 #pragma once
 #include "EnvelopeFollower.h"
+#include "SphericalHarmonics.h"
 #include "SphericalVector.h"
 
 namespace fsh {
@@ -33,11 +34,7 @@ public:
     float order = 5.0f;
   };
 
-  static constexpr auto minOrder = 0;
-  static constexpr auto maxOrder = 5;
-  static constexpr auto numChannels = 36; // (maxOrder + 1) ^ 2
-
-  auto getCoefficientsForNextSample() -> std::array<float, numChannels>;
+  auto getCoefficientsForNextSample() -> std::array<float, maxNumChannels>;
   void setParams(const Params&);
   void setSampleRate(double sampleRate);
 
@@ -45,6 +42,6 @@ private:
   void updateCoefficients();
 
   Params _params;
-  std::array<EnvelopeFollower, numChannels> _coefficients;
+  std::array<EnvelopeFollower, maxNumChannels> _coefficients;
 };
 } // namespace fsh
