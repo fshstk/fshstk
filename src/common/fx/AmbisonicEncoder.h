@@ -31,7 +31,7 @@ public:
   struct Params
   {
     SphericalVector direction = { .azimuth = 0.0f, .elevation = 0.0f };
-    float order = 5.0f;
+    float order = fsh::maxAmbiOrder;
   };
 
   auto getCoefficientsForNextSample() -> std::array<float, maxNumChannels>;

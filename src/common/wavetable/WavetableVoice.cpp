@@ -21,6 +21,7 @@
 
 #include "WavetableVoice.h"
 #include "AmbisonicEncoder.h"
+#include "SphericalHarmonics.h"
 #include "WavetableSound.h"
 #include <cassert>
 #include <spdlog/spdlog.h>
@@ -83,7 +84,7 @@ void fsh::WavetableVoice::startNote(int midiNote,
   deltaPhase = 0.0;
 
   encoder.setSampleRate(getSampleRate());
-  encoder.setParams({ .direction = midiNoteToDirection(midiNote), .order = 5.0f });
+  encoder.setParams({ .direction = midiNoteToDirection(midiNote), .order = fsh::maxAmbiOrder });
 
   ampEnv.setSampleRate(getSampleRate());
   ampEnv.setParameters(params.ampEnv);
