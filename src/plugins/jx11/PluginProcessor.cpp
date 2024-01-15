@@ -19,6 +19,7 @@ void PluginProcessor::prepareToPlay(double sampleRate, int bufferSize)
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
 {
+  _synth.setParams(params.getSynthParams());
   splitBufferByEvents(audio, midi);
 }
 

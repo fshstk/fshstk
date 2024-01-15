@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 
 class Oscillator
 {
@@ -12,16 +11,21 @@ public:
     Noise,
   };
 
-  // TODO: std::unordered_map<Preset, Params> _presets{} / enum class Preset
+  struct Params
+  {
+    double frequency;
+    double amplitude;
+  };
+
+  explicit Oscillator(Type);
 
   void reset();
   auto nextSample() -> float;
   void setSampleRate(double sampleRate);
-  void setNoteVal(uint8_t); // TODO: use frequency directly, live tweaking w/ envfollower
-  void setVelocity(uint8_t);
+  void setParams(const Params&);
 
 private:
-  Type _type = Type::Saw;
+  Type _type;
   double _amplitude;
   double _phase;
   double _deltaPhase;

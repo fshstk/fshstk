@@ -3,13 +3,6 @@
 #include <cmath>
 
 namespace {
-double midiNoteToFreq(uint8_t noteVal)
-{
-  const auto concertAMidi = 69;
-  const auto concertAFreq = 440.0;
-  return concertAFreq * std::exp2((noteVal - concertAMidi) / 12.0);
-}
-
 double sine(double phase)
 {
   return std::sin(2.0 * M_PI * phase);
@@ -57,6 +50,11 @@ double saw2(double phase, double deltaPhase)
 }
 } // namespace
 
+Oscillator::Oscillator(Type type)
+  : _type(type)
+{
+}
+
 void Oscillator::reset()
 {
   _amplitude = 0.0f;
@@ -93,13 +91,8 @@ void Oscillator::setSampleRate(double sampleRate)
   _sampleRate = sampleRate;
 }
 
-void Oscillator::setNoteVal(uint8_t noteVal)
+void Oscillator::setParams(const Params& params)
 {
-  const auto freq = midiNoteToFreq(noteVal);
-  _deltaPhase = freq / _sampleRate;
-}
-
-void Oscillator::setVelocity(uint8_t vel)
-{
-  _amplitude = (vel / 127.0) * 0.5;
+  _amplitude = params.amplitude;
+  _deltaPhase = params.frequency / _sampleRate;
 }

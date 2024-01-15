@@ -1,10 +1,26 @@
 #include "Voice.h"
 #include <cassert>
 
+namespace {
+auto midiNoteToFreq(uint8_t noteVal) -> double
+{
+  const auto concertAMidi = 69;
+  const auto concertAFreq = 440.0;
+  return concertAFreq * std::exp2((noteVal - concertAMidi) / 12.0);
+}
+
+auto velocityToAmplitude(uint8_t vel) -> double
+{
+  return (vel / 127.0) * 0.5;
+}
+} // namespace
+
 void Voice::reset()
 {
-  _osc.reset();
+  _oscSaw.reset();
+  _oscNoise.reset();
   _noteVal = 0;
+  _velocity = 0;
 }
 
 void Voice::noteOn(uint8_t noteVal, uint8_t velocity)
@@ -14,8 +30,7 @@ void Voice::noteOn(uint8_t noteVal, uint8_t velocity)
     return noteOff(noteVal, velocity);
 
   _noteVal = noteVal;
-  _osc.setNoteVal(noteVal);
-  _osc.setVelocity(velocity);
+  _velocity = velocity;
 }
 
 void Voice::noteOff(uint8_t noteVal, uint8_t)
@@ -26,12 +41,22 @@ void Voice::noteOff(uint8_t noteVal, uint8_t)
 
 void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
 {
+  _oscSaw.setParams({
+    .frequency = midiNoteToFreq(_noteVal),
+    .amplitude = velocityToAmplitude(_velocity),
+  });
+
+  _oscNoise.setParams({
+    .frequency = midiNoteToFreq(_noteVal),
+    .amplitude = velocityToAmplitude(_velocity) * _params.noiseAmt,
+  });
+
   const auto bufferSize = static_cast<size_t>(audio.getNumSamples());
   const auto numChannels = static_cast<size_t>(audio.getNumChannels());
 
   for (auto n = bufferOffset; n < bufferOffset + numSamples; ++n) {
     assert(n < bufferSize);
-    const auto out = _osc.nextSample() * 0.5f;
+    const auto out = _oscSaw.nextSample() + _oscNoise.nextSample();
     for (auto ch = 0U; ch < numChannels; ++ch) {
       audio.setSample(static_cast<int>(ch), static_cast<int>(n), out);
     }
@@ -40,5 +65,11 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
 void Voice::setSampleRate(double sampleRate)
 {
-  _osc.setSampleRate(sampleRate);
+  _oscSaw.setSampleRate(sampleRate);
+  _oscNoise.setSampleRate(sampleRate);
+}
+
+void Voice::setParams(const Params& params)
+{
+  _params = params;
 }

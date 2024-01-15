@@ -25,3 +25,8 @@ void Synth::handleMIDIEvent(const MidiEvent& evt)
   if (evt.type() == MidiEvent::Type::NoteOff)
     _voice.noteOff(evt.noteVal(), evt.velocity());
 }
+
+void Synth::setParams(const Params& params)
+{
+  _voice.setParams({ .noiseAmt = params.noiseAmt });
+}
