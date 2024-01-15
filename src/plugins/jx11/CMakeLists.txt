@@ -25,7 +25,7 @@ target_sources(${PROJECT_NAME} PRIVATE
   PluginProcessor.cpp
   PluginState.cpp
   MidiEvent.cpp
+  Oscillator.cpp
   Synth.cpp
   Voice.cpp
-  WhiteNoise.cpp
 )

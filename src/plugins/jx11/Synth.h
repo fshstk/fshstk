@@ -1,7 +1,6 @@
 #pragma once
 #include "MidiEvent.h"
 #include "Voice.h"
-#include "WhiteNoise.h"
 #include <cstddef>
 #include <juce_audio_basics/juce_audio_basics.h>
 
@@ -14,7 +13,5 @@ public:
   void handleMIDIEvent(const MidiEvent&);
 
 private:
-  double _sampleRate;
   Voice _voice;
-  WhiteNoise _noise;
 };
