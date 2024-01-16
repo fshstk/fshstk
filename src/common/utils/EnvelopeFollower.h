@@ -35,7 +35,7 @@ public:
   void setTargetValue(double);
   void setSampleRate(double);
   void setParams(const Params&);
-  void reset();
+  void reset(double val = 0.0);
 
 private:
   void calculateCoefficients();

@@ -48,10 +48,10 @@ void fsh::EnvelopeFollower::setParams(const Params& params)
   calculateCoefficients();
 }
 
-void fsh::EnvelopeFollower::reset()
+void fsh::EnvelopeFollower::reset(double val)
 {
-  _currentValue = 0.0;
-  _targetValue = 0.0;
+  _currentValue = val;
+  _targetValue = val;
 }
 
 void fsh::EnvelopeFollower::calculateCoefficients()
