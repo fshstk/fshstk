@@ -36,7 +36,9 @@ auto generatePrimes(size_t count)
     return true;
   };
 
-  auto i = 2U;
+  primes.push_back(2U);
+
+  auto i = 3U;
   while (primes.size() < count) {
     if (isPrime(i))
       primes.push_back(i);
