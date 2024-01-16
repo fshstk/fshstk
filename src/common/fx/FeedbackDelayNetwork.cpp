@@ -22,7 +22,7 @@
 #include "FeedbackDelayNetwork.h"
 
 namespace {
-auto generatePrimes(size_t count)
+auto generatePrimes(size_t count, unsigned startWith = 2)
 {
   std::vector<unsigned> primes;
   primes.reserve(count);
@@ -36,7 +36,7 @@ auto generatePrimes(size_t count)
     return true;
   };
 
-  auto i = 2U;
+  auto i = (startWith % 2 == 0) ? startWith + 1 : startWith;
   while (primes.size() < count) {
     if (isPrime(i))
       primes.push_back(i);
@@ -92,7 +92,7 @@ void fwht(std::array<float, fsh::FeedbackDelayNetwork::fdnSize>& data)
 } // namespace
 
 fsh::FeedbackDelayNetwork::FeedbackDelayNetwork()
-  : primeNumbers(generatePrimes(5'000))
+  : primeNumbers(generatePrimes(5'000, 3))
 {
   updateParameterSettings();
 }
