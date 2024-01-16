@@ -36,7 +36,7 @@ double noise()
 
 double saw(double phase, double deltaPhase)
 {
-  if (deltaPhase == 0.0) {
+  if (deltaPhase < 0.0001) {
     spdlog::warn("oscillator called with zero frequency");
     return 0.0;
   }
@@ -53,8 +53,8 @@ double saw(double phase, double deltaPhase)
 
 double saw2(double phase, double deltaPhase)
 {
-  if (deltaPhase == 0.0) {
-    spdlog::warn("oscillator called with zero frequency");
+  if (deltaPhase < 0.0001) {
+    spdlog::warn("oscillator called with zero or negative frequency");
     return 0.0;
   }
 
