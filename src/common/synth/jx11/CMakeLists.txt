@@ -19,5 +19,13 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-add_subdirectory(jx11)
-add_subdirectory(wavetable)
+target_include_directories(${PROJECT_NAME} PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_sources(${PROJECT_NAME} PRIVATE
+  MidiEvent.cpp
+  Oscillator.cpp
+  Synth.cpp
+  Voice.cpp
+)

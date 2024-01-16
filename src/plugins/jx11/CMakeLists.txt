@@ -24,8 +24,4 @@ target_sources(${PROJECT_NAME} PRIVATE
   main.cpp
   PluginProcessor.cpp
   PluginState.cpp
-  MidiEvent.cpp
-  Oscillator.cpp
-  Synth.cpp
-  Voice.cpp
 )
