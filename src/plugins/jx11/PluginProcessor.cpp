@@ -26,6 +26,7 @@
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
+      .inputs = {},
       .outputs = juce::AudioChannelSet::stereo(),
     })
 {
