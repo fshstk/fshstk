@@ -4,6 +4,7 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <stdint.h>
 
+namespace fsh {
 class Voice
 {
 public:
@@ -26,3 +27,4 @@ private:
   Oscillator _oscSaw{ Oscillator::Type::Saw };
   Oscillator _oscNoise{ Oscillator::Type::Noise };
 };
+} // namespace fsh

@@ -7,7 +7,7 @@ class PluginState : public fsh::PluginStateBase
 {
 public:
   explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> Synth::Params;
+  auto getSynthParams() const -> fsh::Synth::Params;
 
 private:
   float getNoiseAmt() const;

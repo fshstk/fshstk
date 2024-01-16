@@ -28,7 +28,7 @@ void PluginProcessor::splitBufferByEvents(juce::AudioBuffer<float>& audio, juce:
   auto bufferOffset = 0U;
 
   for (const auto& msg : midi) {
-    _synth.handleMIDIEvent(MidiEvent{ msg });
+    _synth.handleMIDIEvent(fsh::MidiEvent{ msg });
 
     if (const auto elapsedSamples = static_cast<size_t>(msg.samplePosition) - bufferOffset;
         elapsedSamples > 0) {

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <juce_audio_basics/juce_audio_basics.h>
 
+namespace fsh {
 class Synth
 {
 public:
@@ -21,3 +22,4 @@ public:
 private:
   Voice _voice;
 };
+} // namespace fsh

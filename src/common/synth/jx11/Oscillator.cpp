@@ -50,18 +50,18 @@ double saw2(double phase, double deltaPhase)
 }
 } // namespace
 
-Oscillator::Oscillator(Type type)
+fsh::Oscillator::Oscillator(Type type)
   : _type(type)
 {
 }
 
-void Oscillator::reset()
+void fsh::Oscillator::reset()
 {
   _amplitude = 0.0f;
   _phase = 0.0;
 }
 
-auto Oscillator::nextSample() -> float
+auto fsh::Oscillator::nextSample() -> float
 {
   const auto out = [&]() {
     using enum Type;
@@ -86,12 +86,12 @@ auto Oscillator::nextSample() -> float
   return static_cast<float>(_amplitude * out);
 }
 
-void Oscillator::setSampleRate(double sampleRate)
+void fsh::Oscillator::setSampleRate(double sampleRate)
 {
   _sampleRate = sampleRate;
 }
 
-void Oscillator::setParams(const Params& params)
+void fsh::Oscillator::setParams(const Params& params)
 {
   _amplitude = params.amplitude;
   _deltaPhase = params.frequency / _sampleRate;

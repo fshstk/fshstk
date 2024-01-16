@@ -1,5 +1,6 @@
 #pragma once
 
+namespace fsh {
 class Oscillator
 {
 public:
@@ -31,3 +32,4 @@ private:
   double _deltaPhase;
   double _sampleRate;
 };
+} // namespace fsh

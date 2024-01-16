@@ -194,7 +194,7 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
-auto PluginState::getSynthParams() const -> Synth::Params
+auto PluginState::getSynthParams() const -> fsh::Synth::Params
 {
   return {
     .noiseAmt = getNoiseAmt(),

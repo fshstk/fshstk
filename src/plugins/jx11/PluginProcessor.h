@@ -13,5 +13,5 @@ public:
 private:
   void splitBufferByEvents(juce::AudioBuffer<float>&, juce::MidiBuffer&);
 
-  Synth _synth;
+  fsh::Synth _synth;
 };

@@ -15,7 +15,7 @@ auto velocityToAmplitude(uint8_t vel) -> double
 }
 } // namespace
 
-void Voice::reset()
+void fsh::Voice::reset()
 {
   _oscSaw.reset();
   _oscNoise.reset();
@@ -23,7 +23,7 @@ void Voice::reset()
   _velocity = 0;
 }
 
-void Voice::noteOn(uint8_t noteVal, uint8_t velocity)
+void fsh::Voice::noteOn(uint8_t noteVal, uint8_t velocity)
 {
   // Note on values with velocity of 0 are treated as note off:
   if (velocity == 0)
@@ -33,13 +33,13 @@ void Voice::noteOn(uint8_t noteVal, uint8_t velocity)
   _velocity = velocity;
 }
 
-void Voice::noteOff(uint8_t noteVal, uint8_t)
+void fsh::Voice::noteOff(uint8_t noteVal, uint8_t)
 {
   if (noteVal == _noteVal)
     reset();
 }
 
-void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
+void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
 {
   _oscSaw.setParams({
     .frequency = midiNoteToFreq(_noteVal),
@@ -63,13 +63,13 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
   }
 }
 
-void Voice::setSampleRate(double sampleRate)
+void fsh::Voice::setSampleRate(double sampleRate)
 {
   _oscSaw.setSampleRate(sampleRate);
   _oscNoise.setSampleRate(sampleRate);
 }
 
-void Voice::setParams(const Params& params)
+void fsh::Voice::setParams(const Params& params)
 {
   _params = params;
 }

@@ -1,6 +1,6 @@
 #include "MidiEvent.h"
 
-MidiEvent::MidiEvent(const juce::MidiMessageMetadata& msg)
+fsh::MidiEvent::MidiEvent(const juce::MidiMessageMetadata& msg)
 {
   if (msg.numBytes < 2)
     return;
@@ -13,17 +13,17 @@ MidiEvent::MidiEvent(const juce::MidiMessageMetadata& msg)
   }
 }
 
-auto MidiEvent::type() const -> Type
+auto fsh::MidiEvent::type() const -> Type
 {
   return _type;
 }
 
-auto MidiEvent::noteVal() const -> uint8_t
+auto fsh::MidiEvent::noteVal() const -> uint8_t
 {
   return _noteVal;
 }
 
-auto MidiEvent::velocity() const -> uint8_t
+auto fsh::MidiEvent::velocity() const -> uint8_t
 {
   return _velocity;
 }

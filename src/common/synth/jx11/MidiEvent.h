@@ -1,6 +1,7 @@
 #pragma once
 #include <juce_audio_basics/juce_audio_basics.h>
 
+namespace fsh {
 class MidiEvent
 {
 public:
@@ -21,3 +22,4 @@ private:
   uint8_t _noteVal = 0;
   uint8_t _velocity = 0;
 };
+} // namespace fsh

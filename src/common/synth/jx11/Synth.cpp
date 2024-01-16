@@ -2,22 +2,22 @@
 #include "MidiEvent.h"
 #include <fmt/format.h>
 
-void Synth::setSampleRate(double sampleRate)
+void fsh::Synth::setSampleRate(double sampleRate)
 {
   _voice.setSampleRate(sampleRate);
 }
 
-void Synth::reset()
+void fsh::Synth::reset()
 {
   _voice.reset();
 }
 
-void Synth::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
+void fsh::Synth::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
 {
   _voice.render(audio, numSamples, bufferOffset);
 }
 
-void Synth::handleMIDIEvent(const MidiEvent& evt)
+void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
 {
   if (evt.type() == MidiEvent::Type::NoteOn)
     _voice.noteOn(evt.noteVal(), evt.velocity());
@@ -26,7 +26,7 @@ void Synth::handleMIDIEvent(const MidiEvent& evt)
     _voice.noteOff(evt.noteVal(), evt.velocity());
 }
 
-void Synth::setParams(const Params& params)
+void fsh::Synth::setParams(const Params& params)
 {
   _voice.setParams({ .noiseAmt = params.noiseAmt });
 }
