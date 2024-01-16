@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "Voice.h"
-#include <cassert>
+#include "spdlog/spdlog.h"
 
 namespace {
 auto midiNoteToFreq(uint8_t noteVal) -> double
@@ -76,7 +76,14 @@ void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
   const auto numChannels = static_cast<size_t>(audio.getNumChannels());
 
   for (auto n = bufferOffset; n < bufferOffset + numSamples; ++n) {
-    assert(n < bufferSize);
+    if (n >= bufferSize) {
+      spdlog::critical("bufferOffset ({}) + numSamples ({}) > bufferSize ({})",
+                       bufferOffset,
+                       numSamples,
+                       bufferSize);
+      return;
+    }
+
     const auto out = _oscSaw.nextSample() + _oscNoise.nextSample();
     for (auto ch = 0U; ch < numChannels; ++ch) {
       audio.setSample(static_cast<int>(ch), static_cast<int>(n), out);
