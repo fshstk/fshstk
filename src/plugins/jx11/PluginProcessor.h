@@ -30,6 +30,7 @@ public:
   PluginProcessor();
   void prepareToPlay(double sampleRate, int bufferSize) override;
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+  void processBlock(juce::AudioBuffer<double>&, juce::MidiBuffer&) override;
 
 private:
   void splitBufferByEvents(juce::AudioBuffer<float>&, juce::MidiBuffer&);

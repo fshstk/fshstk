@@ -44,6 +44,13 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBu
   splitBufferByEvents(audio, midi);
 }
 
+void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiBuffer& midi)
+{
+  juce::ignoreUnused(midi);
+  audio.clear();
+  spdlog::critical("double precision not supported");
+}
+
 void PluginProcessor::splitBufferByEvents(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
 {
   auto bufferOffset = 0U;
