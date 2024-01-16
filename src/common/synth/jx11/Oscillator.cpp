@@ -19,6 +19,7 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
+#define _USE_MATH_DEFINES
 #include "Oscillator.h"
 #include "spdlog/spdlog.h"
 #include <cmath>
