@@ -29,10 +29,8 @@ juce_add_plugin(${PROJECT_NAME}
   NEEDS_MIDI_INPUT          TRUE
   # (NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail)
 
-  COMPANY_NAME              ${FSH_COMPANY_NAME}
   PLUGIN_MANUFACTURER_CODE  ${FSH_PLUGIN_MANUFACTURER_CODE}
   FORMATS                   ${FSH_PLUGIN_FORMATS}
-  COPY_PLUGIN_AFTER_BUILD   ${FSH_COPY_PLUGINS}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
