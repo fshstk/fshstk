@@ -21,6 +21,7 @@
 
 #pragma once
 #include "ADSR.h"
+#include "AmbisonicEncoder.h"
 #include "Oscillator.h"
 #include <cstdint>
 #include <juce_audio_basics/juce_audio_basics.h>
@@ -48,11 +49,14 @@ public:
   void setParams(const Params&);
 
 private:
+  auto nextSample() -> float;
+
   Params _params;
   uint8_t _noteVal;
-  double _bendMultiplier = 1.0;
+  double _bendValSemitones;
   uint8_t _velocity;
   ADSR _adsr;
+  AmbisonicEncoder _encoder;
   Oscillator _oscA{ Oscillator::Type::Saw };
   Oscillator _oscB{ Oscillator::Type::Saw };
   Oscillator _oscNoise{ Oscillator::Type::Noise };

@@ -21,13 +21,14 @@
 
 #include "PluginProcessor.h"
 #include "MidiEvent.h"
+#include "SphericalHarmonics.h"
 #include "Synth.h"
 #include <fmt/format.h>
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
       .inputs = {},
-      .outputs = juce::AudioChannelSet::stereo(),
+      .outputs = juce::AudioChannelSet::ambisonic(fsh::maxAmbiOrder),
     })
 {
 }
