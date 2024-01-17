@@ -42,7 +42,7 @@ void PluginProcessor::prepareToPlay(double sampleRate, int bufferSize)
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
 {
   _synth.setParams(params.getSynthParams());
-  splitBufferByEvents(audio, midi);
+  _synth.process(audio, midi);
 }
 
 void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiBuffer& midi)
@@ -50,25 +50,4 @@ void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiB
   juce::ignoreUnused(midi);
   audio.clear();
   spdlog::critical("double precision not supported");
-}
-
-void PluginProcessor::splitBufferByEvents(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
-{
-  auto bufferOffset = 0U;
-
-  for (const auto& msg : midi) {
-    _synth.handleMIDIEvent(fsh::MidiEvent{ msg });
-
-    if (const auto elapsedSamples = static_cast<size_t>(msg.samplePosition) - bufferOffset;
-        elapsedSamples > 0) {
-      _synth.render(audio, elapsedSamples, bufferOffset);
-      bufferOffset += elapsedSamples;
-    }
-  }
-
-  if (const auto elapsedSamples = static_cast<size_t>(audio.getNumSamples()) - bufferOffset;
-      elapsedSamples > 0)
-    _synth.render(audio, elapsedSamples, bufferOffset);
-
-  midi.clear();
 }

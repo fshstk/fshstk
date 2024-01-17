@@ -36,11 +36,12 @@ public:
 
   void setSampleRate(double sampleRate);
   void reset();
-  void render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset);
-  void handleMIDIEvent(const MidiEvent&);
   void setParams(const Params&);
+  void process(juce::AudioBuffer<float>&, juce::MidiBuffer&);
 
 private:
+  void handleMIDIEvent(const MidiEvent&);
+
   Voice _voice;
 };
 } // namespace fsh

@@ -33,7 +33,5 @@ public:
   void processBlock(juce::AudioBuffer<double>&, juce::MidiBuffer&) override;
 
 private:
-  void splitBufferByEvents(juce::AudioBuffer<float>&, juce::MidiBuffer&);
-
   fsh::Synth _synth;
 };

@@ -34,11 +34,6 @@ void fsh::Synth::reset()
   _voice.reset();
 }
 
-void fsh::Synth::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
-{
-  _voice.render(audio, numSamples, bufferOffset);
-}
-
 void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
 {
   switch (evt.type()) {
@@ -60,4 +55,25 @@ void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
 void fsh::Synth::setParams(const Params& params)
 {
   _voice.setParams(params.voice);
+}
+
+void fsh::Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
+{
+  auto bufferOffset = 0U;
+
+  for (const auto& msg : midi) {
+    handleMIDIEvent(fsh::MidiEvent{ msg });
+
+    if (const auto elapsedSamples = static_cast<size_t>(msg.samplePosition) - bufferOffset;
+        elapsedSamples > 0) {
+      _voice.render(audio, elapsedSamples, bufferOffset);
+      bufferOffset += elapsedSamples;
+    }
+  }
+
+  if (const auto elapsedSamples = static_cast<size_t>(audio.getNumSamples()) - bufferOffset;
+      elapsedSamples > 0)
+    _voice.render(audio, elapsedSamples, bufferOffset);
+
+  midi.clear();
 }
