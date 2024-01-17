@@ -184,17 +184,6 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       juce::NormalisableRange{ 0.0f, 100.0f, 1.0f },
       0.0f,
       juce::AudioParameterFloatAttributes{}.withLabel("%")),
-    std::make_unique<juce::AudioParameterFloat>("octave",
-                                                "Octave",
-                                                juce::NormalisableRange{ -2.0f, 2.0f, 1.0f },
-                                                0.0f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>(
-      "tuning",
-      "Tuning",
-      juce::NormalisableRange{ -100.0f, 100.0f, 0.1f },
-      0.0f,
-      juce::AudioParameterFloatAttributes{}.withLabel("cent")),
     std::make_unique<juce::AudioParameterFloat>(
       "level",
       "Output Level",
