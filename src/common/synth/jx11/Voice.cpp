@@ -162,3 +162,13 @@ auto fsh::Voice::nextSample() -> float
   const auto env = _adsr.getNextValue();
   return osc * static_cast<float>(env);
 }
+
+auto fsh::Voice::getNoteVal() const -> uint8_t
+{
+  return isActive() ? _noteVal : 0;
+}
+
+auto fsh::Voice::isActive() const -> bool
+{
+  return _adsr.isActive();
+}

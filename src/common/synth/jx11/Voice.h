@@ -47,6 +47,8 @@ public:
   void render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset);
   void setSampleRate(double sampleRate);
   void setParams(const Params&);
+  auto getNoteVal() const -> uint8_t;
+  auto isActive() const -> bool;
 
 private:
   auto nextSample() -> float;

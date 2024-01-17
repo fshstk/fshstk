@@ -26,12 +26,14 @@
 
 void fsh::Synth::setSampleRate(double sampleRate)
 {
-  _voice.setSampleRate(sampleRate);
+  for (auto& voice : _voices)
+    voice.setSampleRate(sampleRate);
 }
 
 void fsh::Synth::reset()
 {
-  _voice.reset();
+  for (auto& voice : _voices)
+    voice.reset();
 }
 
 void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
@@ -39,13 +41,17 @@ void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
   switch (evt.type()) {
     using enum MidiEvent::Type;
     case NoteOn:
-      _voice.noteOn(evt.data1(), evt.data2());
+      for (auto& voice : _voices)
+        if (!voice.isActive())
+          return voice.noteOn(evt.data1(), evt.data2());
       return;
     case NoteOff:
-      _voice.noteOff(evt.data1(), evt.data2());
-      return;
+      for (auto& voice : _voices)
+        if (voice.getNoteVal() == evt.data1())
+          return voice.noteOff(evt.data1(), evt.data2());
     case PitchBend:
-      _voice.pitchBend(evt.fullData());
+      for (auto& voice : _voices)
+        voice.pitchBend(evt.fullData());
       return;
   }
 
@@ -54,7 +60,8 @@ void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
 
 void fsh::Synth::setParams(const Params& params)
 {
-  _voice.setParams(params.voice);
+  for (auto& voice : _voices)
+    voice.setParams(params.voice);
 }
 
 void fsh::Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
@@ -66,14 +73,16 @@ void fsh::Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi
 
     if (const auto elapsedSamples = static_cast<size_t>(msg.samplePosition) - bufferOffset;
         elapsedSamples > 0) {
-      _voice.render(audio, elapsedSamples, bufferOffset);
+      for (auto& voice : _voices)
+        voice.render(audio, elapsedSamples, bufferOffset);
       bufferOffset += elapsedSamples;
     }
   }
 
   if (const auto elapsedSamples = static_cast<size_t>(audio.getNumSamples()) - bufferOffset;
       elapsedSamples > 0)
-    _voice.render(audio, elapsedSamples, bufferOffset);
+    for (auto& voice : _voices)
+      voice.render(audio, elapsedSamples, bufferOffset);
 
   midi.clear();
 }

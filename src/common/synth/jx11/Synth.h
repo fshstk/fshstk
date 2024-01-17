@@ -41,6 +41,8 @@ public:
 private:
   void handleMIDIEvent(const MidiEvent&);
 
-  Voice _voice;
+  // Limited to one voice for now because sawtooth algorithm is very inefficient.
+  static const auto numVoices = 1;
+  std::array<Voice, numVoices> _voices;
 };
 } // namespace fsh
