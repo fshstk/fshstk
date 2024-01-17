@@ -22,7 +22,6 @@
 #pragma once
 #include "MidiEvent.h"
 #include "Voice.h"
-#include <cstddef>
 #include <juce_audio_basics/juce_audio_basics.h>
 
 namespace fsh {

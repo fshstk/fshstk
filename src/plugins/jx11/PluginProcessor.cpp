@@ -20,7 +20,6 @@
 ***************************************************************************************************/
 
 #include "PluginProcessor.h"
-#include "MidiEvent.h"
 #include "SphericalHarmonics.h"
 #include "Synth.h"
 #include <fmt/format.h>
