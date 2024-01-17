@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "ADSR.h"
 #include "Oscillator.h"
 #include <cstdint>
 #include <juce_audio_basics/juce_audio_basics.h>
@@ -32,6 +33,7 @@ public:
   struct Params
   {
     float noiseAmt;
+    ADSR::Params adsr;
   };
 
   void reset();
@@ -45,6 +47,7 @@ private:
   Params _params;
   uint8_t _noteVal;
   uint8_t _velocity;
+  ADSR _adsr;
   Oscillator _oscSaw{ Oscillator::Type::Saw };
   Oscillator _oscNoise{ Oscillator::Type::Noise };
 };

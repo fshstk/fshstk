@@ -143,15 +143,15 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     std::make_unique<juce::AudioParameterFloat>(
       "env_attack",
       "Envelope Attack",
-      juce::NormalisableRange{ 0.0f, 100.0f, 1.0f },
+      juce::NormalisableRange{ 0.0f, 1000.0f, 1.0f },
       0.0f,
-      juce::AudioParameterFloatAttributes{}.withLabel("%")),
+      juce::AudioParameterFloatAttributes{}.withLabel("ms")),
     std::make_unique<juce::AudioParameterFloat>(
       "env_decay",
       "Envelope Decay",
-      juce::NormalisableRange{ 0.0f, 100.0f, 1.0f },
+      juce::NormalisableRange{ 0.0f, 1000.0f, 1.0f },
       50.0f,
-      juce::AudioParameterFloatAttributes{}.withLabel("%")),
+      juce::AudioParameterFloatAttributes{}.withLabel("ms")),
     std::make_unique<juce::AudioParameterFloat>(
       "env_sustain",
       "Envelope Sustain",
@@ -161,9 +161,9 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     std::make_unique<juce::AudioParameterFloat>(
       "env_release",
       "Envelope Release",
-      juce::NormalisableRange{ 0.0f, 100.0f, 1.0f },
+      juce::NormalisableRange{ 0.0f, 1000.0f, 1.0f },
       30.0f,
-      juce::AudioParameterFloatAttributes{}.withLabel("%")),
+      juce::AudioParameterFloatAttributes{}.withLabel("ms")),
     std::make_unique<juce::AudioParameterFloat>(
       "lfo_rate",
       "LFO Rate",
@@ -218,13 +218,33 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 auto PluginState::getSynthParams() const -> fsh::Synth::Params
 {
   return {
-    .noiseAmt = getNoiseAmt(),
+    .voice = { .noiseAmt = getNoiseAmt(), .adsr = getAmpEnvelope() },
   };
 }
 
-float PluginState::getNoiseAmt() const
+auto PluginState::getNoiseAmt() const -> float
 {
   const auto* const noisePercent = getRawParameterValue("noise");
   assert(noisePercent != nullptr);
   return *noisePercent / 100.0f;
+}
+
+auto PluginState::getAmpEnvelope() const -> fsh::ADSR::Params
+{
+  const auto* const attack = getRawParameterValue("env_attack");
+  const auto* const decay = getRawParameterValue("env_decay");
+  const auto* const sustainPercent = getRawParameterValue("env_sustain");
+  const auto* const release = getRawParameterValue("env_release");
+
+  assert(attack != nullptr);
+  assert(decay != nullptr);
+  assert(sustainPercent != nullptr);
+  assert(release != nullptr);
+
+  return {
+    .attack = *attack,
+    .decay = *decay,
+    .sustain = *sustainPercent / 100.0f,
+    .release = *release,
+  };
 }

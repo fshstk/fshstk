@@ -20,27 +20,42 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "MidiEvent.h"
-#include "Voice.h"
-#include <cstddef>
-#include <juce_audio_basics/juce_audio_basics.h>
+#include "EnvelopeFollower.h"
 
 namespace fsh {
-class Synth
+class ADSR
 {
 public:
   struct Params
   {
-    Voice::Params voice;
+    double attack;
+    double decay;
+    double sustain;
+    double release;
   };
 
-  void setSampleRate(double sampleRate);
+  auto isActive() const -> bool;
+  auto getNextValue() -> double;
+  void noteOn();
+  void noteOff();
   void reset();
-  void render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset);
-  void handleMIDIEvent(const MidiEvent&);
+  void setSampleRate(double);
   void setParams(const Params&);
 
 private:
-  Voice _voice;
+  enum class Phase
+  {
+    Idle,
+    Attack,
+    Decay,
+    Sustain,
+    Release,
+  };
+
+  Params _params;
+  Phase _phase;
+  EnvelopeFollower _env;
+
+  void updateEnvelope();
 };
 } // namespace fsh

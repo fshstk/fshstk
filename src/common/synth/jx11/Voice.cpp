@@ -40,6 +40,7 @@ void fsh::Voice::reset()
 {
   _oscSaw.reset();
   _oscNoise.reset();
+  _adsr.reset();
   _noteVal = 0;
   _velocity = 0;
 }
@@ -52,12 +53,14 @@ void fsh::Voice::noteOn(uint8_t noteVal, uint8_t velocity)
 
   _noteVal = noteVal;
   _velocity = velocity;
+  _adsr.noteOn();
 }
 
 void fsh::Voice::noteOff(uint8_t noteVal, uint8_t)
 {
+  // TODO: when ADSR is done, trigger reset
   if (noteVal == _noteVal)
-    reset();
+    _adsr.noteOff();
 }
 
 void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
@@ -72,6 +75,8 @@ void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
     .amplitude = velocityToAmplitude(_velocity) * _params.noiseAmt,
   });
 
+  _adsr.setParams(_params.adsr);
+
   const auto bufferSize = static_cast<size_t>(audio.getNumSamples());
   const auto numChannels = static_cast<size_t>(audio.getNumChannels());
 
@@ -84,7 +89,9 @@ void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
       return;
     }
 
-    const auto out = _oscSaw.nextSample() + _oscNoise.nextSample();
+    const auto osc = _oscSaw.nextSample() + _oscNoise.nextSample();
+    const auto env = _adsr.getNextValue();
+    const auto out = osc * static_cast<float>(env);
     for (auto ch = 0U; ch < numChannels; ++ch) {
       audio.setSample(static_cast<int>(ch), static_cast<int>(n), out);
     }
@@ -95,6 +102,7 @@ void fsh::Voice::setSampleRate(double sampleRate)
 {
   _oscSaw.setSampleRate(sampleRate);
   _oscNoise.setSampleRate(sampleRate);
+  _adsr.setSampleRate(sampleRate);
 }
 
 void fsh::Voice::setParams(const Params& params)

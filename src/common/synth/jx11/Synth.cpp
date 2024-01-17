@@ -49,5 +49,5 @@ void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
 
 void fsh::Synth::setParams(const Params& params)
 {
-  _voice.setParams({ .noiseAmt = params.noiseAmt });
+  _voice.setParams(params.voice);
 }

@@ -24,6 +24,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
+  ADSR.cpp
   MidiEvent.cpp
   Oscillator.cpp
   Synth.cpp
