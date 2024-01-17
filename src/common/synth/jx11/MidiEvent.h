@@ -30,6 +30,7 @@ public:
   {
     NoteOff = 0x80,
     NoteOn = 0x90,
+    PitchBend = 0xE0,
   };
 
   explicit MidiEvent(const juce::MidiMessageMetadata&);

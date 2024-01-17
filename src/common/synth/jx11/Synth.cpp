@@ -21,6 +21,7 @@
 
 #include "Synth.h"
 #include "MidiEvent.h"
+#include "spdlog/spdlog.h"
 #include <fmt/format.h>
 
 void fsh::Synth::setSampleRate(double sampleRate)
@@ -40,11 +41,20 @@ void fsh::Synth::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
 
 void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
 {
-  if (evt.type() == MidiEvent::Type::NoteOn)
-    _voice.noteOn(evt.data1(), evt.data2());
+  switch (evt.type()) {
+    using enum MidiEvent::Type;
+    case NoteOn:
+      _voice.noteOn(evt.data1(), evt.data2());
+      return;
+    case NoteOff:
+      _voice.noteOff(evt.data1(), evt.data2());
+      return;
+    case PitchBend:
+      _voice.pitchBend(evt.fullData());
+      return;
+  }
 
-  if (evt.type() == MidiEvent::Type::NoteOff)
-    _voice.noteOff(evt.data1(), evt.data2());
+  spdlog::info("Unhandled MIDI event: {:#x}", static_cast<uint8_t>(evt.type()));
 }
 
 void fsh::Synth::setParams(const Params& params)

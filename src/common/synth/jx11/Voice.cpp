@@ -23,11 +23,16 @@
 #include "spdlog/spdlog.h"
 
 namespace {
+auto semitonesToFactor(double semitones) -> double
+{
+  return std::exp2(semitones / 12.0);
+}
+
 auto midiNoteToFreq(uint8_t noteVal) -> double
 {
   const auto concertAMidi = 69;
   const auto concertAFreq = 440.0;
-  return concertAFreq * std::exp2((noteVal - concertAMidi) / 12.0);
+  return concertAFreq * semitonesToFactor(noteVal - concertAMidi);
 }
 
 auto velocityToAmplitude(uint8_t vel) -> double
@@ -44,6 +49,7 @@ void fsh::Voice::reset()
   _adsr.reset();
   _noteVal = 0;
   _velocity = 0;
+  _bendMultiplier = 1.0;
 }
 
 void fsh::Voice::noteOn(uint8_t noteVal, uint8_t velocity)
@@ -64,20 +70,31 @@ void fsh::Voice::noteOff(uint8_t noteVal, uint8_t)
     _adsr.noteOff();
 }
 
+void fsh::Voice::pitchBend(uint16_t bendVal)
+{
+  const auto neutralBend = 8'192;
+  const auto bendRangeSemitones = 2;
+  const auto bendValSemitones =
+    static_cast<double>(bendVal - neutralBend) / neutralBend * bendRangeSemitones;
+  _bendMultiplier = semitonesToFactor(bendValSemitones);
+}
+
 void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
 {
+  const auto oscFreq = midiNoteToFreq(_noteVal) * _bendMultiplier;
+
   _oscA.setParams({
-    .frequency = midiNoteToFreq(_noteVal),
+    .frequency = oscFreq,
     .amplitude = velocityToAmplitude(_velocity) * _params.oscALvl,
   });
 
   _oscB.setParams({
-    .frequency = midiNoteToFreq(_noteVal) * _params.oscBDetune,
+    .frequency = oscFreq * _params.oscBDetune,
     .amplitude = velocityToAmplitude(_velocity) * _params.oscBLvl,
   });
 
   _oscNoise.setParams({
-    .frequency = midiNoteToFreq(_noteVal),
+    .frequency = oscFreq,
     .amplitude = velocityToAmplitude(_velocity) * _params.noiseLvl,
   });
 

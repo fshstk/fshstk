@@ -42,6 +42,7 @@ public:
   void reset();
   void noteOn(uint8_t noteVal, uint8_t velocity);
   void noteOff(uint8_t noteVal, uint8_t velocity);
+  void pitchBend(uint16_t bendVal);
   void render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset);
   void setSampleRate(double sampleRate);
   void setParams(const Params&);
@@ -49,6 +50,7 @@ public:
 private:
   Params _params;
   uint8_t _noteVal;
+  double _bendMultiplier = 1.0;
   uint8_t _velocity;
   ADSR _adsr;
   Oscillator _oscA{ Oscillator::Type::Saw };
