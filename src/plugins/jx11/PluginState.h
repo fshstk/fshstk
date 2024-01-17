@@ -31,6 +31,5 @@ public:
   auto getSynthParams() const -> fsh::Synth::Params;
 
 private:
-  auto getNoiseAmt() const -> float;
   auto getAmpEnvelope() const -> fsh::ADSR::Params;
 };

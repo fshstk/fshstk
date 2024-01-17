@@ -38,7 +38,8 @@ auto velocityToAmplitude(uint8_t vel) -> double
 
 void fsh::Voice::reset()
 {
-  _oscSaw.reset();
+  _oscA.reset();
+  _oscB.reset();
   _oscNoise.reset();
   _adsr.reset();
   _noteVal = 0;
@@ -65,14 +66,19 @@ void fsh::Voice::noteOff(uint8_t noteVal, uint8_t)
 
 void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
 {
-  _oscSaw.setParams({
+  _oscA.setParams({
     .frequency = midiNoteToFreq(_noteVal),
-    .amplitude = velocityToAmplitude(_velocity),
+    .amplitude = velocityToAmplitude(_velocity) * _params.oscALvl,
+  });
+
+  _oscB.setParams({
+    .frequency = midiNoteToFreq(_noteVal) * _params.oscBDetune,
+    .amplitude = velocityToAmplitude(_velocity) * _params.oscBLvl,
   });
 
   _oscNoise.setParams({
     .frequency = midiNoteToFreq(_noteVal),
-    .amplitude = velocityToAmplitude(_velocity) * _params.noiseAmt,
+    .amplitude = velocityToAmplitude(_velocity) * _params.noiseLvl,
   });
 
   _adsr.setParams(_params.adsr);
@@ -89,7 +95,7 @@ void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
       return;
     }
 
-    const auto osc = _oscSaw.nextSample() + _oscNoise.nextSample();
+    const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscNoise.nextSample();
     const auto env = _adsr.getNextValue();
     const auto out = osc * static_cast<float>(env);
     for (auto ch = 0U; ch < numChannels; ++ch) {
@@ -100,7 +106,8 @@ void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
 
 void fsh::Voice::setSampleRate(double sampleRate)
 {
-  _oscSaw.setSampleRate(sampleRate);
+  _oscA.setSampleRate(sampleRate);
+  _oscB.setSampleRate(sampleRate);
   _oscNoise.setSampleRate(sampleRate);
   _adsr.setSampleRate(sampleRate);
 }

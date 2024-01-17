@@ -32,7 +32,10 @@ class Voice
 public:
   struct Params
   {
-    float noiseAmt;
+    float noiseLvl;
+    double oscALvl;
+    double oscBLvl;
+    double oscBDetune;
     ADSR::Params adsr;
   };
 
@@ -48,7 +51,8 @@ private:
   uint8_t _noteVal;
   uint8_t _velocity;
   ADSR _adsr;
-  Oscillator _oscSaw{ Oscillator::Type::Saw };
+  Oscillator _oscA{ Oscillator::Type::Saw };
+  Oscillator _oscB{ Oscillator::Type::Saw };
   Oscillator _oscNoise{ Oscillator::Type::Noise };
 };
 } // namespace fsh

@@ -23,11 +23,11 @@
 #include <fmt/format.h>
 
 namespace {
-auto displayOscMix(const float percent, const int) -> juce::String
+auto displayOscMix(const float oscMix, const int) -> juce::String
 {
-  const auto oscA = 100.0f - 0.5f * percent;
-  const auto oscB = 0.5f * percent;
-  return fmt::format("{:4.0f}{:2.0f}", oscA, oscB);
+  const auto oscBLvl = oscMix;
+  const auto oscALvl = 100.0f - oscBLvl;
+  return fmt::format("A: {:3.0f} | B: {:3.0f}", oscALvl, oscBLvl);
 }
 
 auto displayFilterVelocity(const float amount, const int) -> juce::String
@@ -217,16 +217,30 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 
 auto PluginState::getSynthParams() const -> fsh::Synth::Params
 {
-  return {
-    .voice = { .noiseAmt = getNoiseAmt(), .adsr = getAmpEnvelope() },
-  };
-}
-
-auto PluginState::getNoiseAmt() const -> float
-{
+  const auto* const oscMix = getRawParameterValue("osc_mix");
+  const auto* const oscTune = getRawParameterValue("osc_tune");
+  const auto* const oscFine = getRawParameterValue("osc_fine");
   const auto* const noisePercent = getRawParameterValue("noise");
+
+  assert(oscMix != nullptr);
+  assert(oscTune != nullptr);
+  assert(oscFine != nullptr);
   assert(noisePercent != nullptr);
-  return *noisePercent / 100.0f;
+
+  const auto oscBLvl = *oscMix / 100.0f;
+  const auto oscALvl = 1.0f - oscBLvl;
+  const auto noiseLvl = *noisePercent / 100.0f;
+
+  const auto semitonesToMultiplier = [](const float semi) { return std::exp2(semi / 12.0f); };
+  const auto oscBDetune = semitonesToMultiplier(*oscTune + *oscFine / 100.0f);
+
+  return { .voice = {
+             .noiseLvl = noiseLvl,
+             .oscALvl = oscALvl,
+             .oscBLvl = oscBLvl,
+             .oscBDetune = oscBDetune,
+             .adsr = getAmpEnvelope(),
+           } };
 }
 
 auto PluginState::getAmpEnvelope() const -> fsh::ADSR::Params
