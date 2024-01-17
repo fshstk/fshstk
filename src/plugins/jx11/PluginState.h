@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "FeedbackDelayNetwork.h"
 #include "PluginStateBase.h"
 #include "Synth.h"
 #include <juce_dsp/juce_dsp.h>
@@ -29,6 +30,7 @@ class PluginState : public fsh::PluginStateBase
 public:
   explicit PluginState(juce::AudioProcessor&);
   auto getSynthParams() const -> fsh::Synth::Params;
+  auto getReverbParams() const -> fsh::FeedbackDelayNetwork::Params;
 
 private:
   auto getAmpEnvelope() const -> fsh::ADSR::Params;

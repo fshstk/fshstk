@@ -195,6 +195,21 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
                                                  juce::StringArray{ "Mono", "Poly" },
                                                  1, // default is poly
                                                  juce::AudioParameterChoiceAttributes{}),
+    std::make_unique<juce::AudioParameterFloat>("rev_size",
+                                                "Reverb Room Size",
+                                                juce::NormalisableRange<float>(1.0f, 30.0f, 1.0f),
+                                                20.0f,
+                                                juce::AudioParameterFloatAttributes{}),
+    std::make_unique<juce::AudioParameterFloat>("rev_time",
+                                                "Reverb Time",
+                                                juce::NormalisableRange<float>(0.1f, 9.0f, 0.1f),
+                                                5.f,
+                                                juce::AudioParameterFloatAttributes{}),
+    std::make_unique<juce::AudioParameterFloat>("rev_drywet",
+                                                "Reverb Dry/Wet",
+                                                juce::NormalisableRange<float>(0.f, 1.f, 0.01f),
+                                                0.5f,
+                                                juce::AudioParameterFloatAttributes{}),
   };
 }
 } // namespace
@@ -230,6 +245,23 @@ auto PluginState::getSynthParams() const -> fsh::Synth::Params
              .oscBDetune = oscBDetune,
              .adsr = getAmpEnvelope(),
            } };
+}
+
+auto PluginState::getReverbParams() const -> fsh::FeedbackDelayNetwork::Params
+{
+  const auto* const size = getRawParameterValue("rev_size");
+  const auto* const time = getRawParameterValue("rev_time");
+  const auto* const drywet = getRawParameterValue("rev_drywet");
+
+  assert(size != nullptr);
+  assert(time != nullptr);
+  assert(drywet != nullptr);
+
+  return {
+    .roomSize = *size,
+    .revTime = *time,
+    .dryWet = *drywet,
+  };
 }
 
 auto PluginState::getAmpEnvelope() const -> fsh::ADSR::Params
