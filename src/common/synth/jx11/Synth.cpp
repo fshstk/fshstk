@@ -41,10 +41,10 @@ void fsh::Synth::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
 void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
 {
   if (evt.type() == MidiEvent::Type::NoteOn)
-    _voice.noteOn(evt.noteVal(), evt.velocity());
+    _voice.noteOn(evt.data1(), evt.data2());
 
   if (evt.type() == MidiEvent::Type::NoteOff)
-    _voice.noteOff(evt.noteVal(), evt.velocity());
+    _voice.noteOff(evt.data1(), evt.data2());
 }
 
 void fsh::Synth::setParams(const Params& params)

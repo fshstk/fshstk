@@ -28,19 +28,19 @@ class MidiEvent
 public:
   enum class Type
   {
-    Unknown = 0x00,
     NoteOff = 0x80,
     NoteOn = 0x90,
   };
 
   explicit MidiEvent(const juce::MidiMessageMetadata&);
   auto type() const -> Type;
-  auto noteVal() const -> uint8_t;
-  auto velocity() const -> uint8_t;
+  auto data1() const -> uint8_t;
+  auto data2() const -> uint8_t;
+  auto fullData() const -> uint16_t;
 
 private:
-  Type _type = Type::Unknown;
-  uint8_t _noteVal = 0;
-  uint8_t _velocity = 0;
+  Type _type;
+  uint8_t _lsb = 0;
+  uint8_t _msb = 0;
 };
 } // namespace fsh
