@@ -30,7 +30,7 @@ class AmbisonicEncoder
 public:
   struct Params
   {
-    SphericalVector direction = { .azimuth = 0.0f, .elevation = 0.0f };
+    SphericalVector direction;
     float order = fsh::maxAmbiOrder;
   };
 
