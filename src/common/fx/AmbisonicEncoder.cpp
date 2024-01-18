@@ -54,8 +54,9 @@ void fsh::AmbisonicEncoder::updateCoefficients()
 
   const auto targetCoefficients = harmonics(_params.direction);
 
-  // TODO: should be compile time assertion:
-  assert(targetCoefficients.size() == _coefficients.size());
+  static_assert(std::tuple_size_v<decltype(targetCoefficients)> ==
+                  std::tuple_size_v<decltype(_coefficients)>,
+                "targetCoefficients and _coefficients must have the same size");
 
   for (auto i = 0U; i < _coefficients.size(); ++i) {
     if (i < fullGainChannels)
