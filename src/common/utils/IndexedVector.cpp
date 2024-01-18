@@ -19,22 +19,34 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include <vector>
+#include "IndexedVector.h"
 
-namespace fsh {
-class IndexedVector
+void fsh::IndexedVector::resize(size_t newSize)
 {
-public:
-  void resize(size_t newSize);
-  auto get() const -> float;
-  void add(float val);
-  void set(float val);
-  void increment();
-  void clear();
+  data.resize(newSize);
+}
 
-private:
-  size_t index = 0;
-  std::vector<float> data;
-};
-} // namespace fsh
+auto fsh::IndexedVector::get() const -> float
+{
+  return data[index];
+}
+
+void fsh::IndexedVector::add(float val)
+{
+  data[index] += val;
+}
+
+void fsh::IndexedVector::set(float val)
+{
+  data[index] = val;
+}
+
+void fsh::IndexedVector::increment()
+{
+  index = (index + 1) % data.size();
+}
+
+void fsh::IndexedVector::clear()
+{
+  std::fill(data.begin(), data.end(), 0.0f);
+}
