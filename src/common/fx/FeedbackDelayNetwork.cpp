@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "FeedbackDelayNetwork.h"
+#include <spdlog/spdlog.h>
 
 namespace {
 auto generatePrimes(size_t count)
@@ -102,10 +103,16 @@ fsh::FeedbackDelayNetwork::FeedbackDelayNetwork()
 void fsh::FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 {
   const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
+  const auto numChannelsToProcess = std::min(numChannels, fdnSize);
   const auto numSamples = buffer.getNumSamples();
 
+  if (fdnSize < numChannels)
+    spdlog::error(
+      "FDN size is smaller than number of channels in buffer. Only processing first {} channels.",
+      fdnSize);
+
   for (int i = 0; i < numSamples; ++i) {
-    for (auto channel = 0UL; channel < numChannels; ++channel) {
+    for (auto channel = 0UL; channel < numChannelsToProcess; ++channel) {
       const auto input = buffer.getSample(static_cast<int>(channel), i);
       delayBuffers[channel].add(input);
 
