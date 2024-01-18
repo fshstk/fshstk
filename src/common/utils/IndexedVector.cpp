@@ -41,7 +41,7 @@ void fsh::IndexedVector::set(float val)
   data[index] = val;
 }
 
-void fsh::IndexedVector::increment()
+void fsh::IndexedVector::incrementIndex()
 {
   index = (index + 1) % data.size();
 }

@@ -30,7 +30,7 @@ public:
   auto get() const -> float;
   void add(float val);
   void set(float val);
-  void increment();
+  void incrementIndex();
   void clear();
 
 private:

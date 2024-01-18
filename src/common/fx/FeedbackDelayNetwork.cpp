@@ -122,7 +122,7 @@ void fsh::FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 
     for (auto channel = 0U; channel < delayBuffers.size(); ++channel) {
       delayBuffers[channel].set(transferVector[channel]);
-      delayBuffers[channel].increment();
+      delayBuffers[channel].incrementIndex();
     }
   }
 }
