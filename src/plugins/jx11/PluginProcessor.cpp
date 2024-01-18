@@ -22,7 +22,6 @@
 #include "PluginProcessor.h"
 #include "SphericalHarmonics.h"
 #include "Synth.h"
-#include <fmt/format.h>
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
