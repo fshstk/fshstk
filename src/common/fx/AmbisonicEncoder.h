@@ -25,17 +25,36 @@
 #include "SphericalVector.h"
 
 namespace fsh {
+/**
+ * Provides coefficients to encode a mono signal into Ambisonics.
+ *
+ * The output will always have 36 channels, representing fifth order Ambisonic coefficients.
+ * However, setting the order parameter lower will result in the higher order channels being zeroed.
+ * Fractional orders are supported, allowing smooth fading between orders. In general, for an order
+ * setting of `n`, the first `ceil(n + 1) ^ 2` channels will be non-zero.
+ *
+ * To use, you must first set the sampling rate using setSampleRate(). You can then set direction
+ * and order via the setParams() method. Finally, call getCoefficientsForNextSample() in a loop for
+ * each input sample. Multiply the input sample by each element to get the values for the output
+ * channels.
+ */
 class AmbisonicEncoder
 {
 public:
+  /// Parameters for AmbisonicEncoder.
   struct Params
   {
-    SphericalVector direction;
-    float order = fsh::maxAmbiOrder;
+    SphericalVector direction;       ///< direction to encode to
+    float order = fsh::maxAmbiOrder; ///< order to encode to
   };
 
+  /// Get the channel coefficients for the next input sample.
   auto getCoefficientsForNextSample() -> std::array<float, maxNumChannels>;
+
+  /// Set order and direction for encoding.
   void setParams(const Params&);
+
+  /// Set the sample rate. This must be set before using the AmbisonicEncoder.
   void setSampleRate(double sampleRate);
 
 private:

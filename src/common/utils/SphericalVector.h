@@ -23,9 +23,12 @@
 #include <juce_opengl/juce_opengl.h>
 
 namespace fsh {
+/**
+ * Represents a direction in spherical coordinates.
+ */
 struct SphericalVector
 {
-  double azimuth = 0.0;
-  double elevation = 0.0;
+  double azimuth = 0.0;   ///< azimuth in degrees
+  double elevation = 0.0; ///< elevation in degrees
 };
 } // namespace fsh

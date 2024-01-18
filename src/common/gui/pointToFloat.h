@@ -25,6 +25,7 @@
 namespace fsh {
 // Convenience function since functions like juce::Component::getLocalBounds().getCentre() return a
 // juce::Point<int>, but certain graphics functions in Juce expect floats instead.
+// TODO: pack into class so doxygen can generate docs
 template<typename T>
 juce::Point<float> pointToFloat(const juce::Point<T> p)
 {

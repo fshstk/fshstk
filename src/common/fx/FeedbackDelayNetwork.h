@@ -24,11 +24,22 @@
 #include <juce_dsp/juce_dsp.h>
 
 namespace fsh {
+/**
+ * Ambisonic FDN reverb algorithm.
+ *
+ * This is a feedback delay network (FDN) reverb algorithm based on the FdnReverb class from the
+ * IEM Plugin Suite. This class takes a JUCE AudioBuffer object in the ambisonic domain and applies
+ * the FDN reverb algorithm in-place using the process() method.
+ *
+ * Note that you must call setSampleRate() before calling process() for the first time.
+ */
 class FeedbackDelayNetwork
 {
 public:
+  /// The number of delay lines in the FDN.
   static constexpr size_t fdnSize = 64;
 
+  /// Parameters for the FDN reverb algorithm.
   struct Params
   {
     float roomSize;
@@ -36,10 +47,19 @@ public:
     float dryWet;
   };
 
+  /// Default constructor.
   FeedbackDelayNetwork();
+
+  /// Set the parameters for the FDN reverb algorithm.
   void setParams(const Params&);
+
+  /// Set the sample rate. Must be called before calling process().
   void setSampleRate(double);
+
+  /// Clear the delay buffers.
   void reset();
+
+  /// Apply the FDN reverb algorithm to the given ambisonic audio buffer.
   void process(juce::AudioBuffer<float>&);
 
 private:

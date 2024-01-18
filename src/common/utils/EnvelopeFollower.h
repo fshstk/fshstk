@@ -22,19 +22,46 @@
 #pragma once
 
 namespace fsh {
+/**
+ * Smoothed value tracking with separate attack/decay times.
+ *
+ * Can be used as a general simple attack/decay envelope, or for avoiding audible clicks on sudden
+ * parameter changes.
+ *
+ * This class provides a simple exponential curve between its current value and a target value,
+ * specified with setTargetValue(). If the target is lower than the current value, the
+ * EnvelopeFollower will use the attack time to reach the target, and conversely the release time if
+ * the target is lower.
+ *
+ * Note that
+ *
+ * Before using an EnvelopeFollower, you must set the sample rate using setSampleRate(). You may
+ * also want to set the attack and release times using setParams(), but these will fall back on very
+ * short default values.
+ */
 class EnvelopeFollower
 {
 public:
+  /// Parameters for EnvelopeFollower.
   struct Params
   {
-    double attackTimeMilliseconds = 5.0;
-    double releaseTimeMilliseconds = 5.0;
+    double attackTimeMilliseconds = 5.0;  ///< attack time in milliseconds
+    double releaseTimeMilliseconds = 5.0; ///< release time in milliseconds
   };
 
+  /// Calculate the next value between the current value and the target.
   auto getNextValue() -> double;
+
+  /// Set the target.
   void setTargetValue(double);
+
+  /// Set the sample rate. This must be set before using the EnvelopeFollower.
   void setSampleRate(double);
+
+  /// Set the parameters. Will fall back on default values if not set.
   void setParams(const Params&);
+
+  /// Reset both the current and target values to 0.
   void reset();
 
 private:

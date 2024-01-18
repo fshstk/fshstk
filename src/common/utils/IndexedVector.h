@@ -23,14 +23,30 @@
 #include <vector>
 
 namespace fsh {
+/**
+ * Primitive ring buffer class.
+ *
+ * Can be used as a simple delay line or FIFO queue.
+ */
 class IndexedVector
 {
 public:
+  /// Resize the underlying vector.
   void resize(size_t newSize);
+
+  /// Get the element at the current index.
   auto get() const -> float;
+
+  /// Add a value to the element at the current index.
   void add(float val);
+
+  /// Set the element at the current index.
   void set(float val);
+
+  /// Increment the index with wraparound.
   void incrementIndex();
+
+  /// Set all elements to zero.
   void clear();
 
 private:

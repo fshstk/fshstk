@@ -23,6 +23,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh {
+/// Colors used by the GUI.
 struct guiColors
 {
   inline static const juce::Colour background{ 48, 48, 48 };
@@ -30,6 +31,7 @@ struct guiColors
   inline static const juce::Colour transparent{ 0.0f, 0.0f, 0.0f, 0.0f };
 };
 
+/// Fonts used by the GUI.
 struct guiFonts
 {
   static const juce::Font title;
@@ -38,6 +40,7 @@ struct guiFonts
   static const juce::Font fontawesome_solid;
 };
 
+/// Sizes used by the GUI.
 struct guiSizes
 {
   static inline const auto editorWidth = 415;
