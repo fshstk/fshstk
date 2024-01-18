@@ -33,14 +33,14 @@ public:
 
   void set(T val)
   {
-    if (_val < min) {
-      spdlog::warn("BoundedValue: value {} is below minimum {}, clamping", _val, min);
-      _val = MIN;
+    if (val < min) {
+      spdlog::warn("BoundedValue: value {} is below minimum {}, clamping", val, min);
+      _val = min;
       return;
     }
 
-    if (_val > max) {
-      spdlog::warn("BoundedValue: value {} is above maximum {}, clamping", _val, min);
+    if (val > max) {
+      spdlog::warn("BoundedValue: value {} is above maximum {}, clamping", val, max);
       _val = max;
       return;
     }
