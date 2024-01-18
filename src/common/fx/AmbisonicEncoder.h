@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "BoundedValue.h"
 #include "EnvelopeFollower.h"
 #include "SphericalHarmonics.h"
 #include "SphericalVector.h"
@@ -31,7 +32,7 @@ public:
   struct Params
   {
     SphericalVector direction = { .azimuth = 0.0f, .elevation = 0.0f };
-    float order = fsh::maxAmbiOrder;
+    fsh::BoundedFloat<0, fsh::maxAmbiOrder> order = fsh::maxAmbiOrder;
   };
 
   auto getCoefficientsForNextSample() -> std::array<float, maxNumChannels>;

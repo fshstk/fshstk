@@ -19,50 +19,42 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "AmbisonicEncoder.h"
-#include "SphericalHarmonics.h"
-#include <cassert>
+#pragma once
 #include <spdlog/spdlog.h>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+namespace fsh {
+template<typename T, int MIN, int MAX>
+class BoundedValue
 {
-  auto result = std::array<float, maxNumChannels>{};
-  for (auto i = 0U; i < _coefficients.size(); ++i)
-    result[i] = static_cast<float>(_coefficients[i].getNextValue());
-  return result;
-}
+public:
+  BoundedValue(T val) { set(val); }
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
-{
-  for (auto& follower : _coefficients)
-    follower.setSampleRate(sampleRate);
-}
+  auto get() const -> T { return _val; }
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
-{
-  _params = params;
-  updateCoefficients();
-}
+  void set(T val)
+  {
+    if (_val < min) {
+      spdlog::warn("BoundedValue: value {} is below minimum {}, clamping", _val, min);
+      _val = MIN;
+      return;
+    }
 
-void fsh::AmbisonicEncoder::updateCoefficients()
-{
-  const auto wholeOrder = static_cast<size_t>(_params.order.get());
-  const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);
+    if (_val > max) {
+      spdlog::warn("BoundedValue: value {} is above maximum {}, clamping", _val, min);
+      _val = max;
+      return;
+    }
 
-  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
-  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
-
-  const auto targetCoefficients = harmonics(_params.direction);
-
-  // TODO: should be compile time assertion:
-  assert(targetCoefficients.size() == _coefficients.size());
-
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
-    if (i < fullGainChannels)
-      _coefficients[i].setTargetValue(targetCoefficients[i]);
-    else if (i < reducedGainChannels)
-      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
-    else
-      _coefficients[i].setTargetValue(0.0f);
+    _val = val;
   }
-}
+
+  static constexpr auto min = static_cast<T>(MIN);
+  static constexpr auto max = static_cast<T>(MAX);
+
+private:
+  T _val;
+};
+
+template<int MIN, int MAX>
+using BoundedFloat = BoundedValue<float, MIN, MAX>;
+} // namespace fsh
