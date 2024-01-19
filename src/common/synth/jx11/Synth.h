@@ -38,11 +38,12 @@ public:
   void setParams(const Params&);
   void process(juce::AudioBuffer<float>&, juce::MidiBuffer&);
 
+  // Limited for now because sawtooth algorithm is very inefficient:
+  static const auto numVoices = 6;
+
 private:
   void handleMIDIEvent(const MidiEvent&);
 
-  // Limited to one voice for now because sawtooth algorithm is very inefficient.
-  static const auto numVoices = 1;
   std::array<Voice, numVoices> _voices;
 };
 } // namespace fsh
