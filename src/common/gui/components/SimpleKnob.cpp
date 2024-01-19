@@ -79,7 +79,8 @@ void fsh::SimpleKnob::paint(juce::Graphics& g)
 
 void fsh::SimpleKnob::attach(PluginStateBase& state, juce::String paramID)
 {
-  knobAttachment = std::make_unique<PluginStateBase::SliderAttachment>(state, paramID, *this);
+  knobAttachment = std::make_unique<PluginStateBase::SliderAttachment>(
+    state.getReferenceToBaseClass(), paramID, *this);
 }
 
 juce::Font fsh::SimpleKnob::KnobStyle::getLabelFont(juce::Label&)

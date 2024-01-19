@@ -24,9 +24,11 @@
 #include <spdlog/spdlog.h>
 
 namespace fsh {
-class PluginStateBase : public juce::AudioProcessorValueTreeState
+class PluginStateBase : private juce::AudioProcessorValueTreeState
 {
 public:
+  using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+
   PluginStateBase(juce::AudioProcessor& parent,
                   juce::AudioProcessorValueTreeState::ParameterLayout&& params)
     : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
@@ -50,6 +52,9 @@ public:
       spdlog::warn("setState() received invalid state object");
   }
 
+  auto getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState& { return *this; }
+
+protected:
   auto getRawParamSafely(const juce::String& id) const -> float
   {
     const auto* const param = getRawParameterValue(id);
