@@ -19,51 +19,102 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "AmbisonicEncoder.h"
-#include "SphericalHarmonics.h"
-#include <cassert>
-#include <spdlog/spdlog.h>
+#define _USE_MATH_DEFINES
+#include "Oscillator.h"
+#include "spdlog/spdlog.h"
+#include <cmath>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+namespace {
+double sine(double phase)
 {
-  auto result = std::array<float, maxNumChannels>{};
-  for (auto i = 0U; i < _coefficients.size(); ++i)
-    result[i] = static_cast<float>(_coefficients[i].getNextValue());
-  return result;
+  return std::sin(2.0 * M_PI * phase);
 }
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
+double noise()
 {
-  for (auto& follower : _coefficients)
-    follower.setSampleRate(sampleRate);
+  return static_cast<double>(std::rand()) / static_cast<double>(RAND_MAX);
 }
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
+double saw(double phase, double deltaPhase)
 {
-  _params = params;
-  updateCoefficients();
-}
-
-void fsh::AmbisonicEncoder::updateCoefficients()
-{
-  const auto wholeOrder = static_cast<size_t>(_params.order.get());
-  const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);
-
-  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
-  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
-
-  const auto targetCoefficients = harmonics(_params.direction);
-
-  static_assert(std::tuple_size_v<decltype(targetCoefficients)> ==
-                  std::tuple_size_v<decltype(_coefficients)>,
-                "targetCoefficients and _coefficients must have the same size");
-
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
-    if (i < fullGainChannels)
-      _coefficients[i].setTargetValue(targetCoefficients[i]);
-    else if (i < reducedGainChannels)
-      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
-    else
-      _coefficients[i].setTargetValue(0.0f);
+  if (deltaPhase < 0.0001) {
+    spdlog::warn("oscillator called with zero frequency");
+    return 0.0;
   }
+
+  const auto nyquist = 0.5;
+  auto out = 0.0;
+
+  // "Good enough" saw, every harmonic has positive sign:
+  for (auto k = 1; (k * deltaPhase) < nyquist; ++k)
+    out += std::sin(2.0 * M_PI * k * phase) / k;
+
+  return (2.0 / M_PI) * out;
+}
+
+double saw2(double phase, double deltaPhase)
+{
+  if (deltaPhase < 0.0001) {
+    spdlog::warn("oscillator called with zero or negative frequency");
+    return 0.0;
+  }
+
+  const auto nyquist = 0.5;
+  auto out = 0.0;
+
+  // "Technically correct" saw, every other harmonic has negative sign:
+  for (auto k = 1; (k * deltaPhase) < nyquist; k += 2) {
+    out += std::sin(2.0 * M_PI * (k + 0) * phase) / (k + 0);
+    out -= std::sin(2.0 * M_PI * (k + 1) * phase) / (k + 1);
+  }
+
+  return (2.0 / M_PI) * out;
+}
+} // namespace
+
+fsh::Oscillator::Oscillator(Type type)
+  : _type(type)
+{
+}
+
+void fsh::Oscillator::reset()
+{
+  _amplitude = 0.0f;
+  _phase = 0.0;
+}
+
+auto fsh::Oscillator::nextSample() -> float
+{
+  const auto out = [&]() {
+    using enum Type;
+    switch (_type) {
+      default:
+        spdlog::error("invalid oscillator type");
+        return 0.0;
+      case Sine:
+        return sine(_phase);
+      case Saw:
+        return saw(_phase, _deltaPhase);
+      case Saw2:
+        return saw2(_phase, _deltaPhase);
+      case Noise:
+        return noise();
+    }
+  }();
+
+  _phase += _deltaPhase;
+  _phase -= std::floor(_phase);
+
+  return static_cast<float>(_amplitude * out);
+}
+
+void fsh::Oscillator::setSampleRate(double sampleRate)
+{
+  _sampleRate = sampleRate;
+}
+
+void fsh::Oscillator::setParams(const Params& params)
+{
+  _amplitude = params.amplitude;
+  _deltaPhase = params.frequency / _sampleRate;
 }

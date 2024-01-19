@@ -19,52 +19,30 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-project(fshlib
-    VERSION     ${CMAKE_PROJECT_VERSION}
-    LANGUAGES   CXX)
+project(JX11
+  VERSION     ${CMAKE_PROJECT_VERSION}
+  LANGUAGES   CXX)
 
-add_library(fshlib STATIC)
+juce_add_plugin(${PROJECT_NAME}
+  PLUGIN_CODE               Jx11
+  IS_SYNTH                  TRUE
+  NEEDS_MIDI_INPUT          TRUE
+  # (NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail)
 
-target_compile_options(${PROJECT_NAME} PUBLIC
-  -Wall
+  PLUGIN_MANUFACTURER_CODE  ${FSH_PLUGIN_MANUFACTURER_CODE}
+  FORMATS                   ${FSH_PLUGIN_FORMATS}
 )
 
-if(NOT MSVC)
-target_compile_options(${PROJECT_NAME} PUBLIC
-  -Wextra
-  -Wpedantic
-  -Werror
-)
-endif()
-
-target_compile_definitions(${PROJECT_NAME} PUBLIC
-  # Uncomment this if you want to build VST3 plugins without the VST2 SDK:
-  # JUCE_VST3_CAN_REPLACE_VST2=0
-
-  # This one's important because it gets rid of the "gtk header not found" error
-  # when compiling under Ubuntu:
-  JUCE_WEB_BROWSER=0
-
-  # Disabling the splash screen is only legal if you purchase a JUCE license, or
-  # if you license your project using the GNU Public License.
-  # - https://www.gnu.org/licenses
-  # - https://juce.com/juce-6-licence
-  JUCE_DISPLAY_SPLASH_SCREEN=0
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  fshlib
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  Fonts
-  fmt
-  spdlog::spdlog
-  juce::juce_audio_utils
-  juce::juce_dsp
-  juce::juce_recommended_config_flags
-  juce::juce_recommended_lto_flags
-  juce::juce_recommended_warning_flags
+target_include_directories(${PROJECT_NAME} PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_subdirectory(fx)
-add_subdirectory(gui)
-add_subdirectory(pluginbase)
-add_subdirectory(utils)
-add_subdirectory(synth)
+target_sources(${PROJECT_NAME} PRIVATE
+  main.cpp
+  PluginProcessor.cpp
+  PluginState.cpp
+)

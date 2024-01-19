@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "BoundedValue.h"
 #include "EnvelopeFollower.h"
 #include "SphericalHarmonics.h"
 #include "SphericalVector.h"
@@ -44,8 +45,8 @@ public:
   /// Parameters for AmbisonicEncoder.
   struct Params
   {
-    SphericalVector direction;       ///< direction to encode to
-    float order = fsh::maxAmbiOrder; ///< order to encode to
+    SphericalVector direction;                                         ///< direction to encode to
+    fsh::BoundedFloat<0, fsh::maxAmbiOrder> order = fsh::maxAmbiOrder; ///< order to encode to
   };
 
   /// Get the channel coefficients for the next input sample.

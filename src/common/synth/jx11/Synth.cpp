@@ -19,51 +19,81 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "AmbisonicEncoder.h"
-#include "SphericalHarmonics.h"
-#include <cassert>
-#include <spdlog/spdlog.h>
+#include "Synth.h"
+#include "MidiEvent.h"
+#include "spdlog/spdlog.h"
+#include <fmt/format.h>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+void fsh::Synth::setSampleRate(double sampleRate)
 {
-  auto result = std::array<float, maxNumChannels>{};
-  for (auto i = 0U; i < _coefficients.size(); ++i)
-    result[i] = static_cast<float>(_coefficients[i].getNextValue());
-  return result;
+  for (auto& voice : _voices)
+    voice.setSampleRate(sampleRate);
 }
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
+void fsh::Synth::reset()
 {
-  for (auto& follower : _coefficients)
-    follower.setSampleRate(sampleRate);
+  for (auto& voice : _voices)
+    voice.reset();
 }
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
+void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
 {
-  _params = params;
-  updateCoefficients();
-}
-
-void fsh::AmbisonicEncoder::updateCoefficients()
-{
-  const auto wholeOrder = static_cast<size_t>(_params.order.get());
-  const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);
-
-  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
-  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
-
-  const auto targetCoefficients = harmonics(_params.direction);
-
-  static_assert(std::tuple_size_v<decltype(targetCoefficients)> ==
-                  std::tuple_size_v<decltype(_coefficients)>,
-                "targetCoefficients and _coefficients must have the same size");
-
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
-    if (i < fullGainChannels)
-      _coefficients[i].setTargetValue(targetCoefficients[i]);
-    else if (i < reducedGainChannels)
-      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
-    else
-      _coefficients[i].setTargetValue(0.0f);
+  switch (evt.type()) {
+    using enum MidiEvent::Type;
+    case NoteOn:
+      spdlog::debug("currently active voices: {}", numActiveVoices());
+      for (auto& voice : _voices)
+        if (!voice.isActive())
+          return voice.noteOn(evt.data1(), evt.data2());
+      return;
+    case NoteOff:
+      for (auto& voice : _voices)
+        if (voice.getNoteVal() == evt.data1())
+          return voice.noteOff(evt.data1(), evt.data2());
+      return;
+    case PitchBend:
+      for (auto& voice : _voices)
+        voice.pitchBend(evt.fullData());
+      return;
   }
+
+  spdlog::info("Unhandled MIDI event: {:#x}", static_cast<uint8_t>(evt.type()));
+}
+
+void fsh::Synth::setParams(const Params& params)
+{
+  for (auto& voice : _voices)
+    voice.setParams(params.voice);
+}
+
+void fsh::Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
+{
+  auto bufferOffset = 0U;
+
+  for (const auto& msg : midi) {
+    handleMIDIEvent(fsh::MidiEvent{ msg });
+
+    if (const auto elapsedSamples = static_cast<size_t>(msg.samplePosition) - bufferOffset;
+        elapsedSamples > 0) {
+      for (auto& voice : _voices)
+        voice.render(audio, elapsedSamples, bufferOffset);
+      bufferOffset += elapsedSamples;
+    }
+  }
+
+  if (const auto elapsedSamples = static_cast<size_t>(audio.getNumSamples()) - bufferOffset;
+      elapsedSamples > 0)
+    for (auto& voice : _voices)
+      voice.render(audio, elapsedSamples, bufferOffset);
+
+  midi.clear();
+}
+
+auto fsh::Synth::numActiveVoices() const -> size_t
+{
+  auto numActiveVoices = 0U;
+  for (auto& voice : _voices)
+    if (voice.isActive())
+      ++numActiveVoices;
+  return numActiveVoices;
 }

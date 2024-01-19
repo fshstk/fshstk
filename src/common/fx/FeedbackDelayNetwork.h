@@ -22,6 +22,7 @@
 #pragma once
 #include "IndexedVector.h"
 #include <juce_dsp/juce_dsp.h>
+#include <map>
 
 namespace fsh {
 /**
@@ -47,20 +48,40 @@ public:
     float dryWet;
   };
 
+  /// Presets for the FDN reverb algorithm.
+  enum class Preset
+  {
+    Off = 0,
+    Earth,
+    Metal,
+    Sky,
+  };
+
+  /// Map of presets to parameters for the FDN reverb algorithm.
+  inline static const auto presets = std::map<Preset, Params>{
+    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
+    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
+    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
+    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
+  };
+
   /// Default constructor.
   FeedbackDelayNetwork();
 
-  /// Set the parameters for the FDN reverb algorithm.
+  /// Set the parameters for the FDN reverb algorithm directly.
   void setParams(const Params&);
+
+  /// Set the parameters for the FDN reverb algorithm using a preset.
+  void setPreset(Preset);
 
   /// Set the sample rate. Must be called before calling process().
   void setSampleRate(double);
 
-  /// Clear the delay buffers.
-  void reset();
-
   /// Apply the FDN reverb algorithm to the given ambisonic audio buffer.
   void process(juce::AudioBuffer<float>&);
+
+  /// Clear the delay buffers.
+  void reset();
 
 private:
   std::array<IndexedVector, fdnSize> delayBuffers;

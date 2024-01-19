@@ -19,51 +19,43 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "AmbisonicEncoder.h"
-#include "SphericalHarmonics.h"
-#include <cassert>
-#include <spdlog/spdlog.h>
+#pragma once
+#include "EnvelopeFollower.h"
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+namespace fsh {
+class ADSR
 {
-  auto result = std::array<float, maxNumChannels>{};
-  for (auto i = 0U; i < _coefficients.size(); ++i)
-    result[i] = static_cast<float>(_coefficients[i].getNextValue());
-  return result;
-}
+public:
+  struct Params
+  {
+    double attack;
+    double decay;
+    double sustain;
+    double release;
+  };
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
-{
-  for (auto& follower : _coefficients)
-    follower.setSampleRate(sampleRate);
-}
+  auto isActive() const -> bool;
+  auto getNextValue() -> double;
+  void noteOn();
+  void noteOff();
+  void reset();
+  void setSampleRate(double);
+  void setParams(const Params&);
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
-{
-  _params = params;
-  updateCoefficients();
-}
+private:
+  enum class Phase
+  {
+    Idle,
+    Attack,
+    Decay,
+    Sustain,
+    Release,
+  };
 
-void fsh::AmbisonicEncoder::updateCoefficients()
-{
-  const auto wholeOrder = static_cast<size_t>(_params.order.get());
-  const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);
+  Params _params;
+  Phase _phase;
+  EnvelopeFollower _env;
 
-  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
-  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
-
-  const auto targetCoefficients = harmonics(_params.direction);
-
-  static_assert(std::tuple_size_v<decltype(targetCoefficients)> ==
-                  std::tuple_size_v<decltype(_coefficients)>,
-                "targetCoefficients and _coefficients must have the same size");
-
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
-    if (i < fullGainChannels)
-      _coefficients[i].setTargetValue(targetCoefficients[i]);
-    else if (i < reducedGainChannels)
-      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
-    else
-      _coefficients[i].setTargetValue(0.0f);
-  }
-}
+  void updateEnvelope();
+};
+} // namespace fsh

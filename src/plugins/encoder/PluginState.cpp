@@ -20,58 +20,67 @@
 ***************************************************************************************************/
 
 #include "PluginState.h"
+#include "FloatParam.h"
 #include "SphericalHarmonics.h"
-#include <cassert>
 #include <fmt/format.h>
 
 namespace {
-juce::String displayDegrees(const float angle, const int)
-{
-  const auto prefix = (angle > 0) ? "+" : "";
-  return fmt::format("{}{:.1f}°", prefix, angle);
-}
-
-juce::String displayDecibels(const float dB, const int)
-{
-  const auto prefix = (dB >= 0) ? "+" : "";
-  return fmt::format("{}{:.1f} dB", prefix, dB);
-}
-
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
+  const auto degreesLabel = fsh::FloatParam::Attributes{}.withStringFromValueFunction(
+    [](float val, int) { return fmt::format("{:+.1f}°", val); });
+
+  const auto decibelsLabel = fsh::FloatParam::Attributes{}.withStringFromValueFunction(
+    [](float val, int) { return fmt::format("{:+.1f} dB", val); });
+
   return {
-    std::make_unique<juce::AudioParameterFloat>(
-      "order", "Spatial Resolution", 0.0f, fsh::maxAmbiOrder, fsh::maxAmbiOrder),
-    std::make_unique<juce::AudioParameterFloat>(
-      "azimuth left",
-      "Azimuth (L)",
-      juce::NormalisableRange{ -180.0f, 180.0f },
-      0.0f,
-      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
-    std::make_unique<juce::AudioParameterFloat>(
-      "azimuth right",
-      "Azimuth (R)",
-      juce::NormalisableRange{ -180.0f, 180.0f },
-      0.0f,
-      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
-    std::make_unique<juce::AudioParameterFloat>(
-      "elevation left",
-      "Elevation (L)",
-      juce::NormalisableRange{ 0.0f, 90.0f },
-      0.0f,
-      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
-    std::make_unique<juce::AudioParameterFloat>(
-      "elevation right",
-      "Elevation (R)",
-      juce::NormalisableRange{ 0.0f, 90.0f },
-      0.0f,
-      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDegrees)),
-    std::make_unique<juce::AudioParameterFloat>(
-      "gain",
-      "Gain",
-      juce::NormalisableRange{ -12.0f, +12.0f },
-      10.0f,
-      juce::AudioParameterFloatAttributes{}.withStringFromValueFunction(&displayDecibels)),
+    fsh::FloatParam{
+      .id = "order",
+      .name = "Spatial Resolution",
+      .range = { 0.0f, fsh::maxAmbiOrder },
+      .defaultVal = fsh::maxAmbiOrder,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "azimuth left",
+      .name = "Azimuth (L)",
+      .range = { -180.0f, 180.0f },
+      .defaultVal = 0.0f,
+      .attributes = degreesLabel,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "azimuth right",
+      .name = "Azimuth (R)",
+      .range = { -180.0f, 180.0f },
+      .defaultVal = 0.0f,
+      .attributes = degreesLabel,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "elevation left",
+      .name = "Elevation (L)",
+      .range = { 0.0f, 90.0f },
+      .defaultVal = 0.0f,
+      .attributes = degreesLabel,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "elevation right",
+      .name = "Elevation (R)",
+      .range = { 0.0f, 90.0f },
+      .defaultVal = 0.0f,
+      .attributes = degreesLabel,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "gain",
+      .name = "Gain",
+      .range = { -12.0f, +12.0f },
+      .defaultVal = 10.0f,
+      .attributes = decibelsLabel,
+    }
+      .create(),
   };
 }
 } // namespace
@@ -83,32 +92,26 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 
 auto PluginState::ambiOrder() const -> float
 {
-  const auto* const order = getRawParameterValue("order");
-  assert(order != nullptr);
-  return *order;
+  return getRawParamSafely("order");
 }
 
 auto PluginState::gain() const -> float
 {
-  const auto* const gain = getRawParameterValue("gain");
-  assert(gain != nullptr);
-  return *gain;
+  return getRawParamSafely("gain");
 }
 
 fsh::SphericalVector PluginState::vectorLeft() const
 {
-  const auto* const az = getRawParameterValue("azimuth left");
-  const auto* const el = getRawParameterValue("elevation left");
-  assert(az != nullptr);
-  assert(el != nullptr);
-  return { .azimuth = *az, .elevation = *el };
+  return {
+    .azimuth = getRawParamSafely("azimuth left"),
+    .elevation = getRawParamSafely("elevation left"),
+  };
 }
 
 fsh::SphericalVector PluginState::vectorRight() const
 {
-  const auto* const az = getRawParameterValue("azimuth right");
-  const auto* const el = getRawParameterValue("elevation right");
-  assert(az != nullptr);
-  assert(el != nullptr);
-  return { .azimuth = *az, .elevation = *el };
+  return {
+    .azimuth = getRawParamSafely("azimuth right"),
+    .elevation = getRawParamSafely("elevation right"),
+  };
 }

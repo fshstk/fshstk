@@ -61,8 +61,9 @@ public:
   /// Set the parameters. Will fall back on default values if not set.
   void setParams(const Params&);
 
-  /// Reset both the current and target values to 0.
-  void reset();
+  /// Reset both the current and target values to the specified value, or to
+  /// zero if none is provided.
+  void reset(double val = 0.0);
 
 private:
   void calculateCoefficients();

@@ -19,51 +19,29 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "AmbisonicEncoder.h"
-#include "SphericalHarmonics.h"
-#include <cassert>
-#include <spdlog/spdlog.h>
+#pragma once
+#include <juce_audio_basics/juce_audio_basics.h>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+namespace fsh {
+class MidiEvent
 {
-  auto result = std::array<float, maxNumChannels>{};
-  for (auto i = 0U; i < _coefficients.size(); ++i)
-    result[i] = static_cast<float>(_coefficients[i].getNextValue());
-  return result;
-}
+public:
+  enum class Type
+  {
+    NoteOff = 0x80,
+    NoteOn = 0x90,
+    PitchBend = 0xE0,
+  };
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
-{
-  for (auto& follower : _coefficients)
-    follower.setSampleRate(sampleRate);
-}
+  explicit MidiEvent(const juce::MidiMessageMetadata&);
+  auto type() const -> Type;
+  auto data1() const -> uint8_t;
+  auto data2() const -> uint8_t;
+  auto fullData() const -> uint16_t;
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
-{
-  _params = params;
-  updateCoefficients();
-}
-
-void fsh::AmbisonicEncoder::updateCoefficients()
-{
-  const auto wholeOrder = static_cast<size_t>(_params.order.get());
-  const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);
-
-  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
-  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
-
-  const auto targetCoefficients = harmonics(_params.direction);
-
-  static_assert(std::tuple_size_v<decltype(targetCoefficients)> ==
-                  std::tuple_size_v<decltype(_coefficients)>,
-                "targetCoefficients and _coefficients must have the same size");
-
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
-    if (i < fullGainChannels)
-      _coefficients[i].setTargetValue(targetCoefficients[i]);
-    else if (i < reducedGainChannels)
-      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
-    else
-      _coefficients[i].setTargetValue(0.0f);
-  }
-}
+private:
+  Type _type;
+  uint8_t _lsb = 0;
+  uint8_t _msb = 0;
+};
+} // namespace fsh

@@ -19,51 +19,48 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
+#pragma once
+#include "ADSR.h"
 #include "AmbisonicEncoder.h"
-#include "SphericalHarmonics.h"
-#include <cassert>
-#include <spdlog/spdlog.h>
+#include "Oscillator.h"
+#include <cstdint>
+#include <juce_audio_basics/juce_audio_basics.h>
+#include <stdint.h>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+namespace fsh {
+class Voice
 {
-  auto result = std::array<float, maxNumChannels>{};
-  for (auto i = 0U; i < _coefficients.size(); ++i)
-    result[i] = static_cast<float>(_coefficients[i].getNextValue());
-  return result;
-}
+public:
+  struct Params
+  {
+    float noiseLvl;
+    double oscALvl;
+    double oscBLvl;
+    double oscBDetune;
+    ADSR::Params adsr;
+  };
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
-{
-  for (auto& follower : _coefficients)
-    follower.setSampleRate(sampleRate);
-}
+  void reset();
+  void noteOn(uint8_t noteVal, uint8_t velocity);
+  void noteOff(uint8_t noteVal, uint8_t velocity);
+  void pitchBend(uint16_t bendVal);
+  void render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset);
+  void setSampleRate(double sampleRate);
+  void setParams(const Params&);
+  auto getNoteVal() const -> uint8_t;
+  auto isActive() const -> bool;
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
-{
-  _params = params;
-  updateCoefficients();
-}
+private:
+  auto nextSample() -> float;
 
-void fsh::AmbisonicEncoder::updateCoefficients()
-{
-  const auto wholeOrder = static_cast<size_t>(_params.order.get());
-  const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);
-
-  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
-  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
-
-  const auto targetCoefficients = harmonics(_params.direction);
-
-  static_assert(std::tuple_size_v<decltype(targetCoefficients)> ==
-                  std::tuple_size_v<decltype(_coefficients)>,
-                "targetCoefficients and _coefficients must have the same size");
-
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
-    if (i < fullGainChannels)
-      _coefficients[i].setTargetValue(targetCoefficients[i]);
-    else if (i < reducedGainChannels)
-      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
-    else
-      _coefficients[i].setTargetValue(0.0f);
-  }
-}
+  Params _params;
+  uint8_t _noteVal;
+  double _bendValSemitones;
+  uint8_t _velocity;
+  ADSR _adsr;
+  AmbisonicEncoder _encoder;
+  Oscillator _oscA{ Oscillator::Type::Saw };
+  Oscillator _oscB{ Oscillator::Type::Saw };
+  Oscillator _oscNoise{ Oscillator::Type::Noise };
+};
+} // namespace fsh

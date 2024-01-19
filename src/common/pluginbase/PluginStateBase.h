@@ -19,51 +19,23 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "AmbisonicEncoder.h"
-#include "SphericalHarmonics.h"
-#include <cassert>
+#pragma once
+#include <juce_audio_processors/juce_audio_processors.h>
 #include <spdlog/spdlog.h>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+namespace fsh {
+class PluginStateBase : private juce::AudioProcessorValueTreeState
 {
-  auto result = std::array<float, maxNumChannels>{};
-  for (auto i = 0U; i < _coefficients.size(); ++i)
-    result[i] = static_cast<float>(_coefficients[i].getNextValue());
-  return result;
-}
+public:
+  using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+  using Params = juce::AudioProcessorValueTreeState::ParameterLayout;
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
-{
-  for (auto& follower : _coefficients)
-    follower.setSampleRate(sampleRate);
-}
+  PluginStateBase(juce::AudioProcessor& parent, Params&& params);
+  auto getState() -> juce::XmlElement;
+  void setState(const juce::XmlElement& xml);
+  auto getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&;
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
-{
-  _params = params;
-  updateCoefficients();
-}
-
-void fsh::AmbisonicEncoder::updateCoefficients()
-{
-  const auto wholeOrder = static_cast<size_t>(_params.order.get());
-  const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);
-
-  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
-  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
-
-  const auto targetCoefficients = harmonics(_params.direction);
-
-  static_assert(std::tuple_size_v<decltype(targetCoefficients)> ==
-                  std::tuple_size_v<decltype(_coefficients)>,
-                "targetCoefficients and _coefficients must have the same size");
-
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
-    if (i < fullGainChannels)
-      _coefficients[i].setTargetValue(targetCoefficients[i]);
-    else if (i < reducedGainChannels)
-      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
-    else
-      _coefficients[i].setTargetValue(0.0f);
-  }
-}
+protected:
+  auto getRawParamSafely(const juce::String& id) const -> float;
+};
+} // namespace fsh

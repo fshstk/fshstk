@@ -19,51 +19,34 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "AmbisonicEncoder.h"
-#include "SphericalHarmonics.h"
-#include <cassert>
-#include <spdlog/spdlog.h>
+#include "MidiEvent.h"
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+fsh::MidiEvent::MidiEvent(const juce::MidiMessageMetadata& msg)
 {
-  auto result = std::array<float, maxNumChannels>{};
-  for (auto i = 0U; i < _coefficients.size(); ++i)
-    result[i] = static_cast<float>(_coefficients[i].getNextValue());
-  return result;
+  if (msg.numBytes < 2)
+    return;
+
+  _type = static_cast<Type>(msg.data[0] & 0xF0);
+  _lsb = static_cast<uint8_t>(msg.data[1] & 0x7F);
+  _msb = static_cast<uint8_t>(msg.data[2] & 0x7F);
 }
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
+auto fsh::MidiEvent::type() const -> Type
 {
-  for (auto& follower : _coefficients)
-    follower.setSampleRate(sampleRate);
+  return _type;
 }
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
+auto fsh::MidiEvent::data1() const -> uint8_t
 {
-  _params = params;
-  updateCoefficients();
+  return _lsb;
 }
 
-void fsh::AmbisonicEncoder::updateCoefficients()
+auto fsh::MidiEvent::data2() const -> uint8_t
 {
-  const auto wholeOrder = static_cast<size_t>(_params.order.get());
-  const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);
+  return _msb;
+}
 
-  const auto fullGainChannels = (wholeOrder + 1) * (wholeOrder + 1);
-  const auto reducedGainChannels = (wholeOrder + 2) * (wholeOrder + 2);
-
-  const auto targetCoefficients = harmonics(_params.direction);
-
-  static_assert(std::tuple_size_v<decltype(targetCoefficients)> ==
-                  std::tuple_size_v<decltype(_coefficients)>,
-                "targetCoefficients and _coefficients must have the same size");
-
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
-    if (i < fullGainChannels)
-      _coefficients[i].setTargetValue(targetCoefficients[i]);
-    else if (i < reducedGainChannels)
-      _coefficients[i].setTargetValue(fadeGain * targetCoefficients[i]);
-    else
-      _coefficients[i].setTargetValue(0.0f);
-  }
+auto fsh::MidiEvent::fullData() const -> uint16_t
+{
+  return static_cast<uint16_t>((_msb << 7) + _lsb);
 }
