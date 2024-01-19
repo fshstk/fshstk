@@ -41,6 +41,7 @@ void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
   switch (evt.type()) {
     using enum MidiEvent::Type;
     case NoteOn:
+      spdlog::debug("currently active voices: {}", numActiveVoices());
       for (auto& voice : _voices)
         if (!voice.isActive())
           return voice.noteOn(evt.data1(), evt.data2());
