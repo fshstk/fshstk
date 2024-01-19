@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "FeedbackDelayNetwork.h"
-#include <cassert>
+#include <spdlog/spdlog.h>
 
 namespace {
 auto generatePrimes(size_t count)
@@ -133,12 +133,23 @@ void fsh::FeedbackDelayNetwork::updateParameterSettings()
   const auto primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
   for (auto channel = 0U; channel < fdnSize; ++channel) {
-    // primeNumbers[primeIndices[channel] occasionally throws an out-of-range exception.
-    // primeNumbers, possibly also primeIndices, is being accessed with an invalid index
-    assert(channel < primeIndices.size());
-    const auto primeIndexToUse = primeIndices[channel];
-    assert(primeIndexToUse < primeNumbers.size()); // definitely this one
-    const auto primeNumber = primeNumbers[primeIndexToUse];
+    const auto primeNumber = [&]() {
+      if (channel >= primeIndices.size())
+        spdlog::error(
+          "channel {} is trying to index into primeIndices, which has size {} ... using 0 instead",
+          channel,
+          primeIndices.size());
+      const auto index = (channel < primeIndices.size()) ? primeIndices[channel] : 0;
+
+      if (index >= primeNumbers.size())
+        spdlog::error(
+          "index {} is trying to index into primeNumbers, which has size {} ... using 3 instead",
+          index,
+          primeNumbers.size());
+      const auto prime = (index < primeNumbers.size()) ? primeNumbers[index] : 3;
+
+      return prime;
+    }();
 
     const auto delayLengthMilliseconds = 0.1 * primeNumber;
     const auto delayLengthSeconds = 0.001 * delayLengthMilliseconds;
