@@ -168,6 +168,14 @@ void fsh::FeedbackDelayNetwork::setParams(const Params& p)
   updateParameterSettings();
 }
 
+void fsh::FeedbackDelayNetwork::setPreset(Preset p)
+{
+  if (presets.contains(p))
+    setParams(presets.at(p));
+  else
+    spdlog::warn("Reverb: invalid preset: {}", static_cast<int>(p));
+}
+
 void fsh::FeedbackDelayNetwork::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;

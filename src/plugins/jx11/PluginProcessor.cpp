@@ -44,7 +44,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBu
 {
   _synth.setParams(params.getSynthParams());
   _synth.process(audio, midi);
-  _reverb.setParams(params.getReverbParams());
+  _reverb.setPreset(params.getReverbPreset());
   _reverb.process(audio);
 }
 

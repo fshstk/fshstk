@@ -30,7 +30,7 @@ class PluginState : public fsh::PluginStateBase
 public:
   explicit PluginState(juce::AudioProcessor&);
   auto getSynthParams() const -> fsh::Synth::Params;
-  auto getReverbParams() const -> fsh::FeedbackDelayNetwork::Params;
+  auto getReverbPreset() const -> fsh::FeedbackDelayNetwork::Preset;
 
 private:
   auto getAmpEnvelope() const -> fsh::ADSR::Params;
