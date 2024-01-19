@@ -22,6 +22,34 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
+// The following macros are here just to appease the compiler. When including this file in a plugin,
+// the `JucePlugin_*` constants will always be defined by juce_add_plugin() in CMakeLists.txt.
+
+#ifndef JucePlugin_IsSynth
+#error "JucePlugin_IsSynth must be defined. Use this class inside of a JUCE project."
+#define JucePlugin_IsSynth false
+#endif
+
+#ifndef JucePlugin_Name
+#error "JucePlugin_Name must be defined. Use this class inside of a JUCE project."
+#define JucePlugin_Name ""
+#endif
+
+#ifndef JucePlugin_WantsMidiInput
+#error "JucePlugin_WantsMidiInput must be defined. Use this class inside of a JUCE project."
+#define JucePlugin_WantsMidiInput false
+#endif
+
+#ifndef JucePlugin_ProducesMidiOutput
+#error "JucePlugin_ProducesMidiOutput must be defined. Use this class inside of a JUCE project."
+#define JucePlugin_ProducesMidiOutput false
+#endif
+
+#ifndef JucePlugin_IsMidiEffect
+#error "JucePlugin_IsMidiEffect must be defined. Use this class inside of a JUCE project."
+#define JucePlugin_IsMidiEffect false
+#endif
+
 namespace fsh {
 template<class PluginStateType>
 class PluginBase : public juce::AudioProcessor
@@ -29,15 +57,16 @@ class PluginBase : public juce::AudioProcessor
 public:
   struct Config
   {
-    juce::AudioChannelSet inputs;
     juce::AudioChannelSet outputs;
+    juce::AudioChannelSet inputs = juce::AudioChannelSet::disabled();
   };
 
   explicit PluginBase(const Config& conf)
-    : AudioProcessor(JucePlugin_IsSynth ? BusesProperties().withOutput("Output", conf.outputs, true)
-                                        : BusesProperties()
-                                            .withInput("Input", conf.inputs, true)
-                                            .withOutput("Output", conf.outputs, true))
+    : AudioProcessor(conf.inputs == juce::AudioChannelSet::disabled()
+                       ? BusesProperties().withOutput("Output", conf.outputs, true)
+                       : BusesProperties()
+                           .withInput("Input", conf.inputs, true)
+                           .withOutput("Output", conf.outputs, true))
     , params(*this)
     , _conf(conf)
   {
@@ -62,7 +91,7 @@ public:
     // Intentionally empty override
   }
 
-  const juce::String getName() const override { return JucePlugin_Name; }
+  const juce::String getName() const override { return _name; }
   double getTailLengthSeconds() const override { return 0.0; }
 
   bool hasEditor() const override { return true; }
@@ -71,9 +100,9 @@ public:
     return new juce::GenericAudioProcessorEditor(*this);
   }
 
-  bool acceptsMidi() const override { return JucePlugin_WantsMidiInput; }
-  bool producesMidi() const override { return JucePlugin_ProducesMidiOutput; }
-  bool isMidiEffect() const override { return JucePlugin_IsMidiEffect; }
+  bool acceptsMidi() const override { return _wantsMidi; }
+  bool producesMidi() const override { return _producesMidi; }
+  bool isMidiEffect() const override { return _isMidiEffect; }
 
   int getNumPrograms() override { return 1; }
   int getCurrentProgram() override { return 0; }
@@ -104,6 +133,11 @@ protected:
   PluginStateType params;
 
 private:
+  inline static const auto _isSynth = bool{ JucePlugin_IsSynth };
+  inline static const auto _name = juce::String{ JucePlugin_Name };
+  inline static const auto _wantsMidi = bool{ JucePlugin_WantsMidiInput };
+  inline static const auto _producesMidi = bool{ JucePlugin_ProducesMidiOutput };
+  inline static const auto _isMidiEffect = bool{ JucePlugin_IsMidiEffect };
   Config _conf;
   juce::ScopedNoDenormals _disableDenormals;
 };

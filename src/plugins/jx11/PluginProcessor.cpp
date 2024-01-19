@@ -25,7 +25,6 @@
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
-      .inputs = {},
       .outputs = juce::AudioChannelSet::ambisonic(fsh::maxAmbiOrder),
     })
 {

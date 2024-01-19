@@ -27,8 +27,8 @@
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
-      .inputs = juce::AudioChannelSet::stereo(),
       .outputs = juce::AudioChannelSet::ambisonic(fsh::maxAmbiOrder),
+      .inputs = juce::AudioChannelSet::stereo(),
     })
 {
 }
