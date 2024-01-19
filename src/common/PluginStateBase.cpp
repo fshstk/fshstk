@@ -19,23 +19,42 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include <juce_audio_processors/juce_audio_processors.h>
-#include <spdlog/spdlog.h>
+#include "PluginStateBase.h"
 
-namespace fsh {
-class PluginStateBase : private juce::AudioProcessorValueTreeState
+fsh::PluginStateBase::PluginStateBase(juce::AudioProcessor& parent, Params&& params)
+  : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
 {
-public:
-  using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
-  using Params = juce::AudioProcessorValueTreeState::ParameterLayout;
+}
 
-  PluginStateBase(juce::AudioProcessor& parent, Params&& params);
-  auto getState() -> juce::XmlElement;
-  void setState(const juce::XmlElement& xml);
-  auto getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&;
+auto fsh::PluginStateBase::getState() -> juce::XmlElement
+{
+  if (const auto xml = copyState().createXml(); xml != nullptr)
+    return *xml;
 
-protected:
-  auto getRawParamSafely(const juce::String& id) const -> float;
-};
-} // namespace fsh
+  spdlog::warn("getState() could not retrieve state object");
+  return juce::XmlElement{ "" };
+}
+
+void fsh::PluginStateBase::setState(const juce::XmlElement& xml)
+{
+  if (xml.hasTagName(state.getType()))
+    replaceState(juce::ValueTree::fromXml(xml));
+  else
+    spdlog::warn("setState() received invalid state object");
+}
+
+auto fsh::PluginStateBase::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
+{
+  return *this;
+}
+
+auto fsh::PluginStateBase::getRawParamSafely(const juce::String& id) const -> float
+{
+  const auto* const param = getRawParameterValue(id);
+  if (param == nullptr) {
+    spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
+                     id.toStdString());
+    return 0.0f;
+  }
+  return param->load();
+}
