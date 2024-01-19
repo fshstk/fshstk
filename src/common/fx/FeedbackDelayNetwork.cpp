@@ -23,6 +23,33 @@
 #include <spdlog/spdlog.h>
 
 namespace {
+const auto presets = std::map<fsh::FeedbackDelayNetwork::Preset, fsh::FeedbackDelayNetwork::Params>{
+  { fsh::FeedbackDelayNetwork::Preset::Off,
+    {
+      .roomSize = 0.0f,
+      .revTime = 0.0f,
+      .dryWet = 0.0f,
+    } },
+  { fsh::FeedbackDelayNetwork::Preset::Earth,
+    {
+      .roomSize = 1.0f,
+      .revTime = 0.8f,
+      .dryWet = 1.0f,
+    } },
+  { fsh::FeedbackDelayNetwork::Preset::Metal,
+    {
+      .roomSize = 15.0f,
+      .revTime = 1.5f,
+      .dryWet = 1.0f,
+    } },
+  { fsh::FeedbackDelayNetwork::Preset::Sky,
+    {
+      .roomSize = 30.0f,
+      .revTime = 3.0f,
+      .dryWet = 1.0f,
+    } },
+};
+
 auto generatePrimes(size_t count)
 {
   std::vector<unsigned> primes;
