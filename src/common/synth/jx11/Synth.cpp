@@ -49,6 +49,7 @@ void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
       for (auto& voice : _voices)
         if (voice.getNoteVal() == evt.data1())
           return voice.noteOff(evt.data1(), evt.data2());
+      return;
     case PitchBend:
       for (auto& voice : _voices)
         voice.pitchBend(evt.fullData());
