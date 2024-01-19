@@ -86,3 +86,12 @@ void fsh::Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi
 
   midi.clear();
 }
+
+auto fsh::Synth::numActiveVoices() const -> size_t
+{
+  auto numActiveVoices = 0U;
+  for (auto& voice : _voices)
+    if (voice.isActive())
+      ++numActiveVoices;
+  return numActiveVoices;
+}

@@ -38,6 +38,9 @@ public:
   void setParams(const Params&);
   void process(juce::AudioBuffer<float>&, juce::MidiBuffer&);
 
+  /// Queries the number of currently active voices
+  auto numActiveVoices() const -> size_t;
+
   // Limited for now because sawtooth algorithm is very inefficient:
   static const auto numVoices = 6;
 
