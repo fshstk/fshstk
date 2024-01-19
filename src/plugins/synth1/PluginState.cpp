@@ -20,71 +20,103 @@
 ***************************************************************************************************/
 
 #include "PluginState.h"
+#include "FloatParam.h"
 
 namespace {
 auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLayout
 {
   return {
-    std::make_unique<juce::AudioParameterFloat>("amp_attack",
-                                                "Amp Attack",
-                                                juce::NormalisableRange{ 0.0f, 1.0f },
-                                                0.1f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("amp_decay",
-                                                "Amp Decay",
-                                                juce::NormalisableRange{ 0.0f, 1.0f },
-                                                0.1f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("amp_sustain",
-                                                "Amp Sustain",
-                                                juce::NormalisableRange{ 0.0f, 1.0f },
-                                                1.0f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("amp_release",
-                                                "Amp Release",
-                                                juce::NormalisableRange{ 0.0f, 1.0f },
-                                                0.1f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("filt_cutoff",
-                                                "Filter Cutoff",
-                                                juce::NormalisableRange{ 20.0f, 20.0e3f },
-                                                5.0e3f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("filt_attack",
-                                                "Filter Attack",
-                                                juce::NormalisableRange{ 0.0f, 1.0f },
-                                                0.1f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("filt_decay",
-                                                "Filter Decay",
-                                                juce::NormalisableRange{ 0.0f, 1.0f },
-                                                0.1f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("filt_modamt",
-                                                "Filter Modulation Amount",
-                                                juce::NormalisableRange{ 0.0f, 1000.0f },
-                                                0.0f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("filt_resonance",
-                                                "Filter Resonance",
-                                                juce::NormalisableRange{ 0.0f, 1.0f },
-                                                0.707f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("rev_size",
-                                                "Reverb Room Size",
-                                                juce::NormalisableRange<float>(1.0f, 30.0f, 1.0f),
-                                                20.0f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("rev_time",
-                                                "Reverb Time",
-                                                juce::NormalisableRange<float>(0.1f, 9.0f, 0.1f),
-                                                5.f,
-                                                juce::AudioParameterFloatAttributes{}),
-    std::make_unique<juce::AudioParameterFloat>("rev_drywet",
-                                                "Reverb Dry/Wet",
-                                                juce::NormalisableRange<float>(0.f, 1.f, 0.01f),
-                                                0.5f,
-                                                juce::AudioParameterFloatAttributes{}),
+    fsh::FloatParam{
+      .id = "amp_attack",
+      .name = "Amp Attack",
+      .range = { 0.0f, 1.0f },
+      .defaultVal = 0.1f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "amp_attack",
+      .name = "Amp Attack",
+      .range = { 0.0f, 1.0f },
+      .defaultVal = 0.1f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "amp_decay",
+      .name = "Amp Decay",
+      .range = { 0.0f, 1.0f },
+      .defaultVal = 0.1f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "amp_sustain",
+      .name = "Amp Sustain",
+      .range = { 0.0f, 1.0f },
+      .defaultVal = 1.0f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "amp_release",
+      .name = "Amp Release",
+      .range = { 0.0f, 1.0f },
+      .defaultVal = 0.1f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "filt_cutoff",
+      .name = "Filter Cutoff",
+      .range = { 20.0f, 20'000.0f },
+      .defaultVal = 5'000.0f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "filt_attack",
+      .name = "Filter Attack",
+      .range = { 0.0f, 1.0f },
+      .defaultVal = 0.1f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "filt_decay",
+      .name = "Filter Decay",
+      .range = { 0.0f, 1.0f },
+      .defaultVal = 0.1f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "filt_modamt",
+      .name = "Filter Modulation Amount",
+      .range = { 0.0f, 1'000.0f },
+      .defaultVal = 0.0f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "filt_resonance",
+      .name = "Filter Resonance",
+      .range = { 0.0f, 1.0f },
+      .defaultVal = 0.707f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "rev_size",
+      .name = "Reverb Room Size",
+      .range = { 1.0f, 30.0f, 1.0f },
+      .defaultVal = 20.0f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "rev_time",
+      .name = "Reverb Time",
+      .range = { 0.1f, 9.0f, 0.1f },
+      .defaultVal = 5.f,
+    }
+      .create(),
+    fsh::FloatParam{
+      .id = "rev_drywet",
+      .name = "Reverb Dry/Wet",
+      .range = { 0.0f, 1.0f, 0.01f },
+      .defaultVal = 0.5f,
+    }
+      .create(),
   };
 }
 } // namespace
