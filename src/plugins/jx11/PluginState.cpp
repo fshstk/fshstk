@@ -228,8 +228,11 @@ auto PluginState::getSynthParams() const -> fsh::Synth::Params
   const auto oscALvl = 1.0f - oscBLvl;
   const auto noiseLvl = *noisePercent / 100.0f;
 
-  const auto semitonesToMultiplier = [](const float semi) { return std::exp2(semi / 12.0f); };
-  const auto oscBDetune = semitonesToMultiplier(*oscTune + *oscFine / 100.0f);
+  const auto oscBDetune = [&]() {
+    const auto semitones = *oscTune + *oscFine / 100.0f;
+    const auto freqRatio = std::exp2(semitones / 12.0f);
+    return freqRatio;
+  }();
 
   return { .voice = {
              .noiseLvl = noiseLvl,
