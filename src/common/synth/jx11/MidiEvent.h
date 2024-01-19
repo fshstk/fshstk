@@ -20,54 +20,28 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "IndexedVector.h"
-#include <juce_dsp/juce_dsp.h>
-#include <map>
+#include <juce_audio_basics/juce_audio_basics.h>
 
 namespace fsh {
-class FeedbackDelayNetwork
+class MidiEvent
 {
 public:
-  static constexpr size_t fdnSize = 64;
-
-  struct Params
+  enum class Type
   {
-    float roomSize;
-    float revTime;
-    float dryWet;
+    NoteOff = 0x80,
+    NoteOn = 0x90,
+    PitchBend = 0xE0,
   };
 
-  enum class Preset
-  {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
-  };
-
-  inline static const auto presets = std::map<Preset, Params>{
-    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
-    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
-    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
-    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
-  };
-
-  FeedbackDelayNetwork();
-  void setParams(const Params&);
-  void setPreset(Preset);
-  void setSampleRate(double);
-  void process(juce::AudioBuffer<float>&);
-  void reset();
+  explicit MidiEvent(const juce::MidiMessageMetadata&);
+  auto type() const -> Type;
+  auto data1() const -> uint8_t;
+  auto data2() const -> uint8_t;
+  auto fullData() const -> uint16_t;
 
 private:
-  std::array<IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains = {};
-  std::array<float, fdnSize> transferVector = {};
-  std::vector<unsigned> primeNumbers;
-
-  Params params;
-  double sampleRate;
-
-  void updateParameterSettings();
+  Type _type;
+  uint8_t _lsb = 0;
+  uint8_t _msb = 0;
 };
 } // namespace fsh

@@ -19,55 +19,42 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "IndexedVector.h"
-#include <juce_dsp/juce_dsp.h>
-#include <map>
+#include "PluginStateBase.h"
 
-namespace fsh {
-class FeedbackDelayNetwork
+fsh::PluginStateBase::PluginStateBase(juce::AudioProcessor& parent, Params&& params)
+  : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
 {
-public:
-  static constexpr size_t fdnSize = 64;
+}
 
-  struct Params
-  {
-    float roomSize;
-    float revTime;
-    float dryWet;
-  };
+auto fsh::PluginStateBase::getState() -> juce::XmlElement
+{
+  if (const auto xml = copyState().createXml(); xml != nullptr)
+    return *xml;
 
-  enum class Preset
-  {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
-  };
+  spdlog::warn("getState() could not retrieve state object");
+  return juce::XmlElement{ "" };
+}
 
-  inline static const auto presets = std::map<Preset, Params>{
-    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
-    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
-    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
-    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
-  };
+void fsh::PluginStateBase::setState(const juce::XmlElement& xml)
+{
+  if (xml.hasTagName(state.getType()))
+    replaceState(juce::ValueTree::fromXml(xml));
+  else
+    spdlog::warn("setState() received invalid state object");
+}
 
-  FeedbackDelayNetwork();
-  void setParams(const Params&);
-  void setPreset(Preset);
-  void setSampleRate(double);
-  void process(juce::AudioBuffer<float>&);
-  void reset();
+auto fsh::PluginStateBase::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
+{
+  return *this;
+}
 
-private:
-  std::array<IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains = {};
-  std::array<float, fdnSize> transferVector = {};
-  std::vector<unsigned> primeNumbers;
-
-  Params params;
-  double sampleRate;
-
-  void updateParameterSettings();
-};
-} // namespace fsh
+auto fsh::PluginStateBase::getRawParamSafely(const juce::String& id) const -> float
+{
+  const auto* const param = getRawParameterValue(id);
+  if (param == nullptr) {
+    spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
+                     id.toStdString());
+    return 0.0f;
+  }
+  return param->load();
+}

@@ -20,54 +20,42 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "IndexedVector.h"
-#include <juce_dsp/juce_dsp.h>
-#include <map>
+#include "EnvelopeFollower.h"
 
 namespace fsh {
-class FeedbackDelayNetwork
+class ADSR
 {
 public:
-  static constexpr size_t fdnSize = 64;
-
   struct Params
   {
-    float roomSize;
-    float revTime;
-    float dryWet;
+    double attack;
+    double decay;
+    double sustain;
+    double release;
   };
 
-  enum class Preset
-  {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
-  };
-
-  inline static const auto presets = std::map<Preset, Params>{
-    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
-    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
-    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
-    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
-  };
-
-  FeedbackDelayNetwork();
-  void setParams(const Params&);
-  void setPreset(Preset);
-  void setSampleRate(double);
-  void process(juce::AudioBuffer<float>&);
+  auto isActive() const -> bool;
+  auto getNextValue() -> double;
+  void noteOn();
+  void noteOff();
   void reset();
+  void setSampleRate(double);
+  void setParams(const Params&);
 
 private:
-  std::array<IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains = {};
-  std::array<float, fdnSize> transferVector = {};
-  std::vector<unsigned> primeNumbers;
+  enum class Phase
+  {
+    Idle,
+    Attack,
+    Decay,
+    Sustain,
+    Release,
+  };
 
-  Params params;
-  double sampleRate;
+  Params _params;
+  Phase _phase;
+  EnvelopeFollower _env;
 
-  void updateParameterSettings();
+  void updateEnvelope();
 };
 } // namespace fsh

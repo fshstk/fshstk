@@ -20,54 +20,34 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "IndexedVector.h"
-#include <juce_dsp/juce_dsp.h>
-#include <map>
+#include "MidiEvent.h"
+#include "Voice.h"
+#include <juce_audio_basics/juce_audio_basics.h>
 
 namespace fsh {
-class FeedbackDelayNetwork
+class Synth
 {
 public:
-  static constexpr size_t fdnSize = 64;
-
   struct Params
   {
-    float roomSize;
-    float revTime;
-    float dryWet;
+    Voice::Params voice;
   };
 
-  enum class Preset
-  {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
-  };
-
-  inline static const auto presets = std::map<Preset, Params>{
-    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
-    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
-    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
-    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
-  };
-
-  FeedbackDelayNetwork();
-  void setParams(const Params&);
-  void setPreset(Preset);
-  void setSampleRate(double);
-  void process(juce::AudioBuffer<float>&);
+  void setSampleRate(double sampleRate);
   void reset();
+  void setParams(const Params&);
+  void process(juce::AudioBuffer<float>&, juce::MidiBuffer&);
+
+  /// Queries the number of currently active voices
+  /// TODO: currently only returns 0!
+  auto numActiveVoices() const -> size_t;
+
+  // Limited for now because sawtooth algorithm is very inefficient:
+  static const auto numVoices = 6;
 
 private:
-  std::array<IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains = {};
-  std::array<float, fdnSize> transferVector = {};
-  std::vector<unsigned> primeNumbers;
+  void handleMIDIEvent(const MidiEvent&);
 
-  Params params;
-  double sampleRate;
-
-  void updateParameterSettings();
+  std::array<Voice, numVoices> _voices;
 };
 } // namespace fsh

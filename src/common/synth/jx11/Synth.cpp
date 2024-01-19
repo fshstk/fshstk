@@ -19,55 +19,81 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "IndexedVector.h"
-#include <juce_dsp/juce_dsp.h>
-#include <map>
+#include "Synth.h"
+#include "MidiEvent.h"
+#include "spdlog/spdlog.h"
+#include <fmt/format.h>
 
-namespace fsh {
-class FeedbackDelayNetwork
+void fsh::Synth::setSampleRate(double sampleRate)
 {
-public:
-  static constexpr size_t fdnSize = 64;
+  for (auto& voice : _voices)
+    voice.setSampleRate(sampleRate);
+}
 
-  struct Params
-  {
-    float roomSize;
-    float revTime;
-    float dryWet;
-  };
+void fsh::Synth::reset()
+{
+  for (auto& voice : _voices)
+    voice.reset();
+}
 
-  enum class Preset
-  {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
-  };
+void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
+{
+  switch (evt.type()) {
+    using enum MidiEvent::Type;
+    case NoteOn:
+      spdlog::debug("currently active voices: {}", numActiveVoices());
+      for (auto& voice : _voices)
+        if (!voice.isActive())
+          return voice.noteOn(evt.data1(), evt.data2());
+      return;
+    case NoteOff:
+      for (auto& voice : _voices)
+        if (voice.getNoteVal() == evt.data1())
+          return voice.noteOff(evt.data1(), evt.data2());
+      return;
+    case PitchBend:
+      for (auto& voice : _voices)
+        voice.pitchBend(evt.fullData());
+      return;
+  }
 
-  inline static const auto presets = std::map<Preset, Params>{
-    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
-    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
-    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
-    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
-  };
+  spdlog::info("Unhandled MIDI event: {:#x}", static_cast<uint8_t>(evt.type()));
+}
 
-  FeedbackDelayNetwork();
-  void setParams(const Params&);
-  void setPreset(Preset);
-  void setSampleRate(double);
-  void process(juce::AudioBuffer<float>&);
-  void reset();
+void fsh::Synth::setParams(const Params& params)
+{
+  for (auto& voice : _voices)
+    voice.setParams(params.voice);
+}
 
-private:
-  std::array<IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains = {};
-  std::array<float, fdnSize> transferVector = {};
-  std::vector<unsigned> primeNumbers;
+void fsh::Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
+{
+  auto bufferOffset = 0U;
 
-  Params params;
-  double sampleRate;
+  for (const auto& msg : midi) {
+    handleMIDIEvent(fsh::MidiEvent{ msg });
 
-  void updateParameterSettings();
-};
-} // namespace fsh
+    if (const auto elapsedSamples = static_cast<size_t>(msg.samplePosition) - bufferOffset;
+        elapsedSamples > 0) {
+      for (auto& voice : _voices)
+        voice.render(audio, elapsedSamples, bufferOffset);
+      bufferOffset += elapsedSamples;
+    }
+  }
+
+  if (const auto elapsedSamples = static_cast<size_t>(audio.getNumSamples()) - bufferOffset;
+      elapsedSamples > 0)
+    for (auto& voice : _voices)
+      voice.render(audio, elapsedSamples, bufferOffset);
+
+  midi.clear();
+}
+
+auto fsh::Synth::numActiveVoices() const -> size_t
+{
+  auto numActiveVoices = 0U;
+  for (auto& voice : _voices)
+    if (voice.isActive())
+      ++numActiveVoices;
+  return numActiveVoices;
+}

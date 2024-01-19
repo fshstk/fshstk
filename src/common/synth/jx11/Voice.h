@@ -20,54 +20,47 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "IndexedVector.h"
-#include <juce_dsp/juce_dsp.h>
-#include <map>
+#include "ADSR.h"
+#include "AmbisonicEncoder.h"
+#include "Oscillator.h"
+#include <cstdint>
+#include <juce_audio_basics/juce_audio_basics.h>
+#include <stdint.h>
 
 namespace fsh {
-class FeedbackDelayNetwork
+class Voice
 {
 public:
-  static constexpr size_t fdnSize = 64;
-
   struct Params
   {
-    float roomSize;
-    float revTime;
-    float dryWet;
+    float noiseLvl;
+    double oscALvl;
+    double oscBLvl;
+    double oscBDetune;
+    ADSR::Params adsr;
   };
 
-  enum class Preset
-  {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
-  };
-
-  inline static const auto presets = std::map<Preset, Params>{
-    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
-    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
-    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
-    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
-  };
-
-  FeedbackDelayNetwork();
-  void setParams(const Params&);
-  void setPreset(Preset);
-  void setSampleRate(double);
-  void process(juce::AudioBuffer<float>&);
   void reset();
+  void noteOn(uint8_t noteVal, uint8_t velocity);
+  void noteOff(uint8_t noteVal, uint8_t velocity);
+  void pitchBend(uint16_t bendVal);
+  void render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset);
+  void setSampleRate(double sampleRate);
+  void setParams(const Params&);
+  auto getNoteVal() const -> uint8_t;
+  auto isActive() const -> bool;
 
 private:
-  std::array<IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains = {};
-  std::array<float, fdnSize> transferVector = {};
-  std::vector<unsigned> primeNumbers;
+  auto nextSample() -> float;
 
-  Params params;
-  double sampleRate;
-
-  void updateParameterSettings();
+  Params _params;
+  uint8_t _noteVal;
+  double _bendValSemitones;
+  uint8_t _velocity;
+  ADSR _adsr;
+  AmbisonicEncoder _encoder;
+  Oscillator _oscA{ Oscillator::Type::Saw };
+  Oscillator _oscB{ Oscillator::Type::Saw };
+  Oscillator _oscNoise{ Oscillator::Type::Noise };
 };
 } // namespace fsh

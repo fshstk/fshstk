@@ -20,54 +20,22 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "IndexedVector.h"
-#include <juce_dsp/juce_dsp.h>
-#include <map>
+#include <juce_audio_processors/juce_audio_processors.h>
+#include <spdlog/spdlog.h>
 
 namespace fsh {
-class FeedbackDelayNetwork
+class PluginStateBase : private juce::AudioProcessorValueTreeState
 {
 public:
-  static constexpr size_t fdnSize = 64;
+  using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+  using Params = juce::AudioProcessorValueTreeState::ParameterLayout;
 
-  struct Params
-  {
-    float roomSize;
-    float revTime;
-    float dryWet;
-  };
+  PluginStateBase(juce::AudioProcessor& parent, Params&& params);
+  auto getState() -> juce::XmlElement;
+  void setState(const juce::XmlElement& xml);
+  auto getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&;
 
-  enum class Preset
-  {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
-  };
-
-  inline static const auto presets = std::map<Preset, Params>{
-    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
-    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
-    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
-    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
-  };
-
-  FeedbackDelayNetwork();
-  void setParams(const Params&);
-  void setPreset(Preset);
-  void setSampleRate(double);
-  void process(juce::AudioBuffer<float>&);
-  void reset();
-
-private:
-  std::array<IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains = {};
-  std::array<float, fdnSize> transferVector = {};
-  std::vector<unsigned> primeNumbers;
-
-  Params params;
-  double sampleRate;
-
-  void updateParameterSettings();
+protected:
+  auto getRawParamSafely(const juce::String& id) const -> float;
 };
 } // namespace fsh

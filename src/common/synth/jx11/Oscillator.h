@@ -20,34 +20,37 @@
 ***************************************************************************************************/
 
 #pragma once
-#include <juce_audio_processors/juce_audio_processors.h>
-#include <spdlog/spdlog.h>
 
 namespace fsh {
-class PluginStateBase : public juce::AudioProcessorValueTreeState
+class Oscillator
 {
 public:
-  PluginStateBase(juce::AudioProcessor& parent,
-                  juce::AudioProcessorValueTreeState::ParameterLayout&& params)
-    : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
+  enum class Type
   {
-  }
+    Sine,
+    Saw,
+    Saw2,
+    Noise,
+  };
 
-  auto getState() -> juce::XmlElement
+  struct Params
   {
-    if (const auto xml = copyState().createXml(); xml != nullptr)
-      return *xml;
+    double frequency;
+    double amplitude;
+  };
 
-    spdlog::warn("getState() could not retrieve state object");
-    return juce::XmlElement{ "" };
-  }
+  explicit Oscillator(Type);
 
-  void setState(const juce::XmlElement& xml)
-  {
-    if (xml.hasTagName(state.getType()))
-      replaceState(juce::ValueTree::fromXml(xml));
-    else
-      spdlog::warn("setState() received invalid state object");
-  }
+  void reset();
+  auto nextSample() -> float;
+  void setSampleRate(double sampleRate);
+  void setParams(const Params&);
+
+private:
+  Type _type;
+  double _amplitude;
+  double _phase;
+  double _deltaPhase;
+  double _sampleRate;
 };
 } // namespace fsh

@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "FeedbackDelayNetwork.h"
+#include <spdlog/spdlog.h>
 
 namespace {
 auto generatePrimes(size_t count)
@@ -132,7 +133,25 @@ void fsh::FeedbackDelayNetwork::updateParameterSettings()
   const auto primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
   for (auto channel = 0U; channel < fdnSize; ++channel) {
-    const auto delayLengthMilliseconds = 0.1 * primeNumbers[primeIndices[channel]];
+    const auto primeNumber = [&]() {
+      if (channel >= primeIndices.size())
+        spdlog::error(
+          "channel {} is trying to index into primeIndices, which has size {} ... using 0 instead",
+          channel,
+          primeIndices.size());
+      const auto index = (channel < primeIndices.size()) ? primeIndices[channel] : 0;
+
+      if (index >= primeNumbers.size())
+        spdlog::error(
+          "index {} is trying to index into primeNumbers, which has size {} ... using 3 instead",
+          index,
+          primeNumbers.size());
+      const auto prime = (index < primeNumbers.size()) ? primeNumbers[index] : 3;
+
+      return prime;
+    }();
+
+    const auto delayLengthMilliseconds = 0.1 * primeNumber;
     const auto delayLengthSeconds = 0.001 * delayLengthMilliseconds;
     const auto delayLengthSamples = static_cast<size_t>(delayLengthSeconds * sampleRate);
     delayBuffers[channel].resize(delayLengthSamples);
@@ -147,6 +166,14 @@ void fsh::FeedbackDelayNetwork::setParams(const Params& p)
 {
   params = p;
   updateParameterSettings();
+}
+
+void fsh::FeedbackDelayNetwork::setPreset(Preset p)
+{
+  if (presets.contains(p))
+    setParams(presets.at(p));
+  else
+    spdlog::warn("Reverb: invalid preset: {}", static_cast<int>(p));
 }
 
 void fsh::FeedbackDelayNetwork::setSampleRate(double newSampleRate)
