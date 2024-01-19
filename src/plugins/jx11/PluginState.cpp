@@ -214,22 +214,17 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 
 auto PluginState::getSynthParams() const -> fsh::Synth::Params
 {
-  const auto* const oscMix = getRawParameterValue("osc_mix");
-  const auto* const oscTune = getRawParameterValue("osc_tune");
-  const auto* const oscFine = getRawParameterValue("osc_fine");
-  const auto* const noisePercent = getRawParameterValue("noise");
+  const auto oscMix = getRawParamSafely("osc_mix");
+  const auto oscTune = getRawParamSafely("osc_tune");
+  const auto oscFine = getRawParamSafely("osc_fine");
+  const auto noisePercent = getRawParamSafely("noise");
 
-  assert(oscMix != nullptr);
-  assert(oscTune != nullptr);
-  assert(oscFine != nullptr);
-  assert(noisePercent != nullptr);
-
-  const auto oscBLvl = *oscMix / 100.0f;
+  const auto oscBLvl = oscMix / 100.0f;
   const auto oscALvl = 1.0f - oscBLvl;
-  const auto noiseLvl = *noisePercent / 100.0f;
+  const auto noiseLvl = noisePercent / 100.0f;
 
   const auto oscBDetune = [&]() {
-    const auto semitones = *oscTune + *oscFine / 100.0f;
+    const auto semitones = oscTune + oscFine / 100.0f;
     const auto freqRatio = std::exp2(semitones / 12.0f);
     return freqRatio;
   }();
@@ -245,27 +240,15 @@ auto PluginState::getSynthParams() const -> fsh::Synth::Params
 
 auto PluginState::getReverbPreset() const -> fsh::FeedbackDelayNetwork::Preset
 {
-  const auto* const preset = getRawParameterValue("rev_preset");
-  assert(preset != nullptr);
-  return static_cast<fsh::FeedbackDelayNetwork::Preset>(preset->load());
+  return static_cast<fsh::FeedbackDelayNetwork::Preset>(getRawParamSafely("rev_preset"));
 }
 
 auto PluginState::getAmpEnvelope() const -> fsh::ADSR::Params
 {
-  const auto* const attack = getRawParameterValue("env_attack");
-  const auto* const decay = getRawParameterValue("env_decay");
-  const auto* const sustainPercent = getRawParameterValue("env_sustain");
-  const auto* const release = getRawParameterValue("env_release");
-
-  assert(attack != nullptr);
-  assert(decay != nullptr);
-  assert(sustainPercent != nullptr);
-  assert(release != nullptr);
-
   return {
-    .attack = *attack,
-    .decay = *decay,
-    .sustain = *sustainPercent / 100.0f,
-    .release = *release,
+    .attack = getRawParamSafely("env_attack"),
+    .decay = getRawParamSafely("env_decay"),
+    .sustain = getRawParamSafely("env_sustain") / 100.0f,
+    .release = getRawParamSafely("env_release"),
   };
 }

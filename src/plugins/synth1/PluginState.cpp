@@ -20,8 +20,6 @@
 ***************************************************************************************************/
 
 #include "PluginState.h"
-#include <cassert>
-#include <cstddef>
 
 namespace {
 auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLayout
@@ -109,66 +107,44 @@ auto PluginState::getSynthParams() const -> fsh::WavetableSound::Params
 
 auto PluginState::getReverbParams() const -> fsh::FeedbackDelayNetwork::Params
 {
-  const auto* const size = getRawParameterValue("rev_size");
-  const auto* const time = getRawParameterValue("rev_time");
-  const auto* const drywet = getRawParameterValue("rev_drywet");
-
-  assert(size != nullptr);
-  assert(time != nullptr);
-  assert(drywet != nullptr);
-
   return {
-    .roomSize = *size,
-    .revTime = *time,
-    .dryWet = *drywet,
+    .roomSize = getRawParamSafely("rev_size"),
+    .revTime = getRawParamSafely("rev_time"),
+    .dryWet = getRawParamSafely("rev_drywet"),
   };
 }
 
 auto PluginState::getAmpEnv() const -> juce::ADSR::Parameters
 {
-  const auto* const a = getRawParameterValue("amp_attack");
-  const auto* const d = getRawParameterValue("amp_decay");
-  const auto* const s = getRawParameterValue("amp_sustain");
-  const auto* const r = getRawParameterValue("amp_release");
-
-  assert(a != nullptr);
-  assert(d != nullptr);
-  assert(s != nullptr);
-  assert(r != nullptr);
-
-  return { *a, *d, *s, *r };
+  return {
+    getRawParamSafely("amp_attack"),
+    getRawParamSafely("amp_decay"),
+    getRawParamSafely("amp_sustain"),
+    getRawParamSafely("amp_release"),
+  };
 }
 
 auto PluginState::getFiltEnv() const -> juce::ADSR::Parameters
 {
-  const auto* const a = getRawParameterValue("filt_attack");
-  const auto* const d = getRawParameterValue("filt_decay");
-  const auto s = 0.0f;
-  const auto r = 0.0f;
-
-  assert(a != nullptr);
-  assert(d != nullptr);
-
-  return { *a, *d, s, r };
+  return {
+    getRawParamSafely("filt_attack"),
+    getRawParamSafely("filt_decay"),
+    0.0f,
+    0.0f,
+  };
 }
 
 auto PluginState::getFiltModAmt() const -> float
 {
-  const auto* const amt = getRawParameterValue("filt_modamt");
-  assert(amt != nullptr);
-  return *amt;
+  return getRawParamSafely("filt_modamt");
 }
 
 auto PluginState::getFilterCutoff() const -> float
 {
-  const auto* const freq = getRawParameterValue("filt_cutoff");
-  assert(freq != nullptr);
-  return *freq;
+  return getRawParamSafely("filt_cutoff");
 }
 
 auto PluginState::getFilterResonance() const -> float
 {
-  const auto* const res = getRawParameterValue("filt_resonance");
-  assert(res != nullptr);
-  return *res;
+  return getRawParamSafely("filt_resonance");
 }

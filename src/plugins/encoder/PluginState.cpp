@@ -21,7 +21,6 @@
 
 #include "PluginState.h"
 #include "SphericalHarmonics.h"
-#include <cassert>
 #include <fmt/format.h>
 
 namespace {
@@ -83,32 +82,26 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 
 auto PluginState::ambiOrder() const -> float
 {
-  const auto* const order = getRawParameterValue("order");
-  assert(order != nullptr);
-  return *order;
+  return getRawParamSafely("order");
 }
 
 auto PluginState::gain() const -> float
 {
-  const auto* const gain = getRawParameterValue("gain");
-  assert(gain != nullptr);
-  return *gain;
+  return getRawParamSafely("gain");
 }
 
 fsh::SphericalVector PluginState::vectorLeft() const
 {
-  const auto* const az = getRawParameterValue("azimuth left");
-  const auto* const el = getRawParameterValue("elevation left");
-  assert(az != nullptr);
-  assert(el != nullptr);
-  return { .azimuth = *az, .elevation = *el };
+  return {
+    .azimuth = getRawParamSafely("azimuth left"),
+    .elevation = getRawParamSafely("elevation left"),
+  };
 }
 
 fsh::SphericalVector PluginState::vectorRight() const
 {
-  const auto* const az = getRawParameterValue("azimuth right");
-  const auto* const el = getRawParameterValue("elevation right");
-  assert(az != nullptr);
-  assert(el != nullptr);
-  return { .azimuth = *az, .elevation = *el };
+  return {
+    .azimuth = getRawParamSafely("azimuth right"),
+    .elevation = getRawParamSafely("elevation right"),
+  };
 }

@@ -49,5 +49,16 @@ public:
     else
       spdlog::warn("setState() received invalid state object");
   }
+
+  auto getRawParamSafely(const juce::String& id) const -> float
+  {
+    const auto* const param = getRawParameterValue(id);
+    if (param == nullptr) {
+      spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
+                       id.toStdString());
+      return 0.0f;
+    }
+    return param->load();
+  }
 };
 } // namespace fsh
