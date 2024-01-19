@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "FeedbackDelayNetwork.h"
+#include <cassert>
 
 namespace {
 auto generatePrimes(size_t count)
@@ -132,7 +133,14 @@ void fsh::FeedbackDelayNetwork::updateParameterSettings()
   const auto primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
   for (auto channel = 0U; channel < fdnSize; ++channel) {
-    const auto delayLengthMilliseconds = 0.1 * primeNumbers[primeIndices[channel]];
+    // primeNumbers[primeIndices[channel] occasionally throws an out-of-range exception.
+    // primeNumbers, possibly also primeIndices, is being accessed with an invalid index
+    assert(channel < primeIndices.size());
+    const auto primeIndexToUse = primeIndices[channel];
+    assert(primeIndexToUse < primeNumbers.size()); // definitely this one
+    const auto primeNumber = primeNumbers[primeIndexToUse];
+
+    const auto delayLengthMilliseconds = 0.1 * primeNumber;
     const auto delayLengthSeconds = 0.001 * delayLengthMilliseconds;
     const auto delayLengthSamples = static_cast<size_t>(delayLengthSeconds * sampleRate);
     delayBuffers[channel].resize(delayLengthSamples);
