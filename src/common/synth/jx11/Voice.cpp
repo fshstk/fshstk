@@ -158,6 +158,9 @@ void fsh::Voice::setParams(const Params& params)
 
 auto fsh::Voice::nextSample() -> float
 {
+  if (!isActive())
+    return 0.0f;
+
   const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscNoise.nextSample();
   const auto env = _adsr.getNextValue();
   return osc * static_cast<float>(env);
