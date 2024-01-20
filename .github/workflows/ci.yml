@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Doxygen & JUCE dependencies
+      - name: Install JUCE dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -112,6 +112,21 @@ jobs:
             graphviz
           wget https://www.doxygen.nl/files/doxygen-1.10.0.linux.bin.tar.gz
           tar -xzf doxygen-1.10.0.linux.bin.tar.gz
+
+      # Configure step is needed for custom CSS:
+      - name: Install Doxygen
+        run: |
+          FILE=doxygen-1.10.0.linux.bin.tar.gz
+          wget https://www.doxygen.nl/files/${FILE}
+          CALCULATED_SHA256=$(sha256sum ${FILE} | awk '{print $1}')
+          EXPECTED_SHA256="dcfc9aa4cc05aef1f0407817612ad9e9201d9bf2ce67cecf95a024bba7d39747"
+          if [ "$CALCULATED_SHA256" != "$EXPECTED_SHA256" ]; then
+            echo "ERROR: SHA256 mismatch for Doxygen:"
+            echo "EXPECTED: ${EXPECTED_SHA256}"
+            echo "ACTUAL:   ${CALCULATED_SHA256}"
+            exit 1
+          fi
+          tar -xzf ${FILE}
 
       # Configure step is needed for custom CSS:
       - name: Configure
