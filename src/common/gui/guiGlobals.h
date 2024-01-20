@@ -26,26 +26,26 @@ namespace fsh {
 /// Colors used by the GUI.
 struct guiColors
 {
-  inline static const juce::Colour background{ 48, 48, 48 };
-  inline static const juce::Colour foreground{ 218, 218, 218 };
-  inline static const juce::Colour transparent{ 0.0f, 0.0f, 0.0f, 0.0f };
+  inline static const juce::Colour background{ 48, 48, 48 };              ///< Background color
+  inline static const juce::Colour foreground{ 218, 218, 218 };           ///< Foreground color
+  inline static const juce::Colour transparent{ 0.0f, 0.0f, 0.0f, 0.0f }; ///< Transparent
 };
 
 /// Fonts used by the GUI.
 struct guiFonts
 {
-  static const juce::Font title;
-  static const juce::Font body;
-  static const juce::Font fontawesome_regular;
-  static const juce::Font fontawesome_solid;
+  static const juce::Font title;               ///< Font used for titles
+  static const juce::Font body;                ///< Font used for body text
+  static const juce::Font fontawesome_regular; ///< Font Awesome Regular (for icons)
+  static const juce::Font fontawesome_solid;   ///< Font Awesome Solid (for icons)
 };
 
 /// Sizes used by the GUI.
 struct guiSizes
 {
-  static inline const auto editorWidth = 415;
-  static inline const auto editorHeight = 475;
-  static inline const auto editorGridSize = editorHeight / 20;
-  static inline const auto knobRadius = guiSizes::editorGridSize;
+  static inline const auto editorWidth = 415;                     ///< Width of the editor window
+  static inline const auto editorHeight = 475;                    ///< Height of the editor window
+  static inline const auto editorGridSize = editorHeight / 20;    ///< Size of the editor grid
+  static inline const auto knobRadius = guiSizes::editorGridSize; ///< Radius of knobs
 };
 } // namespace fsh

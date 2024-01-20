@@ -43,18 +43,18 @@ public:
   /// Parameters for the FDN reverb algorithm.
   struct Params
   {
-    float roomSize;
-    float revTime;
-    float dryWet;
+    float roomSize; ///< Room size in meters
+    float revTime;  ///< Reverberation time in seconds
+    float dryWet;   ///< Dry/wet mix [0, 1]
   };
 
   /// Presets for the FDN reverb algorithm.
   enum class Preset
   {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
+    Off = 0, ///< No reverb
+    Earth,   ///< Small room with a short reverberation time
+    Metal,   ///< Medium-sized room with a medium reverberation time
+    Sky,     ///< Large room with a long reverberation time
   };
 
   /// Default constructor.
