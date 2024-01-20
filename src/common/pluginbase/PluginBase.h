@@ -89,11 +89,10 @@ public:
 
   /// Construct a plugin instance
   explicit PluginBase(const Config& conf)
-    : AudioProcessor(conf.hasInputs() == juce::AudioChannelSet::disabled()
-                       ? BusesProperties().withOutput("Output", conf.outputs, true)
-                       : BusesProperties()
-                           .withInput("Input", conf.inputs, true)
-                           .withOutput("Output", conf.outputs, true))
+    : AudioProcessor(conf.hasInputs() ? BusesProperties()
+                                          .withInput("Input", conf.inputs, true)
+                                          .withOutput("Output", conf.outputs, true)
+                                      : BusesProperties().withOutput("Output", conf.outputs, true))
     , params(*this)
     , _conf(conf)
   {
