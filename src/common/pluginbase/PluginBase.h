@@ -93,7 +93,7 @@ public:
                                           .withInput("Input", conf.inputs, true)
                                           .withOutput("Output", conf.outputs, true)
                                       : BusesProperties().withOutput("Output", conf.outputs, true))
-    , params(*this)
+    , _params(*this)
     , _conf(conf)
   {
   }
@@ -187,7 +187,7 @@ public:
   /// call it directly. This method is called by the DAW when the user saves a project or preset.
   void getStateInformation(juce::MemoryBlock& destData) override
   {
-    copyXmlToBinary(params.getState(), destData);
+    copyXmlToBinary(_params.getState(), destData);
   }
 
   /// Recalls the entire plugin state from a (valid) binary blob. You will not need to override this
@@ -196,13 +196,13 @@ public:
   void setStateInformation(const void* data, int sizeInBytes) override
   {
     if (const auto xml = getXmlFromBinary(data, sizeInBytes))
-      params.setState(*xml);
+      _params.setState(*xml);
   }
 
 protected:
   /// Use this to access the plugin's parameters. This is an instance of the PluginState object that
   /// is passed as a template parameter to PluginBase.
-  PluginStateType params;
+  PluginStateType _params;
 
 private:
   inline static const auto _isSynth = bool{ JucePlugin_IsSynth };
