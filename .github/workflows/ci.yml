@@ -89,4 +89,5 @@ jobs:
     name: Check documentation
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: mattnotmitt/doxygen-action@v1.9.5
