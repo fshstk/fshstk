@@ -24,14 +24,14 @@
 
 namespace fsh {
 /**
- * Used to add a choice (enum) parameter to a plugin.
+ * Used to add a floating point parameter to a plugin.
  *
  * Use a designated initializer and call create() directly for maximum readability, e.g.:
  * ```cpp
- * fsh::ChoiceParam{
+ * fsh::ParamFloat{
  *   .id = "parameter_id",
  *   .name = "The Name of the Parameter",
- *   .choices = { "Foo", "Bar", "Baz" },
+ *   .range = { [min], [max] },
  * }.create()
  * ```
  *
@@ -39,22 +39,24 @@ namespace fsh {
  * juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
  * you can then pass to the constructor of your plugin's PluginState class.
  */
-struct ChoiceParam
+struct ParamFloat
 {
-  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
-  using Attributes = juce::AudioParameterChoiceAttributes;
+  /// Used to specify the parameter's range. See the JUCE docs for details.
+  using Range = juce::NormalisableRange<float>;
 
-  juce::ParameterID id;       ///< The parameter's unique ID, used to identify it in the DAW
-  juce::String name;          ///< The parameter's name, displayed in the DAW's automation
-  juce::StringArray choices;  ///< The parameter's choices, displayed in the DAW's automation
-  float defaultIndex = 0.0;   ///< The parameter's default value, as an index into the choices array
+  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
+  using Attributes = juce::AudioParameterFloatAttributes;
+
+  juce::ParameterID id;   ///< The parameter's unique ID, used to identify it in the DAW
+  juce::String name;      ///< The parameter's name, displayed in the DAW's automation
+  Range range;            ///< The parameter's range, including optional step size and skew factor
+  float defaultVal = 0.0; ///< The parameter's default value
   Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
 
-  /// Creates a juce::AudioParameterChoice object from the given parameters
+  /// Creates a juce::AudioParameterFloat object from the given parameters
   auto create() const
   {
-    return std::make_unique<juce::AudioParameterChoice>(
-      id, name, choices, defaultIndex, attributes);
+    return std::make_unique<juce::AudioParameterFloat>(id, name, range, defaultVal, attributes);
   }
 };
 } // namespace fsh
