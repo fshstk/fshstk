@@ -24,11 +24,11 @@
 
 namespace fsh {
 /**
- * Represents a value that is bounded by a minimum and maximum.
- *
- * Setting a value outside of the bounds will fail gracefully by clamping it to
- * the nearest bound and logging a warning.
- */
+Represents a value that is bounded by a minimum and maximum.
+
+Setting a value outside of the bounds will fail gracefully by clamping it to
+the nearest bound and logging a warning.
+*/
 template<typename T, int MIN, int MAX>
 class BoundedValue
 {

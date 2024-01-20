@@ -24,8 +24,8 @@
 
 namespace fsh {
 /**
- * Simple button that displays an info icon with a link to the fshstk website.
- */
+Simple button that displays an info icon with a link to the fshstk website.
+*/
 class InfoButton : public juce::HyperlinkButton
 {
 public:

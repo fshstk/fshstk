@@ -25,10 +25,10 @@
 
 namespace fsh {
 /**
- * Custom knob component that displays a label and a value.
- *
- * The knob can be attached to a parameter of a PluginStateBase object.
- */
+Custom knob component that displays a label and a value.
+
+The knob can be attached to a parameter of a PluginStateBase object.
+*/
 class SimpleKnob : public juce::Slider
 {
 public:

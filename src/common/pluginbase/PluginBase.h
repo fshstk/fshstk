@@ -52,24 +52,24 @@ const auto JucePlugin_IsMidiEffect = false;
 
 namespace fsh {
 /**
- * The base class for all fsh::stk plugins.
- *
- * PluginBase provides a default implementation for all methods of juce::AudioProcessor, except
- * processBlock(), which is always required for a plugin to work. It also provides a default
- * implementation for getStateInformation() and setStateInformation(), so plugins can save/recall
- * state and presets out of the box, and provides a default GUI editor. This means that to create a
- * plugin, all you have to do is create a PluginState class and implement the processBlock() method.
- *
- * **To use:** Create a PluginState class that inherits from PluginStateBase. Then create a
- * PluginProcessor class that inherits from PluginBase<PluginState>. You will need to specify the
- * number of outputs (and optionally inputs) in the constructor. Do this inside your child class
- * constructor, so your own class can have a default constructor with no parameters. Next, create a
- * processBlock() method in the child class. Create a boilerplate main function (see existing
- * plugins). That's it!
- *
- * In many cases you will need to override additional methods, such as prepareToPlay() if you have
- * components that need to know the sample rate or buffer size.
- */
+The base class for all fsh::stk plugins.
+
+PluginBase provides a default implementation for all methods of juce::AudioProcessor, except
+processBlock(), which is always required for a plugin to work. It also provides a default
+implementation for getStateInformation() and setStateInformation(), so plugins can save/recall
+state and presets out of the box, and provides a default GUI editor. This means that to create a
+plugin, all you have to do is create a PluginState class and implement the processBlock() method.
+
+**To use:** Create a PluginState class that inherits from PluginStateBase. Then create a
+PluginProcessor class that inherits from PluginBase<PluginState>. You will need to specify the
+number of outputs (and optionally inputs) in the constructor. Do this inside your child class
+constructor, so your own class can have a default constructor with no parameters. Next, create a
+processBlock() method in the child class. Create a boilerplate main function (see existing
+plugins). That's it!
+
+In many cases you will need to override additional methods, such as prepareToPlay() if you have
+components that need to know the sample rate or buffer size.
+*/
 template<class PluginStateType>
 class PluginBase : public juce::AudioProcessor
 {

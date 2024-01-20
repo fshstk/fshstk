@@ -24,8 +24,8 @@
 
 namespace fsh {
 /**
- * Represents a direction in spherical coordinates.
- */
+Represents a direction in spherical coordinates.
+*/
 struct SphericalVector
 {
   double azimuth = 0.0;   ///< azimuth in degrees

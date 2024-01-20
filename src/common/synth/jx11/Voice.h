@@ -29,14 +29,14 @@
 
 namespace fsh {
 /**
- * Represents a single voice of a polyphonic synthesizer.
- *
- * **Before using:** set the sample rate using setSampleRate() and set the voice's parameters using
- * setParams().
- *
- * **To use:** call noteOn() to start a note, noteOff() to stop a note, and render() to compute the
- * next block of audio samples.
- */
+Represents a single voice of a polyphonic synthesizer.
+
+**Before using:** set the sample rate using setSampleRate() and set the voice's parameters using
+setParams().
+
+**To use:** call noteOn() to start a note, noteOff() to stop a note, and render() to compute the
+next block of audio samples.
+*/
 class Voice
 {
 public:

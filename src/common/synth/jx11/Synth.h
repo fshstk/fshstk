@@ -26,13 +26,13 @@
 
 namespace fsh {
 /**
- * Polyphonic synthesizer
- *
- * **Before using:** Set the sample rate using setSampleRate() and set the synthesizer's parameters
- * using setParams().
- *
- * **To use:** Call process() to compute the next block of audio samples.
- */
+Polyphonic synthesizer
+
+**Before using:** Set the sample rate using setSampleRate() and set the synthesizer's parameters
+using setParams().
+
+**To use:** Call process() to compute the next block of audio samples.
+*/
 class Synth
 {
 public:

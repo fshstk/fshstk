@@ -25,12 +25,12 @@
 
 namespace fsh {
 /**
- * Represents a polyphonic synthesizer.
- *
- * This class inherits from the juce::Synthesiser class, which is part of the JUCE framework.
- * Compare this to the Voice class, which is a custom implementation of a synthesizer voice with no
- * dependencies.
- */
+Represents a polyphonic synthesizer.
+
+This class inherits from the juce::Synthesiser class, which is part of the JUCE framework.
+Compare this to the Voice class, which is a custom implementation of a synthesizer voice with no
+dependencies.
+*/
 class WavetableSynth : public juce::Synthesiser
 {
 public:
