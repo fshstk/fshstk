@@ -27,27 +27,27 @@
 
 #ifndef JucePlugin_IsSynth
 #error "JucePlugin_IsSynth must be defined. Use this class inside of a JUCE project."
-#define JucePlugin_IsSynth false
+const auto JucePlugin_IsSynth = false;
 #endif
 
 #ifndef JucePlugin_Name
 #error "JucePlugin_Name must be defined. Use this class inside of a JUCE project."
-#define JucePlugin_Name ""
+const auto JucePlugin_Name = "";
 #endif
 
 #ifndef JucePlugin_WantsMidiInput
 #error "JucePlugin_WantsMidiInput must be defined. Use this class inside of a JUCE project."
-#define JucePlugin_WantsMidiInput false
+const auto JucePlugin_WantsMidiInput = false;
 #endif
 
 #ifndef JucePlugin_ProducesMidiOutput
 #error "JucePlugin_ProducesMidiOutput must be defined. Use this class inside of a JUCE project."
-#define JucePlugin_ProducesMidiOutput false
+const auto JucePlugin_ProducesMidiOutput = false;
 #endif
 
 #ifndef JucePlugin_IsMidiEffect
 #error "JucePlugin_IsMidiEffect must be defined. Use this class inside of a JUCE project."
-#define JucePlugin_IsMidiEffect false
+const auto JucePlugin_IsMidiEffect = false;
 #endif
 
 namespace fsh {
