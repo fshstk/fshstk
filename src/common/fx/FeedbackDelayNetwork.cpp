@@ -23,6 +23,33 @@
 #include <spdlog/spdlog.h>
 
 namespace {
+const auto presets = std::map<fsh::FeedbackDelayNetwork::Preset, fsh::FeedbackDelayNetwork::Params>{
+  { fsh::FeedbackDelayNetwork::Preset::Off,
+    {
+      .roomSize = 0.0f,
+      .revTime = 0.0f,
+      .dryWet = 0.0f,
+    } },
+  { fsh::FeedbackDelayNetwork::Preset::Earth,
+    {
+      .roomSize = 1.0f,
+      .revTime = 0.8f,
+      .dryWet = 1.0f,
+    } },
+  { fsh::FeedbackDelayNetwork::Preset::Metal,
+    {
+      .roomSize = 15.0f,
+      .revTime = 1.5f,
+      .dryWet = 1.0f,
+    } },
+  { fsh::FeedbackDelayNetwork::Preset::Sky,
+    {
+      .roomSize = 30.0f,
+      .revTime = 3.0f,
+      .dryWet = 1.0f,
+    } },
+};
+
 auto generatePrimes(size_t count)
 {
   std::vector<unsigned> primes;
@@ -103,10 +130,16 @@ fsh::FeedbackDelayNetwork::FeedbackDelayNetwork()
 void fsh::FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 {
   const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
+  const auto numChannelsToProcess = std::min(numChannels, fdnSize);
   const auto numSamples = buffer.getNumSamples();
 
+  if (fdnSize < numChannels)
+    spdlog::error(
+      "FDN size is smaller than number of channels in buffer. Only processing first {} channels.",
+      fdnSize);
+
   for (int i = 0; i < numSamples; ++i) {
-    for (auto channel = 0UL; channel < numChannels; ++channel) {
+    for (auto channel = 0UL; channel < numChannelsToProcess; ++channel) {
       const auto input = buffer.getSample(static_cast<int>(channel), i);
       delayBuffers[channel].add(input);
 
@@ -123,7 +156,7 @@ void fsh::FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 
     for (auto channel = 0U; channel < delayBuffers.size(); ++channel) {
       delayBuffers[channel].set(transferVector[channel]);
-      delayBuffers[channel].increment();
+      delayBuffers[channel].incrementIndex();
     }
   }
 }

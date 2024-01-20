@@ -25,29 +25,43 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 
 namespace fsh {
+/**
+ * Polyphonic synthesizer
+ *
+ * **Before using:** Set the sample rate using setSampleRate() and set the synthesizer's parameters
+ * using setParams().
+ *
+ * **To use:** Call process() to compute the next block of audio samples.
+ */
 class Synth
 {
 public:
+  /// Synthesizer parameters
   struct Params
   {
-    Voice::Params voice;
+    Voice::Params voice; ///< Voice parameters
   };
 
+  /// Set the sample rate in Hz
   void setSampleRate(double sampleRate);
-  void reset();
+
+  /// Set the synthesizer's parameters
   void setParams(const Params&);
+
+  /// Process a block of audio samples with the given MIDI input
   void process(juce::AudioBuffer<float>&, juce::MidiBuffer&);
 
-  /// Queries the number of currently active voices
-  /// TODO: currently only returns 0!
-  auto numActiveVoices() const -> size_t;
+  /// Reset the synthesizer's state
+  void reset();
 
-  // Limited for now because sawtooth algorithm is very inefficient:
-  static const auto numVoices = 6;
+  /// Queries the number of currently active voices
+  auto numActiveVoices() const -> size_t; // TODO: currently only returns 0!
 
 private:
   void handleMIDIEvent(const MidiEvent&);
 
+  // Limited for now because sawtooth algorithm is very inefficient:
+  static const auto numVoices = 6;
   std::array<Voice, numVoices> _voices;
 };
 } // namespace fsh

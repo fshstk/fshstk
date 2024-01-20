@@ -70,3 +70,15 @@ FetchContent_Declare(
 )
 set(SPDLOG_FMT_EXTERNAL ON)
 FetchContent_MakeAvailable(spdlog)
+
+####################################################################################################
+# doxygen-awesome-css - Custom CSS theme for doxygen
+####################################################################################################
+
+message(STATUS "Fetching doxygen-awesome-css...")
+FetchContent_Declare(
+  doxygen-css
+  GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css
+  GIT_TAG        v2.3.1
+)
+FetchContent_MakeAvailable(doxygen-css)

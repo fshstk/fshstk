@@ -25,38 +25,54 @@
 #include <map>
 
 namespace fsh {
+/**
+ * Ambisonic FDN reverb algorithm.
+ *
+ * This is a feedback delay network (FDN) reverb algorithm based on the FdnReverb class from the
+ * IEM Plugin Suite. This class takes a JUCE AudioBuffer object in the ambisonic domain and applies
+ * the FDN reverb algorithm in-place using the process() method.
+ *
+ * Note that you must call setSampleRate() before calling process() for the first time.
+ */
 class FeedbackDelayNetwork
 {
 public:
+  /// The number of delay lines in the FDN.
   static constexpr size_t fdnSize = 64;
 
+  /// Parameters for the FDN reverb algorithm.
   struct Params
   {
-    float roomSize;
-    float revTime;
-    float dryWet;
+    float roomSize; ///< Room size in meters
+    float revTime;  ///< Reverberation time in seconds
+    float dryWet;   ///< Dry/wet mix [0, 1]
   };
 
+  /// Presets for the FDN reverb algorithm.
   enum class Preset
   {
-    Off = 0,
-    Earth,
-    Metal,
-    Sky,
+    Off = 0, ///< No reverb
+    Earth,   ///< Small room with a short reverberation time
+    Metal,   ///< Medium-sized room with a medium reverberation time
+    Sky,     ///< Large room with a long reverberation time
   };
 
-  inline static const auto presets = std::map<Preset, Params>{
-    { Preset::Off, { .roomSize = 0.0f, .revTime = 0.0f, .dryWet = 0.0f } },
-    { Preset::Earth, { .roomSize = 1.0f, .revTime = 0.8f, .dryWet = 1.0f } },
-    { Preset::Metal, { .roomSize = 15.0f, .revTime = 1.5f, .dryWet = 1.0f } },
-    { Preset::Sky, { .roomSize = 30.0f, .revTime = 3.0f, .dryWet = 1.0f } },
-  };
-
+  /// Default constructor.
   FeedbackDelayNetwork();
+
+  /// Set the parameters for the FDN reverb algorithm directly.
   void setParams(const Params&);
+
+  /// Set the parameters for the FDN reverb algorithm using a preset.
   void setPreset(Preset);
+
+  /// Set the sample rate. Must be called before calling process().
   void setSampleRate(double);
+
+  /// Apply the FDN reverb algorithm to the given ambisonic audio buffer.
   void process(juce::AudioBuffer<float>&);
+
+  /// Clear the delay buffers.
   void reset();
 
 private:

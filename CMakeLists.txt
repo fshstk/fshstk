@@ -45,5 +45,14 @@ juce_set_vst2_sdk_path(${VST_SDK_PATH})
 
 enable_testing()
 
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+  add_custom_target(docs
+    COMMAND             ${DOXYGEN_EXECUTABLE}
+    WORKING_DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT             "Generating docs with doxygen"
+    VERBATIM)
+endif()
+
 add_subdirectory(fonts)
 add_subdirectory(src)

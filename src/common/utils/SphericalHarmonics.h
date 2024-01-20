@@ -31,6 +31,7 @@ enum class Normalization
 };
 
 // TODO: maybe define these in a file with a better name:
+// TODO: pack into class so doxygen can generate docs
 constexpr auto maxAmbiOrder = 5;
 constexpr auto maxNumChannels = (maxAmbiOrder + 1) * (maxAmbiOrder + 1);
 

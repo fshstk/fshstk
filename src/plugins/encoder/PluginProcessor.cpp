@@ -27,8 +27,8 @@
 
 PluginProcessor::PluginProcessor()
   : PluginBase({
-      .inputs = juce::AudioChannelSet::stereo(),
       .outputs = juce::AudioChannelSet::ambisonic(fsh::maxAmbiOrder),
+      .inputs = juce::AudioChannelSet::stereo(),
     })
 {
 }
@@ -49,8 +49,8 @@ void PluginProcessor::prepareToPlay(double sampleRate, int maxBlockSize)
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-  _leftEncoder.setParams({ .direction = params.vectorLeft(), .order = params.ambiOrder() });
-  _rightEncoder.setParams({ .direction = params.vectorRight(), .order = params.ambiOrder() });
+  _leftEncoder.setParams({ .direction = _params.vectorLeft(), .order = _params.ambiOrder() });
+  _rightEncoder.setParams({ .direction = _params.vectorRight(), .order = _params.ambiOrder() });
 
   const auto bufferSize = buffer.getNumSamples();
   const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
@@ -72,7 +72,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 
   auto block = juce::dsp::AudioBlock<float>{ buffer };
   auto context = juce::dsp::ProcessContextReplacing<float>{ block };
-  _gain.setGainDecibels(params.gain());
+  _gain.setGainDecibels(_params.gain());
   _gain.process(context);
 }
 
@@ -85,5 +85,5 @@ void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiB
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
 {
-  return new PluginEditor(*this, params);
+  return new PluginEditor(*this, _params);
 }

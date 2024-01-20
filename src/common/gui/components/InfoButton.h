@@ -23,10 +23,16 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh {
+/**
+ * Simple button that displays an info icon with a link to the fshstk website.
+ */
 class InfoButton : public juce::HyperlinkButton
 {
 public:
+  /// Default constructor.
   InfoButton();
+
+  /// Called by JUCE to paint the button.
   void paintButton(juce::Graphics&, bool highlighted, bool active) override;
 };
 } // namespace fsh

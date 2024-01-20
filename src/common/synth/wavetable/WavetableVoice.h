@@ -26,18 +26,35 @@
 #include <juce_dsp/juce_dsp.h>
 
 namespace fsh {
+/**
+ * Represents a single voice of a polyphonic synthesizer.
+ *
+ * This class inherits from the juce::SynthesiserVoice class, which is part of the JUCE framework.
+ * Compare this to the Voice class, which is a custom implementation of a synthesizer voice with no
+ * dependencies.
+ */
 class WavetableVoice : public juce::SynthesiserVoice
 {
 public:
+  /// Returns whether the given sound can be played by this voice
   auto canPlaySound(juce::SynthesiserSound*) -> bool override;
 
+  /// Start a note with the given MIDI note value, velocity, and pitch wheel position
   void startNote(int midiNote, float vel, juce::SynthesiserSound*, int pitchWhlPos) override;
+
+  /// Stop a note with the given velocity, allowing tail-off if requested
   void stopNote(float vel, bool allowTailOff) override;
 
+  /// Set the pitch wheel position (unimplemented)
   void pitchWheelMoved(int pitchWhlPos) override;
+
+  /// Send a MIDI CC message (unimplemented)
   void controllerMoved(int numCC, int val) override;
 
+  /// Render the next block of audio samples
   void renderNextBlock(juce::AudioBuffer<float>&, int startSample, int numSamples) override;
+
+  /// Render the next block of double precision audio samples (unimplemented)
   void renderNextBlock(juce::AudioBuffer<double>&, int startSample, int numSamples) override;
 
 private:

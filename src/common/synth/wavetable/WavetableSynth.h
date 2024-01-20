@@ -24,10 +24,20 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 
 namespace fsh {
+/**
+ * Represents a polyphonic synthesizer.
+ *
+ * This class inherits from the juce::Synthesiser class, which is part of the JUCE framework.
+ * Compare this to the Voice class, which is a custom implementation of a synthesizer voice with no
+ * dependencies.
+ */
 class WavetableSynth : public juce::Synthesiser
 {
 public:
+  /// Default constructor
   WavetableSynth();
+
+  /// Set the synthesizer's parameters
   void setParams(const WavetableSound::Params&);
 
 private:

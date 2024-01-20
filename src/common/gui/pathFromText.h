@@ -23,5 +23,6 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh {
+// TODO: pack into class so doxygen can generate docs
 juce::Path pathFromText(juce::String text, juce::Point<float> center);
 } // namespace fsh

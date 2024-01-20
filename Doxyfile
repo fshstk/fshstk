@@ -1,0 +1,43 @@
+# Doxyfile 1.10.0
+
+# Main project options:
+
+PROJECT_NAME           = "fsh::stk"
+PROJECT_BRIEF          = "fantastic spatial holophonic software toolkit"
+PROJECT_LOGO           =
+PROJECT_ICON           =
+INPUT                  = src/common
+INPUT                 += README.md
+OUTPUT_DIRECTORY       = docs
+USE_MDFILE_AS_MAINPAGE = README.md
+
+# Options relating to doxygen-awesome-css:
+
+HTML_EXTRA_STYLESHEET  = build/_deps/doxygen-css-src/doxygen-awesome.css
+HTML_COLORSTYLE        = LIGHT
+DISABLE_INDEX          = NO
+FULL_SIDEBAR           = NO
+
+# Misc:
+
+JAVADOC_AUTOBRIEF      = YES
+MULTILINE_CPP_IS_BRIEF = NO
+MARKDOWN_ID_STYLE      = GITHUB
+BUILTIN_STL_SUPPORT    = NO
+TIMESTAMP              = YES
+GENERATE_TODOLIST      = YES
+GENERATE_TESTLIST      = YES
+GENERATE_BUGLIST       = YES
+WARN_AS_ERROR          = FAIL_ON_WARNINGS
+RECURSIVE              = YES
+IMAGE_PATH             =
+REFERENCED_BY_RELATION = NO
+REFERENCES_RELATION    = NO
+HTML_DYNAMIC_SECTIONS  = NO
+SITEMAP_URL            =
+GENERATE_TREEVIEW      = YES
+HTML_FORMULA_FORMAT    = svg
+SERVER_BASED_SEARCH    = NO
+EXTERNAL_SEARCH        = NO
+GENERATE_LATEX         = NO
+TAGFILES               =

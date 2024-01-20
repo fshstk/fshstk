@@ -23,14 +23,23 @@
 #include <spdlog/spdlog.h>
 
 namespace fsh {
+/**
+ * Represents a value that is bounded by a minimum and maximum.
+ *
+ * Setting a value outside of the bounds will fail gracefully by clamping it to
+ * the nearest bound and logging a warning.
+ */
 template<typename T, int MIN, int MAX>
 class BoundedValue
 {
 public:
+  /// Set the initial value
   BoundedValue(T val) { set(val); }
 
+  /// Get the value stored in this object
   auto get() const -> T { return _val; }
 
+  /// Set a new value, clamping to min/max if necessary
   void set(T val)
   {
     if (val < min) {
@@ -48,7 +57,10 @@ public:
     _val = val;
   }
 
+  /// Minimum value
   static constexpr auto min = static_cast<T>(MIN);
+
+  /// Maximum value
   static constexpr auto max = static_cast<T>(MAX);
 
 private:
