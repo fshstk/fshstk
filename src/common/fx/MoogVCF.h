@@ -23,19 +23,36 @@
 #include <array>
 
 namespace fsh::fx {
+/**
+Virtual analog Moog-style lowpass filter.
+
+This implementation originally appeared on
+[MusicDSP.org](http://www.musicdsp.org/en/latest/Filters/24-moog-vcf.html), and was then
+ported/improved by [ddiakopoulos on
+GitHub](https://github.com/ddiakopoulos/MoogLadders/blob/master/src/MusicDSPModel.h).
+
+**Before using:** Set the sample rate using setSampleRate(), and parameters using setParams().
+
+**To use:** Call processSample() for each sample.
+*/
 class MoogVCF
 {
 public:
+  /// Parameters for the filter
+
   struct Params
   {
-    float cutoff = 1'000.0f;
-    float resonance = 0.1f;
+    float cutoff = 1'000.0f; ///< Filter cutoff frequency in Hz
+    float resonance = 0.1f;  ///< Filter resonance
   };
 
+  /// Set the filter parameters
   void setParams(const Params&);
 
+  /// Set the sample rate in Hz
   void setSampleRate(double);
 
+  /// Filter a single sample
   float processSample(float);
 
 private:
