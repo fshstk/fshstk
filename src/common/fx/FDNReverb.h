@@ -27,11 +27,10 @@ namespace fsh::fx {
 /**
 Ambisonic FDN reverb algorithm.
 
-This class takes a JUCE AudioBuffer object in the ambisonic domain and applies
-the FDN reverb algorithm in-place using the process() method.
+This class takes a JUCE AudioBuffer object in the ambisonic domain and applies the FDN reverb
+algorithm in-place using the process() method.
 
-Note that you must call setSampleRate() before calling process() for the first
-time.
+Note that you must call setSampleRate() before calling process() for the first time.
 
 > This class is a refactoring of code from the [IEM Plugin Suite](https://plugins.iem.at/).
 */
