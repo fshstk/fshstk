@@ -27,11 +27,13 @@ namespace fsh::fx {
 /**
 Ambisonic FDN reverb algorithm.
 
-This is a feedback delay network (FDN) reverb algorithm based on the FdnReverb class from the
-IEM Plugin Suite. This class takes a JUCE AudioBuffer object in the ambisonic domain and applies
+This class takes a JUCE AudioBuffer object in the ambisonic domain and applies
 the FDN reverb algorithm in-place using the process() method.
 
-Note that you must call setSampleRate() before calling process() for the first time.
+Note that you must call setSampleRate() before calling process() for the first
+time.
+
+> This class is a refactoring of code from the [IEM Plugin Suite](https://plugins.iem.at/).
 */
 class FeedbackDelayNetwork
 {

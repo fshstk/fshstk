@@ -38,6 +38,8 @@ To use, you must first set the sampling rate using setSampleRate(). You can then
 and order via the setParams() method. Finally, call getCoefficientsForNextSample() in a loop for
 each input sample. Multiply the input sample by each element to get the values for the output
 channels.
+
+> This class is a refactoring of code from the [IEM Plugin Suite](https://plugins.iem.at/).
 */
 class AmbisonicEncoder
 {
