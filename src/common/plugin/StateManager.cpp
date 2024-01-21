@@ -24,7 +24,7 @@
 using namespace fsh::plugin;
 
 StateManager::StateManager(juce::AudioProcessor& parent, Params&& params)
-  : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
+  : juce::AudioProcessorValueTreeState(parent, &_undoManager, "Parameters", std::move(params))
 {
 }
 

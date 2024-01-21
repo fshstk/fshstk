@@ -65,5 +65,8 @@ protected:
   /// try to get a parameter that doesn't exist, this function will fail gracefully by returning
   /// 0.0f and logging an error.
   auto getRawParamSafely(const juce::String& id) const -> float;
+
+private:
+  juce::UndoManager _undoManager;
 };
 } // namespace fsh::plugin
