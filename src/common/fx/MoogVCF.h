@@ -20,10 +20,39 @@
 ***************************************************************************************************/
 
 #pragma once
+#include <array>
 
 namespace fsh::fx {
 class MoogVCF
 {
-  //
+public:
+  struct Params
+  {
+    float cutoff = 1'000.0f;
+    float resonance = 0.1f;
+  };
+
+  void setParams(const Params&);
+
+  void setSampleRate(double);
+
+  float processSample(float);
+
+private:
+  void calculateCoefficients();
+
+  Params _params;
+
+  double _sampleRate;
+  double _cutoff;
+  double _resonance;
+
+  std::array<double, 4> stage = {};
+  std::array<double, 4> delay = {};
+
+  double p;
+  double k;
+  double t1;
+  double t2;
 };
 } // namespace fsh::fx
