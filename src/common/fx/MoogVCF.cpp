@@ -37,29 +37,32 @@ void MoogVCF::setSampleRate(double sampleRate)
 
 float MoogVCF::processSample(float input)
 {
+  const auto x = input - _resCoeff * _stage[3];
+
   // Four cascaded one-pole filters (bilinear transform)
-  stage[0] = input * p + delay[0] * p - k * stage[0];
-  stage[1] = stage[0] * p + delay[1] * p - k * stage[1];
-  stage[2] = stage[1] * p + delay[2] * p - k * stage[2];
-  stage[3] = stage[2] * p + delay[3] * p - k * stage[3];
+  _stage[0] = x * _p + _delay[0] * _p - _k * _stage[0];
+  _stage[1] = _stage[0] * _p + _delay[1] * _p - _k * _stage[1];
+  _stage[2] = _stage[1] * _p + _delay[2] * _p - _k * _stage[2];
+  _stage[3] = _stage[2] * _p + _delay[3] * _p - _k * _stage[3];
 
   // Clipping band-limited sigmoid
-  stage[3] -= (stage[3] * stage[3] * stage[3]) / 6.0;
+  _stage[3] -= (_stage[3] * _stage[3] * _stage[3]) / 6.0;
 
-  delay[0] = input;
-  delay[1] = stage[0];
-  delay[2] = stage[1];
-  delay[3] = stage[2];
+  _delay[0] = x;
+  _delay[1] = _stage[0];
+  _delay[2] = _stage[1];
+  _delay[3] = _stage[2];
 
-  return static_cast<float>(stage[3]);
+  return static_cast<float>(_stage[3]);
 }
 
 void MoogVCF::calculateCoefficients()
 {
-  _cutoff = 2.0 * _params.cutoff / _sampleRate;
-  p = _cutoff * (1.8 - 0.8 * _cutoff);
-  k = 2.0 * sin(_cutoff * M_PI * 0.5) - 1.0;
-  t1 = (1.0 - p) * 1.386249;
-  t2 = 12.0 + t1 * t1;
-  _resonance = _params.resonance * (t2 + 6.0 * t1) / (t2 - 6.0 * t1);
+  const auto cutoffCoeff = _params.cutoff / (0.5 * _sampleRate);
+  _p = cutoffCoeff * (1.8 - 0.8 * cutoffCoeff);
+  _k = 2.0 * std::sin(cutoffCoeff * M_PI * 0.5) - 1.0;
+
+  const auto t1 = (1.0 - _p) * 1.386249;
+  const auto t2 = 12.0 + t1 * t1;
+  _resCoeff = _params.resonance * (t2 + 6.0 * t1) / (t2 - 6.0 * t1);
 }
