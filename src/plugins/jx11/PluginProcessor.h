@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FeedbackDelayNetwork.h"
+#include "FDNReverb.h"
 #include "PluginBase.h"
 #include "PluginState.h"
 #include "Synth.h"
@@ -35,5 +35,5 @@ public:
 
 private:
   fsh::synth::Synth _synth;
-  fsh::fx::FeedbackDelayNetwork _reverb;
+  fsh::fx::FDNReverb _reverb;
 };

@@ -35,7 +35,7 @@ time.
 
 > This class is a refactoring of code from the [IEM Plugin Suite](https://plugins.iem.at/).
 */
-class FeedbackDelayNetwork
+class FDNReverb
 {
 public:
   /// The number of delay lines in the FDN.
@@ -59,7 +59,7 @@ public:
   };
 
   /// Default constructor.
-  FeedbackDelayNetwork();
+  FDNReverb();
 
   /// Set the parameters for the FDN reverb algorithm directly.
   void setParams(const Params&);

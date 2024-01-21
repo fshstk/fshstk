@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FeedbackDelayNetwork.h"
+#include "FDNReverb.h"
 #include "PluginBase.h"
 #include "PluginState.h"
 #include "WavetableSynth.h"
@@ -35,5 +35,5 @@ public:
 
 private:
   fsh::synth::WavetableSynth synth;
-  fsh::fx::FeedbackDelayNetwork reverb;
+  fsh::fx::FDNReverb reverb;
 };
