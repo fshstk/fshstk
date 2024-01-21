@@ -28,12 +28,12 @@
 namespace {
 auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLayout
 {
-  const auto percentLabel = fsh::ParamFloat::Attributes{}.withLabel("%");
-  const auto semitonesLabel = fsh::ParamFloat::Attributes{}.withLabel("semi");
-  const auto centsLabel = fsh::ParamFloat::Attributes{}.withLabel("cents");
-  const auto millisecondsLabel = fsh::ParamFloat::Attributes{}.withLabel("ms");
-  const auto decibelsLabel = fsh::ParamFloat::Attributes{}.withLabel("dB");
-  const auto herzLabel = fsh::ParamFloat::Attributes{}.withLabel("Hz");
+  const auto percentLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("%");
+  const auto semitonesLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("semi");
+  const auto centsLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("cents");
+  const auto millisecondsLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("ms");
+  const auto decibelsLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("dB");
+  const auto herzLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("Hz");
 
   const auto oscMixLabel = percentLabel.withStringFromValueFunction([](float val, int) {
     const auto oscBLvl = val;
@@ -54,7 +54,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
   });
 
   return {
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "osc_mix",
       .name = "Oscillator Mix",
       .range = { 0.0f, 100.0f },
@@ -62,7 +62,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = oscMixLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "osc_tune",
       .name = "Oscillator Detune",
       .range = { -24.0f, 24.0f, 1.0f },
@@ -70,21 +70,21 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = semitonesLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "osc_fine",
       .name = "Oscillator Detune (Fine)",
-      .range = fsh::ParamFloat::Range{ -50.0f, 50.0f, 0.1f, 0.3f, true },
+      .range = fsh::plugin::ParamFloat::Range{ -50.0f, 50.0f, 0.1f, 0.3f, true },
       .defaultVal = 0.0f,
       .attributes = centsLabel,
     }
       .create(),
-    fsh::ParamChoice{
+    fsh::plugin::ParamChoice{
       .id = "glide_mode",
       .name = "Glide Mode",
       .choices = { "Off", "Legato", "Always" },
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "glide_rate",
       .name = "Glide Rate",
       .range = { 0.0f, 100.0f, 1.0f },
@@ -92,15 +92,15 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "glide_bend",
       .name = "Glide Bend",
-      .range = fsh::ParamFloat::Range{ -36.0f, 36.0f, 0.01f, 0.4f, true },
+      .range = fsh::plugin::ParamFloat::Range{ -36.0f, 36.0f, 0.01f, 0.4f, true },
       .defaultVal = 0.0f,
       .attributes = semitonesLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_freq",
       .name = "Filter Frequency",
       .range = { 0.0f, 100.0f, 0.1f },
@@ -108,7 +108,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_reso",
       .name = "Filter Resonance",
       .range = { 0.0f, 100.0f, 1.0f },
@@ -116,7 +116,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_env",
       .name = "Filter Envelope Amount",
       .range = { -100.0f, 100.0f, 0.1f },
@@ -124,7 +124,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_lfo",
       .name = "Filter LFO Amount",
       .range = { 0.0f, 100.0f, 1.0f },
@@ -132,7 +132,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_vel",
       .name = "Filter Velocity Amount",
       .range = { -100.0f, 100.0f, 1.0f },
@@ -140,7 +140,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = filterVelLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_attack",
       .name = "Filter Attack",
       .range = { 0.0f, 100.0f, 1.0f },
@@ -148,7 +148,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_decay",
       .name = "Filter Decay",
       .range = { 0.0f, 100.0f, 1.0f },
@@ -156,7 +156,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_sustain",
       .name = "Filter Sustain",
       .range = { 0.0f, 100.0f, 1.0f },
@@ -164,7 +164,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filter_release",
       .name = "Filter Release",
       .range = { 0.0f, 100.0f, 1.0f },
@@ -172,7 +172,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "env_attack",
       .name = "Envelope Attack",
       .range = { 0.0f, 1000.0f, 1.0f },
@@ -180,7 +180,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = millisecondsLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "env_decay",
       .name = "Envelope Decay",
       .range = { 0.0f, 1000.0f, 1.0f },
@@ -188,7 +188,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = millisecondsLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "env_sustain",
       .name = "Envelope Sustain",
       .range = { 0.0f, 100.0f, 1.0f },
@@ -196,7 +196,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = percentLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "env_release",
       .name = "Envelope Release",
       .range = { 0.0f, 1000.0f, 1.0f },
@@ -204,7 +204,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = millisecondsLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "lfo_rate",
       .name = "LFO Rate",
       .range = { 0.0f, 1.0f },
@@ -212,7 +212,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = lfoRateLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "vibrato",
       .name = "Vibrato Amount",
       .range = { -100.0f, 100.0f },
@@ -220,25 +220,25 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = vibratoLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "noise",
       .name = "Noise Amount",
       .range = { 0.0f, 100.0f, 1.0f },
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "level",
       .name = "Output Level",
       .range = { -24.0f, 6.0f, 0.1f },
     }
       .create(),
-    fsh::ParamChoice{
+    fsh::plugin::ParamChoice{
       .id = "polymode",
       .name = "Polyphony",
       .choices = { "Mono", "Poly" },
     }
       .create(),
-    fsh::ParamChoice{
+    fsh::plugin::ParamChoice{
       .id = "rev_preset",
       .name = "Reverb Preset",
       .choices = { "Off", "Earth", "Metal", "Sky" },
@@ -253,7 +253,7 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
-auto PluginState::getSynthParams() const -> fsh::Synth::Params
+auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
 {
   const auto oscMix = getRawParamSafely("osc_mix");
   const auto oscTune = getRawParamSafely("osc_tune");
@@ -279,12 +279,12 @@ auto PluginState::getSynthParams() const -> fsh::Synth::Params
            } };
 }
 
-auto PluginState::getReverbPreset() const -> fsh::FeedbackDelayNetwork::Preset
+auto PluginState::getReverbPreset() const -> fsh::fx::FeedbackDelayNetwork::Preset
 {
-  return static_cast<fsh::FeedbackDelayNetwork::Preset>(getRawParamSafely("rev_preset"));
+  return static_cast<fsh::fx::FeedbackDelayNetwork::Preset>(getRawParamSafely("rev_preset"));
 }
 
-auto PluginState::getAmpEnvelope() const -> fsh::ADSR::Params
+auto PluginState::getAmpEnvelope() const -> fsh::synth::ADSR::Params
 {
   return {
     .attack = getRawParamSafely("env_attack"),

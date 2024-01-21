@@ -25,13 +25,13 @@
 #include "Synth.h"
 #include <juce_dsp/juce_dsp.h>
 
-class PluginState : public fsh::PluginStateBase
+class PluginState : public fsh::plugin::PluginStateBase
 {
 public:
   explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::Synth::Params;
-  auto getReverbPreset() const -> fsh::FeedbackDelayNetwork::Preset;
+  auto getSynthParams() const -> fsh::synth::Synth::Params;
+  auto getReverbPreset() const -> fsh::fx::FeedbackDelayNetwork::Preset;
 
 private:
-  auto getAmpEnvelope() const -> fsh::ADSR::Params;
+  auto getAmpEnvelope() const -> fsh::synth::ADSR::Params;
 };

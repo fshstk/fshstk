@@ -20,43 +20,62 @@
 ***************************************************************************************************/
 
 #pragma once
-#include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh {
+namespace fsh::util {
 /**
-Used to add a floating point parameter to a plugin.
+Smoothed value tracking with separate attack/decay times.
 
-Use a designated initializer and call create() directly for maximum readability, e.g.:
-```cpp
-fsh::ParamFloat{
-  .id = "parameter_id",
-  .name = "The Name of the Parameter",
-  .range = { [min], [max] },
-}.create()
-```
+Can be used as a general simple attack/decay envelope, or for avoiding audible clicks on sudden
+parameter changes.
 
-Return a list of these inside a function returning a
-juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
-you can then pass to the constructor of your plugin's PluginState class.
+This class provides a simple exponential curve between its current value and a target value,
+specified with setTargetValue(). If the target is lower than the current value, the
+EnvelopeFollower will use the attack time to reach the target, and conversely the release time if
+the target is lower.
+
+Note that
+
+Before using an EnvelopeFollower, you must set the sample rate using setSampleRate(). You may
+also want to set the attack and release times using setParams(), but these will fall back on very
+short default values.
 */
-struct ParamFloat
+class EnvelopeFollower
 {
-  /// Used to specify the parameter's range. See the JUCE docs for details.
-  using Range = juce::NormalisableRange<float>;
-
-  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
-  using Attributes = juce::AudioParameterFloatAttributes;
-
-  juce::ParameterID id;   ///< The parameter's unique ID, used to identify it in the DAW
-  juce::String name;      ///< The parameter's name, displayed in the DAW's automation
-  Range range;            ///< The parameter's range, including optional step size and skew factor
-  float defaultVal = 0.0; ///< The parameter's default value
-  Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
-
-  /// Creates a juce::AudioParameterFloat object from the given parameters
-  auto create() const
+public:
+  /// Parameters for EnvelopeFollower.
+  struct Params
   {
-    return std::make_unique<juce::AudioParameterFloat>(id, name, range, defaultVal, attributes);
-  }
+    double attackTimeMilliseconds = 5.0;  ///< attack time in milliseconds
+    double releaseTimeMilliseconds = 5.0; ///< release time in milliseconds
+  };
+
+  /// Calculate the next value between the current value and the target.
+  auto getNextValue() -> double;
+
+  /// Set the target.
+  void setTargetValue(double);
+
+  /// Set the sample rate. This must be set before using the EnvelopeFollower.
+  void setSampleRate(double);
+
+  /// Set the parameters. Will fall back on default values if not set.
+  void setParams(const Params&);
+
+  /// Reset both the current and target values to the specified value, or to
+  /// zero if none is provided.
+  void reset(double val = 0.0);
+
+private:
+  void calculateCoefficients();
+
+  Params _params;
+
+  double _coeffAttack;
+  double _coeffRelease;
+
+  double _currentValue;
+  double _targetValue;
+
+  double _sampleRate;
 };
-} // namespace fsh
+} // namespace fsh::util

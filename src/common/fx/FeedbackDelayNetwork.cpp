@@ -22,27 +22,29 @@
 #include "FeedbackDelayNetwork.h"
 #include <spdlog/spdlog.h>
 
+using namespace fsh::fx;
+
 namespace {
-const auto presets = std::map<fsh::FeedbackDelayNetwork::Preset, fsh::FeedbackDelayNetwork::Params>{
-  { fsh::FeedbackDelayNetwork::Preset::Off,
+const auto presets = std::map<FeedbackDelayNetwork::Preset, FeedbackDelayNetwork::Params>{
+  { FeedbackDelayNetwork::Preset::Off,
     {
       .roomSize = 0.0f,
       .revTime = 0.0f,
       .dryWet = 0.0f,
     } },
-  { fsh::FeedbackDelayNetwork::Preset::Earth,
+  { FeedbackDelayNetwork::Preset::Earth,
     {
       .roomSize = 1.0f,
       .revTime = 0.8f,
       .dryWet = 1.0f,
     } },
-  { fsh::FeedbackDelayNetwork::Preset::Metal,
+  { FeedbackDelayNetwork::Preset::Metal,
     {
       .roomSize = 15.0f,
       .revTime = 1.5f,
       .dryWet = 1.0f,
     } },
-  { fsh::FeedbackDelayNetwork::Preset::Sky,
+  { FeedbackDelayNetwork::Preset::Sky,
     {
       .roomSize = 30.0f,
       .revTime = 3.0f,
@@ -98,9 +100,9 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
   return indices;
 }
 
-void fwht(std::array<float, fsh::FeedbackDelayNetwork::fdnSize>& data)
+void fwht(std::array<float, FeedbackDelayNetwork::fdnSize>& data)
 {
-  static_assert(fsh::FeedbackDelayNetwork::fdnSize == 64, "FDN size must be power of 2");
+  static_assert(FeedbackDelayNetwork::fdnSize == 64, "FDN size must be power of 2");
   const auto numElements = data.size();
   const auto logSize = static_cast<unsigned>(std::log2(numElements));
 
@@ -121,13 +123,13 @@ void fwht(std::array<float, fsh::FeedbackDelayNetwork::fdnSize>& data)
 }
 } // namespace
 
-fsh::FeedbackDelayNetwork::FeedbackDelayNetwork()
+FeedbackDelayNetwork::FeedbackDelayNetwork()
   : primeNumbers(generatePrimes(5'000))
 {
   updateParameterSettings();
 }
 
-void fsh::FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
+void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
 {
   const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
   const auto numChannelsToProcess = std::min(numChannels, fdnSize);
@@ -161,7 +163,7 @@ void fsh::FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
   }
 }
 
-void fsh::FeedbackDelayNetwork::updateParameterSettings()
+void FeedbackDelayNetwork::updateParameterSettings()
 {
   const auto primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
@@ -195,13 +197,13 @@ void fsh::FeedbackDelayNetwork::updateParameterSettings()
   }
 }
 
-void fsh::FeedbackDelayNetwork::setParams(const Params& p)
+void FeedbackDelayNetwork::setParams(const Params& p)
 {
   params = p;
   updateParameterSettings();
 }
 
-void fsh::FeedbackDelayNetwork::setPreset(Preset p)
+void FeedbackDelayNetwork::setPreset(Preset p)
 {
   if (presets.contains(p))
     setParams(presets.at(p));
@@ -209,13 +211,13 @@ void fsh::FeedbackDelayNetwork::setPreset(Preset p)
     spdlog::warn("Reverb: invalid preset: {}", static_cast<int>(p));
 }
 
-void fsh::FeedbackDelayNetwork::setSampleRate(double newSampleRate)
+void FeedbackDelayNetwork::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   updateParameterSettings();
 }
 
-void fsh::FeedbackDelayNetwork::reset()
+void FeedbackDelayNetwork::reset()
 {
   for (auto& buffer : delayBuffers)
     buffer.clear();

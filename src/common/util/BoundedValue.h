@@ -20,37 +20,53 @@
 ***************************************************************************************************/
 
 #pragma once
-#include <vector>
+#include <spdlog/spdlog.h>
 
-namespace fsh {
+namespace fsh::util {
 /**
-Primitive ring buffer class.
+Represents a value that is bounded by a minimum and maximum.
 
-Can be used as a simple delay line or FIFO queue.
+Setting a value outside of the bounds will fail gracefully by clamping it to
+the nearest bound and logging a warning.
 */
-class IndexedVector
+template<typename T, int MIN, int MAX>
+class BoundedValue
 {
 public:
-  /// Resize the underlying vector.
-  void resize(size_t newSize);
+  /// Set the initial value
+  BoundedValue(T val) { set(val); }
 
-  /// Get the element at the current index.
-  auto get() const -> float;
+  /// Get the value stored in this object
+  auto get() const -> T { return _val; }
 
-  /// Add a value to the element at the current index.
-  void add(float val);
+  /// Set a new value, clamping to min/max if necessary
+  void set(T val)
+  {
+    if (val < min) {
+      spdlog::warn("BoundedValue: value {} is below minimum {}, clamping", val, min);
+      _val = min;
+      return;
+    }
 
-  /// Set the element at the current index.
-  void set(float val);
+    if (val > max) {
+      spdlog::warn("BoundedValue: value {} is above maximum {}, clamping", val, max);
+      _val = max;
+      return;
+    }
 
-  /// Increment the index with wraparound.
-  void incrementIndex();
+    _val = val;
+  }
 
-  /// Set all elements to zero.
-  void clear();
+  /// Minimum value
+  static constexpr auto min = static_cast<T>(MIN);
+
+  /// Maximum value
+  static constexpr auto max = static_cast<T>(MAX);
 
 private:
-  size_t index = 0;
-  std::vector<float> data;
+  T _val;
 };
-} // namespace fsh
+
+template<int MIN, int MAX>
+using BoundedFloat = BoundedValue<float, MIN, MAX>;
+} // namespace fsh::util

@@ -23,7 +23,9 @@
 #include "WavetableSound.h"
 #include "WavetableVoice.h"
 
-fsh::WavetableSynth::WavetableSynth()
+using namespace fsh::synth;
+
+WavetableSynth::WavetableSynth()
 {
   for (auto i = 0; i < numVoices; ++i)
     addVoice(new WavetableVoice);
@@ -33,7 +35,7 @@ fsh::WavetableSynth::WavetableSynth()
   addSound(_sound);
 }
 
-void fsh::WavetableSynth::setParams(const WavetableSound::Params& p)
+void WavetableSynth::setParams(const WavetableSound::Params& p)
 {
   _sound->setParams(p);
 }

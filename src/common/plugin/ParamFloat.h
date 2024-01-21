@@ -20,53 +20,43 @@
 ***************************************************************************************************/
 
 #pragma once
-#include <spdlog/spdlog.h>
+#include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh {
+namespace fsh::plugin {
 /**
-Represents a value that is bounded by a minimum and maximum.
+Used to add a floating point parameter to a plugin.
 
-Setting a value outside of the bounds will fail gracefully by clamping it to
-the nearest bound and logging a warning.
+Use a designated initializer and call create() directly for maximum readability, e.g.:
+```cpp
+fsh::ParamFloat{
+  .id = "parameter_id",
+  .name = "The Name of the Parameter",
+  .range = { [min], [max] },
+}.create()
+```
+
+Return a list of these inside a function returning a
+juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
+you can then pass to the constructor of your plugin's PluginState class.
 */
-template<typename T, int MIN, int MAX>
-class BoundedValue
+struct ParamFloat
 {
-public:
-  /// Set the initial value
-  BoundedValue(T val) { set(val); }
+  /// Used to specify the parameter's range. See the JUCE docs for details.
+  using Range = juce::NormalisableRange<float>;
 
-  /// Get the value stored in this object
-  auto get() const -> T { return _val; }
+  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
+  using Attributes = juce::AudioParameterFloatAttributes;
 
-  /// Set a new value, clamping to min/max if necessary
-  void set(T val)
+  juce::ParameterID id;   ///< The parameter's unique ID, used to identify it in the DAW
+  juce::String name;      ///< The parameter's name, displayed in the DAW's automation
+  Range range;            ///< The parameter's range, including optional step size and skew factor
+  float defaultVal = 0.0; ///< The parameter's default value
+  Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
+
+  /// Creates a juce::AudioParameterFloat object from the given parameters
+  auto create() const
   {
-    if (val < min) {
-      spdlog::warn("BoundedValue: value {} is below minimum {}, clamping", val, min);
-      _val = min;
-      return;
-    }
-
-    if (val > max) {
-      spdlog::warn("BoundedValue: value {} is above maximum {}, clamping", val, max);
-      _val = max;
-      return;
-    }
-
-    _val = val;
+    return std::make_unique<juce::AudioParameterFloat>(id, name, range, defaultVal, attributes);
   }
-
-  /// Minimum value
-  static constexpr auto min = static_cast<T>(MIN);
-
-  /// Maximum value
-  static constexpr auto max = static_cast<T>(MAX);
-
-private:
-  T _val;
 };
-
-template<int MIN, int MAX>
-using BoundedFloat = BoundedValue<float, MIN, MAX>;
-} // namespace fsh
+} // namespace fsh::plugin

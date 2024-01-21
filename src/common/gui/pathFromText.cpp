@@ -22,14 +22,16 @@
 #include "pathFromText.h"
 #include "guiGlobals.h"
 
-juce::Path fsh::pathFromText(const juce::String text, const juce::Point<float> center)
+using namespace fsh::gui;
+
+juce::Path fsh::gui::pathFromText(const juce::String text, const juce::Point<float> center)
 {
   // Line width just needs to be a constant that's definitely big enough to fit
   // the string we want to draw:
   const auto lineWidth = 100.0f;
 
   auto glyphs = juce::GlyphArrangement{};
-  glyphs.addJustifiedText(guiFonts::body,
+  glyphs.addJustifiedText(Fonts::body,
                           text,
                           center.getX() - lineWidth / 2.0f,
                           center.getY(),

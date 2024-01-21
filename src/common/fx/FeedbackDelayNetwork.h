@@ -22,9 +22,8 @@
 #pragma once
 #include "IndexedVector.h"
 #include <juce_dsp/juce_dsp.h>
-#include <map>
 
-namespace fsh {
+namespace fsh::fx {
 /**
 Ambisonic FDN reverb algorithm.
 
@@ -76,7 +75,7 @@ public:
   void reset();
 
 private:
-  std::array<IndexedVector, fdnSize> delayBuffers;
+  std::array<util::IndexedVector, fdnSize> delayBuffers;
   std::array<float, fdnSize> feedbackGains = {};
   std::array<float, fdnSize> transferVector = {};
   std::vector<unsigned> primeNumbers;
@@ -86,4 +85,4 @@ private:
 
   void updateParameterSettings();
 };
-} // namespace fsh
+} // namespace fsh::fx

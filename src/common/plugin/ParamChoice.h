@@ -20,21 +20,41 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "SphericalVector.h"
-#include <array>
+#include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh {
-enum class Normalization
+namespace fsh::plugin {
+/**
+Used to add a choice (enum) parameter to a plugin.
+
+Use a designated initializer and call create() directly for maximum readability, e.g.:
+```cpp
+fsh::ParamChoice{
+  .id = "parameter_id",
+  .name = "The Name of the Parameter",
+  .choices = { "Foo", "Bar", "Baz" },
+}.create()
+```
+
+Return a list of these inside a function returning a
+juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
+you can then pass to the constructor of your plugin's PluginState class.
+*/
+struct ParamChoice
 {
-  N3D,
-  SN3D,
+  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
+  using Attributes = juce::AudioParameterChoiceAttributes;
+
+  juce::ParameterID id;       ///< The parameter's unique ID, used to identify it in the DAW
+  juce::String name;          ///< The parameter's name, displayed in the DAW's automation
+  juce::StringArray choices;  ///< The parameter's choices, displayed in the DAW's automation
+  float defaultIndex = 0.0;   ///< The parameter's default value, as an index into the choices array
+  Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
+
+  /// Creates a juce::AudioParameterChoice object from the given parameters
+  auto create() const
+  {
+    return std::make_unique<juce::AudioParameterChoice>(
+      id, name, choices, defaultIndex, attributes);
+  }
 };
-
-// TODO: maybe define these in a file with a better name:
-// TODO: pack into class so doxygen can generate docs
-constexpr auto maxAmbiOrder = 5;
-constexpr auto maxNumChannels = (maxAmbiOrder + 1) * (maxAmbiOrder + 1);
-
-std::array<float, maxNumChannels> harmonics(const SphericalVector&,
-                                            Normalization = Normalization::SN3D);
-} // namespace fsh
+} // namespace fsh::plugin

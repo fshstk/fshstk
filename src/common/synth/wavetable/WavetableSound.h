@@ -23,7 +23,7 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_dsp/juce_dsp.h>
 
-namespace fsh {
+namespace fsh::synth {
 /**
 Represents a sound of a polyphonic synthesizer.
 
@@ -78,4 +78,4 @@ private:
   std::vector<double> wavetable;
   Params _params;
 };
-} // namespace fsh
+} // namespace fsh::synth

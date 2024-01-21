@@ -25,7 +25,7 @@
 #include "PluginState.h"
 #include <juce_dsp/juce_dsp.h>
 
-class PluginProcessor : public fsh::PluginBase<PluginState>
+class PluginProcessor : public fsh::plugin::PluginBase<PluginState>
 {
 public:
   PluginProcessor();
@@ -35,7 +35,7 @@ public:
   void processBlock(juce::AudioBuffer<double>&, juce::MidiBuffer&) override;
 
 private:
-  fsh::AmbisonicEncoder _leftEncoder;
-  fsh::AmbisonicEncoder _rightEncoder;
+  fsh::fx::AmbisonicEncoder _leftEncoder;
+  fsh::fx::AmbisonicEncoder _rightEncoder;
   juce::dsp::Gain<float> _gain;
 };

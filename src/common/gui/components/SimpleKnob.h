@@ -23,7 +23,7 @@
 #include "PluginStateBase.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh {
+namespace fsh::gui {
 /**
 Custom knob component that displays a label and a value.
 
@@ -48,12 +48,12 @@ public:
   void paint(juce::Graphics& g) override;
 
   /// Attach this knob to a parameter.
-  void attach(PluginStateBase&, juce::String paramID);
+  void attach(plugin::PluginStateBase&, juce::String paramID);
 
 private:
   const juce::String labelText;
   const double knobRangeRadians;
-  std::unique_ptr<PluginStateBase::SliderAttachment> knobAttachment;
+  std::unique_ptr<plugin::PluginStateBase::SliderAttachment> knobAttachment;
 
   class KnobStyle : public juce::LookAndFeel_V4
   {
@@ -62,4 +62,4 @@ private:
   };
   KnobStyle knobStyle;
 };
-} // namespace fsh
+} // namespace fsh::gui

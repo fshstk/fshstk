@@ -25,6 +25,7 @@
 #include <cassert>
 #include <cmath>
 
+using namespace fsh::util;
 using std::sqrt;
 
 namespace {
@@ -53,7 +54,7 @@ auto degreesToRadians(double deg)
   return deg * pi / 180.0;
 }
 
-std::array<double, 3> toXYZ(const fsh::SphericalVector& v, bool flipAzimuth = true)
+std::array<double, 3> toXYZ(const SphericalVector& v, bool flipAzimuth = true)
 {
   // The coefficients are based on a coordinate system where azimuth is defined in the anticlockwise
   // direction. However, it is more intuitive to display azimuth as being in the clockwise
@@ -72,7 +73,7 @@ std::array<double, 3> toXYZ(const fsh::SphericalVector& v, bool flipAzimuth = tr
 // taken straight from "Stupid Spherical Harmonics (SH) Tricks" (Sloan, 2008):
 // http://www.ppsloan.org/publications/
 // (Condon-Shortley phase, which alternates the sign of every component, has been removed.)
-std::array<double, fsh::maxNumChannels> harmonics_n3d(double x, double y, double z)
+std::array<double, maxNumChannels> harmonics_n3d(double x, double y, double z)
 {
   return {
     // order 0:
@@ -123,7 +124,7 @@ std::array<double, fsh::maxNumChannels> harmonics_n3d(double x, double y, double
 // Same as N3D above, except we divide each element by a factor of sqrt(2 * order + 1):
 // "AmbiX - A Suggested Ambisonics Format" (Zotter et al, 2011)
 // http://iem.kug.ac.at/fileadmin/media/iem/projects/2011/ambisonics11_nachbar_zotter_sontacchi_deleflie.pdf
-std::array<double, fsh::maxNumChannels> harmonics_sn3d(double x, double y, double z)
+std::array<double, maxNumChannels> harmonics_sn3d(double x, double y, double z)
 {
   return {
     // order 0 (unity):
@@ -174,14 +175,14 @@ std::array<double, fsh::maxNumChannels> harmonics_sn3d(double x, double y, doubl
 template<size_t N>
 std::array<float, N> toFloats(std::array<double, N> double_array)
 {
-  std::array<float, fsh::maxNumChannels> float_array;
+  std::array<float, maxNumChannels> float_array;
   std::copy(double_array.cbegin(), double_array.cend(), float_array.begin());
   return float_array;
 }
 } // namespace
 
-std::array<float, fsh::maxNumChannels> fsh::harmonics(const SphericalVector& vec,
-                                                      Normalization norm)
+std::array<float, maxNumChannels> fsh::util::harmonics(const SphericalVector& vec,
+                                                       Normalization norm)
 {
   const auto [x, y, z] = toXYZ(vec);
   switch (norm) {

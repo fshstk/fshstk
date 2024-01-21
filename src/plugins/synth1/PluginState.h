@@ -25,12 +25,12 @@
 #include "WavetableSound.h"
 #include <juce_dsp/juce_dsp.h>
 
-class PluginState : public fsh::PluginStateBase
+class PluginState : public fsh::plugin::PluginStateBase
 {
 public:
   explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::WavetableSound::Params;
-  auto getReverbParams() const -> fsh::FeedbackDelayNetwork::Params;
+  auto getSynthParams() const -> fsh::synth::WavetableSound::Params;
+  auto getReverbParams() const -> fsh::fx::FeedbackDelayNetwork::Params;
 
 private:
   auto getAmpEnv() const -> juce::ADSR::Parameters;

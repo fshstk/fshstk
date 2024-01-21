@@ -19,42 +19,22 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "PluginStateBase.h"
+#pragma once
+#include "SphericalVector.h"
+#include <array>
 
-fsh::PluginStateBase::PluginStateBase(juce::AudioProcessor& parent, Params&& params)
-  : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
+namespace fsh::util {
+enum class Normalization
 {
-}
+  N3D,
+  SN3D,
+};
 
-auto fsh::PluginStateBase::getState() -> juce::XmlElement
-{
-  if (const auto xml = copyState().createXml(); xml != nullptr)
-    return *xml;
+// TODO: maybe define these in a file with a better name:
+// TODO: pack into class so doxygen can generate docs
+constexpr auto maxAmbiOrder = 5;
+constexpr auto maxNumChannels = (maxAmbiOrder + 1) * (maxAmbiOrder + 1);
 
-  spdlog::warn("getState() could not retrieve state object");
-  return juce::XmlElement{ "" };
-}
-
-void fsh::PluginStateBase::setState(const juce::XmlElement& xml)
-{
-  if (xml.hasTagName(state.getType()))
-    replaceState(juce::ValueTree::fromXml(xml));
-  else
-    spdlog::warn("setState() received invalid state object");
-}
-
-auto fsh::PluginStateBase::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
-{
-  return *this;
-}
-
-auto fsh::PluginStateBase::getRawParamSafely(const juce::String& id) const -> float
-{
-  const auto* const param = getRawParameterValue(id);
-  if (param == nullptr) {
-    spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
-                     id.toStdString());
-    return 0.0f;
-  }
-  return param->load();
-}
+std::array<float, maxNumChannels> harmonics(const SphericalVector&,
+                                            Normalization = Normalization::SN3D);
+} // namespace fsh::util

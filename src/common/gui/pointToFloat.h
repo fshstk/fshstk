@@ -22,7 +22,7 @@
 #pragma once
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh {
+namespace fsh::gui {
 // Convenience function since functions like juce::Component::getLocalBounds().getCentre() return a
 // juce::Point<int>, but certain graphics functions in Juce expect floats instead.
 // TODO: pack into class so doxygen can generate docs
@@ -31,4 +31,4 @@ juce::Point<float> pointToFloat(const juce::Point<T> p)
 {
   return { static_cast<float>(p.getX()), static_cast<float>(p.getY()) };
 }
-} // namespace fsh
+} // namespace fsh::gui

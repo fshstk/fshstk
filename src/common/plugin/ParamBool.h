@@ -19,47 +19,39 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "EnvelopeFollower.h"
-#include <cmath>
+#pragma once
+#include <juce_audio_processors/juce_audio_processors.h>
 
-auto fsh::EnvelopeFollower::getNextValue() -> double
+namespace fsh::plugin {
+/**
+ * Used to add a boolean parameter to a plugin.
+ *
+ * Use a designated initializer and call create() directly for maximum readability, e.g.:
+ * ```cpp
+ * fsh::ParamBool{
+ *   .id = "parameter_id",
+ *   .name = "The Name of the Parameter",
+ * }.create()
+ * ```
+ *
+ * Return a list of these inside a function returning a
+ * juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
+ * you can then pass to the constructor of your plugin's PluginState class.
+ */
+struct ParamBool
 {
-  if (_targetValue > _currentValue)
-    _currentValue += (_targetValue - _currentValue) * _coeffAttack;
-  if (_targetValue < _currentValue)
-    _currentValue += (_targetValue - _currentValue) * _coeffRelease;
-  return _currentValue;
-}
+  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
+  using Attributes = juce::AudioParameterBoolAttributes;
 
-void fsh::EnvelopeFollower::setTargetValue(double target)
-{
-  _targetValue = target;
-}
+  juce::ParameterID id;       ///< The parameter's unique ID, used to identify it in the DAW
+  juce::String name;          ///< The parameter's name, displayed in the DAW's automation
+  float defaultVal = false;   ///< The parameter's default value
+  Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
 
-void fsh::EnvelopeFollower::setSampleRate(double sampleRate)
-{
-  _sampleRate = sampleRate;
-  calculateCoefficients();
-}
-
-void fsh::EnvelopeFollower::setParams(const Params& params)
-{
-  _params = params;
-  calculateCoefficients();
-}
-
-void fsh::EnvelopeFollower::reset(double val)
-{
-  _currentValue = val;
-  _targetValue = val;
-}
-
-void fsh::EnvelopeFollower::calculateCoefficients()
-{
-  _coeffAttack = (_params.attackTimeMilliseconds > 0.0 && _sampleRate > 0.0)
-                   ? 1.0 - std::exp(-1.0 / (0.001 * _params.attackTimeMilliseconds * _sampleRate))
-                   : 1.0;
-  _coeffRelease = (_params.releaseTimeMilliseconds > 0.0 && _sampleRate > 0.0)
-                    ? 1.0 - std::exp(-1.0 / (0.001 * _params.releaseTimeMilliseconds * _sampleRate))
-                    : 1.0;
-}
+  /// Creates a juce::AudioParameterBool object from the given parameters
+  auto create() const
+  {
+    return std::make_unique<juce::AudioParameterBool>(id, name, defaultVal, attributes);
+  }
+};
+} // namespace fsh::plugin

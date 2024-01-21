@@ -21,7 +21,7 @@
 
 #pragma once
 
-namespace fsh {
+namespace fsh::synth {
 /**
 Represents a single band-limited oscillator with multiple waveforms.
 
@@ -71,4 +71,4 @@ private:
   double _deltaPhase;
   double _sampleRate;
 };
-} // namespace fsh
+} // namespace fsh::synth

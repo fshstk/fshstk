@@ -22,15 +22,16 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh {
+namespace fsh::plugin {
 /**
- * Used to add a boolean parameter to a plugin.
+ * Used to add an integer parameter to a plugin.
  *
  * Use a designated initializer and call create() directly for maximum readability, e.g.:
  * ```cpp
- * fsh::ParamBool{
+ * fsh::ParamInt{
  *   .id = "parameter_id",
  *   .name = "The Name of the Parameter",
+ *   .range = { [min], [max] },
  * }.create()
  * ```
  *
@@ -38,20 +39,29 @@ namespace fsh {
  * juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
  * you can then pass to the constructor of your plugin's PluginState class.
  */
-struct ParamBool
+struct ParamInt
 {
+  /// Used to specify the parameter's range
+  struct Range
+  {
+    int min = 0; ///< The parameter's minimum value
+    int max = 0; ///< The parameter's maximum value
+  };
+
   /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
-  using Attributes = juce::AudioParameterBoolAttributes;
+  using Attributes = juce::AudioParameterIntAttributes;
 
   juce::ParameterID id;       ///< The parameter's unique ID, used to identify it in the DAW
   juce::String name;          ///< The parameter's name, displayed in the DAW's automation
-  float defaultVal = false;   ///< The parameter's default value
+  Range range;                ///< The parameter's range
+  float defaultVal = 0.0;     ///< The parameter's default value
   Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
 
-  /// Creates a juce::AudioParameterBool object from the given parameters
+  /// Creates a juce::AudioParameterInt object from the given parameters
   auto create() const
   {
-    return std::make_unique<juce::AudioParameterBool>(id, name, defaultVal, attributes);
+    return std::make_unique<juce::AudioParameterInt>(
+      id, name, range.min, range.max, defaultVal, attributes);
   }
 };
-} // namespace fsh
+} // namespace fsh::plugin

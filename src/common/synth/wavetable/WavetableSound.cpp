@@ -23,6 +23,8 @@
 #include <cassert>
 #include <numbers>
 
+using namespace fsh::synth;
+
 namespace {
 auto sinewave()
 {
@@ -61,7 +63,7 @@ auto triangle()
 }
 } // namespace
 
-fsh::WavetableSound::WavetableSound(WavetableSound::WaveType type)
+WavetableSound::WavetableSound(WavetableSound::WaveType type)
 {
   switch (type) {
     using enum WaveType;
@@ -88,19 +90,19 @@ fsh::WavetableSound::WavetableSound(WavetableSound::WaveType type)
   }
 }
 
-auto fsh::WavetableSound::appliesToNote(int midiNote) -> bool
+auto WavetableSound::appliesToNote(int midiNote) -> bool
 {
   juce::ignoreUnused(midiNote);
   return true;
 }
 
-auto fsh::WavetableSound::appliesToChannel(int midiChannel) -> bool
+auto WavetableSound::appliesToChannel(int midiChannel) -> bool
 {
   juce::ignoreUnused(midiChannel);
   return true;
 }
 
-auto fsh::WavetableSound::get(double phase) const -> float
+auto WavetableSound::get(double phase) const -> float
 {
   assert(!wavetable.empty());
 
@@ -122,12 +124,12 @@ auto fsh::WavetableSound::get(double phase) const -> float
   return static_cast<float>(interpolatedSample);
 }
 
-void fsh::WavetableSound::setParams(const Params& p)
+void WavetableSound::setParams(const Params& p)
 {
   _params = p;
 }
 
-auto fsh::WavetableSound::getParams() const -> Params
+auto WavetableSound::getParams() const -> Params
 {
   return _params;
 }

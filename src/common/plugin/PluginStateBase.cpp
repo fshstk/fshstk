@@ -19,49 +19,44 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include <juce_audio_processors/juce_audio_processors.h>
+#include "PluginStateBase.h"
 
-namespace fsh {
-/**
- * Used to add an integer parameter to a plugin.
- *
- * Use a designated initializer and call create() directly for maximum readability, e.g.:
- * ```cpp
- * fsh::ParamInt{
- *   .id = "parameter_id",
- *   .name = "The Name of the Parameter",
- *   .range = { [min], [max] },
- * }.create()
- * ```
- *
- * Return a list of these inside a function returning a
- * juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
- * you can then pass to the constructor of your plugin's PluginState class.
- */
-struct ParamInt
+using namespace fsh::plugin;
+
+PluginStateBase::PluginStateBase(juce::AudioProcessor& parent, Params&& params)
+  : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
 {
-  /// Used to specify the parameter's range
-  struct Range
-  {
-    int min = 0; ///< The parameter's minimum value
-    int max = 0; ///< The parameter's maximum value
-  };
+}
 
-  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
-  using Attributes = juce::AudioParameterIntAttributes;
+auto PluginStateBase::getState() -> juce::XmlElement
+{
+  if (const auto xml = copyState().createXml(); xml != nullptr)
+    return *xml;
 
-  juce::ParameterID id;       ///< The parameter's unique ID, used to identify it in the DAW
-  juce::String name;          ///< The parameter's name, displayed in the DAW's automation
-  Range range;                ///< The parameter's range
-  float defaultVal = 0.0;     ///< The parameter's default value
-  Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
+  spdlog::warn("getState() could not retrieve state object");
+  return juce::XmlElement{ "" };
+}
 
-  /// Creates a juce::AudioParameterInt object from the given parameters
-  auto create() const
-  {
-    return std::make_unique<juce::AudioParameterInt>(
-      id, name, range.min, range.max, defaultVal, attributes);
+void PluginStateBase::setState(const juce::XmlElement& xml)
+{
+  if (xml.hasTagName(state.getType()))
+    replaceState(juce::ValueTree::fromXml(xml));
+  else
+    spdlog::warn("setState() received invalid state object");
+}
+
+auto PluginStateBase::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
+{
+  return *this;
+}
+
+auto PluginStateBase::getRawParamSafely(const juce::String& id) const -> float
+{
+  const auto* const param = getRawParameterValue(id);
+  if (param == nullptr) {
+    spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
+                     id.toStdString());
+    return 0.0f;
   }
-};
-} // namespace fsh
+  return param->load();
+}

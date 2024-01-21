@@ -25,7 +25,7 @@
 #include "PluginState.h"
 #include "WavetableSynth.h"
 
-class PluginProcessor : public fsh::PluginBase<PluginState>
+class PluginProcessor : public fsh::plugin::PluginBase<PluginState>
 {
 public:
   PluginProcessor();
@@ -34,6 +34,6 @@ public:
   void processBlock(juce::AudioBuffer<double>&, juce::MidiBuffer&) override;
 
 private:
-  fsh::WavetableSynth synth;
-  fsh::FeedbackDelayNetwork reverb;
+  fsh::synth::WavetableSynth synth;
+  fsh::fx::FeedbackDelayNetwork reverb;
 };
