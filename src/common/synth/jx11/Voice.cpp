@@ -135,7 +135,10 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
   _adsr.setParams(_params.adsr);
 
-  _filter.setParams(_params.filter);
+  _filter.setParams({
+    .cutoff = _params.filterCutoff * static_cast<float>(oscFreq),
+    .resonance = _params.filterResonance,
+  });
 
   const auto bufferSize = static_cast<size_t>(audio.getNumSamples());
 
