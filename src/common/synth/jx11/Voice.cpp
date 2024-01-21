@@ -134,6 +134,8 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
   _adsr.setParams(_params.adsr);
 
+  _filter.setParams(_params.filter);
+
   const auto bufferSize = static_cast<size_t>(audio.getNumSamples());
 
   for (auto n = bufferOffset; n < bufferOffset + numSamples; ++n) {
@@ -154,6 +156,7 @@ void Voice::setSampleRate(double sampleRate)
   _oscNoise.setSampleRate(sampleRate);
   _adsr.setSampleRate(sampleRate);
   _encoder.setSampleRate(sampleRate);
+  _filter.setSampleRate(sampleRate);
 }
 
 void Voice::setParams(const Params& params)
@@ -167,8 +170,9 @@ auto Voice::nextSample() -> float
     return 0.0f;
 
   const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscNoise.nextSample();
+  const auto filtered = _filter.processSample(osc);
   const auto env = _adsr.getNextValue();
-  return osc * static_cast<float>(env);
+  return filtered * static_cast<float>(env);
 }
 
 auto Voice::getNoteVal() const -> uint8_t

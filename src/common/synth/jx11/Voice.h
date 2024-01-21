@@ -23,6 +23,7 @@
 #include "ADSR.h"
 #include "AmbisonicEncoder.h"
 #include "BoundedValue.h"
+#include "MoogVCF.h"
 #include "Oscillator.h"
 #include <cstdint>
 #include <juce_audio_basics/juce_audio_basics.h>
@@ -53,8 +54,9 @@ public:
     double oscBDetune;                    ///< Oscillator B detune in semitones
     ADSR::Params adsr;                    ///< ADSR envelope parameters
     util::BoundedFloat<0, 1> velocityAmt; ///< Velocity sensitivity
-    double aziCenter = 0.0;  ///< Anchor middle of MIDI note range to this azimuth in degrees
-    double aziRange = 180.0; ///< Spread MIDI range around aziCenter +/- aziRange/2
+    double aziCenter = 0.0;     ///< Anchor middle of MIDI note range to this azimuth in degrees
+    double aziRange = 180.0;    ///< Spread MIDI range around aziCenter +/- aziRange/2
+    fx::MoogVCF::Params filter; ///< Filter parameters
   };
 
   /// Set the sample rate in Hz
@@ -99,5 +101,6 @@ private:
   Oscillator _oscA{ Oscillator::Type::Saw };
   Oscillator _oscB{ Oscillator::Type::Saw };
   Oscillator _oscNoise{ Oscillator::Type::Noise };
+  fx::MoogVCF _filter;
 };
 } // namespace fsh::synth
