@@ -65,6 +65,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 
 add_subdirectory(fx)
 add_subdirectory(gui)
-add_subdirectory(pluginbase)
-add_subdirectory(utils)
+add_subdirectory(plugin)
+add_subdirectory(util)
 add_subdirectory(synth)
