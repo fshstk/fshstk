@@ -33,9 +33,9 @@ auto midiNoteToFreq(double noteVal) -> double
   return concertAFreq * std::exp2((noteVal - concertAMidi) / 12.0);
 }
 
-auto velocityToAmplitude(uint8_t vel) -> double
+auto getNormalisedVelocity(uint8_t vel, double sensitivity = 1.0) -> double
 {
-  return (vel / 127.0) * 0.5;
+  return juce::jmap((vel / 127.0), 1.0 - sensitivity, 1.0);
 }
 
 void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
@@ -113,15 +113,18 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
   _oscA.setParams({
     .frequency = oscFreq,
-    .amplitude = velocityToAmplitude(_velocity) * _params.oscALvl,
+    .amplitude =
+      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscALvl.get(),
   });
   _oscB.setParams({
     .frequency = oscFreq * _params.oscBDetune,
-    .amplitude = velocityToAmplitude(_velocity) * _params.oscBLvl,
+    .amplitude =
+      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscBLvl.get(),
   });
   _oscNoise.setParams({
     .frequency = oscFreq,
-    .amplitude = velocityToAmplitude(_velocity) * _params.noiseLvl,
+    .amplitude =
+      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.noiseLvl.get(),
   });
 
   _encoder.setParams({

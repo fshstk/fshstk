@@ -34,7 +34,7 @@ class BoundedValue
 {
 public:
   /// Set the initial value
-  BoundedValue(T val) { set(val); }
+  BoundedValue(T val = {}) { set(val); }
 
   /// Get the value stored in this object
   auto get() const -> T { return _val; }
@@ -69,4 +69,7 @@ private:
 
 template<int MIN, int MAX>
 using BoundedFloat = BoundedValue<float, MIN, MAX>;
+
+template<int MIN, int MAX>
+using BoundedDouble = BoundedValue<double, MIN, MAX>;
 } // namespace fsh::util

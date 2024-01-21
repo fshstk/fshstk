@@ -22,6 +22,7 @@
 #pragma once
 #include "ADSR.h"
 #include "AmbisonicEncoder.h"
+#include "BoundedValue.h"
 #include "Oscillator.h"
 #include <cstdint>
 #include <juce_audio_basics/juce_audio_basics.h>
@@ -46,11 +47,12 @@ public:
   /// Voice parameters
   struct Params
   {
-    float noiseLvl;    ///< Noise level in [0, 1]
-    double oscALvl;    ///< Oscillator A level in [0, 1]
-    double oscBLvl;    ///< Oscillator B level in [0, 1]
-    double oscBDetune; ///< Oscillator B detune in semitones
-    ADSR::Params adsr; ///< ADSR envelope parameters
+    util::BoundedFloat<0, 1> noiseLvl;    ///< Noise level
+    util::BoundedDouble<0, 1> oscALvl;    ///< Oscillator A level
+    util::BoundedDouble<0, 1> oscBLvl;    ///< Oscillator B level
+    double oscBDetune;                    ///< Oscillator B detune in semitones
+    ADSR::Params adsr;                    ///< ADSR envelope parameters
+    util::BoundedFloat<0, 1> velocityAmt; ///< Velocity sensitivity
   };
 
   /// Set the sample rate in Hz

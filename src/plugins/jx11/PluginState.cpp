@@ -78,6 +78,14 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = centsLabel,
     }
       .create(),
+    fsh::plugin::ParamFloat{
+      .id = "velocity_amt",
+      .name = "Velocity Sensitivity",
+      .range = fsh::plugin::ParamFloat::Range{ 0.0f, 100.0f },
+      .defaultVal = 50.0f,
+      .attributes = percentLabel,
+    }
+      .create(),
     fsh::plugin::ParamChoice{
       .id = "glide_mode",
       .name = "Glide Mode",
@@ -276,6 +284,7 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
              .oscBLvl = oscBLvl,
              .oscBDetune = oscBDetune,
              .adsr = getAmpEnvelope(),
+             .velocityAmt = getRawParamSafely("velocity_amt") / 100.0f,
            } };
 }
 
