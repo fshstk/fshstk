@@ -57,12 +57,12 @@ void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
     audio.addSample(static_cast<int>(ch), static_cast<int>(position), sample * coeffs[ch]);
 }
 
-fsh::util::SphericalVector midiNoteToDirection(double midiNote)
+fsh::util::SphericalVector midiNoteToDirection(double midiNote, double aziCenter, double aziRange)
 {
   const auto midiNoteMin = 0.0;
   const auto midiNoteMax = 127.0;
-  const auto azimuthMin = -180.0;
-  const auto azimuthMax = +180.0;
+  const auto azimuthMin = aziCenter - aziRange / 2.0;
+  const auto azimuthMax = aziCenter + aziRange / 2.0;
   return {
     .azimuth = juce::jmap(midiNote, midiNoteMin, midiNoteMax, azimuthMin, azimuthMax),
     .elevation = 0.0,
@@ -128,7 +128,7 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
   });
 
   _encoder.setParams({
-    .direction = midiNoteToDirection(oscNote),
+    .direction = midiNoteToDirection(oscNote, _params.aziCenter, _params.aziRange),
     .order = fsh::util::maxAmbiOrder,
   });
 

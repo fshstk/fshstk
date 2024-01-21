@@ -252,6 +252,19 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .choices = { "Off", "Earth", "Metal", "Sky" },
     }
       .create(),
+    fsh::plugin::ParamFloat{
+      .id = "azi_center",
+      .name = "Azimuth Center",
+      .range = { -180.0f, 180.0f },
+    }
+      .create(),
+    fsh::plugin::ParamFloat{
+      .id = "azi_range",
+      .name = "Azimuth Range",
+      .range = { 0.0f, 720.0f },
+      .defaultVal = 180.0f,
+    }
+      .create(),
   };
 }
 } // namespace
@@ -285,6 +298,8 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
              .oscBDetune = oscBDetune,
              .adsr = getAmpEnvelope(),
              .velocityAmt = getRawParamSafely("velocity_amt") / 100.0f,
+             .aziCenter = getRawParamSafely("azi_center"),
+             .aziRange = getRawParamSafely("azi_range"),
            } };
 }
 
