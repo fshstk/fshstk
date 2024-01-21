@@ -58,7 +58,8 @@ float MoogVCF::processSample(float input)
 
 void MoogVCF::calculateCoefficients()
 {
-  const auto cutoffCoeff = _params.cutoff / (0.5 * _sampleRate);
+  const auto nyquist = 0.5;
+  const auto cutoffCoeff = 2.0 * std::clamp(_params.cutoff / _sampleRate, 0.0, nyquist);
   _p = cutoffCoeff * (1.8 - 0.8 * cutoffCoeff);
   _k = 2.0 * std::sin(cutoffCoeff * M_PI * 0.5) - 1.0;
 
