@@ -23,14 +23,16 @@
 #include "guiGlobals.h"
 #include "pointToFloat.h"
 
+using namespace fsh::gui;
+
 namespace {
 const auto lineThickness = 4;
 
 juce::Path createKnob(const juce::Point<float> center)
 {
-  const auto corner = juce::Point{ center.getX() - fsh::guiSizes::knobRadius,
-                                   center.getY() - fsh::guiSizes::knobRadius };
-  const auto size = fsh::guiSizes::knobRadius * 2;
+  const auto corner =
+    juce::Point{ center.getX() - Sizes::knobRadius, center.getY() - Sizes::knobRadius };
+  const auto size = Sizes::knobRadius * 2;
 
   auto p = juce::Path{};
   p.addEllipse(corner.getX(), corner.getY(), size, size);
@@ -40,7 +42,7 @@ juce::Path createKnob(const juce::Point<float> center)
 juce::Path createIndicator(const juce::Point<float> center, const float angle)
 {
   const auto corner = juce::Point{ center.getX() - lineThickness / 2.0f, center.getY() };
-  const auto length = fsh::guiSizes::knobRadius;
+  const auto length = Sizes::knobRadius;
 
   auto p = juce::Path{};
   p.addRectangle(corner.getX(), corner.getY(), lineThickness, length * -1);
@@ -49,9 +51,9 @@ juce::Path createIndicator(const juce::Point<float> center, const float angle)
 }
 } // namespace
 
-fsh::SimpleKnob::SimpleKnob(const juce::String& name,
-                            const double knobRangeDegrees,
-                            const Behavior behavior)
+SimpleKnob::SimpleKnob(const juce::String& name,
+                       const double knobRangeDegrees,
+                       const Behavior behavior)
   : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag,
                  juce::Slider::TextEntryBoxPosition::TextBoxAbove)
   , labelText(name)
@@ -62,39 +64,39 @@ fsh::SimpleKnob::SimpleKnob(const juce::String& name,
     0, juce::degreesToRadians(static_cast<float>(knobRangeDegrees)), behavior == Behavior::Bounded);
 }
 
-void fsh::SimpleKnob::paint(juce::Graphics& g)
+void SimpleKnob::paint(juce::Graphics& g)
 {
   const auto center = pointToFloat(getLocalBounds().getCentre());
   const auto angle = knobRangeRadians * (valueToProportionOfLength(getValue()) - 0.5);
 
-  g.setColour(guiColors::foreground);
+  g.setColour(Colors::foreground);
   g.fillPath(createKnob(center));
 
-  g.setFont(guiFonts::body);
+  g.setFont(Fonts::body);
   g.drawText(labelText, getLocalBounds(), juce::Justification::centredBottom);
 
-  g.setColour(guiColors::background);
+  g.setColour(Colors::background);
   g.fillPath(createIndicator(center, static_cast<float>(angle)));
 }
 
-void fsh::SimpleKnob::attach(PluginStateBase& state, juce::String paramID)
+void SimpleKnob::attach(plugin::PluginStateBase& state, juce::String paramID)
 {
-  knobAttachment = std::make_unique<PluginStateBase::SliderAttachment>(
+  knobAttachment = std::make_unique<plugin::PluginStateBase::SliderAttachment>(
     state.getReferenceToBaseClass(), paramID, *this);
 }
 
-juce::Font fsh::SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
+juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
 {
-  return guiFonts::body;
+  return Fonts::body;
 }
 
-juce::Label* fsh::SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
+juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
 {
   auto* label = juce::LookAndFeel_V2::createSliderTextBox(s);
-  label->setColour(juce::TextEditor::backgroundColourId, guiColors::transparent);
-  label->setColour(juce::Label::outlineColourId, guiColors::transparent);
-  label->setColour(juce::TextEditor::focusedOutlineColourId, guiColors::foreground);
-  label->setColour(juce::TextEditor::highlightColourId, guiColors::foreground);
-  label->setColour(juce::TextEditor::highlightedTextColourId, guiColors::background);
+  label->setColour(juce::TextEditor::backgroundColourId, Colors::transparent);
+  label->setColour(juce::Label::outlineColourId, Colors::transparent);
+  label->setColour(juce::TextEditor::focusedOutlineColourId, Colors::foreground);
+  label->setColour(juce::TextEditor::highlightColourId, Colors::foreground);
+  label->setColour(juce::TextEditor::highlightedTextColourId, Colors::background);
   return label;
 }

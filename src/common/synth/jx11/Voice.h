@@ -27,7 +27,7 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <stdint.h>
 
-namespace fsh {
+namespace fsh::synth {
 /**
 Represents a single voice of a polyphonic synthesizer.
 
@@ -88,9 +88,9 @@ private:
   double _bendValSemitones;
   uint8_t _velocity;
   ADSR _adsr;
-  AmbisonicEncoder _encoder;
+  fx::AmbisonicEncoder _encoder;
   Oscillator _oscA{ Oscillator::Type::Saw };
   Oscillator _oscB{ Oscillator::Type::Saw };
   Oscillator _oscNoise{ Oscillator::Type::Noise };
 };
-} // namespace fsh
+} // namespace fsh::synth

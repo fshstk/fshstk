@@ -26,91 +26,91 @@ namespace {
 auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLayout
 {
   return {
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "amp_attack",
       .name = "Amp Attack",
       .range = { 0.0f, 1.0f },
       .defaultVal = 0.1f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "amp_attack",
       .name = "Amp Attack",
       .range = { 0.0f, 1.0f },
       .defaultVal = 0.1f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "amp_decay",
       .name = "Amp Decay",
       .range = { 0.0f, 1.0f },
       .defaultVal = 0.1f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "amp_sustain",
       .name = "Amp Sustain",
       .range = { 0.0f, 1.0f },
       .defaultVal = 1.0f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "amp_release",
       .name = "Amp Release",
       .range = { 0.0f, 1.0f },
       .defaultVal = 0.1f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filt_cutoff",
       .name = "Filter Cutoff",
       .range = { 20.0f, 20'000.0f },
       .defaultVal = 5'000.0f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filt_attack",
       .name = "Filter Attack",
       .range = { 0.0f, 1.0f },
       .defaultVal = 0.1f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filt_decay",
       .name = "Filter Decay",
       .range = { 0.0f, 1.0f },
       .defaultVal = 0.1f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filt_modamt",
       .name = "Filter Modulation Amount",
       .range = { 0.0f, 1'000.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "filt_resonance",
       .name = "Filter Resonance",
       .range = { 0.0f, 1.0f },
       .defaultVal = 0.707f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "rev_size",
       .name = "Reverb Room Size",
       .range = { 1.0f, 30.0f, 1.0f },
       .defaultVal = 20.0f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "rev_time",
       .name = "Reverb Time",
       .range = { 0.1f, 9.0f, 0.1f },
       .defaultVal = 5.f,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "rev_drywet",
       .name = "Reverb Dry/Wet",
       .range = { 0.0f, 1.0f, 0.01f },
@@ -126,7 +126,7 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 {
 }
 
-auto PluginState::getSynthParams() const -> fsh::WavetableSound::Params
+auto PluginState::getSynthParams() const -> fsh::synth::WavetableSound::Params
 {
   return {
     .ampEnv = getAmpEnv(),
@@ -137,7 +137,7 @@ auto PluginState::getSynthParams() const -> fsh::WavetableSound::Params
   };
 }
 
-auto PluginState::getReverbParams() const -> fsh::FeedbackDelayNetwork::Params
+auto PluginState::getReverbParams() const -> fsh::fx::FeedbackDelayNetwork::Params
 {
   return {
     .roomSize = getRawParamSafely("rev_size"),

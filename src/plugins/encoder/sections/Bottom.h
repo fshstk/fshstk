@@ -31,9 +31,9 @@ public:
   void resized() override;
 
 private:
-  fsh::SimpleKnob elevationKnobL{ "el" };
-  fsh::SimpleKnob elevationKnobR{ "el" };
+  fsh::gui::SimpleKnob elevationKnobL{ "el" };
+  fsh::gui::SimpleKnob elevationKnobR{ "el" };
 
-  fsh::SimpleKnob azimuthKnobL{ "az", 360.0, fsh::SimpleKnob::Behavior::Endless };
-  fsh::SimpleKnob azimuthKnobR{ "az", 360.0, fsh::SimpleKnob::Behavior::Endless };
+  fsh::gui::SimpleKnob azimuthKnobL{ "az", 360.0, fsh::gui::SimpleKnob::Behavior::Endless };
+  fsh::gui::SimpleKnob azimuthKnobR{ "az", 360.0, fsh::gui::SimpleKnob::Behavior::Endless };
 };

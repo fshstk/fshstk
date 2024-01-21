@@ -23,13 +23,13 @@
 #include "PluginStateBase.h"
 #include "SphericalVector.h"
 
-class PluginState : public fsh::PluginStateBase
+class PluginState : public fsh::plugin::PluginStateBase
 {
 public:
   explicit PluginState(juce::AudioProcessor&);
 
   auto ambiOrder() const -> float;
   auto gain() const -> float;
-  fsh::SphericalVector vectorLeft() const;
-  fsh::SphericalVector vectorRight() const;
+  fsh::util::SphericalVector vectorLeft() const;
+  fsh::util::SphericalVector vectorRight() const;
 };

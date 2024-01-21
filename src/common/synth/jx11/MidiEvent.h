@@ -22,7 +22,7 @@
 #pragma once
 #include <juce_audio_basics/juce_audio_basics.h>
 
-namespace fsh {
+namespace fsh::synth {
 /**
 Represents a MIDI event, such as a note on/off or pitch bend.
 */
@@ -57,4 +57,4 @@ private:
   uint8_t _lsb = 0;
   uint8_t _msb = 0;
 };
-} // namespace fsh
+} // namespace fsh::synth

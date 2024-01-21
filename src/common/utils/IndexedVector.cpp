@@ -21,32 +21,33 @@
 
 #include "IndexedVector.h"
 
-void fsh::IndexedVector::resize(size_t newSize)
+using namespace fsh::util;
+
+void IndexedVector::resize(size_t newSize)
 {
   data.resize(newSize);
 }
 
-auto fsh::IndexedVector::get() const -> float
+auto IndexedVector::get() const -> float
 {
   return data[index];
 }
-
-void fsh::IndexedVector::add(float val)
+void IndexedVector::add(float val)
 {
   data[index] += val;
 }
 
-void fsh::IndexedVector::set(float val)
+void IndexedVector::set(float val)
 {
   data[index] = val;
 }
 
-void fsh::IndexedVector::incrementIndex()
+void IndexedVector::incrementIndex()
 {
   index = (index + 1) % data.size();
 }
 
-void fsh::IndexedVector::clear()
+void IndexedVector::clear()
 {
   std::fill(data.begin(), data.end(), 0.0f);
 }

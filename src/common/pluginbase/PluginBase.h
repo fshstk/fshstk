@@ -50,7 +50,7 @@ const auto JucePlugin_ProducesMidiOutput = false;
 const auto JucePlugin_IsMidiEffect = false;
 #endif
 
-namespace fsh {
+namespace fsh::plugin {
 /**
 The base class for all fsh::stk plugins.
 
@@ -213,4 +213,4 @@ private:
   Config _conf;
   juce::ScopedNoDenormals _disableDenormals;
 };
-} // namespace fsh
+} // namespace fsh::plugin

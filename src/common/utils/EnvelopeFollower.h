@@ -21,7 +21,7 @@
 
 #pragma once
 
-namespace fsh {
+namespace fsh::util {
 /**
 Smoothed value tracking with separate attack/decay times.
 
@@ -78,4 +78,4 @@ private:
 
   double _sampleRate;
 };
-} // namespace fsh
+} // namespace fsh::util

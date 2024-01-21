@@ -24,6 +24,8 @@
 #include "spdlog/spdlog.h"
 #include <cmath>
 
+using namespace fsh::synth;
+
 namespace {
 double sine(double phase)
 {
@@ -72,18 +74,18 @@ double saw2(double phase, double deltaPhase)
 }
 } // namespace
 
-fsh::Oscillator::Oscillator(Type type)
+Oscillator::Oscillator(Type type)
   : _type(type)
 {
 }
 
-void fsh::Oscillator::reset()
+void Oscillator::reset()
 {
   _amplitude = 0.0f;
   _phase = 0.0;
 }
 
-auto fsh::Oscillator::nextSample() -> float
+auto Oscillator::nextSample() -> float
 {
   const auto out = [&]() {
     using enum Type;
@@ -108,12 +110,12 @@ auto fsh::Oscillator::nextSample() -> float
   return static_cast<float>(_amplitude * out);
 }
 
-void fsh::Oscillator::setSampleRate(double sampleRate)
+void Oscillator::setSampleRate(double sampleRate)
 {
   _sampleRate = sampleRate;
 }
 
-void fsh::Oscillator::setParams(const Params& params)
+void Oscillator::setParams(const Params& params)
 {
   _amplitude = params.amplitude;
   _deltaPhase = params.frequency / _sampleRate;

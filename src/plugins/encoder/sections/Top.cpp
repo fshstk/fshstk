@@ -29,14 +29,14 @@ Top::Top()
 
 void Top::paint(juce::Graphics& g)
 {
-  g.setColour(fsh::guiColors::foreground);
-  g.setFont(fsh::guiFonts::title);
+  g.setColour(fsh::gui::Colors::foreground);
+  g.setFont(fsh::gui::Fonts::title);
   g.drawText("fsh::encoder", getLocalBounds(), juce::Justification::centred);
 }
 
 void Top::resized()
 {
-  const auto buttonSize = fsh::guiSizes::editorGridSize;
+  const auto buttonSize = fsh::gui::Sizes::editorGridSize;
   const auto infoArea = getLocalBounds().removeFromRight(buttonSize).removeFromTop(buttonSize);
   infoButton.setBounds(infoArea);
 }

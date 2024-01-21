@@ -27,21 +27,21 @@
 namespace {
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
-  const auto degreesLabel = fsh::ParamFloat::Attributes{}.withStringFromValueFunction(
+  const auto degreesLabel = fsh::plugin::ParamFloat::Attributes{}.withStringFromValueFunction(
     [](float val, int) { return fmt::format("{:+.1f}°", val); });
 
-  const auto decibelsLabel = fsh::ParamFloat::Attributes{}.withStringFromValueFunction(
+  const auto decibelsLabel = fsh::plugin::ParamFloat::Attributes{}.withStringFromValueFunction(
     [](float val, int) { return fmt::format("{:+.1f} dB", val); });
 
   return {
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "order",
       .name = "Spatial Resolution",
-      .range = { 0.0f, fsh::maxAmbiOrder },
-      .defaultVal = fsh::maxAmbiOrder,
+      .range = { 0.0f, fsh::util::maxAmbiOrder },
+      .defaultVal = fsh::util::maxAmbiOrder,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "azimuth left",
       .name = "Azimuth (L)",
       .range = { -180.0f, 180.0f },
@@ -49,7 +49,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
       .attributes = degreesLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "azimuth right",
       .name = "Azimuth (R)",
       .range = { -180.0f, 180.0f },
@@ -57,7 +57,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
       .attributes = degreesLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "elevation left",
       .name = "Elevation (L)",
       .range = { 0.0f, 90.0f },
@@ -65,7 +65,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
       .attributes = degreesLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "elevation right",
       .name = "Elevation (R)",
       .range = { 0.0f, 90.0f },
@@ -73,7 +73,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
       .attributes = degreesLabel,
     }
       .create(),
-    fsh::ParamFloat{
+    fsh::plugin::ParamFloat{
       .id = "gain",
       .name = "Gain",
       .range = { -12.0f, +12.0f },
@@ -100,7 +100,7 @@ auto PluginState::gain() const -> float
   return getRawParamSafely("gain");
 }
 
-fsh::SphericalVector PluginState::vectorLeft() const
+fsh::util::SphericalVector PluginState::vectorLeft() const
 {
   return {
     .azimuth = getRawParamSafely("azimuth left"),
@@ -108,7 +108,7 @@ fsh::SphericalVector PluginState::vectorLeft() const
   };
 }
 
-fsh::SphericalVector PluginState::vectorRight() const
+fsh::util::SphericalVector PluginState::vectorRight() const
 {
   return {
     .azimuth = getRawParamSafely("azimuth right"),

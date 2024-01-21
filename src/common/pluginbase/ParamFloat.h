@@ -22,7 +22,7 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh {
+namespace fsh::plugin {
 /**
 Used to add a floating point parameter to a plugin.
 
@@ -59,4 +59,4 @@ struct ParamFloat
     return std::make_unique<juce::AudioParameterFloat>(id, name, range, defaultVal, attributes);
   }
 };
-} // namespace fsh
+} // namespace fsh::plugin

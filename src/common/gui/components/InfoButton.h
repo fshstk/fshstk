@@ -22,7 +22,7 @@
 #pragma once
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh {
+namespace fsh::gui {
 /**
 Simple button that displays an info icon with a link to the fshstk website.
 */
@@ -35,4 +35,4 @@ public:
   /// Called by JUCE to paint the button.
   void paintButton(juce::Graphics&, bool highlighted, bool active) override;
 };
-} // namespace fsh
+} // namespace fsh::gui

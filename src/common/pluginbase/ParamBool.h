@@ -22,7 +22,7 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh {
+namespace fsh::plugin {
 /**
  * Used to add a boolean parameter to a plugin.
  *
@@ -54,4 +54,4 @@ struct ParamBool
     return std::make_unique<juce::AudioParameterBool>(id, name, defaultVal, attributes);
   }
 };
-} // namespace fsh
+} // namespace fsh::plugin

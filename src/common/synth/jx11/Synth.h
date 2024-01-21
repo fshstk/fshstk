@@ -24,7 +24,7 @@
 #include "Voice.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 
-namespace fsh {
+namespace fsh::synth {
 /**
 Polyphonic synthesizer
 
@@ -64,4 +64,4 @@ private:
   static const auto numVoices = 6;
   std::array<Voice, numVoices> _voices;
 };
-} // namespace fsh
+} // namespace fsh::synth

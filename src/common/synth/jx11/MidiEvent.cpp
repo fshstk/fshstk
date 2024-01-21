@@ -21,7 +21,9 @@
 
 #include "MidiEvent.h"
 
-fsh::MidiEvent::MidiEvent(const juce::MidiMessageMetadata& msg)
+using namespace fsh::synth;
+
+MidiEvent::MidiEvent(const juce::MidiMessageMetadata& msg)
 {
   if (msg.numBytes < 2)
     return;
@@ -31,22 +33,22 @@ fsh::MidiEvent::MidiEvent(const juce::MidiMessageMetadata& msg)
   _msb = static_cast<uint8_t>(msg.data[2] & 0x7F);
 }
 
-auto fsh::MidiEvent::type() const -> Type
+auto MidiEvent::type() const -> Type
 {
   return _type;
 }
 
-auto fsh::MidiEvent::data1() const -> uint8_t
+auto MidiEvent::data1() const -> uint8_t
 {
   return _lsb;
 }
 
-auto fsh::MidiEvent::data2() const -> uint8_t
+auto MidiEvent::data2() const -> uint8_t
 {
   return _msb;
 }
 
-auto fsh::MidiEvent::fullData() const -> uint16_t
+auto MidiEvent::fullData() const -> uint16_t
 {
   return static_cast<uint16_t>((_msb << 7) + _lsb);
 }

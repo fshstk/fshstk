@@ -22,7 +22,7 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh {
+namespace fsh::plugin {
 /**
 Used to add a choice (enum) parameter to a plugin.
 
@@ -57,4 +57,4 @@ struct ParamChoice
       id, name, choices, defaultIndex, attributes);
   }
 };
-} // namespace fsh
+} // namespace fsh::plugin

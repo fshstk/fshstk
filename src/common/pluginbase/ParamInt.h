@@ -22,7 +22,7 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh {
+namespace fsh::plugin {
 /**
  * Used to add an integer parameter to a plugin.
  *
@@ -64,4 +64,4 @@ struct ParamInt
       id, name, range.min, range.max, defaultVal, attributes);
   }
 };
-} // namespace fsh
+} // namespace fsh::plugin

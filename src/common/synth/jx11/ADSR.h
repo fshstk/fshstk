@@ -22,7 +22,7 @@
 #pragma once
 #include "EnvelopeFollower.h"
 
-namespace fsh {
+namespace fsh::synth {
 /**
 ADSR envelope
 
@@ -77,8 +77,8 @@ private:
 
   Params _params;
   Phase _phase;
-  EnvelopeFollower _env;
+  util::EnvelopeFollower _env;
 
   void updateEnvelope();
 };
-} // namespace fsh
+} // namespace fsh::synth

@@ -22,7 +22,7 @@
 #pragma once
 #include <spdlog/spdlog.h>
 
-namespace fsh {
+namespace fsh::util {
 /**
 Represents a value that is bounded by a minimum and maximum.
 
@@ -69,4 +69,4 @@ private:
 
 template<int MIN, int MAX>
 using BoundedFloat = BoundedValue<float, MIN, MAX>;
-} // namespace fsh
+} // namespace fsh::util

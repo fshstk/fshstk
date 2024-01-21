@@ -21,30 +21,32 @@
 
 #include "AmbisonicEncoder.h"
 #include "SphericalHarmonics.h"
-#include <cassert>
 #include <spdlog/spdlog.h>
 
-auto fsh::AmbisonicEncoder::getCoefficientsForNextSample() -> std::array<float, maxNumChannels>
+using namespace fsh::fx;
+
+auto AmbisonicEncoder::getCoefficientsForNextSample()
+  -> std::array<float, fsh::util::maxNumChannels>
 {
-  auto result = std::array<float, maxNumChannels>{};
+  auto result = std::array<float, fsh::util::maxNumChannels>{};
   for (auto i = 0U; i < _coefficients.size(); ++i)
     result[i] = static_cast<float>(_coefficients[i].getNextValue());
   return result;
 }
 
-void fsh::AmbisonicEncoder::setSampleRate(double sampleRate)
+void AmbisonicEncoder::setSampleRate(double sampleRate)
 {
   for (auto& follower : _coefficients)
     follower.setSampleRate(sampleRate);
 }
 
-void fsh::AmbisonicEncoder::setParams(const Params& params)
+void AmbisonicEncoder::setParams(const Params& params)
 {
   _params = params;
   updateCoefficients();
 }
 
-void fsh::AmbisonicEncoder::updateCoefficients()
+void AmbisonicEncoder::updateCoefficients()
 {
   const auto wholeOrder = static_cast<size_t>(_params.order.get());
   const auto fadeGain = _params.order.get() - static_cast<float>(wholeOrder);

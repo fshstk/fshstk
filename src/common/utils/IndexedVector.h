@@ -22,7 +22,7 @@
 #pragma once
 #include <vector>
 
-namespace fsh {
+namespace fsh::util {
 /**
 Primitive ring buffer class.
 
@@ -53,4 +53,4 @@ private:
   size_t index = 0;
   std::vector<float> data;
 };
-} // namespace fsh
+} // namespace fsh::util

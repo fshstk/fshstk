@@ -25,7 +25,7 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_dsp/juce_dsp.h>
 
-namespace fsh {
+namespace fsh::synth {
 /**
 Represents a single voice of a polyphonic synthesizer.
 
@@ -61,7 +61,7 @@ private:
   auto calculateNextSample() -> float;
   void reset();
 
-  AmbisonicEncoder encoder;
+  fx::AmbisonicEncoder encoder;
 
   double phase = 0.0;
   double deltaPhase = 0.0;
@@ -72,4 +72,4 @@ private:
   juce::ADSR ampEnv;
   juce::ADSR filtEnv;
 };
-} // namespace fsh
+} // namespace fsh::synth

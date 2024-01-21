@@ -25,7 +25,7 @@
 #include "SphericalHarmonics.h"
 #include "SphericalVector.h"
 
-namespace fsh {
+namespace fsh::fx {
 /**
 Provides coefficients to encode a mono signal into Ambisonics.
 
@@ -45,12 +45,12 @@ public:
   /// Parameters for AmbisonicEncoder.
   struct Params
   {
-    SphericalVector direction;                                         ///< direction to encode to
-    fsh::BoundedFloat<0, fsh::maxAmbiOrder> order = fsh::maxAmbiOrder; ///< order to encode to
+    util::SphericalVector direction; ///< direction to encode to
+    util::BoundedFloat<0, util::maxAmbiOrder> order = util::maxAmbiOrder; ///< order to encode to
   };
 
   /// Get the channel coefficients for the next input sample.
-  auto getCoefficientsForNextSample() -> std::array<float, maxNumChannels>;
+  auto getCoefficientsForNextSample() -> std::array<float, util::maxNumChannels>;
 
   /// Set order and direction for encoding.
   void setParams(const Params&);
@@ -62,6 +62,6 @@ private:
   void updateCoefficients();
 
   Params _params;
-  std::array<EnvelopeFollower, maxNumChannels> _coefficients;
+  std::array<util::EnvelopeFollower, util::maxNumChannels> _coefficients;
 };
-} // namespace fsh
+} // namespace fsh::fx

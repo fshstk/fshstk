@@ -24,19 +24,21 @@
 #include "spdlog/spdlog.h"
 #include <fmt/format.h>
 
-void fsh::Synth::setSampleRate(double sampleRate)
+using namespace fsh::synth;
+
+void Synth::setSampleRate(double sampleRate)
 {
   for (auto& voice : _voices)
     voice.setSampleRate(sampleRate);
 }
 
-void fsh::Synth::reset()
+void Synth::reset()
 {
   for (auto& voice : _voices)
     voice.reset();
 }
 
-void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
+void Synth::handleMIDIEvent(const MidiEvent& evt)
 {
   switch (evt.type()) {
     using enum MidiEvent::Type;
@@ -60,18 +62,18 @@ void fsh::Synth::handleMIDIEvent(const MidiEvent& evt)
   spdlog::info("Unhandled MIDI event: {:#x}", static_cast<uint8_t>(evt.type()));
 }
 
-void fsh::Synth::setParams(const Params& params)
+void Synth::setParams(const Params& params)
 {
   for (auto& voice : _voices)
     voice.setParams(params.voice);
 }
 
-void fsh::Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
+void Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
 {
   auto bufferOffset = 0U;
 
   for (const auto& msg : midi) {
-    handleMIDIEvent(fsh::MidiEvent{ msg });
+    handleMIDIEvent(MidiEvent{ msg });
 
     if (const auto elapsedSamples = static_cast<size_t>(msg.samplePosition) - bufferOffset;
         elapsedSamples > 0) {
@@ -89,7 +91,7 @@ void fsh::Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi
   midi.clear();
 }
 
-auto fsh::Synth::numActiveVoices() const -> size_t
+auto Synth::numActiveVoices() const -> size_t
 {
   auto numActiveVoices = 0U;
   for (auto& voice : _voices)

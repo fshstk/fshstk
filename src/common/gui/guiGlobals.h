@@ -22,9 +22,9 @@
 #pragma once
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh {
+namespace fsh::gui {
 /// Colors used by the GUI.
-struct guiColors
+struct Colors
 {
   inline static const juce::Colour background{ 48, 48, 48 };              ///< Background color
   inline static const juce::Colour foreground{ 218, 218, 218 };           ///< Foreground color
@@ -32,7 +32,7 @@ struct guiColors
 };
 
 /// Fonts used by the GUI.
-struct guiFonts
+struct Fonts
 {
   static const juce::Font title;               ///< Font used for titles
   static const juce::Font body;                ///< Font used for body text
@@ -41,11 +41,11 @@ struct guiFonts
 };
 
 /// Sizes used by the GUI.
-struct guiSizes
+struct Sizes
 {
-  static inline const auto editorWidth = 415;                     ///< Width of the editor window
-  static inline const auto editorHeight = 475;                    ///< Height of the editor window
-  static inline const auto editorGridSize = editorHeight / 20;    ///< Size of the editor grid
-  static inline const auto knobRadius = guiSizes::editorGridSize; ///< Radius of knobs
+  static inline const auto editorWidth = 415;                  ///< Width of the editor window
+  static inline const auto editorHeight = 475;                 ///< Height of the editor window
+  static inline const auto editorGridSize = editorHeight / 20; ///< Size of the editor grid
+  static inline const auto knobRadius = Sizes::editorGridSize; ///< Radius of knobs
 };
-} // namespace fsh
+} // namespace fsh::gui

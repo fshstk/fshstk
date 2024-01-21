@@ -23,6 +23,8 @@
 #include "SphericalHarmonics.h"
 #include "spdlog/spdlog.h"
 
+using namespace fsh::synth;
+
 namespace {
 auto midiNoteToFreq(double noteVal) -> double
 {
@@ -37,7 +39,7 @@ auto velocityToAmplitude(uint8_t vel) -> double
 }
 
 void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
-                            fsh::AmbisonicEncoder& encoder,
+                            fsh::fx::AmbisonicEncoder& encoder,
                             size_t position,
                             float sample)
 {
@@ -55,7 +57,7 @@ void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
     audio.addSample(static_cast<int>(ch), static_cast<int>(position), sample * coeffs[ch]);
 }
 
-fsh::SphericalVector midiNoteToDirection(double midiNote)
+fsh::util::SphericalVector midiNoteToDirection(double midiNote)
 {
   const auto midiNoteMin = 0.0;
   const auto midiNoteMax = 127.0;
@@ -68,7 +70,7 @@ fsh::SphericalVector midiNoteToDirection(double midiNote)
 }
 } // namespace
 
-void fsh::Voice::reset()
+void Voice::reset()
 {
   _oscA.reset();
   _oscB.reset();
@@ -79,7 +81,7 @@ void fsh::Voice::reset()
   _bendValSemitones = 0.0;
 }
 
-void fsh::Voice::noteOn(uint8_t noteVal, uint8_t velocity)
+void Voice::noteOn(uint8_t noteVal, uint8_t velocity)
 {
   // Note on values with velocity of 0 are treated as note off:
   if (velocity == 0)
@@ -90,21 +92,21 @@ void fsh::Voice::noteOn(uint8_t noteVal, uint8_t velocity)
   _adsr.noteOn();
 }
 
-void fsh::Voice::noteOff(uint8_t noteVal, uint8_t)
+void Voice::noteOff(uint8_t noteVal, uint8_t)
 {
   // TODO: when ADSR is done, trigger reset
   if (noteVal == _noteVal)
     _adsr.noteOff();
 }
 
-void fsh::Voice::pitchBend(uint16_t bendVal)
+void Voice::pitchBend(uint16_t bendVal)
 {
   const auto neutralBend = 8'192;
   const auto bendRangeSemitones = 2;
   _bendValSemitones = static_cast<double>(bendVal - neutralBend) / neutralBend * bendRangeSemitones;
 }
 
-void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
+void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
 {
   const auto oscNote = static_cast<double>(_noteVal) + _bendValSemitones;
   const auto oscFreq = midiNoteToFreq(oscNote);
@@ -124,7 +126,7 @@ void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
 
   _encoder.setParams({
     .direction = midiNoteToDirection(oscNote),
-    .order = fsh::maxAmbiOrder,
+    .order = fsh::util::maxAmbiOrder,
   });
 
   _adsr.setParams(_params.adsr);
@@ -142,7 +144,7 @@ void fsh::Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size
   }
 }
 
-void fsh::Voice::setSampleRate(double sampleRate)
+void Voice::setSampleRate(double sampleRate)
 {
   _oscA.setSampleRate(sampleRate);
   _oscB.setSampleRate(sampleRate);
@@ -151,12 +153,12 @@ void fsh::Voice::setSampleRate(double sampleRate)
   _encoder.setSampleRate(sampleRate);
 }
 
-void fsh::Voice::setParams(const Params& params)
+void Voice::setParams(const Params& params)
 {
   _params = params;
 }
 
-auto fsh::Voice::nextSample() -> float
+auto Voice::nextSample() -> float
 {
   if (!isActive())
     return 0.0f;
@@ -166,12 +168,12 @@ auto fsh::Voice::nextSample() -> float
   return osc * static_cast<float>(env);
 }
 
-auto fsh::Voice::getNoteVal() const -> uint8_t
+auto Voice::getNoteVal() const -> uint8_t
 {
   return isActive() ? _noteVal : 0;
 }
 
-auto fsh::Voice::isActive() const -> bool
+auto Voice::isActive() const -> bool
 {
   return _adsr.isActive();
 }

@@ -40,10 +40,10 @@ Bottom::Bottom(PluginState& s)
 
 void Bottom::resized()
 {
-  const auto margin = fsh::guiSizes::editorGridSize * 2;
-  const auto knobsWidth = fsh::guiSizes::editorGridSize * 5;
+  const auto margin = fsh::gui::Sizes::editorGridSize * 2;
+  const auto knobsWidth = fsh::gui::Sizes::editorGridSize * 5;
 
-  auto area = getLocalBounds().removeFromTop(fsh::guiSizes::editorGridSize * 4);
+  auto area = getLocalBounds().removeFromTop(fsh::gui::Sizes::editorGridSize * 4);
 
   area.removeFromLeft(margin);
   auto leftKnobs = area.removeFromLeft(knobsWidth);

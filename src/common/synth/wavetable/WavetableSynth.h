@@ -23,7 +23,7 @@
 #include "WavetableSound.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 
-namespace fsh {
+namespace fsh::synth {
 /**
 Represents a polyphonic synthesizer.
 
@@ -44,4 +44,4 @@ private:
   const int numVoices = 20;
   WavetableSound* _sound;
 };
-} // namespace fsh
+} // namespace fsh::synth

@@ -23,7 +23,7 @@
 #include "SphericalVector.h"
 #include <array>
 
-namespace fsh {
+namespace fsh::util {
 enum class Normalization
 {
   N3D,
@@ -37,4 +37,4 @@ constexpr auto maxNumChannels = (maxAmbiOrder + 1) * (maxAmbiOrder + 1);
 
 std::array<float, maxNumChannels> harmonics(const SphericalVector&,
                                             Normalization = Normalization::SN3D);
-} // namespace fsh
+} // namespace fsh::util

@@ -26,9 +26,11 @@
 #include <cassert>
 #include <spdlog/spdlog.h>
 
+using namespace fsh::synth;
+
 namespace {
 void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
-                            fsh::AmbisonicEncoder& encoder,
+                            fsh::fx::AmbisonicEncoder& encoder,
                             int position,
                             float sample)
 {
@@ -46,7 +48,7 @@ void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
     audio.addSample(static_cast<int>(ch), position, sample * coeffs[ch]);
 }
 
-fsh::SphericalVector midiNoteToDirection(int midiNote)
+fsh::util::SphericalVector midiNoteToDirection(int midiNote)
 {
   const auto midiNoteMin = 0;
   const auto midiNoteMax = 127;
@@ -63,15 +65,15 @@ fsh::SphericalVector midiNoteToDirection(int midiNote)
 }
 } // namespace
 
-auto fsh::WavetableVoice::canPlaySound(juce::SynthesiserSound* soundToUse) -> bool
+auto WavetableVoice::canPlaySound(juce::SynthesiserSound* soundToUse) -> bool
 {
   return dynamic_cast<WavetableSound*>(soundToUse) != nullptr;
 }
 
-void fsh::WavetableVoice::startNote(int midiNote,
-                                    float vel,
-                                    juce::SynthesiserSound* soundToUse,
-                                    int pitchWhlPos)
+void WavetableVoice::startNote(int midiNote,
+                               float vel,
+                               juce::SynthesiserSound* soundToUse,
+                               int pitchWhlPos)
 {
   juce::ignoreUnused(vel);
   juce::ignoreUnused(pitchWhlPos);
@@ -84,7 +86,10 @@ void fsh::WavetableVoice::startNote(int midiNote,
   deltaPhase = 0.0;
 
   encoder.setSampleRate(getSampleRate());
-  encoder.setParams({ .direction = midiNoteToDirection(midiNote), .order = fsh::maxAmbiOrder });
+  encoder.setParams({
+    .direction = midiNoteToDirection(midiNote),
+    .order = fsh::util::maxAmbiOrder,
+  });
 
   ampEnv.setSampleRate(getSampleRate());
   ampEnv.setParameters(params.ampEnv);
@@ -101,7 +106,7 @@ void fsh::WavetableVoice::startNote(int midiNote,
   deltaPhase = freq / getSampleRate();
 }
 
-void fsh::WavetableVoice::stopNote(float vel, bool allowTailOff)
+void WavetableVoice::stopNote(float vel, bool allowTailOff)
 {
   juce::ignoreUnused(vel);
 
@@ -112,20 +117,20 @@ void fsh::WavetableVoice::stopNote(float vel, bool allowTailOff)
     reset();
 }
 
-void fsh::WavetableVoice::pitchWheelMoved(int pitchWhlPos)
+void WavetableVoice::pitchWheelMoved(int pitchWhlPos)
 {
   juce::ignoreUnused(pitchWhlPos);
 }
 
-void fsh::WavetableVoice::controllerMoved(int numCC, int val)
+void WavetableVoice::controllerMoved(int numCC, int val)
 {
   juce::ignoreUnused(numCC);
   juce::ignoreUnused(val);
 }
 
-void fsh::WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
-                                          int startSample,
-                                          int numSamples)
+void WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
+                                     int startSample,
+                                     int numSamples)
 {
   if (!ampEnv.isActive())
     return;
@@ -137,9 +142,9 @@ void fsh::WavetableVoice::renderNextBlock(juce::AudioBuffer<float>& audio,
     reset();
 }
 
-void fsh::WavetableVoice::renderNextBlock(juce::AudioBuffer<double>& audio,
-                                          int startSample,
-                                          int numSamples)
+void WavetableVoice::renderNextBlock(juce::AudioBuffer<double>& audio,
+                                     int startSample,
+                                     int numSamples)
 {
   juce::ignoreUnused(startSample);
   juce::ignoreUnused(numSamples);
@@ -147,7 +152,7 @@ void fsh::WavetableVoice::renderNextBlock(juce::AudioBuffer<double>& audio,
   spdlog::critical("double precision not supported");
 }
 
-auto fsh::WavetableVoice::calculateNextSample() -> float
+auto WavetableVoice::calculateNextSample() -> float
 {
   assert(sound != nullptr);
   const auto params = sound->getParams();
@@ -159,7 +164,7 @@ auto fsh::WavetableVoice::calculateNextSample() -> float
   return filter.processSample(0, sample);
 }
 
-void fsh::WavetableVoice::reset()
+void WavetableVoice::reset()
 {
   ampEnv.reset();
   filtEnv.reset();

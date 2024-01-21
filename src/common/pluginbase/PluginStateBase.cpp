@@ -21,12 +21,14 @@
 
 #include "PluginStateBase.h"
 
-fsh::PluginStateBase::PluginStateBase(juce::AudioProcessor& parent, Params&& params)
+using namespace fsh::plugin;
+
+PluginStateBase::PluginStateBase(juce::AudioProcessor& parent, Params&& params)
   : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
 {
 }
 
-auto fsh::PluginStateBase::getState() -> juce::XmlElement
+auto PluginStateBase::getState() -> juce::XmlElement
 {
   if (const auto xml = copyState().createXml(); xml != nullptr)
     return *xml;
@@ -35,7 +37,7 @@ auto fsh::PluginStateBase::getState() -> juce::XmlElement
   return juce::XmlElement{ "" };
 }
 
-void fsh::PluginStateBase::setState(const juce::XmlElement& xml)
+void PluginStateBase::setState(const juce::XmlElement& xml)
 {
   if (xml.hasTagName(state.getType()))
     replaceState(juce::ValueTree::fromXml(xml));
@@ -43,12 +45,12 @@ void fsh::PluginStateBase::setState(const juce::XmlElement& xml)
     spdlog::warn("setState() received invalid state object");
 }
 
-auto fsh::PluginStateBase::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
+auto PluginStateBase::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
 {
   return *this;
 }
 
-auto fsh::PluginStateBase::getRawParamSafely(const juce::String& id) const -> float
+auto PluginStateBase::getRawParamSafely(const juce::String& id) const -> float
 {
   const auto* const param = getRawParameterValue(id);
   if (param == nullptr) {

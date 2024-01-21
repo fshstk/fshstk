@@ -23,7 +23,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <spdlog/spdlog.h>
 
-namespace fsh {
+namespace fsh::plugin {
 /**
 Base class for storing plugin state.
 
@@ -66,4 +66,4 @@ protected:
   /// 0.0f and logging an error.
   auto getRawParamSafely(const juce::String& id) const -> float;
 };
-} // namespace fsh
+} // namespace fsh::plugin

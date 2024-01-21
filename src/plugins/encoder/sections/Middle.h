@@ -31,6 +31,6 @@ public:
   void resized() override;
 
 private:
-  fsh::SimpleKnob gainKnob{ "gain", 120.0 };
-  fsh::SimpleKnob orderKnob{ "3d resolution", 120.0 };
+  fsh::gui::SimpleKnob gainKnob{ "gain", 120.0 };
+  fsh::gui::SimpleKnob orderKnob{ "3d resolution", 120.0 };
 };

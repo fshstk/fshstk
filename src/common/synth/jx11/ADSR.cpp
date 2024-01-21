@@ -22,12 +22,14 @@
 #include "ADSR.h"
 #include <spdlog/spdlog.h>
 
-auto fsh::ADSR::isActive() const -> bool
+using namespace fsh::synth;
+
+auto ADSR::isActive() const -> bool
 {
   return _phase != Phase::Idle;
 }
 
-auto fsh::ADSR::getNextValue() -> double
+auto ADSR::getNextValue() -> double
 {
   // These thresholds can be fine-tuned together with the attack/decay/release targets in
   // updateEnvelope():
@@ -72,35 +74,35 @@ auto fsh::ADSR::getNextValue() -> double
   return 0.0f;
 }
 
-void fsh::ADSR::noteOn()
+void ADSR::noteOn()
 {
   _phase = Phase::Attack;
   updateEnvelope();
 }
 
-void fsh::ADSR::noteOff()
+void ADSR::noteOff()
 {
   _phase = Phase::Release;
   updateEnvelope();
 }
 
-void fsh::ADSR::reset()
+void ADSR::reset()
 {
   _phase = Phase::Idle;
   updateEnvelope();
 }
 
-void fsh::ADSR::setSampleRate(double sampleRate)
+void ADSR::setSampleRate(double sampleRate)
 {
   _env.setSampleRate(sampleRate);
 }
 
-void fsh::ADSR::setParams(const Params& params)
+void ADSR::setParams(const Params& params)
 {
   _params = params;
 }
 
-void fsh::ADSR::updateEnvelope()
+void ADSR::updateEnvelope()
 {
   // Setting attack target to > 1.0 makes attack steeper and beefier:
   const auto attackTarget = 2.0;
