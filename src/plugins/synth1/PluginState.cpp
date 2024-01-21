@@ -122,7 +122,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 } // namespace
 
 PluginState::PluginState(juce::AudioProcessor& parent)
-  : PluginStateBase(parent, createParameterLayout())
+  : StateManager(parent, createParameterLayout())
 {
 }
 
@@ -137,7 +137,7 @@ auto PluginState::getSynthParams() const -> fsh::synth::WavetableSound::Params
   };
 }
 
-auto PluginState::getReverbParams() const -> fsh::fx::FeedbackDelayNetwork::Params
+auto PluginState::getReverbParams() const -> fsh::fx::FDNReverb::Params
 {
   return {
     .roomSize = getRawParamSafely("rev_size"),

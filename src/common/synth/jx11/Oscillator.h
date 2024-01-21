@@ -29,6 +29,9 @@ Represents a single band-limited oscillator with multiple waveforms.
 oscillator's parameters using setParams().
 
 **To use:** call nextSample() to compute the oscillator's next sample.
+
+> This class is loosely based on code from the [JX10
+> synthesizer](https://github.com/hollance/synth-plugin-book) by Matthijs Hollemans.
 */
 class Oscillator
 {

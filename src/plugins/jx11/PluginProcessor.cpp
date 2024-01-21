@@ -24,7 +24,7 @@
 #include "Synth.h"
 
 PluginProcessor::PluginProcessor()
-  : PluginBase({
+  : Processor({
       .outputs = juce::AudioChannelSet::ambisonic(fsh::util::maxAmbiOrder),
     })
 {

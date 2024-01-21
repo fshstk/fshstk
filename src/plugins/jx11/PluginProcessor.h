@@ -20,12 +20,12 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FeedbackDelayNetwork.h"
-#include "PluginBase.h"
+#include "FDNReverb.h"
 #include "PluginState.h"
+#include "Processor.h"
 #include "Synth.h"
 
-class PluginProcessor : public fsh::plugin::PluginBase<PluginState>
+class PluginProcessor : public fsh::plugin::Processor<PluginState>
 {
 public:
   PluginProcessor();
@@ -35,5 +35,5 @@ public:
 
 private:
   fsh::synth::Synth _synth;
-  fsh::fx::FeedbackDelayNetwork _reverb;
+  fsh::fx::FDNReverb _reverb;
 };

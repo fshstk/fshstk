@@ -34,7 +34,7 @@ parameters to the PluginState class by passing in an initializer list of fsh::Fl
 fsh::ChoiceParam objects. Preferably these can be returned from a helper function inside an
 anonymous namespace, in the PluginState class's .cpp file.
 */
-class PluginStateBase : private juce::AudioProcessorValueTreeState
+class StateManager : private juce::AudioProcessorValueTreeState
 {
 public:
   /// Helper alias for juce::AudioProcessorValueTreeState::SliderAttachment
@@ -46,7 +46,7 @@ public:
   /// Construct a PluginStateBase object.
   /// @param parent The plugin that owns this PluginStateBase object.
   /// @param params A list of plugin parameters
-  PluginStateBase(juce::AudioProcessor& parent, Params&& params);
+  StateManager(juce::AudioProcessor& parent, Params&& params);
 
   /// Called by the PluginBase class to save the plugin state.
   auto getState() -> juce::XmlElement;

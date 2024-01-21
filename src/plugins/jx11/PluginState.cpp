@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "PluginState.h"
-#include "FeedbackDelayNetwork.h"
+#include "FDNReverb.h"
 #include "ParamChoice.h"
 #include "ParamFloat.h"
 #include <fmt/format.h>
@@ -249,7 +249,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 } // namespace
 
 PluginState::PluginState(juce::AudioProcessor& parent)
-  : PluginStateBase(parent, createParameterLayout())
+  : StateManager(parent, createParameterLayout())
 {
 }
 
@@ -279,9 +279,9 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
            } };
 }
 
-auto PluginState::getReverbPreset() const -> fsh::fx::FeedbackDelayNetwork::Preset
+auto PluginState::getReverbPreset() const -> fsh::fx::FDNReverb::Preset
 {
-  return static_cast<fsh::fx::FeedbackDelayNetwork::Preset>(getRawParamSafely("rev_preset"));
+  return static_cast<fsh::fx::FDNReverb::Preset>(getRawParamSafely("rev_preset"));
 }
 
 auto PluginState::getAmpEnvelope() const -> fsh::synth::ADSR::Params

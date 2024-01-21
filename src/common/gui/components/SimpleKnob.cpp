@@ -79,9 +79,9 @@ void SimpleKnob::paint(juce::Graphics& g)
   g.fillPath(createIndicator(center, static_cast<float>(angle)));
 }
 
-void SimpleKnob::attach(plugin::PluginStateBase& state, juce::String paramID)
+void SimpleKnob::attach(plugin::StateManager& state, juce::String paramID)
 {
-  knobAttachment = std::make_unique<plugin::PluginStateBase::SliderAttachment>(
+  knobAttachment = std::make_unique<plugin::StateManager::SliderAttachment>(
     state.getReferenceToBaseClass(), paramID, *this);
 }
 

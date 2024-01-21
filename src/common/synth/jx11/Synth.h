@@ -32,6 +32,9 @@ Polyphonic synthesizer
 using setParams().
 
 **To use:** Call process() to compute the next block of audio samples.
+
+> This class is loosely based on code from the [JX10
+> synthesizer](https://github.com/hollance/synth-plugin-book) by Matthijs Hollemans.
 */
 class Synth
 {

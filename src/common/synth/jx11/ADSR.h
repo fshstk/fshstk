@@ -31,6 +31,9 @@ setParams().
 
 To use: start the envelope's attack phase with noteOn(), trigger the release phase using
 noteOff(), and get the envelope's current value using getNextValue().
+
+> This class is loosely based on code from the [JX10
+> synthesizer](https://github.com/hollance/synth-plugin-book) by Matthijs Hollemans.
 */
 class ADSR
 {

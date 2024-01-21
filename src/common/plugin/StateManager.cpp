@@ -19,70 +19,44 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "IndexedVector.h"
-#include <juce_dsp/juce_dsp.h>
+#include "StateManager.h"
 
-namespace fsh::fx {
-/**
-Ambisonic FDN reverb algorithm.
+using namespace fsh::plugin;
 
-This is a feedback delay network (FDN) reverb algorithm based on the FdnReverb class from the
-IEM Plugin Suite. This class takes a JUCE AudioBuffer object in the ambisonic domain and applies
-the FDN reverb algorithm in-place using the process() method.
-
-Note that you must call setSampleRate() before calling process() for the first time.
-*/
-class FeedbackDelayNetwork
+StateManager::StateManager(juce::AudioProcessor& parent, Params&& params)
+  : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
 {
-public:
-  /// The number of delay lines in the FDN.
-  static constexpr size_t fdnSize = 64;
+}
 
-  /// Parameters for the FDN reverb algorithm.
-  struct Params
-  {
-    float roomSize; ///< Room size in meters
-    float revTime;  ///< Reverberation time in seconds
-    float dryWet;   ///< Dry/wet mix [0, 1]
-  };
+auto StateManager::getState() -> juce::XmlElement
+{
+  if (const auto xml = copyState().createXml(); xml != nullptr)
+    return *xml;
 
-  /// Presets for the FDN reverb algorithm.
-  enum class Preset
-  {
-    Off = 0, ///< No reverb
-    Earth,   ///< Small room with a short reverberation time
-    Metal,   ///< Medium-sized room with a medium reverberation time
-    Sky,     ///< Large room with a long reverberation time
-  };
+  spdlog::warn("getState() could not retrieve state object");
+  return juce::XmlElement{ "" };
+}
 
-  /// Default constructor.
-  FeedbackDelayNetwork();
+void StateManager::setState(const juce::XmlElement& xml)
+{
+  if (xml.hasTagName(state.getType()))
+    replaceState(juce::ValueTree::fromXml(xml));
+  else
+    spdlog::warn("setState() received invalid state object");
+}
 
-  /// Set the parameters for the FDN reverb algorithm directly.
-  void setParams(const Params&);
+auto StateManager::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
+{
+  return *this;
+}
 
-  /// Set the parameters for the FDN reverb algorithm using a preset.
-  void setPreset(Preset);
-
-  /// Set the sample rate. Must be called before calling process().
-  void setSampleRate(double);
-
-  /// Apply the FDN reverb algorithm to the given ambisonic audio buffer.
-  void process(juce::AudioBuffer<float>&);
-
-  /// Clear the delay buffers.
-  void reset();
-
-private:
-  std::array<util::IndexedVector, fdnSize> delayBuffers;
-  std::array<float, fdnSize> feedbackGains = {};
-  std::array<float, fdnSize> transferVector = {};
-  std::vector<unsigned> primeNumbers;
-
-  Params params;
-  double sampleRate;
-
-  void updateParameterSettings();
-};
-} // namespace fsh::fx
+auto StateManager::getRawParamSafely(const juce::String& id) const -> float
+{
+  const auto* const param = getRawParameterValue(id);
+  if (param == nullptr) {
+    spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
+                     id.toStdString());
+    return 0.0f;
+  }
+  return param->load();
+}

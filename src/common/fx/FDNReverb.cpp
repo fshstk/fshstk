@@ -19,32 +19,32 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "FeedbackDelayNetwork.h"
+#include "FDNReverb.h"
 #include <spdlog/spdlog.h>
 
 using namespace fsh::fx;
 
 namespace {
-const auto presets = std::map<FeedbackDelayNetwork::Preset, FeedbackDelayNetwork::Params>{
-  { FeedbackDelayNetwork::Preset::Off,
+const auto presets = std::map<FDNReverb::Preset, FDNReverb::Params>{
+  { FDNReverb::Preset::Off,
     {
       .roomSize = 0.0f,
       .revTime = 0.0f,
       .dryWet = 0.0f,
     } },
-  { FeedbackDelayNetwork::Preset::Earth,
+  { FDNReverb::Preset::Earth,
     {
       .roomSize = 1.0f,
       .revTime = 0.8f,
       .dryWet = 1.0f,
     } },
-  { FeedbackDelayNetwork::Preset::Metal,
+  { FDNReverb::Preset::Metal,
     {
       .roomSize = 15.0f,
       .revTime = 1.5f,
       .dryWet = 1.0f,
     } },
-  { FeedbackDelayNetwork::Preset::Sky,
+  { FDNReverb::Preset::Sky,
     {
       .roomSize = 30.0f,
       .revTime = 3.0f,
@@ -100,9 +100,9 @@ auto generateIndices(size_t numIndices, unsigned delayLength)
   return indices;
 }
 
-void fwht(std::array<float, FeedbackDelayNetwork::fdnSize>& data)
+void fwht(std::array<float, FDNReverb::fdnSize>& data)
 {
-  static_assert(FeedbackDelayNetwork::fdnSize == 64, "FDN size must be power of 2");
+  static_assert(FDNReverb::fdnSize == 64, "FDN size must be power of 2");
   const auto numElements = data.size();
   const auto logSize = static_cast<unsigned>(std::log2(numElements));
 
@@ -123,13 +123,13 @@ void fwht(std::array<float, FeedbackDelayNetwork::fdnSize>& data)
 }
 } // namespace
 
-FeedbackDelayNetwork::FeedbackDelayNetwork()
+FDNReverb::FDNReverb()
   : primeNumbers(generatePrimes(5'000))
 {
   updateParameterSettings();
 }
 
-void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
+void FDNReverb::process(juce::AudioBuffer<float>& buffer)
 {
   const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
   const auto numChannelsToProcess = std::min(numChannels, fdnSize);
@@ -163,7 +163,7 @@ void FeedbackDelayNetwork::process(juce::AudioBuffer<float>& buffer)
   }
 }
 
-void FeedbackDelayNetwork::updateParameterSettings()
+void FDNReverb::updateParameterSettings()
 {
   const auto primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
 
@@ -197,13 +197,13 @@ void FeedbackDelayNetwork::updateParameterSettings()
   }
 }
 
-void FeedbackDelayNetwork::setParams(const Params& p)
+void FDNReverb::setParams(const Params& p)
 {
   params = p;
   updateParameterSettings();
 }
 
-void FeedbackDelayNetwork::setPreset(Preset p)
+void FDNReverb::setPreset(Preset p)
 {
   if (presets.contains(p))
     setParams(presets.at(p));
@@ -211,13 +211,13 @@ void FeedbackDelayNetwork::setPreset(Preset p)
     spdlog::warn("Reverb: invalid preset: {}", static_cast<int>(p));
 }
 
-void FeedbackDelayNetwork::setSampleRate(double newSampleRate)
+void FDNReverb::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   updateParameterSettings();
 }
 
-void FeedbackDelayNetwork::reset()
+void FDNReverb::reset()
 {
   for (auto& buffer : delayBuffers)
     buffer.clear();

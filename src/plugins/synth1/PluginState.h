@@ -20,17 +20,17 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FeedbackDelayNetwork.h"
-#include "PluginStateBase.h"
+#include "FDNReverb.h"
+#include "StateManager.h"
 #include "WavetableSound.h"
 #include <juce_dsp/juce_dsp.h>
 
-class PluginState : public fsh::plugin::PluginStateBase
+class PluginState : public fsh::plugin::StateManager
 {
 public:
   explicit PluginState(juce::AudioProcessor&);
   auto getSynthParams() const -> fsh::synth::WavetableSound::Params;
-  auto getReverbParams() const -> fsh::fx::FeedbackDelayNetwork::Params;
+  auto getReverbParams() const -> fsh::fx::FDNReverb::Params;
 
 private:
   auto getAmpEnv() const -> juce::ADSR::Parameters;

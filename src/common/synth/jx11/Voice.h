@@ -36,6 +36,9 @@ setParams().
 
 **To use:** call noteOn() to start a note, noteOff() to stop a note, and render() to compute the
 next block of audio samples.
+
+> This class is loosely based on code from the [JX10
+> synthesizer](https://github.com/hollance/synth-plugin-book) by Matthijs Hollemans.
 */
 class Voice
 {

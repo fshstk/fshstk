@@ -26,7 +26,7 @@
 #include <spdlog/spdlog.h>
 
 PluginProcessor::PluginProcessor()
-  : PluginBase({
+  : Processor({
       .outputs = juce::AudioChannelSet::ambisonic(fsh::util::maxAmbiOrder),
       .inputs = juce::AudioChannelSet::stereo(),
     })

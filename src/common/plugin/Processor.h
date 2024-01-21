@@ -70,8 +70,8 @@ plugins). That's it!
 In many cases you will need to override additional methods, such as prepareToPlay() if you have
 components that need to know the sample rate or buffer size.
 */
-template<class PluginStateType>
-class PluginBase : public juce::AudioProcessor
+template<class StateManager>
+class Processor : public juce::AudioProcessor
 {
 public:
   /// The input/output configuration struct for the plugin. This is passed to the constructor.
@@ -88,7 +88,7 @@ public:
   };
 
   /// Construct a plugin instance
-  explicit PluginBase(const Config& conf)
+  explicit Processor(const Config& conf)
     : AudioProcessor(conf.hasInputs() ? BusesProperties()
                                           .withInput("Input", conf.inputs, true)
                                           .withOutput("Output", conf.outputs, true)
@@ -202,7 +202,7 @@ public:
 protected:
   /// Use this to access the plugin's parameters. This is an instance of the PluginState object that
   /// is passed as a template parameter to PluginBase.
-  PluginStateType _params;
+  StateManager _params;
 
 private:
   inline static const auto _isSynth = bool{ JucePlugin_IsSynth };
