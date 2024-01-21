@@ -53,6 +53,8 @@ public:
     double oscBDetune;                    ///< Oscillator B detune in semitones
     ADSR::Params adsr;                    ///< ADSR envelope parameters
     util::BoundedFloat<0, 1> velocityAmt; ///< Velocity sensitivity
+    double aziCenter = 0.0;  ///< Anchor middle of MIDI note range to this azimuth in degrees
+    double aziRange = 180.0; ///< Spread MIDI range around aziCenter +/- aziRange/2
   };
 
   /// Set the sample rate in Hz
