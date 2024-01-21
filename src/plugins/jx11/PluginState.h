@@ -21,11 +21,11 @@
 
 #pragma once
 #include "FDNReverb.h"
-#include "PluginStateBase.h"
+#include "StateManager.h"
 #include "Synth.h"
 #include <juce_dsp/juce_dsp.h>
 
-class PluginState : public fsh::plugin::PluginStateBase
+class PluginState : public fsh::plugin::StateManager
 {
 public:
   explicit PluginState(juce::AudioProcessor&);

@@ -19,16 +19,16 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "PluginStateBase.h"
+#include "StateManager.h"
 
 using namespace fsh::plugin;
 
-PluginStateBase::PluginStateBase(juce::AudioProcessor& parent, Params&& params)
+StateManager::StateManager(juce::AudioProcessor& parent, Params&& params)
   : juce::AudioProcessorValueTreeState(parent, nullptr, "Parameters", std::move(params))
 {
 }
 
-auto PluginStateBase::getState() -> juce::XmlElement
+auto StateManager::getState() -> juce::XmlElement
 {
   if (const auto xml = copyState().createXml(); xml != nullptr)
     return *xml;
@@ -37,7 +37,7 @@ auto PluginStateBase::getState() -> juce::XmlElement
   return juce::XmlElement{ "" };
 }
 
-void PluginStateBase::setState(const juce::XmlElement& xml)
+void StateManager::setState(const juce::XmlElement& xml)
 {
   if (xml.hasTagName(state.getType()))
     replaceState(juce::ValueTree::fromXml(xml));
@@ -45,12 +45,12 @@ void PluginStateBase::setState(const juce::XmlElement& xml)
     spdlog::warn("setState() received invalid state object");
 }
 
-auto PluginStateBase::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
+auto StateManager::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&
 {
   return *this;
 }
 
-auto PluginStateBase::getRawParamSafely(const juce::String& id) const -> float
+auto StateManager::getRawParamSafely(const juce::String& id) const -> float
 {
   const auto* const param = getRawParameterValue(id);
   if (param == nullptr) {

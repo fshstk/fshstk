@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "PluginStateBase.h"
+#include "StateManager.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
@@ -48,12 +48,12 @@ public:
   void paint(juce::Graphics& g) override;
 
   /// Attach this knob to a parameter.
-  void attach(plugin::PluginStateBase&, juce::String paramID);
+  void attach(plugin::StateManager&, juce::String paramID);
 
 private:
   const juce::String labelText;
   const double knobRangeRadians;
-  std::unique_ptr<plugin::PluginStateBase::SliderAttachment> knobAttachment;
+  std::unique_ptr<plugin::StateManager::SliderAttachment> knobAttachment;
 
   class KnobStyle : public juce::LookAndFeel_V4
   {

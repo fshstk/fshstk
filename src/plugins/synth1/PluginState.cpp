@@ -122,7 +122,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 } // namespace
 
 PluginState::PluginState(juce::AudioProcessor& parent)
-  : PluginStateBase(parent, createParameterLayout())
+  : StateManager(parent, createParameterLayout())
 {
 }
 

@@ -20,10 +20,10 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "PluginStateBase.h"
 #include "SphericalVector.h"
+#include "StateManager.h"
 
-class PluginState : public fsh::plugin::PluginStateBase
+class PluginState : public fsh::plugin::StateManager
 {
 public:
   explicit PluginState(juce::AudioProcessor&);
