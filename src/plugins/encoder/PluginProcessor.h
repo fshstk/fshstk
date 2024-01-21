@@ -21,11 +21,12 @@
 
 #pragma once
 #include "AmbisonicEncoder.h"
-#include "PluginBase.h"
 #include "PluginState.h"
+#include "Processor.h"
 #include <juce_dsp/juce_dsp.h>
 
-class PluginProcessor : public fsh::plugin::PluginBase<PluginState>
+
+class PluginProcessor : public fsh::plugin::Processor<PluginState>
 {
 public:
   PluginProcessor();

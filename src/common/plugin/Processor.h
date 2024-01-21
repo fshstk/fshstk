@@ -71,7 +71,7 @@ In many cases you will need to override additional methods, such as prepareToPla
 components that need to know the sample rate or buffer size.
 */
 template<class PluginStateType>
-class PluginBase : public juce::AudioProcessor
+class Processor : public juce::AudioProcessor
 {
 public:
   /// The input/output configuration struct for the plugin. This is passed to the constructor.
@@ -88,7 +88,7 @@ public:
   };
 
   /// Construct a plugin instance
-  explicit PluginBase(const Config& conf)
+  explicit Processor(const Config& conf)
     : AudioProcessor(conf.hasInputs() ? BusesProperties()
                                           .withInput("Input", conf.inputs, true)
                                           .withOutput("Output", conf.outputs, true)
