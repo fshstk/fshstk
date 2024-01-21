@@ -88,7 +88,10 @@ jobs:
 
       - name: Sync docs directory
         run: |
+          mkdir -p ~/.ssh
+          echo "${{ env.SSH_ID }}" >> ~/.ssh/known_hosts
           sshpass -p ${{ env.SSH_PASS }} rsync -avz --delete docs/html/ ${{ env.SSH_USER }}@docs.fshstk.com:~/docs.fshstk.com
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
+          SSH_ID: docs.fshstk.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoRSttmGhja67iWGqH/tNcK7JydvAX4ljVWWJqFb9IJ
