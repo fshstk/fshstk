@@ -4,7 +4,7 @@
 
 PROJECT_NAME           = "fsh::stk"
 PROJECT_BRIEF          = "fantastic spatial holophonic software toolkit"
-PROJECT_LOGO           =
+PROJECT_LOGO           = logo.png
 PROJECT_ICON           =
 INPUT                  = src/common
 INPUT                 += README.md
