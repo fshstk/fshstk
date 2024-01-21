@@ -119,8 +119,8 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     fsh::plugin::ParamFloat{
       .id = "filter_reso",
       .name = "Filter Resonance",
-      .range = { 0.0f, 4.0f },
-      .defaultVal = 15.0f,
+      .range = { 0.0f, 0.7f },
+      .defaultVal = 0.0f,
       .attributes = percentLabel,
     }
       .create(),
