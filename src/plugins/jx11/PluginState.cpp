@@ -111,7 +111,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     fsh::plugin::ParamFloat{
       .id = "filter_freq",
       .name = "Filter Frequency",
-      .range = { 0.0f, 100.0f, 0.1f },
+      .range = { 0.0f, 20'000.0f },
       .defaultVal = 100.0f,
       .attributes = percentLabel,
     }
@@ -119,7 +119,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     fsh::plugin::ParamFloat{
       .id = "filter_reso",
       .name = "Filter Resonance",
-      .range = { 0.0f, 100.0f, 1.0f },
+      .range = { 0.0f, 4.0f },
       .defaultVal = 15.0f,
       .attributes = percentLabel,
     }
@@ -291,16 +291,18 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
     return freqRatio;
   }();
 
-  return { .voice = {
-             .noiseLvl = noiseLvl,
-             .oscALvl = oscALvl,
-             .oscBLvl = oscBLvl,
-             .oscBDetune = oscBDetune,
-             .adsr = getAmpEnvelope(),
-             .velocityAmt = getRawParamSafely("velocity_amt") / 100.0f,
-             .aziCenter = getRawParamSafely("azi_center"),
-             .aziRange = getRawParamSafely("azi_range"),
-           } };
+  return { .voice = { .noiseLvl = noiseLvl,
+                      .oscALvl = oscALvl,
+                      .oscBLvl = oscBLvl,
+                      .oscBDetune = oscBDetune,
+                      .adsr = getAmpEnvelope(),
+                      .velocityAmt = getRawParamSafely("velocity_amt") / 100.0f,
+                      .aziCenter = getRawParamSafely("azi_center"),
+                      .aziRange = getRawParamSafely("azi_range"),
+                      .filter = {
+                        .cutoff = getRawParamSafely("filter_freq"),
+                        .resonance = getRawParamSafely("filter_reso"),
+                      } } };
 }
 
 auto PluginState::getReverbPreset() const -> fsh::fx::FDNReverb::Preset
