@@ -47,11 +47,12 @@ public:
   /// Voice parameters
   struct Params
   {
-    util::BoundedFloat<0, 1> noiseLvl; ///< Noise level
-    util::BoundedDouble<0, 1> oscALvl; ///< Oscillator A level
-    util::BoundedDouble<0, 1> oscBLvl; ///< Oscillator B level
-    double oscBDetune;                 ///< Oscillator B detune in semitones
-    ADSR::Params adsr;                 ///< ADSR envelope parameters
+    util::BoundedFloat<0, 1> noiseLvl;    ///< Noise level
+    util::BoundedDouble<0, 1> oscALvl;    ///< Oscillator A level
+    util::BoundedDouble<0, 1> oscBLvl;    ///< Oscillator B level
+    double oscBDetune;                    ///< Oscillator B detune in semitones
+    ADSR::Params adsr;                    ///< ADSR envelope parameters
+    util::BoundedFloat<0, 1> velocityAmt; ///< Velocity sensitivity
   };
 
   /// Set the sample rate in Hz
