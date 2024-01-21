@@ -25,7 +25,6 @@
 #include "Processor.h"
 #include "WavetableSynth.h"
 
-
 class PluginProcessor : public fsh::plugin::Processor<PluginState>
 {
 public:
