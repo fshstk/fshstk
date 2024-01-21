@@ -55,6 +55,9 @@ public:
   /// Filter a single sample
   float processSample(float);
 
+  /// Reset the filter state
+  void reset();
+
 private:
   void calculateCoefficients();
 

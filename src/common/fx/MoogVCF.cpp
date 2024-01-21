@@ -66,3 +66,9 @@ void MoogVCF::calculateCoefficients()
   const auto t2 = 12.0 + t1 * t1;
   _resCoeff = _params.resonance * (t2 + 6.0 * t1) / (t2 - 6.0 * t1);
 }
+
+void MoogVCF::reset()
+{
+  _stage.fill(0.0);
+  _delay.fill(0.0);
+}

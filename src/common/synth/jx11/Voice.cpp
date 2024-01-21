@@ -76,6 +76,7 @@ void Voice::reset()
   _oscB.reset();
   _oscNoise.reset();
   _adsr.reset();
+  _filter.reset();
   _noteVal = 0;
   _velocity = 0;
   _bendValSemitones = 0.0;
