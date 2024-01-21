@@ -25,15 +25,15 @@
 
 namespace fsh {
 /**
- * Base class for storing plugin state.
- *
- * This class is a wrapper around juce::AudioProcessorValueTreeState. Every plugin should implement
- * its own PluginState class that inherits from this class. This PluginState class is responsible
- * for storing, saving, recalling, and communicating state to/from the DAW. You can then add
- * parameters to the PluginState class by passing in an initializer list of fsh::FloatParam and
- * fsh::ChoiceParam objects. Preferably these can be returned from a helper function inside an
- * anonymous namespace, in the PluginState class's .cpp file.
- */
+Base class for storing plugin state.
+
+This class is a wrapper around juce::AudioProcessorValueTreeState. Every plugin should implement
+its own PluginState class that inherits from this class. This PluginState class is responsible
+for storing, saving, recalling, and communicating state to/from the DAW. You can then add
+parameters to the PluginState class by passing in an initializer list of fsh::FloatParam and
+fsh::ChoiceParam objects. Preferably these can be returned from a helper function inside an
+anonymous namespace, in the PluginState class's .cpp file.
+*/
 class PluginStateBase : private juce::AudioProcessorValueTreeState
 {
 public:

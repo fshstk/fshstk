@@ -24,21 +24,21 @@
 
 namespace fsh {
 /**
- * Used to add a floating point parameter to a plugin.
- *
- * Use a designated initializer and call create() directly for maximum readability, e.g.:
- * ```cpp
- * fsh::ParamFloat{
- *   .id = "parameter_id",
- *   .name = "The Name of the Parameter",
- *   .range = { [min], [max] },
- * }.create()
- * ```
- *
- * Return a list of these inside a function returning a
- * juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
- * you can then pass to the constructor of your plugin's PluginState class.
- */
+Used to add a floating point parameter to a plugin.
+
+Use a designated initializer and call create() directly for maximum readability, e.g.:
+```cpp
+fsh::ParamFloat{
+  .id = "parameter_id",
+  .name = "The Name of the Parameter",
+  .range = { [min], [max] },
+}.create()
+```
+
+Return a list of these inside a function returning a
+juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
+you can then pass to the constructor of your plugin's PluginState class.
+*/
 struct ParamFloat
 {
   /// Used to specify the parameter's range. See the JUCE docs for details.

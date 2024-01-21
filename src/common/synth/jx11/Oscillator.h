@@ -23,13 +23,13 @@
 
 namespace fsh {
 /**
- * Represents a single band-limited oscillator with multiple waveforms.
- *
- * **Before using:** set the sample rate using setSampleRate() and set the
- * oscillator's parameters using setParams().
- *
- * **To use:** call nextSample() to compute the oscillator's next sample.
- */
+Represents a single band-limited oscillator with multiple waveforms.
+
+**Before using:** set the sample rate using setSampleRate() and set the
+oscillator's parameters using setParams().
+
+**To use:** call nextSample() to compute the oscillator's next sample.
+*/
 class Oscillator
 {
 public:

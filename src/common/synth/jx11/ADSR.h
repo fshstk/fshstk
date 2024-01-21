@@ -24,14 +24,14 @@
 
 namespace fsh {
 /**
- * ADSR envelope
- *
- * Before using: set the sample rate using setSampleRate() and set the envelope's parameters using
- * setParams().
- *
- * To use: start the envelope's attack phase with noteOn(), trigger the release phase using
- * noteOff(), and get the envelope's current value using getNextValue().
- */
+ADSR envelope
+
+Before using: set the sample rate using setSampleRate() and set the envelope's parameters using
+setParams().
+
+To use: start the envelope's attack phase with noteOn(), trigger the release phase using
+noteOff(), and get the envelope's current value using getNextValue().
+*/
 class ADSR
 {
 public:

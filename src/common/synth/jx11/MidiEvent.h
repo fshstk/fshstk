@@ -24,8 +24,8 @@
 
 namespace fsh {
 /**
- * Represents a MIDI event, such as a note on/off or pitch bend.
- */
+Represents a MIDI event, such as a note on/off or pitch bend.
+*/
 class MidiEvent
 {
 public:

@@ -24,10 +24,10 @@
 
 namespace fsh {
 /**
- * Primitive ring buffer class.
- *
- * Can be used as a simple delay line or FIFO queue.
- */
+Primitive ring buffer class.
+
+Can be used as a simple delay line or FIFO queue.
+*/
 class IndexedVector
 {
 public:
