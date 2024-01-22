@@ -143,17 +143,6 @@ public:
   /// createEditor() method. This wrapper is here to prevent accidental memory leaks.
   virtual std::unique_ptr<juce::AudioProcessorEditor> customEditor() { return {}; }
 
-  /// Create the plugin's editor. The default implementation creates a GenericAudioProcessorEditor,
-  /// which will display an unstyled list of your plugin's parameters. This is good enough to start,
-  /// but if you want to create a custom editor, you will need to override hasEditor(). Never call
-  /// this yourself, or you will leak memory.
-  juce::AudioProcessorEditor* createEditor() override final
-  {
-    if (auto editor = customEditor(); editor)
-      return editor.release();
-    return new juce::GenericAudioProcessorEditor(*this);
-  }
-
   /// Returns whether the plugin accepts MIDI input (as specified in the JUCE project settings)
   bool acceptsMidi() const override { return _wantsMidi; }
 
@@ -212,6 +201,17 @@ protected:
   StateManager _params;
 
 private:
+  /// Create the plugin's editor. The default implementation creates a GenericAudioProcessorEditor,
+  /// which will display an unstyled list of your plugin's parameters. This is good enough to start,
+  /// but if you want to create a custom editor, you will need to override hasEditor(). Never call
+  /// this yourself, or you will leak memory.
+  juce::AudioProcessorEditor* createEditor() override final
+  {
+    if (auto editor = customEditor(); editor)
+      return editor.release();
+    return new juce::GenericAudioProcessorEditor(*this);
+  }
+
   inline static const auto _isSynth = bool{ JucePlugin_IsSynth };
   inline static const auto _name = juce::String{ JucePlugin_Name };
   inline static const auto _wantsMidi = bool{ JucePlugin_WantsMidiInput };
