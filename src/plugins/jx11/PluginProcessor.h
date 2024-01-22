@@ -29,14 +29,11 @@ class PluginProcessor : public fsh::plugin::Processor<PluginState>
 {
 public:
   PluginProcessor();
+  auto customEditor() -> std::unique_ptr<juce::AudioProcessorEditor> override;
+
   void prepareToPlay(double sampleRate, int bufferSize) override;
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
   void processBlock(juce::AudioBuffer<double>&, juce::MidiBuffer&) override;
-
-  std::unique_ptr<juce::AudioProcessorEditor> customEditor() override
-  {
-    return std::make_unique<juce::GenericAudioProcessorEditor>(*this);
-  }
 
 private:
   fsh::synth::Synth _synth;
