@@ -33,6 +33,11 @@ public:
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
   void processBlock(juce::AudioBuffer<double>&, juce::MidiBuffer&) override;
 
+  std::unique_ptr<juce::AudioProcessorEditor> customEditor() override
+  {
+    return std::make_unique<juce::GenericAudioProcessorEditor>(*this);
+  }
+
 private:
   fsh::synth::Synth _synth;
   fsh::fx::FDNReverb _reverb;

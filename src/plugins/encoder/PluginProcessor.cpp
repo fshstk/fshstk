@@ -83,7 +83,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiB
   spdlog::critical("double precision not supported");
 }
 
-juce::AudioProcessorEditor* PluginProcessor::createEditor()
+auto PluginProcessor::customEditor() -> std::unique_ptr<juce::AudioProcessorEditor>
 {
-  return new PluginEditor(*this, _params);
+  return std::make_unique<PluginEditor>(*this, _params);
 }

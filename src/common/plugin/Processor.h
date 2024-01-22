@@ -138,12 +138,19 @@ public:
   /// Returns whether the plugin has an editor. (It does, by default.)
   bool hasEditor() const override { return true; }
 
+  /// Provide custom editor instead of GenericAudioProcessorEditor. Override
+  /// this if you have a custom editor. It will get passed to the base class's
+  /// createEditor() method. This wrapper is here to prevent accidental memory leaks.
+  virtual std::unique_ptr<juce::AudioProcessorEditor> customEditor() { return {}; }
+
   /// Create the plugin's editor. The default implementation creates a GenericAudioProcessorEditor,
   /// which will display an unstyled list of your plugin's parameters. This is good enough to start,
-  /// but if you want to create a custom editor, you will need to override this method and return
-  /// a pointer to your own PluginEditor class. Never call this yourself, or you will leak memory.
-  juce::AudioProcessorEditor* createEditor() override
+  /// but if you want to create a custom editor, you will need to override hasEditor(). Never call
+  /// this yourself, or you will leak memory.
+  juce::AudioProcessorEditor* createEditor() override final
   {
+    if (auto editor = customEditor(); editor)
+      return editor.release();
     return new juce::GenericAudioProcessorEditor(*this);
   }
 
