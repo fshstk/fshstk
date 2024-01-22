@@ -111,7 +111,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     fsh::plugin::ParamFloat{
       .id = "filter_freq",
       .name = "Filter Cutoff",
-      .range = { 0.5f, 1'000.0f },
+      .range = fsh::plugin::ParamFloat::freqRange(0.5f, 500.0f, 0.01f),
       .defaultVal = 20'000.0f,
       .attributes = percentLabel,
     }
