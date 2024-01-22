@@ -60,7 +60,9 @@ implementation for getStateInformation() and setStateInformation(), so plugins c
 state and presets out of the box, and provides a default GUI editor. This means that to create a
 plugin, all you have to do is create a PluginState class and implement the processBlock() method.
 
-**To use:** Create a PluginState class that inherits from PluginStateBase. Then create a
+## Parameters
+
+Create a PluginState class that inherits from PluginStateBase. Then create a
 PluginProcessor class that inherits from PluginBase<PluginState>. You will need to specify the
 number of outputs (and optionally inputs) in the constructor. Do this inside your child class
 constructor, so your own class can have a default constructor with no parameters. Next, create a
@@ -69,6 +71,19 @@ plugins). That's it!
 
 In many cases you will need to override additional methods, such as prepareToPlay() if you have
 components that need to know the sample rate or buffer size.
+
+## Custom editor
+
+The default implementation creates a GenericAudioProcessorEditor,
+which will display an unstyled list of your plugin's parameters. This is good enough to start,
+but if you want to create a custom editor, you will need to override customEditor(), e.g.:
+
+```cpp
+auto customEditor() -> std::unique_ptr<juce::AudioProcessorEditor> override
+{
+  return std::make_unique<PluginEditor>(*this, _params);
+}
+```
 */
 template<class StateManager>
 class Processor : public juce::AudioProcessor
@@ -205,7 +220,7 @@ private:
   /// which will display an unstyled list of your plugin's parameters. This is good enough to start,
   /// but if you want to create a custom editor, you will need to override hasEditor(). Never call
   /// this yourself, or you will leak memory.
-  juce::AudioProcessorEditor* createEditor() override final
+  juce::AudioProcessorEditor* createEditor() final
   {
     if (auto editor = customEditor(); editor)
       return editor.release();
