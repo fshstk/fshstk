@@ -21,16 +21,31 @@
 
 #include "PluginEditor.h"
 
+namespace {
+const auto opacity = 0xff000000;
+
+const auto white = juce::Colour(opacity | 0xffffff);
+const auto red = juce::Colour(opacity | 0xb92523);
+const auto purple = juce::Colour(opacity | 0x392947);
+const auto lightGrey = juce::Colour(opacity | 0xbfbbc3);
+const auto darkGrey = juce::Colour(opacity | 0x58534f);
+const auto beige = juce::Colour(opacity | 0xcbbfb3);
+
+const auto width = 850;
+const auto height = 350;
+} // namespace
+
 PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(p)
   , _params(s)
 {
   juce::ignoreUnused(_params);
+  setSize(width, height);
 }
 
 void PluginEditor::paint(juce::Graphics& g)
 {
-  juce::ignoreUnused(g);
+  g.fillAll(red);
 }
 
 void PluginEditor::resized()
