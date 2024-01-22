@@ -39,10 +39,12 @@ public:
   /// Waveform
   enum class Type
   {
-    Sine,  ///< Sine wave
-    Saw,   ///< Sawtooth wave with only positive positive harmonics
-    Saw2,  ///< Sawtooth wave with alternating sign harmonics
-    Noise, ///< White noise
+    Sine,     ///< Sine wave
+    Saw,      ///< Sawtooth wave with all positive positive harmonics
+    TrueSaw,  ///< True sawtooth wave with alternating sign harmonics
+    Triangle, ///< Triangle wave with all positive harmonics
+    Square,   ///< Square wave
+    Noise,    ///< White noise
   };
 
   /// Oscillator parameters
