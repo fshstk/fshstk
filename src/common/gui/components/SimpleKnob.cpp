@@ -84,7 +84,7 @@ void SimpleKnob::paint(juce::Graphics& g)
                      (valueToProportionOfLength(getValue()) - 0.5);
   const auto knob = createKnob(area.getCentre(), radius, static_cast<float>(angle), _params);
 
-  g.setColour(Colors::dark);
+  g.setColour(isMouseOverOrDragging() ? _params.mouseOverColor : _params.color);
   g.fillPath(knob);
 }
 
