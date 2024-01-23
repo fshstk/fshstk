@@ -31,9 +31,13 @@ This implementation originally appeared on
 ported/improved by [ddiakopoulos on
 GitHub](https://github.com/ddiakopoulos/MoogLadders/blob/master/src/MusicDSPModel.h).
 
-**Before using:** Set the sample rate using setSampleRate(), and parameters using setParams().
+## Before using
 
-**To use:** Call processSample() for each sample.
+Set the sample rate using setSampleRate(), and parameters using setParams().
+
+## To use
+
+Call processSample() for each sample.
 */
 class MoogVCF
 {
