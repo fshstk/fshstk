@@ -27,10 +27,10 @@
 class PluginEditor : public juce::AudioProcessorEditor
 {
 public:
-  PluginEditor(PluginProcessor& p);
+  explicit PluginEditor(PluginProcessor& p);
   void paint(juce::Graphics&) override;
   void resized() override;
 
 private:
-  fsh::gui::SimpleKnob _knob{ "knob" };
+  fsh::gui::SimpleKnob _knob{ "FINE" };
 };
