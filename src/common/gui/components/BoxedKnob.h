@@ -32,6 +32,6 @@ public:
   void resized() override;
 
 private:
-  fsh::gui::SimpleKnob _knob{ { .labelText = "FINE" } };
+  fsh::gui::SimpleKnob _knob{ {} };
 };
 } // namespace fsh::gui

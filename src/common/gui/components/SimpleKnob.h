@@ -42,12 +42,9 @@ public:
 
   struct Params
   {
-    juce::String labelText = "";
     float knobRangeDegrees = 270.0f;
     Behavior behavior = Behavior::Bounded;
-    juce::Font font = Fonts::body;
     juce::Colour color = Colors::dark;
-    juce::Colour mouseOverColor = Colors::red;
     float notchWidthDegrees = 7.0f;
     float notchDepthFraction = 0.7f;
   };
@@ -62,19 +59,7 @@ public:
   void attach(plugin::StateManager&, juce::String paramID);
 
 private:
-  class KnobStyle : public juce::LookAndFeel_V4
-  {
-  public:
-    explicit KnobStyle(const SimpleKnob::Params& params);
-    juce::Font getLabelFont(juce::Label&) override;
-    juce::Label* createSliderTextBox(juce::Slider&) override;
-
-  private:
-    const SimpleKnob::Params& _params;
-  };
-
   Params _params;
   std::unique_ptr<plugin::StateManager::SliderAttachment> _stateManager;
-  KnobStyle _knobStyle;
 };
 } // namespace fsh::gui

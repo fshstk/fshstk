@@ -20,17 +20,10 @@
 ***************************************************************************************************/
 
 #include "SimpleKnob.h"
-#include "guiGlobals.h"
 
 using namespace fsh::gui;
 
 namespace {
-auto getPointOnCircle(const juce::Point<float> center, const float radius, const float radians)
-  -> juce::Point<float>
-{
-  return { center.x + radius * std::sin(radians), center.y + radius * std::cos(radians) };
-}
-
 auto createKnob(const juce::Point<float> center,
                 const float radius,
                 const float radians,
@@ -45,8 +38,13 @@ auto createKnob(const juce::Point<float> center,
   path.addCentredArc(
     center.getX(), center.getY(), radius, radius, 0.0f, rightNotchAngle, leftNotchAngle, true);
 
-  const auto leftNotchPoint = getPointOnCircle(center, radius, leftNotchAngle);
-  const auto rightNotchPoint = getPointOnCircle(center, radius, rightNotchAngle);
+  const auto pointOnCircle = [center, radius](const float circleAngle) {
+    return juce::Point{ center.x + radius * std::sin(circleAngle),
+                        center.y + radius * std::cos(circleAngle) };
+  };
+  const auto leftNotchPoint = pointOnCircle(leftNotchAngle);
+  const auto rightNotchPoint = pointOnCircle(rightNotchAngle);
+
   const auto notchNumPixels = radius * (1.0f - params.notchDepthFraction);
 
   path.lineTo({
@@ -69,7 +67,6 @@ SimpleKnob::SimpleKnob(const Params& params)
   : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag,
                  juce::Slider::TextEntryBoxPosition::NoTextBox)
   , _params(params)
-  , _knobStyle(_params)
 {
   const auto startAngle = -juce::degreesToRadians(_params.knobRangeDegrees) / 2.0f;
   const auto endAngle = +juce::degreesToRadians(_params.knobRangeDegrees) / 2.0f;
@@ -81,10 +78,10 @@ void SimpleKnob::paint(juce::Graphics& g)
   const auto area = getLocalBounds().toFloat();
   const auto radius = std::min(area.getWidth(), area.getHeight()) / 2.0f;
   const auto angle = juce::degreesToRadians(_params.knobRangeDegrees) *
-                     (valueToProportionOfLength(getValue()) - 0.5);
-  const auto knob = createKnob(area.getCentre(), radius, static_cast<float>(angle), _params);
+                     (static_cast<float>(valueToProportionOfLength(getValue())) - 0.5f);
+  const auto knob = createKnob(area.getCentre(), radius, angle, _params);
 
-  g.setColour(isMouseOverOrDragging() ? _params.mouseOverColor : _params.color);
+  g.setColour(isMouseOverOrDragging() ? _params.color.withMultipliedAlpha(0.9f) : _params.color);
   g.fillPath(knob);
 }
 
@@ -92,25 +89,4 @@ void SimpleKnob::attach(plugin::StateManager& state, juce::String paramID)
 {
   _stateManager = std::make_unique<plugin::StateManager::SliderAttachment>(
     state.getReferenceToBaseClass(), paramID, *this);
-}
-
-SimpleKnob::KnobStyle::KnobStyle(const SimpleKnob::Params& params)
-  : _params(params)
-{
-}
-
-juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
-{
-  return _params.font;
-}
-
-juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
-{
-  auto* label = juce::LookAndFeel_V2::createSliderTextBox(s);
-  label->setColour(juce::TextEditor::backgroundColourId, Colors::transparent);
-  label->setColour(juce::Label::outlineColourId, Colors::transparent);
-  label->setColour(juce::TextEditor::focusedOutlineColourId, Colors::foreground);
-  label->setColour(juce::TextEditor::highlightColourId, Colors::foreground);
-  label->setColour(juce::TextEditor::highlightedTextColourId, Colors::background);
-  return label;
 }
