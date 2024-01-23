@@ -50,7 +50,7 @@ public:
   };
 
   /// Constructor.
-  explicit SimpleKnob(const Params& params);
+  explicit SimpleKnob(const Params&);
 
   /// Called by JUCE to paint the knob.
   void paint(juce::Graphics& g) override;

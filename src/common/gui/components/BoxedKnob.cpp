@@ -24,7 +24,9 @@
 
 using namespace fsh::gui;
 
-BoxedKnob::BoxedKnob()
+BoxedKnob::BoxedKnob(const Params& params)
+  : _params(params)
+  , _knob(params.knobParams)
 {
   addAndMakeVisible(_knob);
 }
@@ -38,8 +40,8 @@ void BoxedKnob::paint(juce::Graphics& g)
 
   const auto area = getLocalBounds();
 
-  const auto textOffsetY = 14;
-  g.drawText("RESONANCE",
+  const auto textOffsetY = 12;
+  g.drawText(_params.label.toUpperCase(),
              area.withBottom(area.getBottom() - textOffsetY),
              juce::Justification::centredBottom,
              true);

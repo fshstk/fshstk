@@ -27,11 +27,18 @@ namespace fsh::gui {
 class BoxedKnob : public juce::Component
 {
 public:
-  BoxedKnob();
+  struct Params
+  {
+    juce::String label;
+    SimpleKnob::Params knobParams;
+  };
+
+  explicit BoxedKnob(const Params&);
   void paint(juce::Graphics&) override;
   void resized() override;
 
 private:
-  fsh::gui::SimpleKnob _knob{ {} };
+  Params _params;
+  SimpleKnob _knob;
 };
 } // namespace fsh::gui
