@@ -36,7 +36,8 @@ void PanelFX::paint(juce::Graphics& g)
   g.fillAll();
   g.setColour(fsh::gui::Colors::dark);
   g.setFont(fsh::gui::Fonts::body);
-  g.drawText("FX", getLocalBounds().reduced(5), juce::Justification::topLeft, false);
+  const auto textArea = juce::Rectangle{ 8, 3, getWidth(), 20 };
+  g.drawText("FX", textArea, juce::Justification::centredLeft);
 }
 
 void PanelFX::resized()
