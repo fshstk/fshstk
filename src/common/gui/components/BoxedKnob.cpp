@@ -39,8 +39,8 @@ void BoxedKnob::paint(juce::Graphics& g)
   const auto area = getLocalBounds();
 
   const auto textOffsetY = 12;
-  const auto text = _knob.isMouseButtonDownAnywhere() ? _knob.getTextFromValue(_knob.getValue())
-                                                      : _params.label.toUpperCase();
+  const auto text = _knob.isMouseButtonDown() ? _knob.getTextFromValue(_knob.getValue())
+                                              : _params.label.toUpperCase();
   g.drawText(text,
              area.withBottom(area.getBottom() - textOffsetY),
              juce::Justification::centredBottom,
