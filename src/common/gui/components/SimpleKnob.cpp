@@ -30,6 +30,41 @@ auto getPointOnCircle(const juce::Point<float> center, const float radius, const
 {
   return { center.x + radius * std::sin(radians), center.y + radius * std::cos(radians) };
 }
+
+auto createKnob(const juce::Point<float> center, const float radius, const float radians)
+  -> juce::Path
+{
+  // TODO: these two could be params:
+  const auto notchWidthDegrees = 7.0f;
+  const auto notchDepthFraction = 0.7f;
+
+  auto path = juce::Path{};
+
+  const auto halfNotchRadians = juce::degreesToRadians(notchWidthDegrees) / 2.0f;
+  const auto rightNotchAngle = halfNotchRadians;
+  const auto leftNotchAngle = (2.0f * static_cast<float>(M_PI)) - halfNotchRadians;
+
+  path.addCentredArc(
+    center.getX(), center.getY(), radius, radius, 0.0f, rightNotchAngle, leftNotchAngle, true);
+
+  const auto leftNotchPoint = getPointOnCircle(center, radius, leftNotchAngle);
+  const auto rightNotchPoint = getPointOnCircle(center, radius, rightNotchAngle);
+  const auto notchNumPixels = radius * (1.0f - notchDepthFraction);
+
+  path.lineTo({
+    leftNotchPoint.getX(),
+    center.getY() - notchNumPixels,
+  });
+  path.lineTo({
+    rightNotchPoint.getX(),
+    center.getY() - notchNumPixels,
+  });
+
+  path.closeSubPath();
+  path.applyTransform(juce::AffineTransform::rotation(radians, center.getX(), center.getY()));
+
+  return path;
+}
 } // namespace
 
 SimpleKnob::SimpleKnob(const juce::String& name,
@@ -46,36 +81,13 @@ SimpleKnob::SimpleKnob(const juce::String& name,
 
 void SimpleKnob::paint(juce::Graphics& g)
 {
-  const auto pi = static_cast<float>(M_PI);
   const auto area = getLocalBounds().toFloat();
-  const auto size = std::min(area.getWidth(), area.getHeight());
+  const auto radius = std::min(area.getWidth(), area.getHeight()) / 2.0f;
+  const auto angle = knobRangeRadians * (valueToProportionOfLength(getValue()) - 0.5);
+  const auto knob = createKnob(area.getCentre(), radius, static_cast<float>(angle));
+
   g.setColour(Colors::dark);
-
-  const auto notchWidthDegrees = 7.0f;
-  const auto notchDepthFraction = 0.7f;
-  const auto notchDepth = (size / 2.0f) * (1.0f - notchDepthFraction);
-
-  const auto notchWidthRadians = juce::degreesToRadians(notchWidthDegrees);
-  const auto leftNotchPoint =
-    getPointOnCircle(area.getCentre(), size / 2.0f, -notchWidthRadians / 2.0f);
-  const auto rightNotchPoint =
-    getPointOnCircle(area.getCentre(), size / 2.0f, +notchWidthRadians / 2.0f);
-
-  auto path = juce::Path{};
-
-  path.addCentredArc(area.getCentreX(),
-                     area.getCentreY(),
-                     size / 2.0f,
-                     size / 2.0f,
-                     0.0f,
-                     notchWidthRadians / 2.0f,
-                     (2 * pi) - notchWidthRadians / 2.0f,
-                     true);
-  path.lineTo({ leftNotchPoint.getX(), area.getCentreY() - notchDepth });
-  path.lineTo({ rightNotchPoint.getX(), area.getCentreY() - notchDepth });
-
-  path.closeSubPath();
-  g.fillPath(path);
+  g.fillPath(knob);
 }
 
 void SimpleKnob::attach(plugin::StateManager& state, juce::String paramID)
