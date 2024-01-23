@@ -22,25 +22,21 @@
 #include "PluginEditor.h"
 
 namespace {
-const auto opacity = 0xff000000;
-
-const auto white = juce::Colour(opacity | 0xffffff);
-const auto red = juce::Colour(opacity | 0xb92523);
-const auto purple = juce::Colour(opacity | 0x392947);
-const auto lightGrey = juce::Colour(opacity | 0xbfbbc3);
-const auto darkGrey = juce::Colour(opacity | 0x58534f);
-const auto beige = juce::Colour(opacity | 0xcbbfb3);
+const auto darkblue = juce::Colour{ 0xff'25283d };
+const auto light = juce::Colour{ 0xff'ffeddf };
+const auto gold = juce::Colour{ 0xff'e3b505 };
+const auto red = juce::Colour{ 0xff'b91327 };
+const auto dark = juce::Colour{ 0xff'2c363f };
 
 const auto width = 850;
 const auto height = 350;
 } // namespace
 
-PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
+PluginEditor::PluginEditor(PluginProcessor& p)
   : juce::AudioProcessorEditor(p)
-  , _params(s)
 {
-  juce::ignoreUnused(_params);
   setSize(width, height);
+  addAndMakeVisible(_knob);
 }
 
 void PluginEditor::paint(juce::Graphics& g)
@@ -50,6 +46,7 @@ void PluginEditor::paint(juce::Graphics& g)
 
 void PluginEditor::resized()
 {
-  const auto area = getLocalBounds();
-  juce::ignoreUnused(area);
+  const auto x = getLocalBounds().getCentreX();
+  const auto y = getLocalBounds().getCentreY();
+  _knob.setBounds(x, y, 50, 50);
 }

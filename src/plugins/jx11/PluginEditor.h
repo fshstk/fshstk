@@ -21,16 +21,16 @@
 
 #pragma once
 #include "PluginProcessor.h"
-#include "PluginState.h"
+#include "SimpleKnob.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
 class PluginEditor : public juce::AudioProcessorEditor
 {
 public:
-  PluginEditor(PluginProcessor& p, PluginState& s);
+  PluginEditor(PluginProcessor& p);
   void paint(juce::Graphics&) override;
   void resized() override;
 
 private:
-  PluginState& _params;
+  fsh::gui::SimpleKnob _knob{ "knob" };
 };
