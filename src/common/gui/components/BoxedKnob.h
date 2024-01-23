@@ -20,11 +20,18 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "SimpleKnob.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
 class BoxedKnob : public juce::Component
 {
-  //
+public:
+  BoxedKnob();
+  void paint(juce::Graphics&) override;
+  void resized() override;
+
+private:
+  fsh::gui::SimpleKnob _knob{ "FINE" };
 };
 } // namespace fsh::gui

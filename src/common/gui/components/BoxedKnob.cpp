@@ -20,5 +20,24 @@
 ***************************************************************************************************/
 
 #include "BoxedKnob.h"
+#include "guiGlobals.h"
 
 using namespace fsh::gui;
+
+BoxedKnob::BoxedKnob()
+{
+  addAndMakeVisible(_knob);
+}
+
+void BoxedKnob::paint(juce::Graphics& g)
+{
+  g.fillAll(fsh::gui::Colors::light);
+}
+
+void BoxedKnob::resized()
+{
+  const auto x = getLocalBounds().getCentreX();
+  const auto y = getLocalBounds().getCentreY();
+  const auto size = 30;
+  _knob.setBounds(x - size / 2, y - size / 2, size, size);
+}

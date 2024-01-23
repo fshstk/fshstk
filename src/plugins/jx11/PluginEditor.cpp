@@ -20,14 +20,9 @@
 ***************************************************************************************************/
 
 #include "PluginEditor.h"
+#include "guiGlobals.h"
 
 namespace {
-const auto darkblue = juce::Colour{ 0xff'25283d };
-const auto light = juce::Colour{ 0xff'ffeddf };
-const auto gold = juce::Colour{ 0xff'e3b505 };
-const auto red = juce::Colour{ 0xff'b91327 };
-const auto dark = juce::Colour{ 0xff'2c363f };
-
 const auto width = 850;
 const auto height = 350;
 } // namespace
@@ -41,7 +36,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
 void PluginEditor::paint(juce::Graphics& g)
 {
-  g.fillAll(red);
+  g.fillAll(fsh::gui::Colors::red);
 }
 
 void PluginEditor::resized()
@@ -49,5 +44,5 @@ void PluginEditor::resized()
   const auto x = getLocalBounds().getCentreX();
   const auto y = getLocalBounds().getCentreY();
   const auto size = 30;
-  _knob.setBounds(x - size / 2, y - size / 2, size, size);
+  _knob.setBounds(x - size / 2, y - size / 2, 70, 60);
 }

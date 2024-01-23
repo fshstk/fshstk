@@ -20,8 +20,8 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "BoxedKnob.h"
 #include "PluginProcessor.h"
-#include "SimpleKnob.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
 class PluginEditor : public juce::AudioProcessorEditor
@@ -32,5 +32,5 @@ public:
   void resized() override;
 
 private:
-  fsh::gui::SimpleKnob _knob{ "FINE" };
+  fsh::gui::BoxedKnob _knob;
 };

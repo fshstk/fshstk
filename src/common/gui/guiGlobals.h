@@ -32,7 +32,7 @@ struct Colors
 
   inline static const auto darkblue = juce::Colour{ 0xff'25283d };
   inline static const auto light = juce::Colour{ 0xff'ffeddf };
-  inline static const auto gold = juce::Colour{ 0xff'e3b505 };
+  inline static const auto gold = juce::Colour{ 0xff'fbcf23 };
   inline static const auto red = juce::Colour{ 0xff'b91327 };
   inline static const auto dark = juce::Colour{ 0xff'2c363f };
 };
