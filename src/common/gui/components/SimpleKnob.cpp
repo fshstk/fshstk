@@ -21,33 +21,14 @@
 
 #include "SimpleKnob.h"
 #include "guiGlobals.h"
-#include "pointToFloat.h"
 
 using namespace fsh::gui;
 
 namespace {
-const auto lineThickness = 4;
-
-juce::Path createKnob(const juce::Point<float> center)
+auto getPointOnCircle(const juce::Point<float> center, const float radius, const float radians)
+  -> juce::Point<float>
 {
-  const auto corner =
-    juce::Point{ center.getX() - Sizes::knobRadius, center.getY() - Sizes::knobRadius };
-  const auto size = Sizes::knobRadius * 2;
-
-  auto p = juce::Path{};
-  p.addEllipse(corner.getX(), corner.getY(), size, size);
-  return p;
-}
-
-juce::Path createIndicator(const juce::Point<float> center, const float angle)
-{
-  const auto corner = juce::Point{ center.getX() - lineThickness / 2.0f, center.getY() };
-  const auto length = Sizes::knobRadius;
-
-  auto p = juce::Path{};
-  p.addRectangle(corner.getX(), corner.getY(), lineThickness, length * -1);
-  p.applyTransform(juce::AffineTransform::rotation(angle, center.getX(), center.getY()));
-  return p;
+  return { center.x + radius * std::sin(radians), center.y + radius * std::cos(radians) };
 }
 } // namespace
 
@@ -55,28 +36,46 @@ SimpleKnob::SimpleKnob(const juce::String& name,
                        const double knobRangeDegrees,
                        const Behavior behavior)
   : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag,
-                 juce::Slider::TextEntryBoxPosition::TextBoxAbove)
+                 juce::Slider::TextEntryBoxPosition::NoTextBox)
   , labelText(name)
   , knobRangeRadians(juce::degreesToRadians(knobRangeDegrees))
 {
-  setLookAndFeel(&knobStyle);
   setRotaryParameters(
     0, juce::degreesToRadians(static_cast<float>(knobRangeDegrees)), behavior == Behavior::Bounded);
 }
 
 void SimpleKnob::paint(juce::Graphics& g)
 {
-  const auto center = pointToFloat(getLocalBounds().getCentre());
-  const auto angle = knobRangeRadians * (valueToProportionOfLength(getValue()) - 0.5);
+  const auto pi = static_cast<float>(M_PI);
+  const auto area = getLocalBounds().toFloat();
+  const auto size = std::min(area.getWidth(), area.getHeight());
+  g.setColour(Colors::dark);
 
-  g.setColour(Colors::foreground);
-  g.fillPath(createKnob(center));
+  const auto notchWidthDegrees = 6.0f;
+  const auto notchDepthFraction = 0.6f;
+  const auto notchDepth = (size / 2.0f) * (1.0f - notchDepthFraction);
 
-  g.setFont(Fonts::body);
-  g.drawText(labelText, getLocalBounds(), juce::Justification::centredBottom);
+  const auto notchWidthRadians = juce::degreesToRadians(notchWidthDegrees);
+  const auto leftNotchPoint =
+    getPointOnCircle(area.getCentre(), size / 2.0f, -notchWidthRadians / 2.0f);
+  const auto rightNotchPoint =
+    getPointOnCircle(area.getCentre(), size / 2.0f, +notchWidthRadians / 2.0f);
 
-  g.setColour(Colors::background);
-  g.fillPath(createIndicator(center, static_cast<float>(angle)));
+  auto path = juce::Path{};
+
+  path.addCentredArc(area.getCentreX(),
+                     area.getCentreY(),
+                     size / 2.0f,
+                     size / 2.0f,
+                     0.0f,
+                     notchWidthRadians / 2.0f,
+                     (2 * pi) - notchWidthRadians / 2.0f,
+                     true);
+  path.lineTo({ leftNotchPoint.getX(), area.getCentreY() - notchDepth });
+  path.lineTo({ rightNotchPoint.getX(), area.getCentreY() - notchDepth });
+
+  path.closeSubPath();
+  g.fillPath(path);
 }
 
 void SimpleKnob::attach(plugin::StateManager& state, juce::String paramID)
