@@ -27,13 +27,14 @@ namespace fsh::gui {
 class PanelFX : public juce::Component
 {
 public:
+  PanelFX();
   void paint(juce::Graphics&) override;
   void resized() override;
 
 private:
   BoxedKnob _noise{ {
     .label = "NOISE",
-    .knobParams = { .color = Colors::gold },
+    .knobParams = { .color = Colors::dark },
   } };
   BoxedKnob _drive{ {
     .label = "DRIVE",

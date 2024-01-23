@@ -20,15 +20,33 @@
 ***************************************************************************************************/
 
 #include "PanelFX.h"
+#include "guiGlobals.h"
 
 using namespace fsh::gui;
 
+PanelFX::PanelFX()
+{
+  addAndMakeVisible(_noise);
+  addAndMakeVisible(_drive);
+}
+
 void PanelFX::paint(juce::Graphics& g)
 {
-  juce::ignoreUnused(g);
+  g.setColour(fsh::gui::Colors::light);
+  g.fillAll();
+  g.setColour(fsh::gui::Colors::dark);
+  g.setFont(fsh::gui::Fonts::body);
+  g.drawText("FX", getLocalBounds().reduced(5), juce::Justification::topLeft, false);
 }
 
 void PanelFX::resized()
 {
-  //
+
+  using juce::operator""_fr;
+
+  auto grid = juce::Grid{};
+  grid.templateRows = { 1_fr };
+  grid.templateColumns = { 1_fr, 1_fr };
+  grid.items = { juce::GridItem{ _drive }, juce::GridItem{ _noise } };
+  grid.performLayout(getLocalBounds());
 }

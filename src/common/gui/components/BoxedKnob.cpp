@@ -33,8 +33,6 @@ BoxedKnob::BoxedKnob(const Params& params)
 
 void BoxedKnob::paint(juce::Graphics& g)
 {
-  g.fillAll(fsh::gui::Colors::light);
-
   g.setColour(_params.knobParams.color);
   g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
 
@@ -54,6 +52,5 @@ void BoxedKnob::resized()
   const auto x = getLocalBounds().getCentreX();
   const auto y = getLocalBounds().getCentreY();
   const auto knobSize = 30;
-  const auto knobOffsetY = 6;
-  _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2) - knobOffsetY, knobSize, knobSize);
+  _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2), knobSize, knobSize);
 }
