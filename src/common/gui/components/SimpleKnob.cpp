@@ -31,16 +31,14 @@ auto getPointOnCircle(const juce::Point<float> center, const float radius, const
   return { center.x + radius * std::sin(radians), center.y + radius * std::cos(radians) };
 }
 
-auto createKnob(const juce::Point<float> center, const float radius, const float radians)
-  -> juce::Path
+auto createKnob(const juce::Point<float> center,
+                const float radius,
+                const float radians,
+                const SimpleKnob::Params& params) -> juce::Path
 {
-  // TODO: these two could be params:
-  const auto notchWidthDegrees = 7.0f;
-  const auto notchDepthFraction = 0.7f;
-
   auto path = juce::Path{};
 
-  const auto halfNotchRadians = juce::degreesToRadians(notchWidthDegrees) / 2.0f;
+  const auto halfNotchRadians = juce::degreesToRadians(params.notchWidthDegrees) / 2.0f;
   const auto rightNotchAngle = halfNotchRadians;
   const auto leftNotchAngle = (2.0f * static_cast<float>(M_PI)) - halfNotchRadians;
 
@@ -49,7 +47,7 @@ auto createKnob(const juce::Point<float> center, const float radius, const float
 
   const auto leftNotchPoint = getPointOnCircle(center, radius, leftNotchAngle);
   const auto rightNotchPoint = getPointOnCircle(center, radius, rightNotchAngle);
-  const auto notchNumPixels = radius * (1.0f - notchDepthFraction);
+  const auto notchNumPixels = radius * (1.0f - params.notchDepthFraction);
 
   path.lineTo({
     leftNotchPoint.getX(),
@@ -67,24 +65,24 @@ auto createKnob(const juce::Point<float> center, const float radius, const float
 }
 } // namespace
 
-SimpleKnob::SimpleKnob(const juce::String& name,
-                       const double knobRangeDegrees,
-                       const Behavior behavior)
+SimpleKnob::SimpleKnob(const Params& params)
   : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag,
                  juce::Slider::TextEntryBoxPosition::NoTextBox)
-  , labelText(name)
-  , knobRangeRadians(juce::degreesToRadians(knobRangeDegrees))
+  , _params(params)
+  , _knobStyle(_params)
 {
-  setRotaryParameters(
-    0, juce::degreesToRadians(static_cast<float>(knobRangeDegrees)), behavior == Behavior::Bounded);
+  const auto startAngle = -juce::degreesToRadians(_params.knobRangeDegrees) / 2.0f;
+  const auto endAngle = +juce::degreesToRadians(_params.knobRangeDegrees) / 2.0f;
+  setRotaryParameters(startAngle, endAngle, _params.behavior == Behavior::Bounded);
 }
 
 void SimpleKnob::paint(juce::Graphics& g)
 {
   const auto area = getLocalBounds().toFloat();
   const auto radius = std::min(area.getWidth(), area.getHeight()) / 2.0f;
-  const auto angle = knobRangeRadians * (valueToProportionOfLength(getValue()) - 0.5);
-  const auto knob = createKnob(area.getCentre(), radius, static_cast<float>(angle));
+  const auto angle = juce::degreesToRadians(_params.knobRangeDegrees) *
+                     (valueToProportionOfLength(getValue()) - 0.5);
+  const auto knob = createKnob(area.getCentre(), radius, static_cast<float>(angle), _params);
 
   g.setColour(Colors::dark);
   g.fillPath(knob);
@@ -92,13 +90,18 @@ void SimpleKnob::paint(juce::Graphics& g)
 
 void SimpleKnob::attach(plugin::StateManager& state, juce::String paramID)
 {
-  knobAttachment = std::make_unique<plugin::StateManager::SliderAttachment>(
+  _stateManager = std::make_unique<plugin::StateManager::SliderAttachment>(
     state.getReferenceToBaseClass(), paramID, *this);
+}
+
+SimpleKnob::KnobStyle::KnobStyle(const SimpleKnob::Params& params)
+  : _params(params)
+{
 }
 
 juce::Font SimpleKnob::KnobStyle::getLabelFont(juce::Label&)
 {
-  return Fonts::body;
+  return _params.font;
 }
 
 juce::Label* SimpleKnob::KnobStyle::createSliderTextBox(juce::Slider& s)
