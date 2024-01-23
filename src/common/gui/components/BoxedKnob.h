@@ -34,10 +34,11 @@ public:
   };
 
   explicit BoxedKnob(const Params&);
+
+private:
   void paint(juce::Graphics&) override;
   void resized() override;
 
-private:
   Params _params;
   SimpleKnob _knob;
 };
