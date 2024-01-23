@@ -20,10 +20,24 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "BoxedKnob.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-class PanelFX
+class PanelFX : public juce::Component
 {
-  //
+public:
+  void paint(juce::Graphics&) override;
+  void resized() override;
+
+private:
+  BoxedKnob _noise{ {
+    .label = "NOISE",
+    .knobParams = { .color = Colors::gold },
+  } };
+  BoxedKnob _drive{ {
+    .label = "DRIVE",
+    .knobParams = { .color = Colors::dark },
+  } };
 };
 } // namespace fsh::gui

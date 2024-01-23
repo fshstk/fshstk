@@ -22,3 +22,13 @@
 #include "PanelFX.h"
 
 using namespace fsh::gui;
+
+void PanelFX::paint(juce::Graphics& g)
+{
+  juce::ignoreUnused(g);
+}
+
+void PanelFX::resized()
+{
+  //
+}
