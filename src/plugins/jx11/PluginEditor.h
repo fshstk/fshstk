@@ -32,5 +32,8 @@ public:
   void resized() override;
 
 private:
-  fsh::gui::BoxedKnob _knob{ { .label = "DRIVE" } };
+  fsh::gui::BoxedKnob _knob{ {
+    .label = "DRIVE",
+    .knobParams = { .color = fsh::gui::Colors::dark },
+  } };
 };

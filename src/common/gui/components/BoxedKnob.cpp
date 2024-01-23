@@ -35,7 +35,7 @@ void BoxedKnob::paint(juce::Graphics& g)
 {
   g.fillAll(fsh::gui::Colors::light);
 
-  g.setColour(fsh::gui::Colors::dark);
+  g.setColour(_params.knobParams.color);
   g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
 
   const auto area = getLocalBounds();
