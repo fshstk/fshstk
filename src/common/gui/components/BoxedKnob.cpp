@@ -52,6 +52,6 @@ void BoxedKnob::resized()
   const auto x = getLocalBounds().getCentreX();
   const auto y = getLocalBounds().getCentreY();
   const auto knobSize = 30;
-  const auto knobOffsetY = 8;
+  const auto knobOffsetY = 6;
   _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2) - knobOffsetY, knobSize, knobSize);
 }
