@@ -24,7 +24,8 @@
 
 using namespace fsh::gui;
 
-PanelFX::PanelFX()
+PanelFX::PanelFX(const Params& params)
+  : _params(params)
 {
   addAndMakeVisible(_noise);
   addAndMakeVisible(_drive);
@@ -37,7 +38,7 @@ void PanelFX::paint(juce::Graphics& g)
   g.setColour(fsh::gui::Colors::dark);
   g.setFont(fsh::gui::Fonts::body);
   const auto textArea = juce::Rectangle{ 8, 3, getWidth(), 20 };
-  g.drawText("FX", textArea, juce::Justification::centredLeft);
+  g.drawText(_params.label.toUpperCase(), textArea, juce::Justification::centredLeft);
 }
 
 void PanelFX::resized()

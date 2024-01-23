@@ -32,5 +32,5 @@ public:
   void resized() override;
 
 private:
-  fsh::gui::PanelFX _panelFX;
+  fsh::gui::PanelFX _panelFX{ { .label = "FILTER" } };
 };

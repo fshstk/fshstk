@@ -27,11 +27,18 @@ namespace fsh::gui {
 class PanelFX : public juce::Component
 {
 public:
-  PanelFX();
+  struct Params
+  {
+    juce::String label;
+  };
+
+  explicit PanelFX(const Params&);
   void paint(juce::Graphics&) override;
   void resized() override;
 
 private:
+  Params _params;
+
   BoxedKnob _noise{ {
     .label = "NOISE",
     .knobParams = { .color = Colors::dark },
