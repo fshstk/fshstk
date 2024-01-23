@@ -48,6 +48,6 @@ void PluginEditor::resized()
 {
   const auto x = getLocalBounds().getCentreX();
   const auto y = getLocalBounds().getCentreY();
-  const auto size = 100;
+  const auto size = 30;
   _knob.setBounds(x - size / 2, y - size / 2, size, size);
 }

@@ -51,8 +51,8 @@ void SimpleKnob::paint(juce::Graphics& g)
   const auto size = std::min(area.getWidth(), area.getHeight());
   g.setColour(Colors::dark);
 
-  const auto notchWidthDegrees = 6.0f;
-  const auto notchDepthFraction = 0.6f;
+  const auto notchWidthDegrees = 7.0f;
+  const auto notchDepthFraction = 0.7f;
   const auto notchDepth = (size / 2.0f) * (1.0f - notchDepthFraction);
 
   const auto notchWidthRadians = juce::degreesToRadians(notchWidthDegrees);
