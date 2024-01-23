@@ -32,12 +32,24 @@ BoxedKnob::BoxedKnob()
 void BoxedKnob::paint(juce::Graphics& g)
 {
   g.fillAll(fsh::gui::Colors::light);
+
+  g.setColour(fsh::gui::Colors::dark);
+  g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
+
+  const auto area = getLocalBounds();
+
+  const auto textOffsetY = 14;
+  g.drawText("RESONANCE",
+             area.withBottom(area.getBottom() - textOffsetY),
+             juce::Justification::centredBottom,
+             true);
 }
 
 void BoxedKnob::resized()
 {
   const auto x = getLocalBounds().getCentreX();
   const auto y = getLocalBounds().getCentreY();
-  const auto size = 30;
-  _knob.setBounds(x - size / 2, y - size / 2, size, size);
+  const auto knobSize = 30;
+  const auto knobOffsetY = 8;
+  _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2) - knobOffsetY, knobSize, knobSize);
 }
