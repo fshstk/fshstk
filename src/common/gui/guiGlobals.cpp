@@ -25,8 +25,8 @@
 using namespace fsh::gui;
 
 const juce::Font Fonts::title =
-  juce::Font{ juce::Typeface::createSystemTypefaceFor(BinaryData::JollyLodger_ttf,
-                                                      BinaryData::JollyLodger_ttfSize) }
+  juce::Font{ juce::Typeface::createSystemTypefaceFor(BinaryData::JockeyOne_ttf,
+                                                      BinaryData::JockeyOne_ttfSize) }
     .withHeight(64.0f);
 
 const juce::Font Fonts::body =
