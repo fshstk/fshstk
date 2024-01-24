@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "BoxedKnob.h"
 #include "PanelFX.h"
 #include "PluginProcessor.h"
 #include <juce_audio_utils/juce_audio_utils.h>
@@ -32,5 +33,15 @@ public:
   void resized() override;
 
 private:
-  fsh::gui::PanelFX _panelFX{ { .label = "FILTER" }, {} };
+  fsh::gui::BoxedKnob _noise{ {
+    .label = "GROISE",
+    .knobParams = { .color = fsh::gui::Colors::dark },
+  } };
+
+  fsh::gui::BoxedKnob _drive{ {
+    .label = "PRIVE",
+    .knobParams = { .color = fsh::gui::Colors::dark },
+  } };
+
+  fsh::gui::PanelFX _panelFX{ { .label = "MILTER" }, { &_noise, &_drive } };
 };

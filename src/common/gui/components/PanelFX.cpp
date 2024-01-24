@@ -24,12 +24,13 @@
 
 using namespace fsh::gui;
 
-PanelFX::PanelFX(const Params& params, std::vector<std::unique_ptr<juce::Component>>&& components)
+PanelFX::PanelFX(const Params& params, std::vector<juce::Component*> components)
   : _params(params)
   , _components(std::move(components))
 {
-  addAndMakeVisible(_noise);
-  addAndMakeVisible(_drive);
+  for (const auto& component : _components)
+    if (component != nullptr)
+      addAndMakeVisible(*component);
 }
 
 void PanelFX::paint(juce::Graphics& g)
@@ -44,12 +45,16 @@ void PanelFX::paint(juce::Graphics& g)
 
 void PanelFX::resized()
 {
-
   using juce::operator""_fr;
 
   auto grid = juce::Grid{};
   grid.templateRows = { 1_fr };
-  grid.templateColumns = { 1_fr, 1_fr };
-  grid.items = { juce::GridItem{ _drive }, juce::GridItem{ _noise } };
+
+  for (const auto& component : _components)
+    if (component != nullptr) {
+      grid.templateColumns.add(1_fr);
+      grid.items.add(juce::GridItem{ *component });
+    }
+
   grid.performLayout(getLocalBounds());
 }

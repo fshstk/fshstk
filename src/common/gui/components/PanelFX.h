@@ -20,7 +20,6 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "BoxedKnob.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
@@ -32,21 +31,12 @@ public:
     juce::String label;
   };
 
-  explicit PanelFX(const Params&, std::vector<std::unique_ptr<juce::Component>>&&);
+  explicit PanelFX(const Params&, std::vector<juce::Component*>);
   void paint(juce::Graphics&) override;
   void resized() override;
 
 private:
   Params _params;
-  std::vector<std::unique_ptr<juce::Component>> _components;
-
-  BoxedKnob _noise{ {
-    .label = "NOISE",
-    .knobParams = { .color = Colors::dark },
-  } };
-  BoxedKnob _drive{ {
-    .label = "DRIVE",
-    .knobParams = { .color = Colors::dark },
-  } };
+  std::vector<juce::Component*> _components;
 };
 } // namespace fsh::gui
