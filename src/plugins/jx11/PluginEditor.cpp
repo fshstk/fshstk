@@ -73,7 +73,15 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
 
 void PluginEditor::paint(juce::Graphics& g)
 {
+  const auto offsetY = 80;
+  const auto marginRight = 26;
+
   g.fillAll(fsh::gui::Colors::red);
+
+  g.setColour(fsh::gui::Colors::light);
+  g.setFont(fsh::gui::Fonts::body.withHeight(48.0f));
+  const auto textArea = juce::Rectangle{ 0, 0, getWidth() - marginRight, offsetY };
+  g.drawText("fsh :: ambisonium", textArea, juce::Justification::bottomRight);
 }
 
 void PluginEditor::resized()
