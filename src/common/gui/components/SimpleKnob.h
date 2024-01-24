@@ -52,13 +52,8 @@ public:
   /// Constructor.
   explicit SimpleKnob(const Params&);
 
-  /// Attach this knob to a parameter.
-  void attach(plugin::StateManager&, juce::String paramID);
-
 private:
   void paint(juce::Graphics& g) override;
-
   Params _params;
-  std::unique_ptr<plugin::StateManager::SliderAttachment> _stateManager;
 };
 } // namespace fsh::gui

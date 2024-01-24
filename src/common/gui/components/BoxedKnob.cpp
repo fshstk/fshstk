@@ -54,3 +54,9 @@ void BoxedKnob::resized()
   const auto knobSize = 30;
   _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2), knobSize, knobSize);
 }
+
+void BoxedKnob::attach(plugin::StateManager& state, juce::String paramID)
+{
+  _stateManager = std::make_unique<plugin::StateManager::SliderAttachment>(
+    state.getReferenceToBaseClass(), paramID, _knob);
+}

@@ -84,9 +84,3 @@ void SimpleKnob::paint(juce::Graphics& g)
   g.setColour(isMouseOverOrDragging() ? _params.color.withMultipliedAlpha(0.9f) : _params.color);
   g.fillPath(knob);
 }
-
-void SimpleKnob::attach(plugin::StateManager& state, juce::String paramID)
-{
-  _stateManager = std::make_unique<plugin::StateManager::SliderAttachment>(
-    state.getReferenceToBaseClass(), paramID, *this);
-}

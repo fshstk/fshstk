@@ -34,6 +34,7 @@ public:
   };
 
   explicit BoxedKnob(const Params&);
+  void attach(plugin::StateManager&, juce::String paramID);
 
 private:
   void paint(juce::Graphics&) override;
@@ -41,5 +42,6 @@ private:
 
   Params _params;
   SimpleKnob _knob;
+  std::unique_ptr<plugin::StateManager::SliderAttachment> _stateManager;
 };
 } // namespace fsh::gui
