@@ -48,13 +48,23 @@ void Panel::resized()
   using juce::operator""_fr;
 
   auto grid = juce::Grid{};
-  grid.templateRows = { 1_fr };
 
-  for (const auto& component : _components)
-    if (component != nullptr) {
+  if (_params.orientation == Orientation::Horizontal)
+    grid.templateRows = { 1_fr };
+  else
+    grid.templateColumns = { 1_fr };
+
+  for (const auto& component : _components) {
+    if (component == nullptr)
+      continue;
+
+    if (_params.orientation == Orientation::Horizontal)
       grid.templateColumns.add(1_fr);
-      grid.items.add(juce::GridItem{ *component });
-    }
+    else
+      grid.templateRows.add(1_fr);
+
+    grid.items.add(juce::GridItem{ *component });
+  }
 
   grid.performLayout(getLocalBounds());
 }

@@ -26,14 +26,21 @@ namespace fsh::gui {
 class Panel : public juce::Component
 {
 public:
+  enum class Orientation
+  {
+    Horizontal,
+    Vertical
+  };
+
   struct Params
   {
     juce::String label;
     juce::Colour foreground;
     juce::Colour background;
+    Orientation orientation = Orientation::Horizontal;
   };
 
-  explicit Panel(const Params&, std::vector<juce::Component*>);
+  Panel(const Params&, std::vector<juce::Component*>);
 
 private:
   void paint(juce::Graphics&) override;

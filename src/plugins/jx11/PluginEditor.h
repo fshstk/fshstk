@@ -127,6 +127,7 @@ private:
       .label = "AMP ENV",
       .foreground = fsh::gui::Colors::dark,
       .background = fsh::gui::Colors::gold,
+      .orientation = fsh::gui::Panel::Orientation::Vertical,
     },
     { &_knobAmpEnvAttack, &_knobAmpEnvDecay },
   };
@@ -135,6 +136,7 @@ private:
       .label = "FILT ENV",
       .foreground = fsh::gui::Colors::dark,
       .background = fsh::gui::Colors::gold,
+      .orientation = fsh::gui::Panel::Orientation::Vertical,
     },
     { &_knobFiltEnvAttack, &_knobFiltEnvDecay, &_knobFiltEnvModAmt },
   };

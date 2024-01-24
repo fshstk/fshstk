@@ -136,7 +136,7 @@ void PluginEditor::resized()
   _panelFx.setBounds(x, yTop, doubleWidth, singleHeight);
   _panelFilter.setBounds(x, yBot, doubleWidth, singleHeight);
   x += doubleWidth + margin;
-  _panelAmpEnv.setBounds(x, yTop, singleWidth, doubleHeight);
-  x += singleWidth + margin;
   _panelFiltEnv.setBounds(x, yTop, singleWidth, doubleHeight);
+  x += singleWidth + margin;
+  _panelAmpEnv.setBounds(x, yTop, singleWidth, doubleHeight);
 }
