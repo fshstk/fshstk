@@ -115,52 +115,61 @@ private:
   } };
 
   fsh::gui::Panel _panelAmbi{
-    { .label = "AMBISONICS",
+    {
+      .label = "AMBISONICS",
       .foreground = fsh::gui::Colors::light,
-      .background = fsh::gui::Colors::darkblue },
+      .background = fsh::gui::Colors::darkblue,
+    },
     { &_knobAmbiCenter, &_knobAmbiSpread },
   };
   fsh::gui::Panel _panelAmpEnv{
-    { .label = "AMP ENV",
-      .foreground = fsh::gui::Colors::light,
-      .background = fsh::gui::Colors::darkblue },
+    {
+      .label = "AMP ENV",
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::light,
+    },
     { &_knobAmpEnvAttack, &_knobAmpEnvDecay },
   };
   fsh::gui::Panel _panelFiltEnv{
-    { .label = "FILT ENV",
-      .foreground = fsh::gui::Colors::light,
-      .background = fsh::gui::Colors::darkblue },
+    {
+      .label = "FILT ENV",
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::gold,
+    },
     { &_knobFiltEnvAttack, &_knobFiltEnvDecay, &_knobFiltEnvModAmt },
   };
   fsh::gui::Panel _panelFilter{
-    { .label = "FILTER",
-      .foreground = fsh::gui::Colors::light,
-      .background = fsh::gui::Colors::darkblue },
+    {
+      .label = "FILTER",
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::light,
+    },
     { &_knobFilterCutoff, &_knobFilterResonance },
   };
   fsh::gui::Panel _panelFx{
-    { .label = "FX",
-      .foreground = fsh::gui::Colors::light,
-      .background = fsh::gui::Colors::darkblue },
+    {
+      .label = "FX",
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::light,
+    },
     { &_knobFxNoise, &_knobFxDrive },
   };
   fsh::gui::Panel _panelLevel{
     { .label = "",
       .foreground = fsh::gui::Colors::light,
-      .background = fsh::gui::Colors::darkblue },
+      .background = fsh::gui::Colors::transparent },
     { &_knobLevel },
   };
   fsh::gui::Panel _panelOscA{
     { .label = "OSC A",
-
-      .foreground = fsh::gui::Colors::light,
-      .background = fsh::gui::Colors::darkblue },
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::light },
     { &_knobOscATune, &_knobOscAFine, &_knobOscALevel },
   };
   fsh::gui::Panel _panelOscB{
     { .label = "OSC B",
-      .foreground = fsh::gui::Colors::light,
-      .background = fsh::gui::Colors::darkblue },
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::light },
     { &_knobOscBTune, &_knobOscBFine, &_knobOscBLevel },
   };
   fsh::gui::Panel _panelVoice{

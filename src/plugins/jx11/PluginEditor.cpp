@@ -37,9 +37,11 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   addAndMakeVisible(_panelFiltEnv);
   addAndMakeVisible(_panelFilter);
   addAndMakeVisible(_panelFx);
+  addAndMakeVisible(_panelLevel);
   addAndMakeVisible(_panelOscA);
   addAndMakeVisible(_panelOscB);
   addAndMakeVisible(_panelVoice);
+  addAndMakeVisible(_panelReverb);
 
   _knobAmbiCenter.attach(s, PluginState::getID(PluginState::Param::ambi_center));
   _knobAmbiSpread.attach(s, PluginState::getID(PluginState::Param::ambi_spread));
@@ -94,24 +96,17 @@ void PluginEditor::resized()
 
   _panelLevel.setBounds(x, yTop, singleWidth, singleHeight);
   _panelReverb.setBounds(x, yBot, singleWidth, singleHeight);
-
   x += singleWidth + margin;
-
   _panelVoice.setBounds(x, yTop, doubleWidth, singleHeight);
   _panelAmbi.setBounds(x, yBot, doubleWidth, singleHeight);
-
   x += doubleWidth + margin;
-
   _panelOscA.setBounds(x, yTop, quadWidth, singleHeight);
   _panelOscB.setBounds(x, yBot, quadWidth, singleHeight);
-
   x += quadWidth + margin;
-
   _panelFx.setBounds(x, yTop, doubleWidth, singleHeight);
   _panelFilter.setBounds(x, yBot, doubleWidth, singleHeight);
-
   x += doubleWidth + margin;
-
-  _panelAmpEnv.setBounds(x, yTop, doubleWidth, doubleHeight);
-  _panelFiltEnv.setBounds(x, yBot, doubleWidth, doubleHeight);
+  _panelAmpEnv.setBounds(x, yTop, singleWidth, doubleHeight);
+  x += singleWidth + margin;
+  _panelFiltEnv.setBounds(x, yTop, singleWidth, doubleHeight);
 }
