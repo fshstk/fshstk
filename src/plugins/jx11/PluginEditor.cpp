@@ -44,11 +44,7 @@ void PluginEditor::resized()
 {
   const auto x = getLocalBounds().getCentreX();
   const auto y = getLocalBounds().getCentreY();
-  // const auto knobWidth = 70;
-  // const auto knobHeight = 80;
-  // _knob.setBounds(x - knobWidth / 2, y - knobHeight / 2, knobWidth, knobHeight);
   const auto panelHeight = 100;
   const auto panelWidth = 140;
   _panelFX.setBounds(x - panelWidth / 2, y - panelHeight / 2, panelWidth, panelHeight);
-  // _panelFX.setBounds(getLocalBounds());
 }
