@@ -68,6 +68,9 @@ SimpleKnob::SimpleKnob(const Params& params)
                  juce::Slider::TextEntryBoxPosition::NoTextBox)
   , _params(params)
 {
+  if (_params.behavior == Behavior::Endless)
+    _params.knobRangeDegrees = 360.0f;
+
   const auto startAngle = -juce::degreesToRadians(_params.knobRangeDegrees) / 2.0f;
   const auto endAngle = +juce::degreesToRadians(_params.knobRangeDegrees) / 2.0f;
   setRotaryParameters(startAngle, endAngle, _params.behavior == Behavior::Bounded);

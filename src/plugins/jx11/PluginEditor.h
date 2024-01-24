@@ -24,6 +24,7 @@
 #include "PanelFX.h"
 #include "PluginProcessor.h"
 #include "PluginState.h"
+#include "SimpleKnob.h"
 #include "guiGlobals.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
@@ -37,7 +38,8 @@ public:
 private:
   fsh::gui::BoxedKnob _center{ {
     .label = "CENTER",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::light,
+                    .behavior = fsh::gui::SimpleKnob::Behavior::Endless },
   } };
 
   fsh::gui::BoxedKnob _spread{ {

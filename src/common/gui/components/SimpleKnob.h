@@ -42,9 +42,9 @@ public:
 
   struct Params
   {
-    float knobRangeDegrees = 270.0f;
-    Behavior behavior = Behavior::Bounded;
     juce::Colour color = Colors::dark;
+    Behavior behavior = Behavior::Bounded;
+    float knobRangeDegrees = 270.0f;
     float notchWidthDegrees = 7.0f;
     float notchDepthFraction = 0.7f;
   };
