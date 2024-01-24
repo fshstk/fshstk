@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "PluginEditor.h"
+#include "Background.h"
 #include "guiGlobals.h"
 
 namespace {
@@ -73,10 +74,19 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
 
 void PluginEditor::paint(juce::Graphics& g)
 {
+  const auto xml = juce::XmlDocument::parse(background::background_svg);
+  assert(xml);
+
+  const auto background = juce::Drawable::createFromSVG(*xml);
+  assert(background);
+
+  background->setTransformToFit(getLocalBounds().toFloat(), juce::RectanglePlacement::stretchToFit);
+  background->draw(g, 1.0f);
+
   const auto offsetY = 80;
   const auto marginRight = 26;
 
-  g.fillAll(fsh::gui::Colors::red);
+  // g.fillAll(fsh::gui::Colors::red);
 
   g.setColour(fsh::gui::Colors::light);
   g.setFont(fsh::gui::Fonts::body.withHeight(48.0f));
