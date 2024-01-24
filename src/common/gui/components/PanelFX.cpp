@@ -24,8 +24,9 @@
 
 using namespace fsh::gui;
 
-PanelFX::PanelFX(const Params& params)
+PanelFX::PanelFX(const Params& params, std::vector<std::unique_ptr<juce::Component>>&& components)
   : _params(params)
+  , _components(std::move(components))
 {
   addAndMakeVisible(_noise);
   addAndMakeVisible(_drive);

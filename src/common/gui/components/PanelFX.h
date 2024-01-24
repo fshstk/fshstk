@@ -32,12 +32,13 @@ public:
     juce::String label;
   };
 
-  explicit PanelFX(const Params&);
+  explicit PanelFX(const Params&, std::vector<std::unique_ptr<juce::Component>>&&);
   void paint(juce::Graphics&) override;
   void resized() override;
 
 private:
   Params _params;
+  std::vector<std::unique_ptr<juce::Component>> _components;
 
   BoxedKnob _noise{ {
     .label = "NOISE",
