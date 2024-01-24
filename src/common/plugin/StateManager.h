@@ -64,6 +64,16 @@ protected:
   /// juce::AudioProcessorValueTreeState::getRawParameterValue(), but with a nullptr check. If you
   /// try to get a parameter that doesn't exist, this function will fail gracefully by returning
   /// 0.0f and logging an error.
-  auto getRawParamSafely(const juce::String& id) const -> float;
+  template<typename T>
+  auto getParameter(const juce::String& id) const -> T
+  {
+    const auto* const param = getRawParameterValue(id);
+    if (param == nullptr) {
+      spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
+                       id.toStdString());
+      return {};
+    }
+    return static_cast<T>(param->load());
+  }
 };
 } // namespace fsh::plugin

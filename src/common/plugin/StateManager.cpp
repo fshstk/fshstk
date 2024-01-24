@@ -49,14 +49,3 @@ auto StateManager::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeSta
 {
   return *this;
 }
-
-auto StateManager::getRawParamSafely(const juce::String& id) const -> float
-{
-  const auto* const param = getRawParameterValue(id);
-  if (param == nullptr) {
-    spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
-                     id.toStdString());
-    return 0.0f;
-  }
-  return param->load();
-}

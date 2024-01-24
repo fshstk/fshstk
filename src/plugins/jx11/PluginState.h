@@ -31,7 +31,4 @@ public:
   explicit PluginState(juce::AudioProcessor&);
   auto getSynthParams() const -> fsh::synth::Synth::Params;
   auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-
-private:
-  auto getAmpEnvelope() const -> fsh::synth::ADSR::Params;
 };
