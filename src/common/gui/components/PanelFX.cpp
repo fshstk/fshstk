@@ -35,9 +35,9 @@ PanelFX::PanelFX(const Params& params, std::vector<juce::Component*> components)
 
 void PanelFX::paint(juce::Graphics& g)
 {
-  g.setColour(fsh::gui::Colors::light);
+  g.setColour(_params.background);
   g.fillAll();
-  g.setColour(fsh::gui::Colors::dark);
+  g.setColour(_params.foreground);
   g.setFont(fsh::gui::Fonts::body);
   const auto textArea = juce::Rectangle{ 8, 3, getWidth(), 20 };
   g.drawText(_params.label.toUpperCase(), textArea, juce::Justification::centredLeft);

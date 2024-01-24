@@ -23,6 +23,7 @@
 #include "BoxedKnob.h"
 #include "PanelFX.h"
 #include "PluginProcessor.h"
+#include "guiGlobals.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
 class PluginEditor : public juce::AudioProcessorEditor
@@ -34,14 +35,19 @@ public:
 
 private:
   fsh::gui::BoxedKnob _noise{ {
-    .label = "GROISE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .label = "CENTER",
+    .knobParams = { .color = fsh::gui::Colors::light },
   } };
 
   fsh::gui::BoxedKnob _drive{ {
-    .label = "PRIVE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .label = "SPREAD",
+    .knobParams = { .color = fsh::gui::Colors::light },
   } };
 
-  fsh::gui::PanelFX _panelFX{ { .label = "MILTER" }, { &_noise, &_drive } };
+  fsh::gui::PanelFX _panelFX{ {
+                                .label = "AMBISONICS",
+                                .foreground = fsh::gui::Colors::light,
+                                .background = fsh::gui::Colors::darkblue,
+                              },
+                              { &_noise, &_drive } };
 };

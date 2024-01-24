@@ -29,13 +29,16 @@ public:
   struct Params
   {
     juce::String label;
+    juce::Colour foreground;
+    juce::Colour background;
   };
 
   explicit PanelFX(const Params&, std::vector<juce::Component*>);
+
+private:
   void paint(juce::Graphics&) override;
   void resized() override;
 
-private:
   Params _params;
   std::vector<juce::Component*> _components;
 };
