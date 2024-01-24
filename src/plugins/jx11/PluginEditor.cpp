@@ -23,46 +23,51 @@
 #include "Background.h"
 #include "guiGlobals.h"
 
-namespace {
-const auto width = 850;
-const auto height = 350;
-} // namespace
-
 PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(p)
 {
+  const auto width = 850;
+  const auto height = 350;
   setSize(width, height);
 
   addAndMakeVisible(_panelAmbi);
-  addAndMakeVisible(_panelAmpEnv);
-  addAndMakeVisible(_panelFiltEnv);
-  addAndMakeVisible(_panelFilter);
-  addAndMakeVisible(_panelFx);
-  addAndMakeVisible(_panelLevel);
-  addAndMakeVisible(_panelOscA);
-  addAndMakeVisible(_panelOscB);
-  addAndMakeVisible(_panelVoice);
-  addAndMakeVisible(_panelReverb);
-
   _knobAmbiCenter.attach(s, PluginState::getID(PluginState::Param::ambi_center));
   _knobAmbiSpread.attach(s, PluginState::getID(PluginState::Param::ambi_spread));
+
+  addAndMakeVisible(_panelAmpEnv);
   _knobAmpEnvAttack.attach(s, PluginState::getID(PluginState::Param::ampenv_attack));
   _knobAmpEnvDecay.attach(s, PluginState::getID(PluginState::Param::ampenv_decay));
+
+  addAndMakeVisible(_panelFiltEnv);
   _knobFiltEnvAttack.attach(s, PluginState::getID(PluginState::Param::filtenv_attack));
   _knobFiltEnvDecay.attach(s, PluginState::getID(PluginState::Param::filtenv_decay));
   _knobFiltEnvModAmt.attach(s, PluginState::getID(PluginState::Param::filtenv_modamt));
+
+  addAndMakeVisible(_panelFilter);
   _knobFilterCutoff.attach(s, PluginState::getID(PluginState::Param::filter_cutoff));
   _knobFilterResonance.attach(s, PluginState::getID(PluginState::Param::filter_resonance));
+
+  addAndMakeVisible(_panelFx);
   _knobFxDrive.attach(s, PluginState::getID(PluginState::Param::fx_drive));
   _knobFxNoise.attach(s, PluginState::getID(PluginState::Param::fx_noise));
+
+  addAndMakeVisible(_panelLevel);
   _knobLevel.attach(s, PluginState::getID(PluginState::Param::level));
+
+  addAndMakeVisible(_panelOscA);
   _knobOscALevel.attach(s, PluginState::getID(PluginState::Param::oscA_level));
   _knobOscATune.attach(s, PluginState::getID(PluginState::Param::oscA_tune));
   _knobOscAFine.attach(s, PluginState::getID(PluginState::Param::oscA_fine));
+
+  addAndMakeVisible(_panelOscB);
   _knobOscBLevel.attach(s, PluginState::getID(PluginState::Param::oscB_level));
   _knobOscBTune.attach(s, PluginState::getID(PluginState::Param::oscB_tune));
   _knobOscBFine.attach(s, PluginState::getID(PluginState::Param::oscB_fine));
+
+  addAndMakeVisible(_panelVoice);
   _knobVoiceGlide.attach(s, PluginState::getID(PluginState::Param::voice_glide));
+
+  addAndMakeVisible(_panelReverb);
 
   juce::ignoreUnused("ampenv_hold");
   juce::ignoreUnused("ampenv_vel");
