@@ -103,7 +103,10 @@ void PluginEditor::paint(juce::Graphics& g)
   g.setFont(fsh::gui::Fonts::body.withHeight(24.0f));
   g.drawText(
     "fantastic spatial holophonic :: synthesis toolkit", footerText, juce::Justification::topLeft);
-  g.drawText("www.fshstk.com", footerText, juce::Justification::topRight); // TODO: link
+
+  g.setFont(fsh::gui::Fonts::body.withHeight(18.0f));
+  g.drawText(
+    fmt::format("v{}", JucePlugin_VersionString), footerText, juce::Justification::topRight);
 }
 
 void PluginEditor::resized()
