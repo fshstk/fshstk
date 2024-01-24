@@ -47,39 +47,39 @@ private:
   } };
   fsh::gui::BoxedKnob _knobAmpEnvAttack{ {
     .label = "ATTACK",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobAmpEnvDecay{ {
     .label = "DECAY",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobFiltEnvAttack{ {
     .label = "ATTACK",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobFiltEnvDecay{ {
     .label = "DECAY",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobFiltEnvModAmt{ {
     .label = "MOD AMT",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobFilterCutoff{ {
     .label = "CUTOFF",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobFilterResonance{ {
     .label = "RESONANCE",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobFxDrive{ {
     .label = "DRIVE",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobFxNoise{ {
     .label = "NOISE",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobLevel{ {
     .label = "LEVEL",
@@ -87,27 +87,27 @@ private:
   } };
   fsh::gui::BoxedKnob _knobOscALevel{ {
     .label = "LEVEL",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobOscATune{ {
     .label = "TUNE",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobOscAFine{ {
     .label = "FINE",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobOscBLevel{ {
     .label = "LEVEL",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobOscBTune{ {
     .label = "TUNE",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobOscBFine{ {
     .label = "FINE",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::BoxedKnob _knobVoiceGlide{ {
     .label = "GLIDE",
@@ -126,7 +126,7 @@ private:
     {
       .label = "AMP ENV",
       .foreground = fsh::gui::Colors::dark,
-      .background = fsh::gui::Colors::light,
+      .background = fsh::gui::Colors::gold,
     },
     { &_knobAmpEnvAttack, &_knobAmpEnvDecay },
   };
