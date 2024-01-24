@@ -35,6 +35,9 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
   const auto decibelsLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("dB");
   const auto herzLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("Hz");
 
+  const auto degreesLabel = percentLabel.withStringFromValueFunction(
+    [](float val, int) { return fmt::format("{:+0.1f}°", val); });
+
   const auto oscMixLabel = percentLabel.withStringFromValueFunction([](float val, int) {
     const auto oscBLvl = val;
     const auto oscALvl = 100.0f - oscBLvl;
@@ -255,14 +258,16 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     fsh::plugin::ParamFloat{
       .id = "azi_center",
       .name = "Azimuth Center",
-      .range = { -180.0f, 180.0f },
+      .range = { -180.0f, 180.0f, 1.0f },
+      .attributes = degreesLabel,
     }
       .create(),
     fsh::plugin::ParamFloat{
       .id = "azi_range",
       .name = "Azimuth Range",
-      .range = { 0.0f, 720.0f },
+      .range = { 0.0f, 720.0f, 1.0f },
       .defaultVal = 180.0f,
+      .attributes = degreesLabel,
     }
       .create(),
   };
