@@ -34,7 +34,7 @@ public:
   };
 
   explicit BoxedKnob(const Params&);
-  void attach(plugin::StateManager&, juce::String paramID);
+  void attach(plugin::StateManager&, juce::ParameterID);
 
 private:
   void paint(juce::Graphics&) override;

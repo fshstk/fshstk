@@ -28,7 +28,45 @@
 class PluginState : public fsh::plugin::StateManager
 {
 public:
+  enum class Param
+  {
+    ambi_center,
+    ambi_spread,
+
+    ampenv_attack,
+    ampenv_decay,
+    ampenv_hold,
+    ampenv_vel,
+
+    filtenv_attack,
+    filtenv_decay,
+    filtenv_modamt,
+    filter_cutoff,
+    filter_resonance,
+
+    fx_drive,
+    fx_noise,
+
+    level,
+
+    oscA_level,
+    oscA_tune,
+    oscA_fine,
+    oscA_waveform,
+
+    oscB_level,
+    oscB_tune,
+    oscB_fine,
+    oscB_waveform,
+
+    reverb,
+
+    voice_glide,
+    voice_polyphony,
+  };
+
   explicit PluginState(juce::AudioProcessor&);
   auto getSynthParams() const -> fsh::synth::Synth::Params;
   auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
+  static auto getID(Param) -> juce::ParameterID;
 };

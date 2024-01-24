@@ -23,7 +23,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-class PanelFX : public juce::Component
+class Panel : public juce::Component
 {
 public:
   struct Params
@@ -33,7 +33,7 @@ public:
     juce::Colour background;
   };
 
-  explicit PanelFX(const Params&, std::vector<juce::Component*>);
+  explicit Panel(const Params&, std::vector<juce::Component*>);
 
 private:
   void paint(juce::Graphics&) override;

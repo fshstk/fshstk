@@ -24,7 +24,7 @@
 
 using namespace fsh::gui;
 
-PanelFX::PanelFX(const Params& params, std::vector<juce::Component*> components)
+Panel::Panel(const Params& params, std::vector<juce::Component*> components)
   : _params(params)
   , _components(std::move(components))
 {
@@ -33,7 +33,7 @@ PanelFX::PanelFX(const Params& params, std::vector<juce::Component*> components)
       addAndMakeVisible(*component);
 }
 
-void PanelFX::paint(juce::Graphics& g)
+void Panel::paint(juce::Graphics& g)
 {
   g.setColour(_params.background);
   g.fillAll();
@@ -43,7 +43,7 @@ void PanelFX::paint(juce::Graphics& g)
   g.drawText(_params.label.toUpperCase(), textArea, juce::Justification::centredLeft);
 }
 
-void PanelFX::resized()
+void Panel::resized()
 {
   using juce::operator""_fr;
 

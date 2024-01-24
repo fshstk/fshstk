@@ -65,12 +65,12 @@ protected:
   /// try to get a parameter that doesn't exist, this function will fail gracefully by returning
   /// 0.0f and logging an error.
   template<typename T>
-  auto getParameter(const juce::String& id) const -> T
+  auto getParameter(const juce::ParameterID& id) const -> T
   {
-    const auto* const param = getRawParameterValue(id);
+    const auto* const param = getRawParameterValue(id.getParamID());
     if (param == nullptr) {
       spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
-                       id.toStdString());
+                       id.getParamID().toStdString());
       return {};
     }
     return static_cast<T>(param->load());

@@ -26,126 +26,136 @@
 #include "ParamFloat.h"
 #include <fmt/format.h>
 
+using enum PluginState::Param;
+using fsh::plugin::ParamBool;
+using fsh::plugin::ParamChoice;
+using fsh::plugin::ParamFloat;
+
 namespace {
+auto id(PluginState::Param p)
+{
+  return PluginState::getID(p);
+}
+
 auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLayout
 {
-  const auto displayAsDegrees = fsh::plugin::ParamFloat::Attributes{}.withStringFromValueFunction(
+  const auto displayAsDegrees = ParamFloat::Attributes{}.withStringFromValueFunction(
     [](float val, int) { return fmt::format("{:+0.0f}°", val); });
 
   const auto displayAsDegreesRange =
-    fsh::plugin::ParamFloat::Attributes{}.withStringFromValueFunction([](float val, int) {
+    ParamFloat::Attributes{}.withStringFromValueFunction([](float val, int) {
       return fmt::format("{} {:0.0f}°", (val >= 0) ? "+/-" : "-/+", std::abs(val) / 2.0f);
     });
 
-  const auto displayAsOnOff = fsh::plugin::ParamBool::Attributes{}.withStringFromValueFunction(
+  const auto displayAsOnOff = ParamBool::Attributes{}.withStringFromValueFunction(
     [](bool val, int) { return val ? "ON" : "OFF"; });
 
-  const auto displayAsDecibels = fsh::plugin::ParamFloat::Attributes{}.withStringFromValueFunction(
+  const auto displayAsDecibels = ParamFloat::Attributes{}.withStringFromValueFunction(
     [](float val, int) { return fmt::format("{:+0.1f} dB", val); });
 
-  const auto displayAsSemitones = fsh::plugin::ParamFloat::Attributes{}.withStringFromValueFunction(
+  const auto displayAsSemitones = ParamFloat::Attributes{}.withStringFromValueFunction(
     [](float val, int) { return fmt::format("{:+0.0f} semi", val); });
 
-  const auto displayAsCents = fsh::plugin::ParamFloat::Attributes{}.withStringFromValueFunction(
+  const auto displayAsCents = ParamFloat::Attributes{}.withStringFromValueFunction(
     [](float val, int) { return fmt::format("{:+0.0f} cents", val); });
 
   return {
-    fsh::plugin::ParamFloat{
-      .id = "ambi_center",
+    ParamFloat{
+      .id = id(ambi_center),
       .name = "AMBI: center",
       .range = { -180.0f, 180.0f, 1.0f },
       .defaultVal = 0.0f,
       .attributes = displayAsDegrees,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "ambi_spread",
+    ParamFloat{
+      .id = id(ambi_spread),
       .name = "AMBI: spread",
       .range = { -720.0f, 720.0f, 1.0f },
       .defaultVal = 360.0f,
       .attributes = displayAsDegreesRange,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "ampenv_attack",
+    ParamFloat{
+      .id = id(ampenv_attack),
       .name = "AMPENV: attack",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "ampenv_decay",
+    ParamFloat{
+      .id = id(ampenv_decay),
       .name = "AMPENV: decay",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 30.0f,
     }
       .create(),
 
-    fsh::plugin::ParamBool{
-      .id = "ampenv_hold",
+    ParamBool{
+      .id = id(ampenv_hold),
       .name = "AMPENV: hold",
       .defaultVal = true,
       .attributes = displayAsOnOff,
     }
       .create(),
-    fsh::plugin::ParamBool{
-      .id = "ampenv_vel",
+    ParamBool{
+      .id = id(ampenv_vel),
       .name = "AMPENV: velocity",
       .defaultVal = false,
       .attributes = displayAsOnOff,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filtenv_attack",
+    ParamFloat{
+      .id = id(filtenv_attack),
       .name = "FILTENV: attack",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filtenv_decay",
+    ParamFloat{
+      .id = id(filtenv_decay),
       .name = "FILTENV: decay",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 30.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filtenv_modamt",
+    ParamFloat{
+      .id = id(filtenv_modamt),
       .name = "FILTENV: mod Amount",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_cutoff",
+    ParamFloat{
+      .id = id(filter_cutoff),
       .name = "FILTER: cutoff",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 100.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_resonance",
+    ParamFloat{
+      .id = id(filter_resonance),
       .name = "FILTER: resonance",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 15.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "fx_drive",
+    ParamFloat{
+      .id = id(fx_drive),
       .name = "FX: drive",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "fx_noise",
+    ParamFloat{
+      .id = id(fx_noise),
       .name = "FX: noise",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "level",
+    ParamFloat{
+      .id = id(level),
       .name = "LEVEL: level",
       .range =
         []() {
@@ -157,79 +167,79 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = displayAsDecibels,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "oscA_level",
+    ParamFloat{
+      .id = id(oscA_level),
       .name = "OSC A: level",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "oscA_tune",
+    ParamFloat{
+      .id = id(oscA_tune),
       .name = "OSC A: tune",
       .range = { -24.0f, 24.0f, 1.0f },
       .defaultVal = 0.0f,
       .attributes = displayAsSemitones,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "oscA_fine",
+    ParamFloat{
+      .id = id(oscA_fine),
       .name = "OSC A: fine",
       .range = { -50.0f, 50.0f, 1.0f },
       .defaultVal = 0.0f,
       .attributes = displayAsCents,
     }
       .create(),
-    fsh::plugin::ParamChoice{
-      .id = "oscA_waveform",
+    ParamChoice{
+      .id = id(oscA_waveform),
       .name = "OSC A: waveform",
       .choices = { "Sawtooth", "Triangle", "Square" },
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "oscB_level",
+    ParamFloat{
+      .id = id(oscB_level),
       .name = "OSC B: level",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "oscB_tune",
+    ParamFloat{
+      .id = id(oscB_tune),
       .name = "OSC B: tune",
       .range = { -24.0f, 24.0f, 1.0f },
       .defaultVal = 0.0f,
       .attributes = displayAsSemitones,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "oscB_fine",
+    ParamFloat{
+      .id = id(oscB_fine),
       .name = "OSC B: fine",
       .range = { -50.0f, 50.0f, 1.0f },
       .defaultVal = 0.0f,
       .attributes = displayAsCents,
     }
       .create(),
-    fsh::plugin::ParamChoice{
-      .id = "oscB_waveform",
+    ParamChoice{
+      .id = id(oscB_waveform),
       .name = "OSC B: waveform",
       .choices = { "Sawtooth", "Triangle", "Square" },
     }
       .create(),
-    fsh::plugin::ParamChoice{
-      .id = "reverb",
+    ParamChoice{
+      .id = id(reverb),
       .name = "REVERB: preset",
       .choices = { "Off", "Earth", "Metal", "Sky" },
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "voice_glide",
+    ParamFloat{
+      .id = id(voice_glide),
       .name = "VOICE: glide",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamChoice{
-      .id = "voice_polyphony",
+    ParamChoice{
+      .id = id(voice_polyphony),
       .name = "VOICE: polyphony",
       .choices = { "Mono", "Legato", "Poly" },
     }
@@ -241,17 +251,17 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 PluginState::PluginState(juce::AudioProcessor& parent)
   : StateManager(parent, createParameterLayout())
 {
-  juce::ignoreUnused("oscA_waveform");    // TODO
-  juce::ignoreUnused("oscB_waveform");    // TODO
-  juce::ignoreUnused("filtenv_attack");   // TODO
-  juce::ignoreUnused("filtenv_decay");    // TODO
-  juce::ignoreUnused("filtenv_modamt");   // TODO
-  juce::ignoreUnused("filter_cutoff");    // TODO
-  juce::ignoreUnused("filter_resonance"); // TODO
-  juce::ignoreUnused("fx_drive");         // TODO
-  juce::ignoreUnused("level");            // TODO
-  juce::ignoreUnused("voice_glide");      // TODO
-  juce::ignoreUnused("voice_polyphony");  // TODO
+  juce::ignoreUnused(id(oscA_waveform));    // TODO
+  juce::ignoreUnused(id(oscB_waveform));    // TODO
+  juce::ignoreUnused(id(filtenv_attack));   // TODO
+  juce::ignoreUnused(id(filtenv_decay));    // TODO
+  juce::ignoreUnused(id(filtenv_modamt));   // TODO
+  juce::ignoreUnused(id(filter_cutoff));    // TODO
+  juce::ignoreUnused(id(filter_resonance)); // TODO
+  juce::ignoreUnused(id(fx_drive));         // TODO
+  juce::ignoreUnused(id(level));            // TODO
+  juce::ignoreUnused(id(voice_glide));      // TODO
+  juce::ignoreUnused(id(voice_polyphony));  // TODO
 }
 
 auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
@@ -262,22 +272,81 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
   };
 
   return {
-    .voice = { .noiseLvl = getParameter<float>("fx_noise"),
-               .oscALvl = getParameter<float>("oscA_level"),
-               .oscBLvl = getParameter<float>("oscB_level"),
+    .voice = { .noiseLvl = getParameter<float>(id(fx_noise)),
+               .oscALvl = getParameter<float>(id(oscA_level)),
+               .oscBLvl = getParameter<float>(id(oscB_level)),
                .oscBDetune =
-                 detune(getParameter<float>("oscB_tune"), getParameter<float>("oscB_fine")),
-               .adsr = { .attack = getParameter<float>("ampenv_attack"),
-                         .decay = getParameter<float>("ampenv_decay"),
-                         .sustain = getParameter<bool>("hold") ? 1.0f : 0.0f,
-                         .release = getParameter<float>("ampenv_decay") },
-               .velocityAmt = getParameter<bool>("ampenv_vel") ? 1.0f : 0.0f,
-               .aziCenter = getParameter<float>("ambi_center"),
-               .aziRange = getParameter<float>("ambi_spread") },
+                 detune(getParameter<float>(id(oscB_tune)), getParameter<float>(id(oscB_fine))),
+               .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
+                         .decay = getParameter<float>(id(ampenv_decay)),
+                         .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
+                         .release = getParameter<float>(id(ampenv_decay)) },
+               .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
+               .aziCenter = getParameter<float>(id(ambi_center)),
+               .aziRange = getParameter<float>(id(ambi_spread)) },
   };
 }
 
 auto PluginState::getReverbPreset() const -> fsh::fx::FDNReverb::Preset
 {
-  return getParameter<fsh::fx::FDNReverb::Preset>("reverb");
+  return getParameter<fsh::fx::FDNReverb::Preset>(id(reverb));
+}
+
+auto PluginState::getID(Param p) -> juce::ParameterID
+{
+  switch (p) {
+    case ambi_center:
+      return "ambi_center";
+    case ambi_spread:
+      return "ambi_spread";
+    case ampenv_attack:
+      return "ampenv_attack";
+    case ampenv_decay:
+      return "ampenv_decay";
+    case ampenv_hold:
+      return "ampenv_hold";
+    case ampenv_vel:
+      return "ampenv_vel";
+    case filtenv_attack:
+      return "filtenv_attack";
+    case filtenv_decay:
+      return "filtenv_decay";
+    case filtenv_modamt:
+      return "filtenv_modamt";
+    case filter_cutoff:
+      return "filter_cutoff";
+    case filter_resonance:
+      return "filter_resonance";
+    case fx_drive:
+      return "fx_drive";
+    case fx_noise:
+      return "fx_noise";
+    case level:
+      return "level";
+    case oscA_level:
+      return "oscA_level";
+    case oscA_tune:
+      return "oscA_tune";
+    case oscA_fine:
+      return "oscA_fine";
+    case oscA_waveform:
+      return "oscA_waveform";
+    case oscB_level:
+      return "oscB_level";
+    case oscB_tune:
+      return "oscB_tune";
+    case oscB_fine:
+      return "oscB_fine";
+    case oscB_waveform:
+      return "oscB_waveform";
+    case reverb:
+      return "reverb";
+    case voice_glide:
+      return "voice_glide";
+    case voice_polyphony:
+      return "voice_polyphony";
+  }
+
+  spdlog::error("PluginState::id: invalid param");
+  return {};
 }
