@@ -23,23 +23,24 @@
 #include "BoxedKnob.h"
 #include "PanelFX.h"
 #include "PluginProcessor.h"
+#include "PluginState.h"
 #include "guiGlobals.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
 class PluginEditor : public juce::AudioProcessorEditor
 {
 public:
-  explicit PluginEditor(PluginProcessor& p);
+  PluginEditor(PluginProcessor&, PluginState&);
   void paint(juce::Graphics&) override;
   void resized() override;
 
 private:
-  fsh::gui::BoxedKnob _noise{ {
+  fsh::gui::BoxedKnob _center{ {
     .label = "CENTER",
     .knobParams = { .color = fsh::gui::Colors::light },
   } };
 
-  fsh::gui::BoxedKnob _drive{ {
+  fsh::gui::BoxedKnob _spread{ {
     .label = "SPREAD",
     .knobParams = { .color = fsh::gui::Colors::light },
   } };
@@ -49,5 +50,5 @@ private:
                                 .foreground = fsh::gui::Colors::light,
                                 .background = fsh::gui::Colors::darkblue,
                               },
-                              { &_noise, &_drive } };
+                              { &_center, &_spread } };
 };

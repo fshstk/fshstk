@@ -27,12 +27,14 @@ const auto width = 850;
 const auto height = 350;
 } // namespace
 
-PluginEditor::PluginEditor(PluginProcessor& p)
+PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(p)
 {
   setSize(width, height);
-  // addAndMakeVisible(_knob);
   addAndMakeVisible(_panelFX);
+
+  _center.attach(s, "azi_center");
+  _spread.attach(s, "azi_range");
 }
 
 void PluginEditor::paint(juce::Graphics& g)

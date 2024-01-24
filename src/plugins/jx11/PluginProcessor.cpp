@@ -33,7 +33,7 @@ PluginProcessor::PluginProcessor()
 
 auto PluginProcessor::customEditor() -> std::unique_ptr<juce::AudioProcessorEditor>
 {
-  return std::make_unique<PluginEditor>(*this);
+  return std::make_unique<PluginEditor>(*this, _params);
 }
 
 void PluginProcessor::prepareToPlay(double sampleRate, int bufferSize)
