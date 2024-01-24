@@ -78,14 +78,14 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .create(),
     ParamFloat{
       .id = id(ampenv_attack),
-      .name = "AMPENV: attack",
+      .name = "AMP ENV: attack",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
     ParamFloat{
       .id = id(ampenv_decay),
-      .name = "AMPENV: decay",
+      .name = "AMP ENV: decay",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 30.0f,
     }
@@ -93,35 +93,35 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 
     ParamBool{
       .id = id(ampenv_hold),
-      .name = "AMPENV: hold",
+      .name = "AMP ENV: hold",
       .defaultVal = true,
       .attributes = displayAsOnOff,
     }
       .create(),
     ParamBool{
       .id = id(ampenv_vel),
-      .name = "AMPENV: velocity",
+      .name = "AMP ENV: velocity",
       .defaultVal = false,
       .attributes = displayAsOnOff,
     }
       .create(),
     ParamFloat{
       .id = id(filtenv_attack),
-      .name = "FILTENV: attack",
+      .name = "FILT ENV: attack",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
       .create(),
     ParamFloat{
       .id = id(filtenv_decay),
-      .name = "FILTENV: decay",
+      .name = "FILT ENV: decay",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 30.0f,
     }
       .create(),
     ParamFloat{
       .id = id(filtenv_modamt),
-      .name = "FILTENV: mod Amount",
+      .name = "FILT ENV: mod Amount",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
     }
@@ -272,9 +272,9 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
   };
 
   return {
-    .voice = { .noiseLvl = getParameter<float>(id(fx_noise)),
-               .oscALvl = getParameter<float>(id(oscA_level)),
-               .oscBLvl = getParameter<float>(id(oscB_level)),
+    .voice = { .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
+               .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
+               .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
                .oscBDetune =
                  detune(getParameter<float>(id(oscB_tune)), getParameter<float>(id(oscB_fine))),
                .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
