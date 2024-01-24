@@ -267,7 +267,8 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
 {
   const auto detune = [](float semi, float cents) {
-    const auto freqRatio = std::exp2(semi / 12.0f + cents / 100.0f);
+    const auto semitones = semi + (cents / 100.0f);
+    const auto freqRatio = std::exp2(semitones / 12.0f);
     return freqRatio;
   };
 
