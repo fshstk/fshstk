@@ -31,7 +31,15 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(p)
 {
   setSize(width, height);
+
   addAndMakeVisible(_panelAmbi);
+  addAndMakeVisible(_panelAmpEnv);
+  addAndMakeVisible(_panelFiltEnv);
+  addAndMakeVisible(_panelFilter);
+  addAndMakeVisible(_panelFx);
+  addAndMakeVisible(_panelOscA);
+  addAndMakeVisible(_panelOscB);
+  addAndMakeVisible(_panelVoice);
 
   _knobAmbiCenter.attach(s, PluginState::getID(PluginState::Param::ambi_center));
   _knobAmbiSpread.attach(s, PluginState::getID(PluginState::Param::ambi_spread));
@@ -71,11 +79,39 @@ void PluginEditor::resized()
   const auto offsetX = 30;
   const auto offsetY = 80;
 
-  // const auto singleWidth = 70;
+  const auto margin = 5;
+
+  const auto singleWidth = 70;
   const auto doubleWidth = 140;
+  const auto quadWidth = 280;
 
   const auto singleHeight = 100;
-  // const auto doubleHeight = 205;
+  const auto doubleHeight = 200 + margin;
 
-  _panelAmbi.setBounds(offsetX, offsetY, doubleWidth, singleHeight);
+  auto x = offsetX;
+  const auto yTop = offsetY;
+  const auto yBot = offsetY + singleHeight + margin;
+
+  _panelLevel.setBounds(x, yTop, singleWidth, singleHeight);
+  _panelReverb.setBounds(x, yBot, singleWidth, singleHeight);
+
+  x += singleWidth + margin;
+
+  _panelVoice.setBounds(x, yTop, doubleWidth, singleHeight);
+  _panelAmbi.setBounds(x, yBot, doubleWidth, singleHeight);
+
+  x += doubleWidth + margin;
+
+  _panelOscA.setBounds(x, yTop, quadWidth, singleHeight);
+  _panelOscB.setBounds(x, yBot, quadWidth, singleHeight);
+
+  x += quadWidth + margin;
+
+  _panelFx.setBounds(x, yTop, doubleWidth, singleHeight);
+  _panelFilter.setBounds(x, yBot, doubleWidth, singleHeight);
+
+  x += doubleWidth + margin;
+
+  _panelAmpEnv.setBounds(x, yTop, doubleWidth, doubleHeight);
+  _panelFiltEnv.setBounds(x, yBot, doubleWidth, doubleHeight);
 }
