@@ -83,15 +83,27 @@ void PluginEditor::paint(juce::Graphics& g)
   background->setTransformToFit(getLocalBounds().toFloat(), juce::RectanglePlacement::stretchToFit);
   background->draw(g, 1.0f);
 
+  const auto offsetX = 30;
   const auto offsetY = 80;
+  const auto singleHeight = 100;
+  const auto margin = 5;
   const auto marginRight = 26;
 
-  // g.fillAll(fsh::gui::Colors::red);
+  const auto headerText = juce::Rectangle{ 0, 0, getWidth() - marginRight, offsetY };
+  const auto footerText = juce::Rectangle{
+    juce::Point{ offsetX, offsetY + 2 * singleHeight + margin },
+    juce::Point{ getWidth() - marginRight, getHeight() },
+  };
 
   g.setColour(fsh::gui::Colors::light);
+
   g.setFont(fsh::gui::Fonts::body.withHeight(48.0f));
-  const auto textArea = juce::Rectangle{ 0, 0, getWidth() - marginRight, offsetY };
-  g.drawText("fsh :: ambisonium", textArea, juce::Justification::bottomRight);
+  g.drawText("fsh :: ambisonium", headerText, juce::Justification::bottomRight);
+
+  g.setFont(fsh::gui::Fonts::body.withHeight(24.0f));
+  g.drawText(
+    "fantastic spatial holophonic :: synthesis toolkit", footerText, juce::Justification::topLeft);
+  g.drawText("www.fshstk.com", footerText, juce::Justification::topRight); // TODO: link
 }
 
 void PluginEditor::resized()
