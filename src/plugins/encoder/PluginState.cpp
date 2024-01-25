@@ -92,26 +92,26 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 
 auto PluginState::ambiOrder() const -> float
 {
-  return getRawParamSafely("order");
+  return getParameter<float>("order");
 }
 
 auto PluginState::gain() const -> float
 {
-  return getRawParamSafely("gain");
+  return getParameter<float>("gain");
 }
 
 fsh::util::SphericalVector PluginState::vectorLeft() const
 {
   return {
-    .azimuth = getRawParamSafely("azimuth left"),
-    .elevation = getRawParamSafely("elevation left"),
+    .azimuth = getParameter<float>("azimuth left"),
+    .elevation = getParameter<float>("elevation left"),
   };
 }
 
 fsh::util::SphericalVector PluginState::vectorRight() const
 {
   return {
-    .azimuth = getRawParamSafely("azimuth right"),
-    .elevation = getRawParamSafely("elevation right"),
+    .azimuth = getParameter<float>("azimuth right"),
+    .elevation = getParameter<float>("elevation right"),
   };
 }
