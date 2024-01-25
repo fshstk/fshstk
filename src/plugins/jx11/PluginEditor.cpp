@@ -50,7 +50,7 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   _knobFilterCutoff.attach(s, PluginState::getID(filter_cutoff));
   _knobFilterResonance.attach(s, PluginState::getID(filter_resonance));
 
-  addAndMakeVisible(_panelFx);
+  addAndMakeVisible(_ComponentPanel);
   _knobFxDrive.attach(s, PluginState::getID(fx_drive));
   _knobFxNoise.attach(s, PluginState::getID(fx_noise));
 
@@ -144,7 +144,7 @@ void PluginEditor::resized()
   _panelOscA.setBounds(x, yTop, quadWidth, singleHeight);
   _panelOscB.setBounds(x, yBot, quadWidth, singleHeight);
   x += quadWidth + margin;
-  _panelFx.setBounds(x, yTop, doubleWidth, singleHeight);
+  _ComponentPanel.setBounds(x, yTop, doubleWidth, singleHeight);
   _panelFilter.setBounds(x, yBot, doubleWidth, singleHeight);
   x += doubleWidth + margin;
   _panelFiltEnv.setBounds(x, yTop, singleWidth, doubleHeight);

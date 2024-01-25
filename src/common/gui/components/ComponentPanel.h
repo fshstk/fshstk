@@ -23,7 +23,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-class Panel : public juce::Component
+class ComponentPanel : public juce::Component
 {
 public:
   enum class Orientation
@@ -40,7 +40,7 @@ public:
     Orientation orientation = Orientation::Horizontal;
   };
 
-  Panel(const Params&, std::vector<juce::Component*>);
+  ComponentPanel(const Params&, std::vector<juce::Component*>);
 
 private:
   void paint(juce::Graphics&) override;

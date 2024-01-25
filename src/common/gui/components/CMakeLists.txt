@@ -28,6 +28,6 @@ target_sources(${PROJECT_NAME} PRIVATE
   BoxedKnob.cpp
   InfoButton.cpp
   OptionPicker.cpp
-  PanelFX.cpp
+  ComponentPanel.cpp
   SimpleKnob.cpp
 )

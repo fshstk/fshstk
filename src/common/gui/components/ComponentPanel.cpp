@@ -19,12 +19,12 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "PanelFX.h"
+#include "ComponentPanel.h"
 #include "guiGlobals.h"
 
 using namespace fsh::gui;
 
-Panel::Panel(const Params& params, std::vector<juce::Component*> components)
+ComponentPanel::ComponentPanel(const Params& params, std::vector<juce::Component*> components)
   : _params(params)
   , _components(std::move(components))
 {
@@ -33,7 +33,7 @@ Panel::Panel(const Params& params, std::vector<juce::Component*> components)
       addAndMakeVisible(*component);
 }
 
-void Panel::paint(juce::Graphics& g)
+void ComponentPanel::paint(juce::Graphics& g)
 {
   g.setColour(_params.background);
   g.fillAll();
@@ -43,7 +43,7 @@ void Panel::paint(juce::Graphics& g)
   g.drawText(_params.label.toUpperCase(), textArea, juce::Justification::centredLeft);
 }
 
-void Panel::resized()
+void ComponentPanel::resized()
 {
   using juce::operator""_fr;
 

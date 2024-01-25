@@ -21,8 +21,8 @@
 
 #pragma once
 #include "BoxedKnob.h"
+#include "ComponentPanel.h"
 #include "OptionPicker.h"
-#include "PanelFX.h"
 #include "PluginProcessor.h"
 #include "PluginState.h"
 #include "SimpleKnob.h"
@@ -50,10 +50,10 @@ private:
     .label = "SPREAD",
     .knobParams = { .color = fsh::gui::Colors::light },
   } };
-  fsh::gui::Panel _panelAmbi{ { .label = "AMBISONICS",
-                                .foreground = fsh::gui::Colors::light,
-                                .background = fsh::gui::Colors::darkblue },
-                              { &_knobAmbiCenter, &_knobAmbiSpread } };
+  fsh::gui::ComponentPanel _panelAmbi{ { .label = "AMBISONICS",
+                                         .foreground = fsh::gui::Colors::light,
+                                         .background = fsh::gui::Colors::darkblue },
+                                       { &_knobAmbiCenter, &_knobAmbiSpread } };
 
   // AMP ENV panel:
 
@@ -65,11 +65,12 @@ private:
     .label = "DECAY",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::Panel _panelAmpEnv{ { .label = "AMP ENV",
-                                  .foreground = fsh::gui::Colors::dark,
-                                  .background = fsh::gui::Colors::gold,
-                                  .orientation = fsh::gui::Panel::Orientation::Vertical },
-                                { &_knobAmpEnvAttack, &_knobAmpEnvDecay } };
+  fsh::gui::ComponentPanel _panelAmpEnv{ { .label = "AMP ENV",
+                                           .foreground = fsh::gui::Colors::dark,
+                                           .background = fsh::gui::Colors::gold,
+                                           .orientation =
+                                             fsh::gui::ComponentPanel::Orientation::Vertical },
+                                         { &_knobAmpEnvAttack, &_knobAmpEnvDecay } };
 
   // FILT ENV panel:
 
@@ -85,11 +86,13 @@ private:
     .label = "MOD AMT",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::Panel _panelFiltEnv{ { .label = "FILT ENV",
-                                   .foreground = fsh::gui::Colors::dark,
-                                   .background = fsh::gui::Colors::gold,
-                                   .orientation = fsh::gui::Panel::Orientation::Vertical },
-                                 { &_knobFiltEnvAttack, &_knobFiltEnvDecay, &_knobFiltEnvModAmt } };
+  fsh::gui::ComponentPanel _panelFiltEnv{
+    { .label = "FILT ENV",
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::gold,
+      .orientation = fsh::gui::ComponentPanel::Orientation::Vertical },
+    { &_knobFiltEnvAttack, &_knobFiltEnvDecay, &_knobFiltEnvModAmt }
+  };
 
   // FILTER panel:
 
@@ -101,10 +104,10 @@ private:
     .label = "RESONANCE",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::Panel _panelFilter{ { .label = "FILTER",
-                                  .foreground = fsh::gui::Colors::dark,
-                                  .background = fsh::gui::Colors::light },
-                                { &_knobFilterCutoff, &_knobFilterResonance } };
+  fsh::gui::ComponentPanel _panelFilter{ { .label = "FILTER",
+                                           .foreground = fsh::gui::Colors::dark,
+                                           .background = fsh::gui::Colors::light },
+                                         { &_knobFilterCutoff, &_knobFilterResonance } };
 
   // FX panel:
 
@@ -116,7 +119,7 @@ private:
     .label = "NOISE",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::Panel _panelFx{
+  fsh::gui::ComponentPanel _ComponentPanel{
     { .label = "FX", .foreground = fsh::gui::Colors::dark, .background = fsh::gui::Colors::light },
     { &_knobFxNoise, &_knobFxDrive }
   };
@@ -127,10 +130,10 @@ private:
     .label = "LEVEL",
     .knobParams = { .color = fsh::gui::Colors::light },
   } };
-  fsh::gui::Panel _panelLevel{ { .label = {},
-                                 .foreground = fsh::gui::Colors::light,
-                                 .background = fsh::gui::Colors::transparent },
-                               { &_knobLevel } };
+  fsh::gui::ComponentPanel _panelLevel{ { .label = {},
+                                          .foreground = fsh::gui::Colors::light,
+                                          .background = fsh::gui::Colors::transparent },
+                                        { &_knobLevel } };
 
   // OSC A panel:
 
@@ -157,7 +160,7 @@ private:
     .label = "LEVEL",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::Panel _panelOscA{
+  fsh::gui::ComponentPanel _panelOscA{
     { .label = "OSC A",
       .foreground = fsh::gui::Colors::dark,
       .background = fsh::gui::Colors::light },
@@ -189,7 +192,7 @@ private:
     .label = "LEVEL",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::Panel _panelOscB{
+  fsh::gui::ComponentPanel _panelOscB{
     { .label = "OSC B",
       .foreground = fsh::gui::Colors::dark,
       .background = fsh::gui::Colors::light },
@@ -213,10 +216,10 @@ private:
     .color = fsh::gui::Colors::light,
     .highlightColor = fsh::gui::Colors::red,
   } };
-  fsh::gui::Panel _panelVoice{ { .label = "VOICE",
-                                 .foreground = fsh::gui::Colors::light,
-                                 .background = fsh::gui::Colors::darkblue },
-                               { &_knobVoiceGlide, &_pickerVoicePolyphony } };
+  fsh::gui::ComponentPanel _panelVoice{ { .label = "VOICE",
+                                          .foreground = fsh::gui::Colors::light,
+                                          .background = fsh::gui::Colors::darkblue },
+                                        { &_knobVoiceGlide, &_pickerVoicePolyphony } };
 
   // REVERB panel:
 
@@ -231,7 +234,7 @@ private:
     .color = fsh::gui::Colors::light,
     .highlightColor = fsh::gui::Colors::red,
   } };
-  fsh::gui::Panel _panelReverb{
+  fsh::gui::ComponentPanel _panelReverb{
     { .label = "REVERB",
       .foreground = fsh::gui::Colors::light,
       .background = fsh::gui::Colors::darkblue },
