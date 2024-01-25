@@ -49,19 +49,6 @@ OptionPicker::~OptionPicker()
   _params.choice->removeListener(this);
 }
 
-void OptionPicker::setOption(size_t i)
-{
-  if (i == getSelectedIndex())
-    return;
-
-  if (i >= _options.size()) {
-    spdlog::error("OptionPicker: index {} out of bounds ({})", i, _options.size());
-    return;
-  }
-
-  spdlog::info("triggered click for option {}", i);
-}
-
 void OptionPicker::buttonClicked(size_t i)
 {
   if (i == getSelectedIndex())
@@ -80,7 +67,6 @@ void OptionPicker::paint(juce::Graphics& g)
 {
   juce::ignoreUnused(g);
   _options[getSelectedIndex()]->setToggleState(true, juce::NotificationType::dontSendNotification);
-  setOption(getSelectedIndex());
 }
 
 void OptionPicker::resized()

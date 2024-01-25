@@ -40,7 +40,6 @@ public:
 
   explicit OptionPicker(const Params&);
   ~OptionPicker() override;
-  void setOption(size_t i);
   void parameterValueChanged(int, float) override { repaint(); }
   void parameterGestureChanged(int, bool) override { repaint(); }
 
