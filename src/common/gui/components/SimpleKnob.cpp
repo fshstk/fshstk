@@ -71,6 +71,7 @@ SimpleKnob::SimpleKnob(const Params& params)
   if (_params.behavior == Behavior::Endless)
     _params.knobRangeDegrees = 360.0f;
 
+  // TODO: jassert triggered, startAngle shouldn't be negative
   const auto startAngle = -juce::degreesToRadians(_params.knobRangeDegrees) / 2.0f;
   const auto endAngle = +juce::degreesToRadians(_params.knobRangeDegrees) / 2.0f;
   setRotaryParameters(startAngle, endAngle, _params.behavior == Behavior::Bounded);
