@@ -44,6 +44,11 @@ OptionPicker::OptionPicker(const Params& p)
   _params.choice->addListener(this);
 }
 
+OptionPicker::~OptionPicker()
+{
+  _params.choice->removeListener(this);
+}
+
 void OptionPicker::setOption(size_t i)
 {
   if (i == getSelectedIndex())
