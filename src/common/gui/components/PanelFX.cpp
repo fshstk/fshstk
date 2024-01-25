@@ -66,5 +66,7 @@ void Panel::resized()
     grid.items.add(juce::GridItem{ *component });
   }
 
-  grid.performLayout(getLocalBounds());
+  const auto titleHeight = 25;
+  const auto mainArea = getLocalBounds().withTop(titleHeight);
+  grid.performLayout(mainArea);
 }

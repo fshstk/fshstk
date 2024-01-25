@@ -37,20 +37,18 @@ void BoxedKnob::paint(juce::Graphics& g)
   g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
 
   const auto area = getLocalBounds();
-
-  const auto textOffsetY = 12;
+  const auto margin = 5;
+  const auto knobBottomY = _knob.getBoundsInParent().getBottom() + margin;
   const auto text = _knob.isMouseButtonDown() ? _knob.getTextFromValue(_knob.getValue())
                                               : _params.label.toUpperCase();
-  g.drawText(text,
-             area.withBottom(area.getBottom() - textOffsetY),
-             juce::Justification::centredBottom,
-             true);
+  g.drawText(text, area.withTop(knobBottomY), juce::Justification::centredTop, true);
 }
 
 void BoxedKnob::resized()
 {
+  const auto offsetY = 10;
   const auto x = getLocalBounds().getCentreX();
-  const auto y = getLocalBounds().getCentreY();
+  const auto y = getLocalBounds().getCentreY() - offsetY;
   const auto knobSize = 30;
   _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2), knobSize, knobSize);
 }
