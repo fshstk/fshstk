@@ -30,6 +30,7 @@ OptionButton::OptionButton(const juce::String& text)
 {
   setClickingTogglesState(true);
   setTriggeredOnMouseDown(true);
+  setRadioGroupId(1);
   // setToggleable(true);
   // onClick = [this] {
   //   setToggleState(!getToggleState(), juce::NotificationType::dontSendNotification);
