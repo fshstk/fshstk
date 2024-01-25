@@ -52,7 +52,8 @@ void OptionPicker::setOption(size_t i)
     return;
   }
 
-  _options[i]->triggerClick();
+  // _options[i]->triggerClick();
+  // _options[i]->setToggleState(true, juce::NotificationType::dontSendNotification);
   spdlog::info("triggered click for option {}", i);
 }
 
@@ -72,6 +73,7 @@ void OptionPicker::buttonClicked(size_t i)
 
 void OptionPicker::paint(juce::Graphics& g)
 {
+  _options[getSelectedIndex()]->setToggleState(true, juce::NotificationType::dontSendNotification);
   setOption(getSelectedIndex());
   g.fillAll(juce::Colours::black.withAlpha(0.5f));
 }
