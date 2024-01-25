@@ -25,6 +25,7 @@
 
 PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(p)
+  , _state(s)
 {
   const auto width = 850;
   const auto height = 350;

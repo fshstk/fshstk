@@ -37,6 +37,8 @@ public:
   void resized() override;
 
 private:
+  PluginState& _state;
+
   // AMBISONICS panel:
 
   fsh::gui::BoxedKnob _knobAmbiCenter{ {
@@ -63,16 +65,11 @@ private:
     .label = "DECAY",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::OptionPicker _pickerHoldVel{ {
-    // placeholder
-    .name = "HOLD / VEL",
-    .options = { "HOLD", "VEL" },
-  } };
   fsh::gui::Panel _panelAmpEnv{ { .label = "AMP ENV",
                                   .foreground = fsh::gui::Colors::dark,
                                   .background = fsh::gui::Colors::gold,
                                   .orientation = fsh::gui::Panel::Orientation::Vertical },
-                                { &_knobAmpEnvAttack, &_knobAmpEnvDecay, &_pickerHoldVel } };
+                                { &_knobAmpEnvAttack, &_knobAmpEnvDecay } };
 
   // FILT ENV panel:
 
@@ -146,9 +143,13 @@ private:
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::OptionPicker _pickerOscAWaveform{ {
-    .name = "REVERB",
-    // TODO: bad coupling here:
-    .options = { "SAWTOOTH", "TRIANGLE", "SQUARE" },
+    .choice =
+      [&]() {
+        const auto param = PluginState::Param::oscA_waveform;
+        const auto paramID = PluginState::getID(param).getParamID();
+        auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
+        return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
+      }(),
   } };
   fsh::gui::BoxedKnob _knobOscALevel{ {
     .label = "LEVEL",
@@ -172,9 +173,13 @@ private:
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::OptionPicker _pickerOscBWaveform{ {
-    .name = "REVERB",
-    // TODO: bad coupling here:
-    .options = { "SAWTOOTH", "TRIANGLE", "SQUARE" },
+    .choice =
+      [&]() {
+        const auto param = PluginState::Param::oscB_waveform;
+        const auto paramID = PluginState::getID(param).getParamID();
+        auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
+        return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
+      }(),
   } };
   fsh::gui::BoxedKnob _knobOscBLevel{ {
     .label = "LEVEL",
@@ -193,22 +198,30 @@ private:
     .label = "GLIDE",
     .knobParams = { .color = fsh::gui::Colors::light },
   } };
-  fsh::gui::OptionPicker _pickerPolyphony{ {
-    // placeholder
-    .name = "POLYPHONY",
-    .options = { "MONO", "LEGATO", "POLY" },
+  fsh::gui::OptionPicker _pickerVoicePolyphony{ {
+    .choice =
+      [&]() {
+        const auto param = PluginState::Param::voice_polyphony;
+        const auto paramID = PluginState::getID(param).getParamID();
+        auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
+        return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
+      }(),
   } };
   fsh::gui::Panel _panelVoice{ { .label = "VOICE",
                                  .foreground = fsh::gui::Colors::light,
                                  .background = fsh::gui::Colors::darkblue },
-                               { &_knobVoiceGlide, &_pickerPolyphony } };
+                               { &_knobVoiceGlide, &_pickerVoicePolyphony } };
 
   // REVERB panel:
 
   fsh::gui::OptionPicker _pickerReverb{ {
-    .name = "REVERB",
-    // TODO: bad coupling here:
-    .options = { "OFF", "EARTH", "METAL", "SKY" },
+    .choice =
+      [&]() {
+        const auto param = PluginState::Param::reverb;
+        const auto paramID = PluginState::getID(param).getParamID();
+        auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
+        return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
+      }(),
   } };
   fsh::gui::Panel _panelReverb{
     { .label = "REVERB",

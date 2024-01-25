@@ -20,18 +20,26 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "OptionButton.h"
+#include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-class OptionPicker : public juce::ComboBox
+class OptionPicker : public juce::Component
 {
 public:
   struct Params
   {
-    juce::String name;
-    juce::StringArray options;
+    juce::AudioParameterChoice* choice;
   };
 
   explicit OptionPicker(const Params&);
+
+private:
+  void paint(juce::Graphics&) override;
+  void resized() override;
+
+  Params _params;
+  std::vector<std::unique_ptr<OptionButton>> _options;
 };
 } // namespace fsh::gui

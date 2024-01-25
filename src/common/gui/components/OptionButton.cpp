@@ -19,40 +19,20 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "OptionPicker.h"
-#include "spdlog/spdlog.h"
+#include "OptionButton.h"
+#include "guiGlobals.h"
 
 using namespace fsh::gui;
 
-OptionPicker::OptionPicker(const Params& p)
-  : _params(p)
+OptionButton::OptionButton(const juce::String& text)
+  : juce::ToggleButton(text)
 {
-  if (_params.choice == nullptr) {
-    spdlog::error("OptionPicker: choice parameter is null");
-    return;
-  }
-  for (const auto& option : _params.choice->choices)
-    _options.push_back(std::make_unique<OptionButton>(option));
-  for (const auto& component : _options)
-    addAndMakeVisible(*component);
+  //
 }
 
-void OptionPicker::paint(juce::Graphics& g)
-{
-  g.fillAll(juce::Colours::black.withAlpha(0.5f));
-}
-
-void OptionPicker::resized()
-{
-  using juce::operator""_fr;
-  auto grid = juce::Grid{};
-  grid.templateColumns = { 1_fr };
-
-  for (const auto& component : _options) {
-    assert(component != nullptr);
-    grid.templateRows.add(1_fr);
-    grid.items.add(juce::GridItem{ *component });
-  }
-
-  grid.performLayout(getLocalBounds());
-}
+// void OptionButton::paint(juce::Graphics& g)
+// {
+//   g.fillAll(juce::Colours::white.withAlpha(0.5f));
+//   g.setColour(fsh::gui::Colors::red);
+//   g.drawText(getButtonText(), getLocalBounds(), juce::Justification::centred);
+// }
