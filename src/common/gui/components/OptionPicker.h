@@ -34,7 +34,6 @@ class OptionPicker
 public:
   struct Params
   {
-    // TODO reference
     juce::AudioParameterChoice* choice;
     juce::Colour color;
     juce::Colour highlightColor;
@@ -42,14 +41,15 @@ public:
 
   explicit OptionPicker(const Params&);
   ~OptionPicker() override;
-  void parameterValueChanged(int, float) override { repaint(); }
-  void parameterGestureChanged(int, bool) override { repaint(); }
+  OptionPicker(const OptionPicker&) = delete;
+  OptionPicker& operator=(const OptionPicker&) = delete;
+  OptionPicker(OptionPicker&&) = delete;
+  OptionPicker& operator=(OptionPicker&&) = delete;
 
 private:
-  auto getSelectedIndex() const -> size_t
-  {
-    return static_cast<size_t>(_params.choice->getIndex());
-  }
+  void parameterValueChanged(int, float) override { repaint(); }
+  void parameterGestureChanged(int, bool) override { repaint(); }
+  auto getSelectedIndex() const -> size_t;
   void buttonClicked(size_t i);
   void paint(juce::Graphics&) override;
   void resized() override;

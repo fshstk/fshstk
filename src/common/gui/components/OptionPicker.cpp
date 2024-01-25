@@ -88,3 +88,8 @@ void OptionPicker::resized()
   const auto margin = 10;
   grid.performLayout(getLocalBounds().reduced(margin));
 }
+
+auto OptionPicker::getSelectedIndex() const -> size_t
+{
+  return static_cast<size_t>(_params.choice->getIndex());
+}
