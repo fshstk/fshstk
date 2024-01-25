@@ -20,33 +20,25 @@
 ***************************************************************************************************/
 
 #include "OptionButton.h"
-#include "guiGlobals.h"
 #include <fmt/format.h>
 
 using namespace fsh::gui;
 
-OptionButton::OptionButton(const juce::String& text)
-  : juce::Button(text)
+OptionButton::OptionButton(const Params& params)
+  : juce::Button(params.text)
+  , _params(params)
 {
   setClickingTogglesState(true);
   setTriggeredOnMouseDown(true);
   setRadioGroupId(1);
-  // setToggleable(true);
-  // onClick = [this] {
-  //   setToggleState(!getToggleState(), juce::NotificationType::dontSendNotification);
-  // };
 }
 
 void OptionButton::paintButton(juce::Graphics& g, bool highlighted, bool down)
 {
   const auto activated = getToggleState();
-  // if (highlighted)
-  //   g.fillAll(juce::Colours::white.withAlpha(0.5f));
-  // else if (activated)
-  //   g.fillAll(juce::Colours::black.withAlpha(0.5f));
 
-  // g.setColour(down ? fsh::gui::Colors::red : fsh::gui::Colors::dark);
-  // g.drawText(getButtonText(), getLocalBounds(), juce::Justification::centred);
+  if (activated)
+    g.fillAll(juce::Colours::white.withAlpha(0.5f));
 
   g.drawText(
     fmt::format("{}{}{}", highlighted ? "H" : "h", down ? "D" : "d", activated ? "A" : "a"),

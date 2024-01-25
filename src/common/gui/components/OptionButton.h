@@ -26,9 +26,16 @@ namespace fsh::gui {
 class OptionButton : public juce::Button
 {
 public:
-  explicit OptionButton(const juce::String& text);
+  struct Params
+  {
+    juce::String text;
+    int index;
+  };
+
+  explicit OptionButton(const Params&);
 
 private:
   void paintButton(juce::Graphics&, bool highlighted, bool down) override;
+  Params _params;
 };
 } // namespace fsh::gui

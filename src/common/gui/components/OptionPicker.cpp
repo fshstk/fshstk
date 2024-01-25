@@ -31,15 +31,55 @@ OptionPicker::OptionPicker(const Params& p)
     spdlog::error("OptionPicker: choice parameter is null");
     return;
   }
-  for (const auto& option : _params.choice->choices) {
-    auto component = std::make_unique<OptionButton>(option);
+
+  const auto numChoices = static_cast<size_t>(_params.choice->choices.size());
+  for (auto i = 0U; i < numChoices; ++i) {
+    const auto text = _params.choice->choices[static_cast<int>(i)];
+    auto component = std::make_unique<OptionButton>(OptionButton::Params{ .text = text });
     addAndMakeVisible(*component);
+    component->onClick = [this, i] { buttonClicked(i); };
     _options.push_back(std::move(component));
   }
+
+  // _selectedIndex = static_cast<size_t>(_params.choice->getIndex());
+  // _options[_selectedIndex]->triggerClick();
+}
+
+void OptionPicker::setOption(size_t i)
+{
+  if (i == _selectedIndex)
+    return;
+
+  if (i >= _options.size()) {
+    spdlog::error("OptionPicker: index {} out of bounds ({})", i, _options.size());
+    return;
+  }
+
+  _selectedIndex = i;
+  _options[i]->triggerClick();
+  spdlog::info("triggered click for option {}", i);
+}
+
+void OptionPicker::buttonClicked(size_t i)
+{
+  if (i == _selectedIndex)
+    return;
+
+  if (i >= _options.size()) {
+    spdlog::error("OptionPicker: index {} out of bounds ({})", i, _options.size());
+    return;
+  }
+
+  _selectedIndex = i;
+  // _params.choice->beginChangeGesture();
+  _params.choice->setValueNotifyingHost(static_cast<float>(i) /
+                                        static_cast<float>(_options.size()));
+  // _params.choice->endChangeGesture();
 }
 
 void OptionPicker::paint(juce::Graphics& g)
 {
+  setOption(_selectedIndex);
   g.fillAll(juce::Colours::black.withAlpha(0.5f));
 }
 
