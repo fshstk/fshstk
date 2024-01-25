@@ -150,6 +150,8 @@ private:
         auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
         return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
       }(),
+    .color = fsh::gui::Colors::dark,
+    .highlightColor = fsh::gui::Colors::red,
   } };
   fsh::gui::BoxedKnob _knobOscALevel{ {
     .label = "LEVEL",
@@ -180,6 +182,8 @@ private:
         auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
         return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
       }(),
+    .color = fsh::gui::Colors::dark,
+    .highlightColor = fsh::gui::Colors::red,
   } };
   fsh::gui::BoxedKnob _knobOscBLevel{ {
     .label = "LEVEL",
@@ -206,6 +210,8 @@ private:
         auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
         return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
       }(),
+    .color = fsh::gui::Colors::light,
+    .highlightColor = fsh::gui::Colors::red,
   } };
   fsh::gui::Panel _panelVoice{ { .label = "VOICE",
                                  .foreground = fsh::gui::Colors::light,
@@ -222,6 +228,8 @@ private:
         auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
         return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
       }(),
+    .color = fsh::gui::Colors::light,
+    .highlightColor = fsh::gui::Colors::red,
   } };
   fsh::gui::Panel _panelReverb{
     { .label = "REVERB",

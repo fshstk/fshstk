@@ -29,7 +29,8 @@ public:
   struct Params
   {
     juce::String text;
-    int index;
+    juce::Colour color;
+    juce::Colour highlightColor;
   };
 
   explicit OptionButton(const Params&);

@@ -35,7 +35,11 @@ OptionPicker::OptionPicker(const Params& p)
   const auto numChoices = static_cast<size_t>(_params.choice->choices.size());
   for (auto i = 0U; i < numChoices; ++i) {
     const auto text = _params.choice->choices[static_cast<int>(i)];
-    auto component = std::make_unique<OptionButton>(OptionButton::Params{ .text = text });
+    auto component = std::make_unique<OptionButton>(OptionButton::Params{
+      .text = text,
+      .color = _params.color,
+      .highlightColor = _params.highlightColor,
+    });
     addAndMakeVisible(*component);
     component->onClick = [this, i] { buttonClicked(i); };
     _options.push_back(std::move(component));

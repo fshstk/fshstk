@@ -36,6 +36,8 @@ public:
   {
     // TODO reference
     juce::AudioParameterChoice* choice;
+    juce::Colour color;
+    juce::Colour highlightColor;
   };
 
   explicit OptionPicker(const Params&);
