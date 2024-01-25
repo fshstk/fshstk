@@ -57,8 +57,8 @@ struct ParamFloat
   /// Returns a range with a skew factor that is suitable for logarithmic frequency sliders in audio
   static Range freqRange(float min = 20.0f, float max = 20'000.0f, float interval = 1.0f)
   {
-    const auto geometricMean = std::sqrtf(min * max);
-    const auto skew = std::logf(0.5) / std::logf((geometricMean - min) / (max - min));
+    const auto geometricMean = sqrtf(min * max);
+    const auto skew = logf(0.5) / logf((geometricMean - min) / (max - min));
     return Range{ min, max, interval, skew };
   }
 
