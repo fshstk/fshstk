@@ -40,12 +40,8 @@ public:
 
   explicit OptionPicker(const Params&);
   void setOption(size_t i);
-  void parameterValueChanged(int, float) override
-  {
-    // setOption(getSelectedIndex());
-    // repaint();
-  }
-  void parameterGestureChanged(int, bool) override {}
+  void parameterValueChanged(int, float) override { repaint(); }
+  void parameterGestureChanged(int, bool) override { repaint(); }
 
 private:
   auto getSelectedIndex() const -> size_t

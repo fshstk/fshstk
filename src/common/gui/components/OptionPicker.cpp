@@ -40,6 +40,8 @@ OptionPicker::OptionPicker(const Params& p)
     component->onClick = [this, i] { buttonClicked(i); };
     _options.push_back(std::move(component));
   }
+
+  _params.choice->addListener(this);
 }
 
 void OptionPicker::setOption(size_t i)
