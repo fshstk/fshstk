@@ -54,9 +54,5 @@ private:
 
   Params _params;
   std::vector<std::unique_ptr<OptionButton>> _options;
-  // juce::ParameterAttachment _attachment{ *_params.choice, [this](auto x) {
-  //                                         spdlog::debug("OptionPicker: choice changed to {}", x);
-  //                                         repaint();
-  //                                       } };
 };
 } // namespace fsh::gui

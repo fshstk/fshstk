@@ -54,8 +54,6 @@ void OptionPicker::setOption(size_t i)
     return;
   }
 
-  // _options[i]->triggerClick();
-  // _options[i]->setToggleState(true, juce::NotificationType::dontSendNotification);
   spdlog::info("triggered click for option {}", i);
 }
 
