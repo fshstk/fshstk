@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "OptionButton.h"
+#include "guiGlobals.h"
 #include <fmt/format.h>
 
 using namespace fsh::gui;
@@ -33,15 +34,20 @@ OptionButton::OptionButton(const Params& params)
   setRadioGroupId(1);
 }
 
-void OptionButton::paintButton(juce::Graphics& g, bool highlighted, bool down)
+void OptionButton::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
 {
-  const auto activated = getToggleState();
+  juce::ignoreUnused(isDown);
+  const auto isSelected = getToggleState();
 
-  if (activated)
-    g.fillAll(juce::Colours::white.withAlpha(0.5f));
+  const auto color = [isSelected, isMouseOver]() {
+    if (isSelected)
+      return fsh::gui::Colors::red;
+    else if (isMouseOver)
+      return fsh::gui::Colors::dark.withAlpha(0.5f);
+    else
+      return fsh::gui::Colors::dark;
+  }();
 
-  g.drawText(
-    fmt::format("{}{}{}", highlighted ? "H" : "h", down ? "D" : "d", activated ? "A" : "a"),
-    getLocalBounds(),
-    juce::Justification::centred);
+  g.setColour(color);
+  g.drawText(_params.text, getLocalBounds(), juce::Justification::centred);
 }

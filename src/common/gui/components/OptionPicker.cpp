@@ -73,9 +73,9 @@ void OptionPicker::buttonClicked(size_t i)
 
 void OptionPicker::paint(juce::Graphics& g)
 {
+  juce::ignoreUnused(g);
   _options[getSelectedIndex()]->setToggleState(true, juce::NotificationType::dontSendNotification);
   setOption(getSelectedIndex());
-  g.fillAll(juce::Colours::black.withAlpha(0.5f));
 }
 
 void OptionPicker::resized()
