@@ -42,18 +42,21 @@ public:
   void setOption(size_t i);
   void parameterValueChanged(int, float) override
   {
-    setOption(static_cast<size_t>(_params.choice->getIndex()));
+    // setOption(getSelectedIndex());
     // repaint();
   }
   void parameterGestureChanged(int, bool) override {}
 
 private:
+  auto getSelectedIndex() const -> size_t
+  {
+    return static_cast<size_t>(_params.choice->getIndex());
+  }
   void buttonClicked(size_t i);
   void paint(juce::Graphics&) override;
   void resized() override;
 
   Params _params;
-  size_t _selectedIndex;
   std::vector<std::unique_ptr<OptionButton>> _options;
   // juce::ParameterAttachment _attachment{ *_params.choice, [this](auto x) {
   //                                         spdlog::debug("OptionPicker: choice changed to {}", x);

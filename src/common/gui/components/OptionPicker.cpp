@@ -44,7 +44,7 @@ OptionPicker::OptionPicker(const Params& p)
 
 void OptionPicker::setOption(size_t i)
 {
-  if (i == _selectedIndex)
+  if (i == getSelectedIndex())
     return;
 
   if (i >= _options.size()) {
@@ -52,14 +52,13 @@ void OptionPicker::setOption(size_t i)
     return;
   }
 
-  _selectedIndex = i;
   _options[i]->triggerClick();
   spdlog::info("triggered click for option {}", i);
 }
 
 void OptionPicker::buttonClicked(size_t i)
 {
-  if (i == _selectedIndex)
+  if (i == getSelectedIndex())
     return;
 
   if (i >= _options.size()) {
@@ -67,14 +66,13 @@ void OptionPicker::buttonClicked(size_t i)
     return;
   }
 
-  _selectedIndex = i;
   _params.choice->setValueNotifyingHost(static_cast<float>(i) /
                                         static_cast<float>(_options.size() - 1));
 }
 
 void OptionPicker::paint(juce::Graphics& g)
 {
-  setOption(_selectedIndex);
+  setOption(getSelectedIndex());
   g.fillAll(juce::Colours::black.withAlpha(0.5f));
 }
 
