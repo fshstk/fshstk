@@ -71,10 +71,8 @@ void OptionPicker::buttonClicked(size_t i)
   }
 
   _selectedIndex = i;
-  // _params.choice->beginChangeGesture();
   _params.choice->setValueNotifyingHost(static_cast<float>(i) /
-                                        static_cast<float>(_options.size()));
-  // _params.choice->endChangeGesture();
+                                        static_cast<float>(_options.size() - 1));
 }
 
 void OptionPicker::paint(juce::Graphics& g)
