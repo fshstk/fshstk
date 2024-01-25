@@ -271,9 +271,8 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
     const auto freqRatio = std::exp2(semitones / 12.0f);
     return freqRatio;
   };
-
+  // TODO: refactor into osc params
   return {
-    // TODO: refactor into osc params
     .voice = { .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
                .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
                .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
@@ -285,7 +284,9 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                          .release = getParameter<float>(id(ampenv_decay)) },
                .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
                .aziCenter = getParameter<float>(id(ambi_center)),
-               .aziRange = getParameter<float>(id(ambi_spread)) },
+               .aziRange = getParameter<float>(id(ambi_spread)),
+               .filterCutoff = getParameter<float>(id(filter_cutoff)) / 5.0f,
+               .filterResonance = getParameter<float>(id(filter_resonance)) / 100.0f },
   };
 }
 

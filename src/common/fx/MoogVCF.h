@@ -20,51 +20,57 @@
 ***************************************************************************************************/
 
 #pragma once
-#include <juce_audio_processors/juce_audio_processors.h>
+#include <array>
 
-namespace fsh::plugin {
+namespace fsh::fx {
 /**
-Used to add a floating point parameter to a plugin.
+Virtual analog Moog-style lowpass filter.
 
-Use a designated initializer and call create() directly for maximum readability, e.g.:
-```cpp
-fsh::ParamFloat{
-  .id = "parameter_id",
-  .name = "The Name of the Parameter",
-  .range = { [min], [max] },
-}.create()
-```
+This implementation originally appeared on
+[MusicDSP.org](http://www.musicdsp.org/en/latest/Filters/24-moog-vcf.html), and was then
+ported/improved by [ddiakopoulos on
+GitHub](https://github.com/ddiakopoulos/MoogLadders/blob/master/src/MusicDSPModel.h).
 
-Return a list of these inside a function returning a
-juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
-you can then pass to the constructor of your plugin's PluginState class.
+## Before using
+
+Set the sample rate using setSampleRate(), and parameters using setParams().
+
+## To use
+
+Call processSample() for each sample.
 */
-struct ParamFloat
+class MoogVCF
 {
-  /// Used to specify the parameter's range. See the JUCE docs for details.
-  using Range = juce::NormalisableRange<float>;
+public:
+  /// Parameters for the filter
 
-  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
-  using Attributes = juce::AudioParameterFloatAttributes;
-
-  juce::ParameterID id;   ///< The parameter's unique ID, used to identify it in the DAW
-  juce::String name;      ///< The parameter's name, displayed in the DAW's automation
-  Range range;            ///< The parameter's range, including optional step size and skew factor
-  float defaultVal = 0.0; ///< The parameter's default value
-  Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
-
-  /// Returns a range with a skew factor that is suitable for logarithmic frequency sliders in audio
-  static Range freqRange(float min = 20.0f, float max = 20'000.0f, float interval = 1.0f)
+  struct Params
   {
-    const auto geometricMean = std::sqrtf(min * max);
-    const auto skew = std::logf(0.5) / std::logf((geometricMean - min) / (max - min));
-    return Range{ min, max, interval, skew };
-  }
+    float cutoff = 1'000.0f; ///< Filter cutoff frequency in Hz
+    float resonance = 0.1f;  ///< Filter resonance
+  };
 
-  /// Creates a juce::AudioParameterFloat object from the given parameters
-  auto create() const
-  {
-    return std::make_unique<juce::AudioParameterFloat>(id, name, range, defaultVal, attributes);
-  }
+  /// Set the filter parameters
+  void setParams(const Params&);
+
+  /// Set the sample rate in Hz
+  void setSampleRate(double);
+
+  /// Filter a single sample
+  float processSample(float);
+
+  /// Reset the filter state
+  void reset();
+
+private:
+  void calculateCoefficients();
+
+  Params _params;
+  double _sampleRate;
+  double _resCoeff;
+  double _p;
+  double _k;
+  std::array<double, 4> _stage = {};
+  std::array<double, 4> _delay = {};
 };
-} // namespace fsh::plugin
+} // namespace fsh::fx

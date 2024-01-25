@@ -19,52 +19,57 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include <juce_audio_processors/juce_audio_processors.h>
+#include "MoogVCF.h"
 
-namespace fsh::plugin {
-/**
-Used to add a floating point parameter to a plugin.
+using namespace fsh::fx;
 
-Use a designated initializer and call create() directly for maximum readability, e.g.:
-```cpp
-fsh::ParamFloat{
-  .id = "parameter_id",
-  .name = "The Name of the Parameter",
-  .range = { [min], [max] },
-}.create()
-```
-
-Return a list of these inside a function returning a
-juce::AudioProcessorValueTreeState::ParameterLayout object to create the parameter layout, which
-you can then pass to the constructor of your plugin's PluginState class.
-*/
-struct ParamFloat
+void MoogVCF::setParams(const Params& params)
 {
-  /// Used to specify the parameter's range. See the JUCE docs for details.
-  using Range = juce::NormalisableRange<float>;
+  _params = params;
+  calculateCoefficients();
+}
 
-  /// Used to specify the parameter's attributes, e.g. a label. See the JUCE docs for details.
-  using Attributes = juce::AudioParameterFloatAttributes;
+void MoogVCF::setSampleRate(double sampleRate)
+{
+  _sampleRate = sampleRate;
+  calculateCoefficients();
+}
 
-  juce::ParameterID id;   ///< The parameter's unique ID, used to identify it in the DAW
-  juce::String name;      ///< The parameter's name, displayed in the DAW's automation
-  Range range;            ///< The parameter's range, including optional step size and skew factor
-  float defaultVal = 0.0; ///< The parameter's default value
-  Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
+float MoogVCF::processSample(float input)
+{
+  const auto x = input - _resCoeff * _stage[3];
 
-  /// Returns a range with a skew factor that is suitable for logarithmic frequency sliders in audio
-  static Range freqRange(float min = 20.0f, float max = 20'000.0f, float interval = 1.0f)
-  {
-    const auto geometricMean = std::sqrtf(min * max);
-    const auto skew = std::logf(0.5) / std::logf((geometricMean - min) / (max - min));
-    return Range{ min, max, interval, skew };
-  }
+  // Four cascaded one-pole filters (bilinear transform)
+  _stage[0] = x * _p + _delay[0] * _p - _k * _stage[0];
+  _stage[1] = _stage[0] * _p + _delay[1] * _p - _k * _stage[1];
+  _stage[2] = _stage[1] * _p + _delay[2] * _p - _k * _stage[2];
+  _stage[3] = _stage[2] * _p + _delay[3] * _p - _k * _stage[3];
 
-  /// Creates a juce::AudioParameterFloat object from the given parameters
-  auto create() const
-  {
-    return std::make_unique<juce::AudioParameterFloat>(id, name, range, defaultVal, attributes);
-  }
-};
-} // namespace fsh::plugin
+  // Clipping band-limited sigmoid
+  _stage[3] -= (_stage[3] * _stage[3] * _stage[3]) / 6.0;
+
+  _delay[0] = x;
+  _delay[1] = _stage[0];
+  _delay[2] = _stage[1];
+  _delay[3] = _stage[2];
+
+  return static_cast<float>(_stage[3]);
+}
+
+void MoogVCF::calculateCoefficients()
+{
+  const auto nyquist = 0.5;
+  const auto cutoffCoeff = 2.0 * std::clamp(_params.cutoff / _sampleRate, 0.0, nyquist);
+  _p = cutoffCoeff * (1.8 - 0.8 * cutoffCoeff);
+  _k = 2.0 * std::sin(cutoffCoeff * M_PI * 0.5) - 1.0;
+
+  const auto t1 = (1.0 - _p) * 1.386249;
+  const auto t2 = 12.0 + t1 * t1;
+  _resCoeff = _params.resonance * (t2 + 6.0 * t1) / (t2 - 6.0 * t1);
+}
+
+void MoogVCF::reset()
+{
+  _stage.fill(0.0);
+  _delay.fill(0.0);
+}
