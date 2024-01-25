@@ -10,7 +10,7 @@
             █████     ██████  ████ █████    ██    ██    ██████   ░░█████  ████ █████
           ░░░░░     ░░░░░░  ░░░░ ░░░░░    ░░    ░░    ░░░░░░     ░░░░░  ░░░░ ░░░░░
 
-         fantastic  spatial  holophonic                software    tool    kit
+         fantastic  spatial  holophonic               synthesis    tool    kit
 ```
 
 ![ci](https://github.com/fshstk/fshstk/actions/workflows/ci.yml/badge.svg)

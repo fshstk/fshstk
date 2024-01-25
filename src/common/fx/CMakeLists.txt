@@ -8,7 +8,7 @@
 #              █████     ██████  ████ █████    ██    ██    ██████   ░░█████  ████ █████            #
 #            ░░░░░     ░░░░░░  ░░░░ ░░░░░    ░░    ░░    ░░░░░░     ░░░░░  ░░░░ ░░░░░              #
 #                                                                                                  #
-#           fantastic  spatial  holophonic                software    tool    kit                  #
+#           fantastic  spatial  holophonic               synthesis    tool    kit                  #
 #                                                                                                  #
 #                                   copyright (c) fabian hummel                                    #
 #                                      www.github.com/fshstk                                       #
