@@ -49,5 +49,6 @@ void OptionButton::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
   }();
 
   g.setColour(color);
-  g.drawText(_params.text, getLocalBounds(), juce::Justification::centred);
+  g.setFont(fsh::gui::Fonts::body);
+  g.drawText(_params.text.toUpperCase(), getLocalBounds(), juce::Justification::centred);
 }
