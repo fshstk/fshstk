@@ -25,14 +25,22 @@
 using namespace fsh::gui;
 
 OptionButton::OptionButton(const juce::String& text)
-  : juce::ToggleButton(text)
+  : juce::Button(text)
 {
-  //
+  setToggleable(true);
+  onClick = [this] {
+    setToggleState(!getToggleState(), juce::NotificationType::dontSendNotification);
+  };
 }
 
-// void OptionButton::paint(juce::Graphics& g)
-// {
-//   g.fillAll(juce::Colours::white.withAlpha(0.5f));
-//   g.setColour(fsh::gui::Colors::red);
-//   g.drawText(getButtonText(), getLocalBounds(), juce::Justification::centred);
-// }
+void OptionButton::paintButton(juce::Graphics& g, bool highlighted, bool down)
+{
+  const auto activated = getToggleState();
+  if (highlighted)
+    g.fillAll(juce::Colours::white.withAlpha(0.5f));
+  else if (activated)
+    g.fillAll(juce::Colours::black.withAlpha(0.5f));
+
+  g.setColour(down ? fsh::gui::Colors::red : fsh::gui::Colors::dark);
+  g.drawText(getButtonText(), getLocalBounds(), juce::Justification::centred);
+}

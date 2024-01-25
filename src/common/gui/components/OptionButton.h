@@ -23,12 +23,12 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-class OptionButton : public juce::ToggleButton
+class OptionButton : public juce::Button
 {
 public:
   explicit OptionButton(const juce::String& text);
 
 private:
-  // void paint(juce::Graphics&) override;
+  void paintButton(juce::Graphics&, bool highlighted, bool down) override;
 };
 } // namespace fsh::gui
