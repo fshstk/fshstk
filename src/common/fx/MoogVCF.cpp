@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "MoogVCF.h"
+#include <algorithm>
 #include <cmath>
 
 using namespace fsh::fx;
