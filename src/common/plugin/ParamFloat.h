@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include <cmath>
 #include <juce_audio_processors/juce_audio_processors.h>
 
 namespace fsh::plugin {
