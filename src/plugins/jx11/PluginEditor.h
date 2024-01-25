@@ -63,11 +63,16 @@ private:
     .label = "DECAY",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
+  fsh::gui::OptionPicker _pickerHoldVel{ {
+    // placeholder
+    .name = "HOLD / VEL",
+    .options = { "HOLD", "VEL" },
+  } };
   fsh::gui::Panel _panelAmpEnv{ { .label = "AMP ENV",
                                   .foreground = fsh::gui::Colors::dark,
                                   .background = fsh::gui::Colors::gold,
                                   .orientation = fsh::gui::Panel::Orientation::Vertical },
-                                { &_knobAmpEnvAttack, &_knobAmpEnvDecay } };
+                                { &_knobAmpEnvAttack, &_knobAmpEnvDecay, &_pickerHoldVel } };
 
   // FILT ENV panel:
 
@@ -132,10 +137,6 @@ private:
 
   // OSC A panel:
 
-  fsh::gui::BoxedKnob _knobOscALevel{ {
-    .label = "LEVEL",
-    .knobParams = { .color = fsh::gui::Colors::dark },
-  } };
   fsh::gui::BoxedKnob _knobOscATune{ {
     .label = "TUNE",
     .knobParams = { .color = fsh::gui::Colors::dark },
@@ -144,17 +145,24 @@ private:
     .label = "FINE",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::Panel _panelOscA{ { .label = "OSC A",
-                                .foreground = fsh::gui::Colors::dark,
-                                .background = fsh::gui::Colors::light },
-                              { &_knobOscATune, &_knobOscAFine, &_knobOscALevel } };
-
-  // OSC B panel:
-
-  fsh::gui::BoxedKnob _knobOscBLevel{ {
+  fsh::gui::OptionPicker _pickerOscAWaveform{ {
+    .name = "REVERB",
+    // TODO: bad coupling here:
+    .options = { "SAWTOOTH", "TRIANGLE", "SQUARE" },
+  } };
+  fsh::gui::BoxedKnob _knobOscALevel{ {
     .label = "LEVEL",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
+  fsh::gui::Panel _panelOscA{
+    { .label = "OSC A",
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::light },
+    { &_knobOscATune, &_knobOscAFine, &_pickerOscAWaveform, &_knobOscALevel }
+  };
+
+  // OSC B panel:
+
   fsh::gui::BoxedKnob _knobOscBTune{ {
     .label = "TUNE",
     .knobParams = { .color = fsh::gui::Colors::dark },
@@ -163,10 +171,21 @@ private:
     .label = "FINE",
     .knobParams = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::Panel _panelOscB{ { .label = "OSC B",
-                                .foreground = fsh::gui::Colors::dark,
-                                .background = fsh::gui::Colors::light },
-                              { &_knobOscBTune, &_knobOscBFine, &_knobOscBLevel } };
+  fsh::gui::OptionPicker _pickerOscBWaveform{ {
+    .name = "REVERB",
+    // TODO: bad coupling here:
+    .options = { "SAWTOOTH", "TRIANGLE", "SQUARE" },
+  } };
+  fsh::gui::BoxedKnob _knobOscBLevel{ {
+    .label = "LEVEL",
+    .knobParams = { .color = fsh::gui::Colors::dark },
+  } };
+  fsh::gui::Panel _panelOscB{
+    { .label = "OSC B",
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::light },
+    { &_knobOscBTune, &_knobOscBFine, &_pickerOscBWaveform, &_knobOscBLevel }
+  };
 
   // VOICE panel:
 
@@ -174,10 +193,15 @@ private:
     .label = "GLIDE",
     .knobParams = { .color = fsh::gui::Colors::light },
   } };
+  fsh::gui::OptionPicker _pickerPolyphony{ {
+    // placeholder
+    .name = "POLYPHONY",
+    .options = { "MONO", "LEGATO", "POLY" },
+  } };
   fsh::gui::Panel _panelVoice{ { .label = "VOICE",
                                  .foreground = fsh::gui::Colors::light,
                                  .background = fsh::gui::Colors::darkblue },
-                               { &_knobVoiceGlide } };
+                               { &_knobVoiceGlide, &_pickerPolyphony } };
 
   // REVERB panel:
 
