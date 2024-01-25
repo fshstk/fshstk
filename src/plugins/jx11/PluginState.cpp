@@ -273,6 +273,7 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
   };
 
   return {
+    // TODO: refactor into osc params
     .voice = { .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
                .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
                .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
