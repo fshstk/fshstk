@@ -23,23 +23,29 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
+/**
+A panel for the dynamic layout of multiple components.
+*/
 class ComponentPanel : public juce::Component
 {
 public:
+  /// Orientation of the panel.
   enum class Orientation
   {
-    Horizontal,
-    Vertical
+    Horizontal, ///< Horizontal orientation
+    Vertical    ///< Vertical orientation
   };
 
+  /// Parameters for the ComponentPanel.
   struct Params
   {
-    juce::String label;
-    juce::Colour foreground;
-    juce::Colour background;
-    Orientation orientation = Orientation::Horizontal;
+    juce::String label;                                ///< The label to be displayed.
+    juce::Colour foreground;                           ///< The color of the label.
+    juce::Colour background;                           ///< The color of the background.
+    Orientation orientation = Orientation::Horizontal; ///< The orientation of the panel.
   };
 
+  /// Constructor.
   ComponentPanel(const Params&, std::vector<juce::Component*>);
 
 private:

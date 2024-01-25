@@ -40,13 +40,14 @@ public:
     Endless  ///< The knob will wrap around when the user drags it beyond its range.
   };
 
+  /// Parameters for the SimpleKnob component.
   struct Params
   {
-    juce::Colour color = Colors::dark;
-    Behavior behavior = Behavior::Bounded;
-    float knobRangeDegrees = 270.0f;
-    float notchWidthDegrees = 7.0f;
-    float notchDepthFraction = 0.7f;
+    juce::Colour color = Colors::dark;     ///< Color of the knob.
+    Behavior behavior = Behavior::Bounded; ///< Behavior of the knob.
+    float knobRangeDegrees = 270.0f;       ///< Range of the knob in degrees.
+    float notchWidthDegrees = 7.0f;        ///< Width of the indicator notch in degrees.
+    float notchDepthFraction = 0.7f; ///< Depth of the indicator notch as a fraction of the radius.
   };
 
   /// Constructor.

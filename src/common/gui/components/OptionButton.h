@@ -23,16 +23,21 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
+/**
+An element of the OptionPicker.
+*/
 class OptionButton : public juce::Button
 {
 public:
+  /// Parameters for the OptionButton.
   struct Params
   {
-    juce::String text;
-    juce::Colour color;
-    juce::Colour highlightColor;
+    juce::String text;           ///< The text to be displayed.
+    juce::Colour color;          ///< The color of the button.
+    juce::Colour highlightColor; ///< The color of the button when selected.
   };
 
+  /// Constructor.
   explicit OptionButton(const Params&);
 
 private:

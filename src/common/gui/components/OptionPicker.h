@@ -27,26 +27,34 @@
 #include <spdlog/spdlog.h>
 
 namespace fsh::gui {
+/**
+Class for displaying a list of options as buttons.
+*/
 class OptionPicker
   : public juce::Component
   , public juce::AudioProcessorParameter::Listener
 {
 public:
+  /// Parameters for the OptionPicker.
   struct Params
   {
-    juce::AudioParameterChoice* choice;
-    juce::Colour color;
-    juce::Colour highlightColor;
+    juce::AudioParameterChoice* choice; ///< The parameter to be controlled.
+    juce::Colour color;                 ///< The color of the buttons.
+    juce::Colour highlightColor;        ///< The color of the selected button.
   };
 
+  /// Constructor.
   explicit OptionPicker(const Params&);
+
+  /// Destructor.
   ~OptionPicker() override;
+
+private:
   OptionPicker(const OptionPicker&) = delete;
   OptionPicker& operator=(const OptionPicker&) = delete;
   OptionPicker(OptionPicker&&) = delete;
   OptionPicker& operator=(OptionPicker&&) = delete;
 
-private:
   void parameterValueChanged(int, float) override { repaint(); }
   void parameterGestureChanged(int, bool) override { repaint(); }
   auto getSelectedIndex() const -> size_t;

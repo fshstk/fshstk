@@ -30,11 +30,11 @@ struct Colors
   inline static const juce::Colour foreground{ 218, 218, 218 };           ///< Foreground color
   inline static const juce::Colour transparent{ 0.0f, 0.0f, 0.0f, 0.0f }; ///< Transparent
 
-  inline static const auto darkblue = juce::Colour{ 0xff'25283d };
-  inline static const auto light = juce::Colour{ 0xff'ffeddf };
-  inline static const auto gold = juce::Colour{ 0xff'fbcf23 };
-  inline static const auto red = juce::Colour{ 0xff'b91327 };
-  inline static const auto dark = juce::Colour{ 0xff'2c363f };
+  inline static const auto darkblue = juce::Colour{ 0xff'25283d }; ///< Dark blue
+  inline static const auto light = juce::Colour{ 0xff'ffeddf };    ///< Light
+  inline static const auto gold = juce::Colour{ 0xff'fbcf23 };     ///< Gold
+  inline static const auto red = juce::Colour{ 0xff'b91327 };      ///< Red
+  inline static const auto dark = juce::Colour{ 0xff'2c363f };     ///< Dark
 };
 
 /// Fonts used by the GUI.

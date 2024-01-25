@@ -24,16 +24,23 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
+/**
+A knob with a label.
+*/
 class KnobWithLabel : public juce::Component
 {
 public:
+  /// Parameters for the KnobWithLabel.
   struct Params
   {
-    juce::String label;
-    SimpleKnob::Params knobParams;
+    juce::String label;            ///< The label to be displayed.
+    SimpleKnob::Params knobParams; ///< The parameters for the knob.
   };
 
+  /// Constructor.
   explicit KnobWithLabel(const Params&);
+
+  /// Attach this knob to a parameter.
   void attach(plugin::StateManager&, juce::ParameterID);
 
 private:
