@@ -21,6 +21,7 @@
 
 #pragma once
 #include "BoxedKnob.h"
+#include "OptionPicker.h"
 #include "PanelFX.h"
 #include "PluginProcessor.h"
 #include "PluginState.h"
@@ -180,10 +181,15 @@ private:
 
   // REVERB panel:
 
+  fsh::gui::OptionPicker _pickerReverb{ {
+    .name = "REVERB",
+    // TODO: bad coupling here:
+    .options = { "OFF", "EARTH", "METAL", "SKY" },
+  } };
   fsh::gui::Panel _panelReverb{
     { .label = "REVERB",
       .foreground = fsh::gui::Colors::light,
       .background = fsh::gui::Colors::darkblue },
-    {},
+    { &_pickerReverb },
   };
 };

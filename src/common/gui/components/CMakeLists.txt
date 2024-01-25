@@ -26,6 +26,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_sources(${PROJECT_NAME} PRIVATE
   BoxedKnob.cpp
   InfoButton.cpp
+  OptionPicker.cpp
   PanelFX.cpp
   SimpleKnob.cpp
 )
