@@ -106,7 +106,9 @@ void PluginEditor::paint(juce::Graphics& g)
   g.setColour(fsh::gui::Colors::light);
 
   g.setFont(fsh::gui::Fonts::body.withHeight(48.0f));
-  g.drawText("fsh :: ambisonium", headerText, juce::Justification::bottomRight);
+  g.drawText(fmt::format("fsh :: {}", juce::String{ JucePlugin_Name }.toLowerCase().toStdString()),
+             headerText,
+             juce::Justification::bottomRight);
 
   g.setFont(fsh::gui::Fonts::body.withHeight(24.0f));
   g.drawText(
