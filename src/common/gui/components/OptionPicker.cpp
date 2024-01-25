@@ -85,5 +85,6 @@ void OptionPicker::resized()
     grid.items.add(juce::GridItem{ *component });
   }
 
-  grid.performLayout(getLocalBounds());
+  const auto margin = 10;
+  grid.performLayout(getLocalBounds().reduced(margin));
 }

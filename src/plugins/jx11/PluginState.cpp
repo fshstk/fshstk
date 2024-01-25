@@ -193,7 +193,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     ParamChoice{
       .id = id(oscA_waveform),
       .name = "OSC A: waveform",
-      .choices = { "Sawtooth", "Triangle", "Square" },
+      .choices = { "Saw", "Triangle", "Square" },
     }
       .create(),
     ParamFloat{
@@ -222,7 +222,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     ParamChoice{
       .id = id(oscB_waveform),
       .name = "OSC B: waveform",
-      .choices = { "Sawtooth", "Triangle", "Square" },
+      .choices = { "Saw", "Triangle", "Square" },
     }
       .create(),
     ParamChoice{
