@@ -54,7 +54,7 @@ double saw(double phase, double deltaPhase)
   return (2.0 / M_PI) * out;
 }
 
-double saw2(double phase, double deltaPhase)
+double truesaw(double phase, double deltaPhase)
 {
   if (deltaPhase < 0.0001) {
     spdlog::warn("oscillator called with zero or negative frequency");
@@ -69,6 +69,58 @@ double saw2(double phase, double deltaPhase)
     out += std::sin(2.0 * M_PI * (k + 0) * phase) / (k + 0);
     out -= std::sin(2.0 * M_PI * (k + 1) * phase) / (k + 1);
   }
+
+  return (2.0 / M_PI) * out;
+}
+
+double triangle(double phase, double deltaPhase)
+{
+  if (deltaPhase < 0.0001) {
+    spdlog::warn("oscillator called with zero frequency");
+    return 0.0;
+  }
+
+  const auto nyquist = 0.5;
+  auto out = 0.0;
+
+  // "Good enough" triangle, every harmonic has positive sign:
+  for (auto k = 1; (k * deltaPhase) < nyquist; k += 2)
+    out += std::sin(2.0 * M_PI * k * phase) / (k * k);
+
+  return (2.0 / M_PI) * out;
+}
+
+double truetriangle(double phase, double deltaPhase)
+{
+  if (deltaPhase < 0.0001) {
+    spdlog::warn("oscillator called with zero or negative frequency");
+    return 0.0;
+  }
+
+  const auto nyquist = 0.5;
+  auto out = 0.0;
+
+  // "Technically correct" triangle, every other harmonic has negative sign:
+  for (auto k = 1; (k * deltaPhase) < nyquist; k += 4) {
+    out += std::sin(2.0 * M_PI * (k + 0) * phase) / ((k + 0) * (k + 0));
+    out -= std::sin(2.0 * M_PI * (k + 2) * phase) / ((k + 2) * (k + 2));
+  }
+
+  return (2.0 / M_PI) * out;
+}
+
+double square(double phase, double deltaPhase)
+{
+  if (deltaPhase < 0.0001) {
+    spdlog::warn("oscillator called with zero frequency");
+    return 0.0;
+  }
+
+  const auto nyquist = 0.5;
+  auto out = 0.0;
+
+  for (auto k = 1; (k * deltaPhase) < nyquist; k += 2)
+    out += std::sin(2.0 * M_PI * k * phase) / k;
 
   return (2.0 / M_PI) * out;
 }
@@ -97,8 +149,14 @@ auto Oscillator::nextSample() -> float
         return sine(_phase);
       case Saw:
         return saw(_phase, _deltaPhase);
-      case Saw2:
-        return saw2(_phase, _deltaPhase);
+      case TrueSaw:
+        return truesaw(_phase, _deltaPhase);
+      case Triangle:
+        return triangle(_phase, _deltaPhase);
+      case TrueTriangle:
+        return truetriangle(_phase, _deltaPhase);
+      case Square:
+        return square(_phase, _deltaPhase);
       case Noise:
         return noise();
     }

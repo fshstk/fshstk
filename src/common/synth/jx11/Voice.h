@@ -99,8 +99,8 @@ private:
   uint8_t _velocity;
   ADSR _adsr;
   fx::AmbisonicEncoder _encoder;
-  Oscillator _oscA{ Oscillator::Type::Saw };
-  Oscillator _oscB{ Oscillator::Type::Saw };
+  Oscillator _oscA{ Oscillator::Type::Triangle };
+  Oscillator _oscB{ Oscillator::Type::Square };
   Oscillator _oscNoise{ Oscillator::Type::Noise };
   fx::MoogVCF _filter;
 };
