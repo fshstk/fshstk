@@ -31,10 +31,11 @@ OptionPicker::OptionPicker(const Params& p)
     spdlog::error("OptionPicker: choice parameter is null");
     return;
   }
-  for (const auto& option : _params.choice->choices)
-    _options.push_back(std::make_unique<OptionButton>(option));
-  for (const auto& component : _options)
+  for (const auto& option : _params.choice->choices) {
+    auto component = std::make_unique<OptionButton>(option);
     addAndMakeVisible(*component);
+    _options.push_back(std::move(component));
+  }
 }
 
 void OptionPicker::paint(juce::Graphics& g)
