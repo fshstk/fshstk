@@ -23,6 +23,7 @@
 #include "OptionButton.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <spdlog/spdlog.h>
 
 namespace fsh::gui {
 class OptionPicker : public juce::Component
@@ -30,6 +31,7 @@ class OptionPicker : public juce::Component
 public:
   struct Params
   {
+    // TODO reference
     juce::AudioParameterChoice* choice;
   };
 
@@ -41,5 +43,9 @@ private:
 
   Params _params;
   std::vector<std::unique_ptr<OptionButton>> _options;
+  juce::ParameterAttachment _attachment{ *_params.choice, [this](auto x) {
+                                          spdlog::debug("OptionPicker: choice changed to {}", x);
+                                          repaint();
+                                        } };
 };
 } // namespace fsh::gui
