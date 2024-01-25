@@ -19,29 +19,42 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "SimpleKnob.h"
-#include <juce_gui_basics/juce_gui_basics.h>
+#include "KnobWithLabel.h"
+#include "guiGlobals.h"
 
-namespace fsh::gui {
-class BoxedKnob : public juce::Component
+using namespace fsh::gui;
+
+KnobWithLabel::KnobWithLabel(const Params& params)
+  : _params(params)
+  , _knob(params.knobParams)
 {
-public:
-  struct Params
-  {
-    juce::String label;
-    SimpleKnob::Params knobParams;
-  };
+  addAndMakeVisible(_knob);
+}
 
-  explicit BoxedKnob(const Params&);
-  void attach(plugin::StateManager&, juce::ParameterID);
+void KnobWithLabel::paint(juce::Graphics& g)
+{
+  g.setColour(_params.knobParams.color);
+  g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
 
-private:
-  void paint(juce::Graphics&) override;
-  void resized() override;
+  const auto area = getLocalBounds();
+  const auto margin = 5;
+  const auto knobBottomY = _knob.getBoundsInParent().getBottom() + margin;
+  const auto text = _knob.isMouseButtonDown() ? _knob.getTextFromValue(_knob.getValue())
+                                              : _params.label.toUpperCase();
+  g.drawText(text, area.withTop(knobBottomY), juce::Justification::centredTop, true);
+}
 
-  Params _params;
-  SimpleKnob _knob;
-  std::unique_ptr<plugin::StateManager::SliderAttachment> _stateManager;
-};
-} // namespace fsh::gui
+void KnobWithLabel::resized()
+{
+  const auto offsetY = 10;
+  const auto x = getLocalBounds().getCentreX();
+  const auto y = getLocalBounds().getCentreY() - offsetY;
+  const auto knobSize = 30;
+  _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2), knobSize, knobSize);
+}
+
+void KnobWithLabel::attach(plugin::StateManager& state, juce::ParameterID id)
+{
+  _stateManager = std::make_unique<plugin::StateManager::SliderAttachment>(
+    state.getReferenceToBaseClass(), id.getParamID(), _knob);
+}

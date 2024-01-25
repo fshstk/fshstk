@@ -19,42 +19,29 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "BoxedKnob.h"
-#include "guiGlobals.h"
+#pragma once
+#include "SimpleKnob.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
-using namespace fsh::gui;
-
-BoxedKnob::BoxedKnob(const Params& params)
-  : _params(params)
-  , _knob(params.knobParams)
+namespace fsh::gui {
+class KnobWithLabel : public juce::Component
 {
-  addAndMakeVisible(_knob);
-}
+public:
+  struct Params
+  {
+    juce::String label;
+    SimpleKnob::Params knobParams;
+  };
 
-void BoxedKnob::paint(juce::Graphics& g)
-{
-  g.setColour(_params.knobParams.color);
-  g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
+  explicit KnobWithLabel(const Params&);
+  void attach(plugin::StateManager&, juce::ParameterID);
 
-  const auto area = getLocalBounds();
-  const auto margin = 5;
-  const auto knobBottomY = _knob.getBoundsInParent().getBottom() + margin;
-  const auto text = _knob.isMouseButtonDown() ? _knob.getTextFromValue(_knob.getValue())
-                                              : _params.label.toUpperCase();
-  g.drawText(text, area.withTop(knobBottomY), juce::Justification::centredTop, true);
-}
+private:
+  void paint(juce::Graphics&) override;
+  void resized() override;
 
-void BoxedKnob::resized()
-{
-  const auto offsetY = 10;
-  const auto x = getLocalBounds().getCentreX();
-  const auto y = getLocalBounds().getCentreY() - offsetY;
-  const auto knobSize = 30;
-  _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2), knobSize, knobSize);
-}
-
-void BoxedKnob::attach(plugin::StateManager& state, juce::ParameterID id)
-{
-  _stateManager = std::make_unique<plugin::StateManager::SliderAttachment>(
-    state.getReferenceToBaseClass(), id.getParamID(), _knob);
-}
+  Params _params;
+  SimpleKnob _knob;
+  std::unique_ptr<plugin::StateManager::SliderAttachment> _stateManager;
+};
+} // namespace fsh::gui
