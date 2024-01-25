@@ -285,7 +285,7 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
                .aziCenter = getParameter<float>(id(ambi_center)),
                .aziRange = getParameter<float>(id(ambi_spread)),
-               .filterCutoff = getParameter<float>(id(filter_cutoff)) / 5.0f,
+               .filterCutoff = getParameter<float>(id(filter_cutoff)) / 2.5f,
                .filterResonance = getParameter<float>(id(filter_resonance)) / 100.0f },
   };
 }
