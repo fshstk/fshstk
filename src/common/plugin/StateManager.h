@@ -73,7 +73,13 @@ protected:
                        id.getParamID().toStdString());
       return {};
     }
-    return static_cast<T>(param->load());
+
+    // This part is necessary since both casts from float to bool and float equality comparisons
+    // (`param->load() == 0.0f`) trigger warnings in gcc:
+    if constexpr (std::is_same<T, bool>::value)
+      return juce::exactlyEqual(param->load(), 0.0f);
+    else
+      return static_cast<T>(param->load());
   }
 };
 } // namespace fsh::plugin
