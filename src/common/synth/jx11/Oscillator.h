@@ -37,7 +37,7 @@ class Oscillator
 {
 public:
   /// Waveform
-  enum class Type
+  enum class Waveform
   {
     Sine,         ///< Sine wave
     Saw,          ///< Sawtooth wave with all positive positive harmonics
@@ -53,10 +53,11 @@ public:
   {
     double frequency; ///< Frequency in Hz
     double amplitude; ///< Amplitude in [0, 1]
+    Waveform type;    ///< Waveform type
   };
 
   /// Create an oscillator of the given type
-  explicit Oscillator(Type);
+  explicit Oscillator(Waveform);
 
   /// Set the sample rate in Hz
   void setSampleRate(double sampleRate);
@@ -71,7 +72,7 @@ public:
   void reset();
 
 private:
-  Type _type;
+  Waveform _type;
   double _amplitude;
   double _phase;
   double _deltaPhase;

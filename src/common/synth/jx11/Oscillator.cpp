@@ -126,7 +126,7 @@ double square(double phase, double deltaPhase)
 }
 } // namespace
 
-Oscillator::Oscillator(Type type)
+Oscillator::Oscillator(Waveform type)
   : _type(type)
 {
 }
@@ -140,7 +140,7 @@ void Oscillator::reset()
 auto Oscillator::nextSample() -> float
 {
   const auto out = [&]() {
-    using enum Type;
+    using enum Waveform;
     switch (_type) {
       default:
         spdlog::error("invalid oscillator type");
