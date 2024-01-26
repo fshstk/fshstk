@@ -271,17 +271,24 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
     const auto freqRatio = std::exp2(semitones / 12.0f);
     return freqRatio;
   };
-  // TODO: refactor into osc params
   return {
-    .voice = { .masterLevel = juce::Decibels::decibelsToGain(getParameter<float>(id(level))),
-               .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
-               .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
-               .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
-               // TODO: bad coupling here (depends the order of Waveform enum elements)
-               .oscAWaveform = getParameter<fsh::synth::Oscillator::Waveform>(id(oscA_waveform)),
-               .oscBWaveform = getParameter<fsh::synth::Oscillator::Waveform>(id(oscB_waveform)),
-               .oscBDetune =
-                 detune(getParameter<float>(id(oscB_tune)), getParameter<float>(id(oscB_fine))),
+    .voice = { .masterLevel =
+                 juce::Decibels::decibelsToGain(getParameter<float>(id(level)) - 40.0f),
+               .oscA = { .detune = detune(getParameter<float>(id(oscA_tune)),
+                                          getParameter<float>(id(oscA_fine))),
+                         .amplitude = getParameter<float>(id(oscA_level)) / 100.0f,
+                         // TODO: bad coupling here (depends the order of Waveform enum elements)
+                         .waveform =
+                           getParameter<fsh::synth::Oscillator::Waveform>(id(oscA_waveform)) },
+               .oscB = { .detune = detune(getParameter<float>(id(oscB_tune)),
+                                          getParameter<float>(id(oscB_fine))),
+                         .amplitude = getParameter<float>(id(oscB_level)) / 100.0f,
+                         // TODO: bad coupling here (depends the order of Waveform enum elements)
+                         .waveform =
+                           getParameter<fsh::synth::Oscillator::Waveform>(id(oscB_waveform)) },
+               .oscC = { .detune = {},
+                         .amplitude = getParameter<float>(id(fx_noise)) / 100.0f,
+                         .waveform = fsh::synth::Oscillator::Waveform::Noise },
                .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
                          .decay = getParameter<float>(id(ampenv_decay)),
                          .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,

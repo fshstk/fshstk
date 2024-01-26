@@ -170,5 +170,9 @@ void Oscillator::setSampleRate(double sampleRate)
 void Oscillator::setParams(const Params& params)
 {
   _params = params;
-  _deltaPhase = params.frequency / _sampleRate;
+}
+
+void Oscillator::setFrequency(double freq)
+{
+  _deltaPhase = (freq * _params.detune) / _sampleRate;
 }

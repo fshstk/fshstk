@@ -49,12 +49,9 @@ public:
   struct Params
   {
     float masterLevel;                    ///< Master level
-    util::BoundedFloat<0, 1> noiseLvl;    ///< Noise level
-    util::BoundedDouble<0, 1> oscALvl;    ///< Oscillator A level
-    util::BoundedDouble<0, 1> oscBLvl;    ///< Oscillator B level
-    Oscillator::Waveform oscAWaveform;    ///< Oscillator A waveform
-    Oscillator::Waveform oscBWaveform;    ///< Oscillator B waveform
-    double oscBDetune;                    ///< Oscillator B detune in semitones
+    Oscillator::Params oscA;              ///< Oscillator A parameters
+    Oscillator::Params oscB;              ///< Oscillator A parameters
+    Oscillator::Params oscC;              ///< Oscillator A parameters
     ADSR::Params adsr;                    ///< ADSR envelope parameters
     util::BoundedFloat<0, 1> velocityAmt; ///< Velocity sensitivity
     double aziCenter = 0.0;        ///< Anchor middle of MIDI note range to this azimuth in degrees
@@ -104,7 +101,7 @@ private:
   fx::AmbisonicEncoder _encoder;
   Oscillator _oscA;
   Oscillator _oscB;
-  Oscillator _oscNoise;
+  Oscillator _oscC;
   fx::MoogVCF _filter;
 };
 } // namespace fsh::synth

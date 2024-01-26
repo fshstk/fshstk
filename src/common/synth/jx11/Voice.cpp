@@ -33,11 +33,6 @@ auto midiNoteToFreq(double noteVal) -> double
   return concertAFreq * std::exp2((noteVal - concertAMidi) / 12.0);
 }
 
-auto getNormalisedVelocity(uint8_t vel, double sensitivity = 1.0) -> double
-{
-  return juce::jmap((vel / 127.0), 1.0 - sensitivity, 1.0);
-}
-
 void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
                             fsh::fx::AmbisonicEncoder& encoder,
                             size_t position,
@@ -74,7 +69,7 @@ void Voice::reset()
 {
   _oscA.reset();
   _oscB.reset();
-  _oscNoise.reset();
+  _oscC.reset();
   _adsr.reset();
   _filter.reset();
   _noteVal = 0;
@@ -109,27 +104,15 @@ void Voice::pitchBend(uint16_t bendVal)
 
 void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
 {
+  _oscA.setParams(_params.oscA);
+  _oscB.setParams(_params.oscB);
+  _oscC.setParams(_params.oscC);
+
   const auto oscNote = static_cast<double>(_noteVal) + _bendValSemitones;
   const auto oscFreq = midiNoteToFreq(oscNote);
-
-  _oscA.setParams({
-    .frequency = oscFreq,
-    .amplitude =
-      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscALvl.get(),
-    .waveform = _params.oscAWaveform,
-  });
-  _oscB.setParams({
-    .frequency = oscFreq * _params.oscBDetune,
-    .amplitude =
-      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscBLvl.get(),
-    .waveform = _params.oscBWaveform,
-  });
-  _oscNoise.setParams({
-    .frequency = oscFreq,
-    .amplitude =
-      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.noiseLvl.get(),
-    .waveform = Oscillator::Waveform::Noise,
-  });
+  _oscA.setFrequency(oscFreq);
+  _oscB.setFrequency(oscFreq);
+  _oscC.setFrequency(oscFreq);
 
   _encoder.setParams({
     .direction = midiNoteToDirection(oscNote, _params.aziCenter, _params.aziRange),
@@ -160,7 +143,7 @@ void Voice::setSampleRate(double sampleRate)
 {
   _oscA.setSampleRate(sampleRate);
   _oscB.setSampleRate(sampleRate);
-  _oscNoise.setSampleRate(sampleRate);
+  _oscC.setSampleRate(sampleRate);
   _adsr.setSampleRate(sampleRate);
   _encoder.setSampleRate(sampleRate);
   _filter.setSampleRate(sampleRate);
@@ -176,7 +159,7 @@ auto Voice::nextSample() -> float
   if (!isActive())
     return 0.0f;
 
-  const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscNoise.nextSample();
+  const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscC.nextSample();
   const auto filtered = _filter.processSample(osc);
   const auto env = filtered * static_cast<float>(_adsr.getNextValue());
   const auto master = env * _params.masterLevel;
