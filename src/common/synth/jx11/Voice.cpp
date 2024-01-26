@@ -152,7 +152,7 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
                               numSamples,
                               bufferSize);
 
-    addSampleToAllChannels(audio, _encoder, n, _params.masterLevel * nextSample());
+    addSampleToAllChannels(audio, _encoder, n, nextSample());
   }
 }
 
@@ -178,8 +178,9 @@ auto Voice::nextSample() -> float
 
   const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscNoise.nextSample();
   const auto filtered = _filter.processSample(osc);
-  const auto env = _adsr.getNextValue();
-  return filtered * static_cast<float>(env);
+  const auto env = filtered * static_cast<float>(_adsr.getNextValue());
+  const auto master = env * _params.masterLevel;
+  return master;
 }
 
 auto Voice::getNoteVal() const -> uint8_t
