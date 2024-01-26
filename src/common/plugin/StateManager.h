@@ -75,14 +75,5 @@ protected:
     }
     return static_cast<T>(param->load());
   }
-
-  /// Explicit instantiation of getParameter() for booleans. This is necessary because a static cast
-  /// from float to bool raises a warning on some compilers.
-  template<>
-  auto getParameter<bool>(const juce::ParameterID& id) const -> bool
-  {
-    const auto val = getParameter<float>(id);
-    return juce::exactlyEqual(val, 0.0f);
-  }
 };
 } // namespace fsh::plugin
