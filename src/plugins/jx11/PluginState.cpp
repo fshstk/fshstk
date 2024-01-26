@@ -287,8 +287,10 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                          .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
                          .release = getParameter<float>(id(ampenv_decay)) },
                .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
+               // TODO: ambi param struct
                .aziCenter = getParameter<float>(id(ambi_center)),
                .aziRange = getParameter<float>(id(ambi_spread)),
+               // TODO: filter param struct
                .filterCutoff = getParameter<float>(id(filter_cutoff)) / 2.5f,
                .filterResonance = getParameter<float>(id(filter_resonance)) / 100.0f },
   };
