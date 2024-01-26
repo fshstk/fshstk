@@ -36,7 +36,8 @@ oscillator's parameters using setParams().
 class Oscillator
 {
 public:
-  /// Waveform
+  /// Waveform. The GUI picker relies on the specific ordering of these values, so be very careful
+  /// when changing it.
   enum class Waveform
   {
     TrueSaw,      ///< True sawtooth wave with alternating sign harmonics
