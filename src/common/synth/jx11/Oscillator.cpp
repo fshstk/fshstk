@@ -126,14 +126,8 @@ double square(double phase, double deltaPhase)
 }
 } // namespace
 
-Oscillator::Oscillator(Waveform type)
-  : _type(type)
-{
-}
-
 void Oscillator::reset()
 {
-  _amplitude = 0.0f;
   _phase = 0.0;
 }
 
@@ -141,7 +135,7 @@ auto Oscillator::nextSample() -> float
 {
   const auto out = [&]() {
     using enum Waveform;
-    switch (_type) {
+    switch (_params.waveform) {
       default:
         spdlog::error("invalid oscillator type");
         return 0.0;
@@ -165,7 +159,7 @@ auto Oscillator::nextSample() -> float
   _phase += _deltaPhase;
   _phase -= std::floor(_phase);
 
-  return static_cast<float>(_amplitude * out);
+  return static_cast<float>(_params.amplitude * out);
 }
 
 void Oscillator::setSampleRate(double sampleRate)
@@ -175,6 +169,6 @@ void Oscillator::setSampleRate(double sampleRate)
 
 void Oscillator::setParams(const Params& params)
 {
-  _amplitude = params.amplitude;
+  _params = params;
   _deltaPhase = params.frequency / _sampleRate;
 }

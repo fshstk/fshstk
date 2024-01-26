@@ -116,16 +116,19 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
     .frequency = oscFreq,
     .amplitude =
       0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscALvl.get(),
+    .waveform = _params.oscAWaveform,
   });
   _oscB.setParams({
     .frequency = oscFreq * _params.oscBDetune,
     .amplitude =
       0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscBLvl.get(),
+    .waveform = _params.oscBWaveform,
   });
   _oscNoise.setParams({
     .frequency = oscFreq,
     .amplitude =
       0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.noiseLvl.get(),
+    .waveform = Oscillator::Waveform::Noise,
   });
 
   _encoder.setParams({

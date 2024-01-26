@@ -51,13 +51,10 @@ public:
   /// Oscillator parameters
   struct Params
   {
-    double frequency; ///< Frequency in Hz
-    double amplitude; ///< Amplitude in [0, 1]
-    Waveform type;    ///< Waveform type
+    double frequency;  ///< Frequency in Hz
+    double amplitude;  ///< Amplitude in [0, 1]
+    Waveform waveform; ///< Waveform
   };
-
-  /// Create an oscillator of the given type
-  explicit Oscillator(Waveform);
 
   /// Set the sample rate in Hz
   void setSampleRate(double sampleRate);
@@ -72,8 +69,8 @@ public:
   void reset();
 
 private:
-  Waveform _type;
-  double _amplitude;
+  Params _params;
+
   double _phase;
   double _deltaPhase;
   double _sampleRate;

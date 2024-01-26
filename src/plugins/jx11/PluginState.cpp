@@ -276,6 +276,9 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
     .voice = { .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
                .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
                .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
+               // TODO: bad coupling here (depends the order of Waveform enum elements)
+               .oscAWaveform = getParameter<fsh::synth::Oscillator::Waveform>(id(oscA_waveform)),
+               .oscBWaveform = getParameter<fsh::synth::Oscillator::Waveform>(id(oscB_waveform)),
                .oscBDetune =
                  detune(getParameter<float>(id(oscB_tune)), getParameter<float>(id(oscB_fine))),
                .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
