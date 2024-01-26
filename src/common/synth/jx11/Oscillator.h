@@ -25,10 +25,13 @@ namespace fsh::synth {
 /**
 Represents a single band-limited oscillator with multiple waveforms.
 
-**Before using:** set the sample rate using setSampleRate() and set the
-oscillator's parameters using setParams().
+## Before using
 
-**To use:** call nextSample() to compute the oscillator's next sample.
+Set the sample rate using setSampleRate() and set the oscillator's parameters using setParams().
+
+## To use
+
+Call nextSample() to compute the oscillator's next sample.
 
 > This class is loosely based on code from the [JX10
 > synthesizer](https://github.com/hollance/synth-plugin-book) by Matthijs Hollemans.
