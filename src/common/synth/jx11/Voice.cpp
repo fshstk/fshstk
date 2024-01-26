@@ -180,6 +180,12 @@ auto Voice::nextSample() -> float
   const auto filtered = _filter.processSample(osc);
   const auto env = filtered * static_cast<float>(_adsr.getNextValue());
   const auto master = env * _params.masterLevel;
+
+  // Overload protection, clip to 0dB:
+  if (master > 1.0f)
+    return 1.0f;
+  if (master < -1.0f)
+    return -1.0f;
   return master;
 }
 
