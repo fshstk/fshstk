@@ -49,3 +49,10 @@ auto StateManager::getReferenceToBaseClass() -> juce::AudioProcessorValueTreeSta
 {
   return *this;
 }
+
+template<>
+auto StateManager::getParameter<bool>(const juce::ParameterID& id) const -> bool
+{
+  const auto val = getParameter<float>(id);
+  return juce::exactlyEqual(val, 0.0f);
+}
