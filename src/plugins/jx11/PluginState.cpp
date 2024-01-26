@@ -273,7 +273,8 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
   };
   // TODO: refactor into osc params
   return {
-    .voice = { .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
+    .voice = { .masterLevel = juce::Decibels::decibelsToGain(getParameter<float>(id(level))),
+               .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
                .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
                .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
                // TODO: bad coupling here (depends the order of Waveform enum elements)

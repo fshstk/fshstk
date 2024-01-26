@@ -152,7 +152,7 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
                               numSamples,
                               bufferSize);
 
-    addSampleToAllChannels(audio, _encoder, n, nextSample());
+    addSampleToAllChannels(audio, _encoder, n, _params.masterLevel * nextSample());
   }
 }
 

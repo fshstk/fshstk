@@ -48,6 +48,7 @@ public:
   /// Voice parameters
   struct Params
   {
+    float masterLevel;                    ///< Master level
     util::BoundedFloat<0, 1> noiseLvl;    ///< Noise level
     util::BoundedDouble<0, 1> oscALvl;    ///< Oscillator A level
     util::BoundedDouble<0, 1> oscBLvl;    ///< Oscillator B level
