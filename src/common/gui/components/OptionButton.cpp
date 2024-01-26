@@ -19,54 +19,36 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include "OptionButton.h"
+#include "guiGlobals.h"
+#include <fmt/format.h>
 
-class PluginState : public fsh::plugin::StateManager
+using namespace fsh::gui;
+
+OptionButton::OptionButton(const Params& params)
+  : juce::Button(params.text)
+  , _params(params)
 {
-public:
-  enum class Param
-  {
-    ambi_center,
-    ambi_spread,
+  setClickingTogglesState(true);
+  setTriggeredOnMouseDown(true);
+  setRadioGroupId(1);
+}
 
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
+void OptionButton::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
+{
+  juce::ignoreUnused(isDown);
+  const auto isSelected = getToggleState();
 
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
+  const auto color = [this, isSelected, isMouseOver]() {
+    if (isSelected)
+      return _params.highlightColor;
+    else if (isMouseOver)
+      return _params.color.withMultipliedAlpha(0.5f);
+    else
+      return _params.color;
+  }();
 
-    fx_drive,
-    fx_noise,
-
-    level,
-
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
-
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
-
-    reverb,
-
-    voice_glide,
-    voice_polyphony,
-  };
-
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
-};
+  g.setColour(color);
+  g.setFont(fsh::gui::Fonts::body);
+  g.drawText(_params.text.toUpperCase(), getLocalBounds(), juce::Justification::centred);
+}

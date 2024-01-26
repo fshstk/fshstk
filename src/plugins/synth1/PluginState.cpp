@@ -140,27 +140,27 @@ auto PluginState::getSynthParams() const -> fsh::synth::WavetableSound::Params
 auto PluginState::getReverbParams() const -> fsh::fx::FDNReverb::Params
 {
   return {
-    .roomSize = getRawParamSafely("rev_size"),
-    .revTime = getRawParamSafely("rev_time"),
-    .dryWet = getRawParamSafely("rev_drywet"),
+    .roomSize = getParameter<float>("rev_size"),
+    .revTime = getParameter<float>("rev_time"),
+    .dryWet = getParameter<float>("rev_drywet"),
   };
 }
 
 auto PluginState::getAmpEnv() const -> juce::ADSR::Parameters
 {
   return {
-    getRawParamSafely("amp_attack"),
-    getRawParamSafely("amp_decay"),
-    getRawParamSafely("amp_sustain"),
-    getRawParamSafely("amp_release"),
+    getParameter<float>("amp_attack"),
+    getParameter<float>("amp_decay"),
+    getParameter<float>("amp_sustain"),
+    getParameter<float>("amp_release"),
   };
 }
 
 auto PluginState::getFiltEnv() const -> juce::ADSR::Parameters
 {
   return {
-    getRawParamSafely("filt_attack"),
-    getRawParamSafely("filt_decay"),
+    getParameter<float>("filt_attack"),
+    getParameter<float>("filt_decay"),
     0.0f,
     0.0f,
   };
@@ -168,15 +168,15 @@ auto PluginState::getFiltEnv() const -> juce::ADSR::Parameters
 
 auto PluginState::getFiltModAmt() const -> float
 {
-  return getRawParamSafely("filt_modamt");
+  return getParameter<float>("filt_modamt");
 }
 
 auto PluginState::getFilterCutoff() const -> float
 {
-  return getRawParamSafely("filt_cutoff");
+  return getParameter<float>("filt_cutoff");
 }
 
 auto PluginState::getFilterResonance() const -> float
 {
-  return getRawParamSafely("filt_resonance");
+  return getParameter<float>("filt_resonance");
 }

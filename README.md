@@ -1,4 +1,4 @@
-# Introduction
+# Read Me
 
 ```text
               ██████          █████                              █████    █████
@@ -17,16 +17,37 @@
 [![sonarcloud](https://sonarcloud.io/api/project_badges/measure?project=fshstk_fshstk&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fshstk_fshstk)
 ![ci](https://github.com/fshstk/fshstk/actions/workflows/sync-docs.yml/badge.svg)
 
-## Installing
+- docs: [docs.fshstk.com](https://docs.fshstk.com)
+- code: [github.com/fshstk/fshstk](https://github.com/fshstk/fshstk)
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec hendrerit porta lectus id feugiat.
-Nullam finibus tellus sapien, quis congue orci aliquam et. Aenean vestibulum risus in dui auctor,
-sed accumsan ipsum efficitur. Ut in pellentesque orci, eu bibendum orci. Nam dui diam, pulvinar a
-justo ut, porta venenatis mi. Suspendisse in risus non quam pharetra scelerisque. Mauris aliquet mi
-vel risus tincidunt dapibus.
+## Motivation
 
-Aenean ipsum lectus, vulputate nec libero ut, auctor fermentum ipsum. Aenean venenatis rhoncus lacus
-posuere hendrerit. Vivamus venenatis lectus et auctor hendrerit. Cras ornare viverra bibendum.
-Pellentesque interdum feugiat dolor id luctus. Lorem ipsum dolor sit amet, consectetur adipiscing
-elit. Sed porta quam at leo tempus, at porttitor erat tincidunt. Nullam ullamcorper maximus mauris
-nec efficitur. Quisque id est felis. Cras commodo turpis velit, ac ornare tortor bibendum non.
+This repository is an attempt at trying out a few creative ideas in Ambisonics/3D Audio, with a
+focus on producing music directly in the HOA domain. There are some great existing tools out there,
+but they are not geared specifically towards making music.
+
+It also satisfies my itch to create something with the JUCE framework, but abstracting away all the
+parts I don't like so much and replacing them with an API that is (imho) a little easier to use, and
+a little harder to use incorrectly.
+
+I'm also trying out writing extensive Doxygen documentation, so I hope it will be pretty simple to
+read the docs and try out your own things. The architecture is pretty modular, things can be chained
+together pretty easily.
+
+Code readability and clean architecture are the top priorities. Even more so than efficiency, which
+I guess sounds crazy for real-time audio code; but it's working well enough so far, and you get a
+lot of maintainability (imho) in return for a little bit of efficiency. I believe in writing it the
+way you want it to be written first, and then
+[optimising later](https://wiki.c2.com/?PrematureOptimization) if
+[necessary](https://wiki.c2.com/?ProfileBeforeOptimizing).
+
+> This repository is inspired by (and some parts have been rewritten from) the free and open source
+> [IEM Plugin Suite](https://plugins.iem.at).
+
+## Download
+
+> soon
+
+## Building your own plugins
+
+> also soon

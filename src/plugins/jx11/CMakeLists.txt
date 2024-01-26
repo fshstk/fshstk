@@ -35,6 +35,7 @@ juce_add_plugin(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
   fshlib
+  Background
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -43,6 +44,16 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_sources(${PROJECT_NAME} PRIVATE
   main.cpp
+  PluginEditor.cpp
   PluginProcessor.cpp
   PluginState.cpp
+)
+
+juce_add_binary_data(Background
+  HEADER_NAME
+    Background.h
+  NAMESPACE
+    background
+  SOURCES
+    background.svg
 )

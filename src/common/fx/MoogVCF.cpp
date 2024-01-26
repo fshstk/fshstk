@@ -19,54 +19,60 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#define _USE_MATH_DEFINES
+#include "MoogVCF.h"
+#include <algorithm>
+#include <cmath>
 
-class PluginState : public fsh::plugin::StateManager
+using namespace fsh::fx;
+
+void MoogVCF::setParams(const Params& params)
 {
-public:
-  enum class Param
-  {
-    ambi_center,
-    ambi_spread,
+  _params = params;
+  calculateCoefficients();
+}
 
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
+void MoogVCF::setSampleRate(double sampleRate)
+{
+  _sampleRate = sampleRate;
+  calculateCoefficients();
+}
 
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
+float MoogVCF::processSample(float input)
+{
+  const auto x = input - _resCoeff * _stage[3];
 
-    fx_drive,
-    fx_noise,
+  // Four cascaded one-pole filters (bilinear transform)
+  _stage[0] = x * _p + _delay[0] * _p - _k * _stage[0];
+  _stage[1] = _stage[0] * _p + _delay[1] * _p - _k * _stage[1];
+  _stage[2] = _stage[1] * _p + _delay[2] * _p - _k * _stage[2];
+  _stage[3] = _stage[2] * _p + _delay[3] * _p - _k * _stage[3];
 
-    level,
+  // Clipping band-limited sigmoid
+  _stage[3] -= (_stage[3] * _stage[3] * _stage[3]) / 6.0;
 
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
+  _delay[0] = x;
+  _delay[1] = _stage[0];
+  _delay[2] = _stage[1];
+  _delay[3] = _stage[2];
 
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
+  return static_cast<float>(_stage[3]);
+}
 
-    reverb,
+void MoogVCF::calculateCoefficients()
+{
+  const auto nyquist = 0.5;
+  const auto cutoffCoeff = 2.0 * std::clamp(_params.cutoff / _sampleRate, 0.0, nyquist);
+  _p = cutoffCoeff * (1.8 - 0.8 * cutoffCoeff);
+  _k = 2.0 * std::sin(cutoffCoeff * M_PI * 0.5) - 1.0;
 
-    voice_glide,
-    voice_polyphony,
-  };
+  const auto t1 = (1.0 - _p) * 1.386249;
+  const auto t2 = 12.0 + t1 * t1;
+  _resCoeff = _params.resonance * (t2 + 6.0 * t1) / (t2 - 6.0 * t1);
+}
 
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
-};
+void MoogVCF::reset()
+{
+  _stage.fill(0.0);
+  _delay.fill(0.0);
+}

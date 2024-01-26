@@ -20,53 +20,28 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 
-class PluginState : public fsh::plugin::StateManager
+namespace fsh::gui {
+/**
+An element of the OptionPicker.
+*/
+class OptionButton : public juce::Button
 {
 public:
-  enum class Param
+  /// Parameters for the OptionButton.
+  struct Params
   {
-    ambi_center,
-    ambi_spread,
-
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
-
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
-
-    fx_drive,
-    fx_noise,
-
-    level,
-
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
-
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
-
-    reverb,
-
-    voice_glide,
-    voice_polyphony,
+    juce::String text;           ///< The text to be displayed.
+    juce::Colour color;          ///< The color of the button.
+    juce::Colour highlightColor; ///< The color of the button when selected.
   };
 
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
+  /// Constructor.
+  explicit OptionButton(const Params&);
+
+private:
+  void paintButton(juce::Graphics&, bool highlighted, bool down) override;
+  Params _params;
 };
+} // namespace fsh::gui

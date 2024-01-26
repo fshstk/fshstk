@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include <cmath>
 #include <juce_audio_processors/juce_audio_processors.h>
 
 namespace fsh::plugin {
@@ -52,6 +53,14 @@ struct ParamFloat
   Range range;            ///< The parameter's range, including optional step size and skew factor
   float defaultVal = 0.0; ///< The parameter's default value
   Attributes attributes = {}; ///< The parameter's attributes, e.g. a label
+
+  /// Returns a range with a skew factor that is suitable for logarithmic frequency sliders in audio
+  static Range freqRange(float min = 20.0f, float max = 20'000.0f, float interval = 1.0f)
+  {
+    const auto geometricMean = sqrtf(min * max);
+    const auto skew = logf(0.5) / logf((geometricMean - min) / (max - min));
+    return Range{ min, max, interval, skew };
+  }
 
   /// Creates a juce::AudioParameterFloat object from the given parameters
   auto create() const

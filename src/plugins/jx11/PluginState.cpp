@@ -21,248 +21,227 @@
 
 #include "PluginState.h"
 #include "FDNReverb.h"
+#include "ParamBool.h"
 #include "ParamChoice.h"
 #include "ParamFloat.h"
 #include <fmt/format.h>
 
+using enum PluginState::Param;
+using fsh::plugin::ParamBool;
+using fsh::plugin::ParamChoice;
+using fsh::plugin::ParamFloat;
+
 namespace {
+auto id(PluginState::Param p)
+{
+  return PluginState::getID(p);
+}
+
 auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLayout
 {
-  const auto percentLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("%");
-  const auto semitonesLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("semi");
-  const auto centsLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("cents");
-  const auto millisecondsLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("ms");
-  const auto decibelsLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("dB");
-  const auto herzLabel = fsh::plugin::ParamFloat::Attributes{}.withLabel("Hz");
+  const auto displayAsDegrees = ParamFloat::Attributes{}.withStringFromValueFunction(
+    [](float val, int) { return fmt::format("{:+0.0f}°", val); });
 
-  const auto oscMixLabel = percentLabel.withStringFromValueFunction([](float val, int) {
-    const auto oscBLvl = val;
-    const auto oscALvl = 100.0f - oscBLvl;
-    return fmt::format("A: {:3.0f} | B: {:3.0f}", oscALvl, oscBLvl);
-  });
+  const auto displayAsDegreesRange =
+    ParamFloat::Attributes{}.withStringFromValueFunction([](float val, int) {
+      return fmt::format("{} {:0.0f}°", (val >= 0) ? "+/-" : "-/+", std::abs(val) / 2.0f);
+    });
 
-  const auto filterVelLabel = percentLabel.withStringFromValueFunction(
-    [](float val, int) { return (val < -90.0f) ? "OFF" : fmt::format("{}", val); });
+  const auto displayAsOnOff = ParamBool::Attributes{}.withStringFromValueFunction(
+    [](bool val, int) { return val ? "ON" : "OFF"; });
 
-  const auto lfoRateLabel = percentLabel.withStringFromValueFunction([](float val, int) {
-    const auto freq = std::exp(7.0f * val - 4.0f);
-    return fmt::format("{:.3f}", freq);
-  });
+  const auto displayAsDecibels = ParamFloat::Attributes{}.withStringFromValueFunction(
+    [](float val, int) { return fmt::format("{:+0.1f} dB", val); });
 
-  const auto vibratoLabel = herzLabel.withStringFromValueFunction([](float val, int) {
-    return (val < 0.0f) ? fmt::format("PWM {:.1f}", -val) : fmt::format("{:.1f}", val);
-  });
+  const auto displayAsSemitones = ParamFloat::Attributes{}.withStringFromValueFunction(
+    [](float val, int) { return fmt::format("{:+0.0f} semi", val); });
+
+  const auto displayAsCents = ParamFloat::Attributes{}.withStringFromValueFunction(
+    [](float val, int) { return fmt::format("{:+0.0f} cents", val); });
 
   return {
-    fsh::plugin::ParamFloat{
-      .id = "osc_mix",
-      .name = "Oscillator Mix",
-      .range = { 0.0f, 100.0f },
+    ParamFloat{
+      .id = id(ambi_center),
+      .name = "AMBI: center",
+      .range = { -180.0f, 180.0f, 1.0f },
       .defaultVal = 0.0f,
-      .attributes = oscMixLabel,
+      .attributes = displayAsDegrees,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "osc_tune",
-      .name = "Oscillator Detune",
-      .range = { -24.0f, 24.0f, 1.0f },
-      .defaultVal = -12.0f,
-      .attributes = semitonesLabel,
+    ParamFloat{
+      .id = id(ambi_spread),
+      .name = "AMBI: spread",
+      .range = { -720.0f, 720.0f, 1.0f },
+      .defaultVal = 360.0f,
+      .attributes = displayAsDegreesRange,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "osc_fine",
-      .name = "Oscillator Detune (Fine)",
-      .range = fsh::plugin::ParamFloat::Range{ -50.0f, 50.0f, 0.1f, 0.3f, true },
-      .defaultVal = 0.0f,
-      .attributes = centsLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "velocity_amt",
-      .name = "Velocity Sensitivity",
-      .range = fsh::plugin::ParamFloat::Range{ 0.0f, 100.0f },
-      .defaultVal = 50.0f,
-      .attributes = percentLabel,
-    }
-      .create(),
-    fsh::plugin::ParamChoice{
-      .id = "glide_mode",
-      .name = "Glide Mode",
-      .choices = { "Off", "Legato", "Always" },
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "glide_rate",
-      .name = "Glide Rate",
+    ParamFloat{
+      .id = id(ampenv_attack),
+      .name = "AMP ENV: attack",
       .range = { 0.0f, 100.0f, 1.0f },
-      .defaultVal = 35.0f,
-      .attributes = percentLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "glide_bend",
-      .name = "Glide Bend",
-      .range = fsh::plugin::ParamFloat::Range{ -36.0f, 36.0f, 0.01f, 0.4f, true },
       .defaultVal = 0.0f,
-      .attributes = semitonesLabel,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_freq",
-      .name = "Filter Frequency",
-      .range = { 0.0f, 100.0f, 0.1f },
+    ParamFloat{
+      .id = id(ampenv_decay),
+      .name = "AMP ENV: decay",
+      .range = { 0.0f, 100.0f, 1.0f },
+      .defaultVal = 30.0f,
+    }
+      .create(),
+
+    ParamBool{
+      .id = id(ampenv_hold),
+      .name = "AMP ENV: hold",
+      .defaultVal = true,
+      .attributes = displayAsOnOff,
+    }
+      .create(),
+    ParamBool{
+      .id = id(ampenv_vel),
+      .name = "AMP ENV: velocity",
+      .defaultVal = false,
+      .attributes = displayAsOnOff,
+    }
+      .create(),
+    ParamFloat{
+      .id = id(filtenv_attack),
+      .name = "FILT ENV: attack",
+      .range = { 0.0f, 100.0f, 1.0f },
+      .defaultVal = 0.0f,
+    }
+      .create(),
+    ParamFloat{
+      .id = id(filtenv_decay),
+      .name = "FILT ENV: decay",
+      .range = { 0.0f, 100.0f, 1.0f },
+      .defaultVal = 30.0f,
+    }
+      .create(),
+    ParamFloat{
+      .id = id(filtenv_modamt),
+      .name = "FILT ENV: mod Amount",
+      .range = { 0.0f, 100.0f, 1.0f },
+      .defaultVal = 0.0f,
+    }
+      .create(),
+    ParamFloat{
+      .id = id(filter_cutoff),
+      .name = "FILTER: cutoff",
+      .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 100.0f,
-      .attributes = percentLabel,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_reso",
-      .name = "Filter Resonance",
+    ParamFloat{
+      .id = id(filter_resonance),
+      .name = "FILTER: resonance",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 15.0f,
-      .attributes = percentLabel,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_env",
-      .name = "Filter Envelope Amount",
-      .range = { -100.0f, 100.0f, 0.1f },
-      .defaultVal = 50.0f,
-      .attributes = percentLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_lfo",
-      .name = "Filter LFO Amount",
+    ParamFloat{
+      .id = id(fx_drive),
+      .name = "FX: drive",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
-      .attributes = percentLabel,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_vel",
-      .name = "Filter Velocity Amount",
-      .range = { -100.0f, 100.0f, 1.0f },
-      .defaultVal = 0.0f,
-      .attributes = filterVelLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_attack",
-      .name = "Filter Attack",
+    ParamFloat{
+      .id = id(fx_noise),
+      .name = "FX: noise",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
-      .attributes = percentLabel,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_decay",
-      .name = "Filter Decay",
-      .range = { 0.0f, 100.0f, 1.0f },
-      .defaultVal = 30.0f,
-      .attributes = percentLabel,
+    ParamFloat{
+      .id = id(level),
+      .name = "LEVEL: level",
+      .range =
+        []() {
+          auto range = juce::NormalisableRange<float>{ -24.0f, 6.0f, 0.1f };
+          range.setSkewForCentre(0.0f);
+          return range;
+        }(),
+      .defaultVal = 0.0f,
+      .attributes = displayAsDecibels,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_sustain",
-      .name = "Filter Sustain",
+    ParamFloat{
+      .id = id(oscA_level),
+      .name = "OSC A: level",
       .range = { 0.0f, 100.0f, 1.0f },
       .defaultVal = 0.0f,
-      .attributes = percentLabel,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "filter_release",
-      .name = "Filter Release",
-      .range = { 0.0f, 100.0f, 1.0f },
-      .defaultVal = 25.0f,
-      .attributes = percentLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "env_attack",
-      .name = "Envelope Attack",
-      .range = { 0.0f, 1000.0f, 1.0f },
+    ParamFloat{
+      .id = id(oscA_tune),
+      .name = "OSC A: tune",
+      .range = { -24.0f, 24.0f, 1.0f },
       .defaultVal = 0.0f,
-      .attributes = millisecondsLabel,
+      .attributes = displayAsSemitones,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "env_decay",
-      .name = "Envelope Decay",
-      .range = { 0.0f, 1000.0f, 1.0f },
-      .defaultVal = 50.0f,
-      .attributes = millisecondsLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "env_sustain",
-      .name = "Envelope Sustain",
-      .range = { 0.0f, 100.0f, 1.0f },
-      .defaultVal = 100.0f,
-      .attributes = percentLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "env_release",
-      .name = "Envelope Release",
-      .range = { 0.0f, 1000.0f, 1.0f },
-      .defaultVal = 30.0f,
-      .attributes = millisecondsLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "lfo_rate",
-      .name = "LFO Rate",
-      .range = { 0.0f, 1.0f },
-      .defaultVal = 0.81f,
-      .attributes = lfoRateLabel,
-    }
-      .create(),
-    fsh::plugin::ParamFloat{
-      .id = "vibrato",
-      .name = "Vibrato Amount",
-      .range = { -100.0f, 100.0f },
+    ParamFloat{
+      .id = id(oscA_fine),
+      .name = "OSC A: fine",
+      .range = { -50.0f, 50.0f, 1.0f },
       .defaultVal = 0.0f,
-      .attributes = vibratoLabel,
+      .attributes = displayAsCents,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "noise",
-      .name = "Noise Amount",
+    ParamChoice{
+      .id = id(oscA_waveform),
+      .name = "OSC A: waveform",
+      .choices = { "Saw", "Triangle", "Square" },
+    }
+      .create(),
+    ParamFloat{
+      .id = id(oscB_level),
+      .name = "OSC B: level",
       .range = { 0.0f, 100.0f, 1.0f },
+      .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "level",
-      .name = "Output Level",
-      .range = { -24.0f, 6.0f, 0.1f },
+    ParamFloat{
+      .id = id(oscB_tune),
+      .name = "OSC B: tune",
+      .range = { -24.0f, 24.0f, 1.0f },
+      .defaultVal = 0.0f,
+      .attributes = displayAsSemitones,
     }
       .create(),
-    fsh::plugin::ParamChoice{
-      .id = "polymode",
-      .name = "Polyphony",
-      .choices = { "Mono", "Poly" },
+    ParamFloat{
+      .id = id(oscB_fine),
+      .name = "OSC B: fine",
+      .range = { -50.0f, 50.0f, 1.0f },
+      .defaultVal = 0.0f,
+      .attributes = displayAsCents,
     }
       .create(),
-    fsh::plugin::ParamChoice{
-      .id = "rev_preset",
-      .name = "Reverb Preset",
+    ParamChoice{
+      .id = id(oscB_waveform),
+      .name = "OSC B: waveform",
+      .choices = { "Saw", "Triangle", "Square" },
+    }
+      .create(),
+    ParamChoice{
+      .id = id(reverb),
+      .name = "REVERB: preset",
       .choices = { "Off", "Earth", "Metal", "Sky" },
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "azi_center",
-      .name = "Azimuth Center",
-      .range = { -180.0f, 180.0f },
+    ParamFloat{
+      .id = id(voice_glide),
+      .name = "VOICE: glide",
+      .range = { 0.0f, 100.0f, 1.0f },
+      .defaultVal = 0.0f,
     }
       .create(),
-    fsh::plugin::ParamFloat{
-      .id = "azi_range",
-      .name = "Azimuth Range",
-      .range = { 0.0f, 720.0f },
-      .defaultVal = 180.0f,
+    ParamChoice{
+      .id = id(voice_polyphony),
+      .name = "VOICE: polyphony",
+      .choices = { "Mono", "Legato", "Poly" },
     }
       .create(),
   };
@@ -272,48 +251,105 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 PluginState::PluginState(juce::AudioProcessor& parent)
   : StateManager(parent, createParameterLayout())
 {
+  juce::ignoreUnused(id(oscA_waveform));    // TODO
+  juce::ignoreUnused(id(oscB_waveform));    // TODO
+  juce::ignoreUnused(id(filtenv_attack));   // TODO
+  juce::ignoreUnused(id(filtenv_decay));    // TODO
+  juce::ignoreUnused(id(filtenv_modamt));   // TODO
+  juce::ignoreUnused(id(filter_cutoff));    // TODO
+  juce::ignoreUnused(id(filter_resonance)); // TODO
+  juce::ignoreUnused(id(fx_drive));         // TODO
+  juce::ignoreUnused(id(level));            // TODO
+  juce::ignoreUnused(id(voice_glide));      // TODO
+  juce::ignoreUnused(id(voice_polyphony));  // TODO
 }
 
 auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
 {
-  const auto oscMix = getRawParamSafely("osc_mix");
-  const auto oscTune = getRawParamSafely("osc_tune");
-  const auto oscFine = getRawParamSafely("osc_fine");
-  const auto noisePercent = getRawParamSafely("noise");
-
-  const auto oscBLvl = oscMix / 100.0f;
-  const auto oscALvl = 1.0f - oscBLvl;
-  const auto noiseLvl = noisePercent / 100.0f;
-
-  const auto oscBDetune = [&]() {
-    const auto semitones = oscTune + oscFine / 100.0f;
+  const auto detune = [](float semi, float cents) {
+    const auto semitones = semi + (cents / 100.0f);
     const auto freqRatio = std::exp2(semitones / 12.0f);
     return freqRatio;
-  }();
-
-  return { .voice = {
-             .noiseLvl = noiseLvl,
-             .oscALvl = oscALvl,
-             .oscBLvl = oscBLvl,
-             .oscBDetune = oscBDetune,
-             .adsr = getAmpEnvelope(),
-             .velocityAmt = getRawParamSafely("velocity_amt") / 100.0f,
-             .aziCenter = getRawParamSafely("azi_center"),
-             .aziRange = getRawParamSafely("azi_range"),
-           } };
+  };
+  // TODO: refactor into osc params
+  return {
+    .voice = { .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
+               .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
+               .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
+               .oscBDetune =
+                 detune(getParameter<float>(id(oscB_tune)), getParameter<float>(id(oscB_fine))),
+               .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
+                         .decay = getParameter<float>(id(ampenv_decay)),
+                         .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
+                         .release = getParameter<float>(id(ampenv_decay)) },
+               .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
+               .aziCenter = getParameter<float>(id(ambi_center)),
+               .aziRange = getParameter<float>(id(ambi_spread)),
+               .filterCutoff = getParameter<float>(id(filter_cutoff)) / 2.5f,
+               .filterResonance = getParameter<float>(id(filter_resonance)) / 100.0f },
+  };
 }
 
 auto PluginState::getReverbPreset() const -> fsh::fx::FDNReverb::Preset
 {
-  return static_cast<fsh::fx::FDNReverb::Preset>(getRawParamSafely("rev_preset"));
+  return getParameter<fsh::fx::FDNReverb::Preset>(id(reverb));
 }
 
-auto PluginState::getAmpEnvelope() const -> fsh::synth::ADSR::Params
+auto PluginState::getID(Param p) -> juce::ParameterID
 {
-  return {
-    .attack = getRawParamSafely("env_attack"),
-    .decay = getRawParamSafely("env_decay"),
-    .sustain = getRawParamSafely("env_sustain") / 100.0f,
-    .release = getRawParamSafely("env_release"),
-  };
+  switch (p) {
+    case ambi_center:
+      return "ambi_center";
+    case ambi_spread:
+      return "ambi_spread";
+    case ampenv_attack:
+      return "ampenv_attack";
+    case ampenv_decay:
+      return "ampenv_decay";
+    case ampenv_hold:
+      return "ampenv_hold";
+    case ampenv_vel:
+      return "ampenv_vel";
+    case filtenv_attack:
+      return "filtenv_attack";
+    case filtenv_decay:
+      return "filtenv_decay";
+    case filtenv_modamt:
+      return "filtenv_modamt";
+    case filter_cutoff:
+      return "filter_cutoff";
+    case filter_resonance:
+      return "filter_resonance";
+    case fx_drive:
+      return "fx_drive";
+    case fx_noise:
+      return "fx_noise";
+    case level:
+      return "level";
+    case oscA_level:
+      return "oscA_level";
+    case oscA_tune:
+      return "oscA_tune";
+    case oscA_fine:
+      return "oscA_fine";
+    case oscA_waveform:
+      return "oscA_waveform";
+    case oscB_level:
+      return "oscB_level";
+    case oscB_tune:
+      return "oscB_tune";
+    case oscB_fine:
+      return "oscB_fine";
+    case oscB_waveform:
+      return "oscB_waveform";
+    case reverb:
+      return "reverb";
+    case voice_glide:
+      return "voice_glide";
+    case voice_polyphony:
+      return "voice_polyphony";
+  }
+
+  spdlog::error("PluginState::id: invalid param");
+  return {};
 }

@@ -19,54 +19,77 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include "OptionPicker.h"
+#include "spdlog/spdlog.h"
 
-class PluginState : public fsh::plugin::StateManager
+using namespace fsh::gui;
+
+OptionPicker::OptionPicker(const Params& p)
+  : _params(p)
 {
-public:
-  enum class Param
-  {
-    ambi_center,
-    ambi_spread,
+  if (_params.choice == nullptr) {
+    spdlog::error("OptionPicker: choice parameter is null");
+    return;
+  }
 
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
+  const auto numChoices = static_cast<size_t>(_params.choice->choices.size());
+  for (auto i = 0U; i < numChoices; ++i) {
+    const auto text = _params.choice->choices[static_cast<int>(i)];
+    auto component = std::make_unique<OptionButton>(OptionButton::Params{
+      .text = text,
+      .color = _params.color,
+      .highlightColor = _params.highlightColor,
+    });
+    addAndMakeVisible(*component);
+    component->onClick = [this, i] { buttonClicked(i); };
+    _options.push_back(std::move(component));
+  }
 
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
+  _params.choice->addListener(this);
+}
 
-    fx_drive,
-    fx_noise,
+OptionPicker::~OptionPicker()
+{
+  _params.choice->removeListener(this);
+}
 
-    level,
+void OptionPicker::buttonClicked(size_t i)
+{
+  if (i == getSelectedIndex())
+    return;
 
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
+  if (i >= _options.size()) {
+    spdlog::error("OptionPicker: index {} out of bounds ({})", i, _options.size());
+    return;
+  }
 
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
+  _params.choice->setValueNotifyingHost(static_cast<float>(i) /
+                                        static_cast<float>(_options.size() - 1));
+}
 
-    reverb,
+void OptionPicker::paint(juce::Graphics& g)
+{
+  juce::ignoreUnused(g);
+  _options[getSelectedIndex()]->setToggleState(true, juce::NotificationType::dontSendNotification);
+}
 
-    voice_glide,
-    voice_polyphony,
-  };
+void OptionPicker::resized()
+{
+  using juce::operator""_fr;
+  auto grid = juce::Grid{};
+  grid.templateColumns = { 1_fr };
 
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
-};
+  for (const auto& component : _options) {
+    assert(component != nullptr);
+    grid.templateRows.add(1_fr);
+    grid.items.add(juce::GridItem{ *component });
+  }
+
+  const auto margin = 10;
+  grid.performLayout(getLocalBounds().reduced(margin));
+}
+
+auto OptionPicker::getSelectedIndex() const -> size_t
+{
+  return static_cast<size_t>(_params.choice->getIndex());
+}

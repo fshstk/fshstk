@@ -20,53 +20,49 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include "OptionButton.h"
+#include <cstddef>
+#include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_gui_basics/juce_gui_basics.h>
+#include <spdlog/spdlog.h>
 
-class PluginState : public fsh::plugin::StateManager
+namespace fsh::gui {
+/**
+Class for displaying a list of options as buttons.
+*/
+class OptionPicker
+  : public juce::Component
+  , public juce::AudioProcessorParameter::Listener
 {
 public:
-  enum class Param
+  /// Parameters for the OptionPicker.
+  struct Params
   {
-    ambi_center,
-    ambi_spread,
-
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
-
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
-
-    fx_drive,
-    fx_noise,
-
-    level,
-
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
-
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
-
-    reverb,
-
-    voice_glide,
-    voice_polyphony,
+    juce::AudioParameterChoice* choice; ///< The parameter to be controlled.
+    juce::Colour color;                 ///< The color of the buttons.
+    juce::Colour highlightColor;        ///< The color of the selected button.
   };
 
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
+  /// Constructor.
+  explicit OptionPicker(const Params&);
+
+  /// Destructor.
+  ~OptionPicker() override;
+
+private:
+  OptionPicker(const OptionPicker&) = delete;
+  OptionPicker& operator=(const OptionPicker&) = delete;
+  OptionPicker(OptionPicker&&) = delete;
+  OptionPicker& operator=(OptionPicker&&) = delete;
+
+  void parameterValueChanged(int, float) override { repaint(); }
+  void parameterGestureChanged(int, bool) override { repaint(); }
+  auto getSelectedIndex() const -> size_t;
+  void buttonClicked(size_t i);
+  void paint(juce::Graphics&) override;
+  void resized() override;
+
+  Params _params;
+  std::vector<std::unique_ptr<OptionButton>> _options;
 };
+} // namespace fsh::gui

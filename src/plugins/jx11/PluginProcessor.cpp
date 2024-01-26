@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "PluginProcessor.h"
+#include "PluginEditor.h"
 #include "SphericalHarmonics.h"
 #include "Synth.h"
 
@@ -28,6 +29,11 @@ PluginProcessor::PluginProcessor()
       .outputs = juce::AudioChannelSet::ambisonic(fsh::util::maxAmbiOrder),
     })
 {
+}
+
+auto PluginProcessor::customEditor() -> std::unique_ptr<juce::AudioProcessorEditor>
+{
+  return std::make_unique<PluginEditor>(*this, _params);
 }
 
 void PluginProcessor::prepareToPlay(double sampleRate, int bufferSize)

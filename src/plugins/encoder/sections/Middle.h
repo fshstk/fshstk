@@ -20,8 +20,8 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "KnobWithLabel.h"
 #include "PluginState.h"
-#include "SimpleKnob.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class Middle : public juce::Component
@@ -31,6 +31,12 @@ public:
   void resized() override;
 
 private:
-  fsh::gui::SimpleKnob gainKnob{ "gain", 120.0 };
-  fsh::gui::SimpleKnob orderKnob{ "3d resolution", 120.0 };
+  fsh::gui::KnobWithLabel gainKnob{ {
+    .label = "gain",
+    .knobParams = { .color = fsh::gui::Colors::light },
+  } };
+  fsh::gui::KnobWithLabel orderKnob{ {
+    .label = "3d resolution",
+    .knobParams = { .color = fsh::gui::Colors::light },
+  } };
 };

@@ -20,53 +20,35 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include "SimpleKnob.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
-class PluginState : public fsh::plugin::StateManager
+namespace fsh::gui {
+/**
+A knob with a label.
+*/
+class KnobWithLabel : public juce::Component
 {
 public:
-  enum class Param
+  /// Parameters for the KnobWithLabel.
+  struct Params
   {
-    ambi_center,
-    ambi_spread,
-
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
-
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
-
-    fx_drive,
-    fx_noise,
-
-    level,
-
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
-
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
-
-    reverb,
-
-    voice_glide,
-    voice_polyphony,
+    juce::String label;            ///< The label to be displayed.
+    SimpleKnob::Params knobParams; ///< The parameters for the knob.
   };
 
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
+  /// Constructor.
+  explicit KnobWithLabel(const Params&);
+
+  /// Attach this knob to a parameter.
+  void attach(plugin::StateManager&, juce::ParameterID);
+
+private:
+  void paint(juce::Graphics&) override;
+  void resized() override;
+
+  Params _params;
+  SimpleKnob _knob;
+  std::unique_ptr<plugin::StateManager::SliderAttachment> _stateManager;
 };
+} // namespace fsh::gui

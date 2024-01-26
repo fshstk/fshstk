@@ -20,53 +20,57 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include <array>
 
-class PluginState : public fsh::plugin::StateManager
+namespace fsh::fx {
+/**
+Virtual analog Moog-style lowpass filter.
+
+This implementation originally appeared on
+[MusicDSP.org](http://www.musicdsp.org/en/latest/Filters/24-moog-vcf.html), and was then
+ported/improved by [ddiakopoulos on
+GitHub](https://github.com/ddiakopoulos/MoogLadders/blob/master/src/MusicDSPModel.h).
+
+## Before using
+
+Set the sample rate using setSampleRate(), and parameters using setParams().
+
+## To use
+
+Call processSample() for each sample.
+*/
+class MoogVCF
 {
 public:
-  enum class Param
+  /// Parameters for the filter
+
+  struct Params
   {
-    ambi_center,
-    ambi_spread,
-
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
-
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
-
-    fx_drive,
-    fx_noise,
-
-    level,
-
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
-
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
-
-    reverb,
-
-    voice_glide,
-    voice_polyphony,
+    float cutoff = 1'000.0f; ///< Filter cutoff frequency in Hz
+    float resonance = 0.1f;  ///< Filter resonance
   };
 
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
+  /// Set the filter parameters
+  void setParams(const Params&);
+
+  /// Set the sample rate in Hz
+  void setSampleRate(double);
+
+  /// Filter a single sample
+  float processSample(float);
+
+  /// Reset the filter state
+  void reset();
+
+private:
+  void calculateCoefficients();
+
+  Params _params;
+  double _sampleRate;
+  double _resCoeff;
+  double _p;
+  double _k;
+  std::array<double, 4> _stage = {};
+  std::array<double, 4> _delay = {};
 };
+} // namespace fsh::fx

@@ -54,21 +54,44 @@ namespace fsh::plugin {
 /**
 The base class for all fsh::stk plugins.
 
-PluginBase provides a default implementation for all methods of juce::AudioProcessor, except
-processBlock(), which is always required for a plugin to work. It also provides a default
-implementation for getStateInformation() and setStateInformation(), so plugins can save/recall
-state and presets out of the box, and provides a default GUI editor. This means that to create a
-plugin, all you have to do is create a PluginState class and implement the processBlock() method.
+> PluginBase provides a default implementation for all methods of juce::AudioProcessor, except
+> processBlock(), which is always required for a plugin to work. It also provides a default
+> implementation for getStateInformation() and setStateInformation(), so plugins can save/recall
+> state and presets out of the box, and provides a default GUI editor.
 
-**To use:** Create a PluginState class that inherits from PluginStateBase. Then create a
-PluginProcessor class that inherits from PluginBase<PluginState>. You will need to specify the
-number of outputs (and optionally inputs) in the constructor. Do this inside your child class
-constructor, so your own class can have a default constructor with no parameters. Next, create a
-processBlock() method in the child class. Create a boilerplate main function (see existing
-plugins). That's it!
+To create a plugin, all you have to do is create two classes and override one method:
 
-In many cases you will need to override additional methods, such as prepareToPlay() if you have
-components that need to know the sample rate or buffer size.
+## PluginState & PluginProcessor
+
+- Create a `PluginState` class that inherits from StateManager,
+- then create a `PluginProcessor` class that inherits from `Processor<PluginState>`.
+
+> You will need to specify the number of outputs (and optionally inputs) in the constructor. Do this
+> inside your child class constructor, so your own class can have a default constructor with no
+> parameters.
+
+- Next, create a `processBlock()` method in the child class, and
+- provide a `main.cpp` file with a boilerplate main function (see existing plugins).
+
+That's it!
+
+> In many cases you will need to override additional methods, such as prepareToPlay() if you have
+> components that need to know the sample rate or buffer size.
+
+## Custom editor
+
+The default implementation creates a `juce::GenericAudioProcessorEditor`, which will display an
+unstyled list of your plugin's parameters. This is good enough to start, but if you want to create a
+custom editor, you will need to override customEditor(), e.g.:
+
+```cpp
+auto customEditor() -> std::unique_ptr<juce::AudioProcessorEditor> override
+{
+  return std::make_unique<PluginEditor>(*this, _params);
+}
+```
+
+The [JUCE tutorials/docs](https://juce.com/learn/tutorials) describe how editors work in detail.
 */
 template<class StateManager>
 class Processor : public juce::AudioProcessor
@@ -138,14 +161,10 @@ public:
   /// Returns whether the plugin has an editor. (It does, by default.)
   bool hasEditor() const override { return true; }
 
-  /// Create the plugin's editor. The default implementation creates a GenericAudioProcessorEditor,
-  /// which will display an unstyled list of your plugin's parameters. This is good enough to start,
-  /// but if you want to create a custom editor, you will need to override this method and return
-  /// a pointer to your own PluginEditor class. Never call this yourself, or you will leak memory.
-  juce::AudioProcessorEditor* createEditor() override
-  {
-    return new juce::GenericAudioProcessorEditor(*this);
-  }
+  /// Provide custom editor instead of GenericAudioProcessorEditor. Override
+  /// this if you have a custom editor. It will get passed to the base class's
+  /// createEditor() method. This wrapper is here to prevent accidental memory leaks.
+  virtual std::unique_ptr<juce::AudioProcessorEditor> customEditor() { return {}; }
 
   /// Returns whether the plugin accepts MIDI input (as specified in the JUCE project settings)
   bool acceptsMidi() const override { return _wantsMidi; }
@@ -205,6 +224,17 @@ protected:
   StateManager _params;
 
 private:
+  /// Create the plugin's editor. The default implementation creates a GenericAudioProcessorEditor,
+  /// which will display an unstyled list of your plugin's parameters. This is good enough to start,
+  /// but if you want to create a custom editor, you will need to override hasEditor(). Never call
+  /// this yourself, or you will leak memory.
+  juce::AudioProcessorEditor* createEditor() final
+  {
+    if (auto editor = customEditor(); editor)
+      return editor.release();
+    return new juce::GenericAudioProcessorEditor(*this);
+  }
+
   inline static const auto _isSynth = bool{ JucePlugin_IsSynth };
   inline static const auto _name = juce::String{ JucePlugin_Name };
   inline static const auto _wantsMidi = bool{ JucePlugin_WantsMidiInput };

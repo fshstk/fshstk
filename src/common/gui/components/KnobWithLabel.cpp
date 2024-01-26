@@ -19,54 +19,42 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include "KnobWithLabel.h"
+#include "guiGlobals.h"
 
-class PluginState : public fsh::plugin::StateManager
+using namespace fsh::gui;
+
+KnobWithLabel::KnobWithLabel(const Params& params)
+  : _params(params)
+  , _knob(params.knobParams)
 {
-public:
-  enum class Param
-  {
-    ambi_center,
-    ambi_spread,
+  addAndMakeVisible(_knob);
+}
 
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
+void KnobWithLabel::paint(juce::Graphics& g)
+{
+  g.setColour(_params.knobParams.color);
+  g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
 
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
+  const auto area = getLocalBounds();
+  const auto margin = 5;
+  const auto knobBottomY = _knob.getBoundsInParent().getBottom() + margin;
+  const auto text = _knob.isMouseButtonDown() ? _knob.getTextFromValue(_knob.getValue())
+                                              : _params.label.toUpperCase();
+  g.drawText(text, area.withTop(knobBottomY), juce::Justification::centredTop, true);
+}
 
-    fx_drive,
-    fx_noise,
+void KnobWithLabel::resized()
+{
+  const auto offsetY = 10;
+  const auto x = getLocalBounds().getCentreX();
+  const auto y = getLocalBounds().getCentreY() - offsetY;
+  const auto knobSize = 30;
+  _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2), knobSize, knobSize);
+}
 
-    level,
-
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
-
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
-
-    reverb,
-
-    voice_glide,
-    voice_polyphony,
-  };
-
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
-};
+void KnobWithLabel::attach(plugin::StateManager& state, juce::ParameterID id)
+{
+  _stateManager = std::make_unique<plugin::StateManager::SliderAttachment>(
+    state.getReferenceToBaseClass(), id.getParamID(), _knob);
+}

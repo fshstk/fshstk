@@ -20,53 +20,39 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 
-class PluginState : public fsh::plugin::StateManager
+namespace fsh::gui {
+/**
+A panel for the dynamic layout of multiple components.
+*/
+class ComponentPanel : public juce::Component
 {
 public:
-  enum class Param
+  /// Orientation of the panel.
+  enum class Orientation
   {
-    ambi_center,
-    ambi_spread,
-
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
-
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
-
-    fx_drive,
-    fx_noise,
-
-    level,
-
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
-
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
-
-    reverb,
-
-    voice_glide,
-    voice_polyphony,
+    Horizontal, ///< Horizontal orientation
+    Vertical    ///< Vertical orientation
   };
 
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
+  /// Parameters for the ComponentPanel.
+  struct Params
+  {
+    juce::String label;                                ///< The label to be displayed.
+    juce::Colour foreground;                           ///< The color of the label.
+    juce::Colour background;                           ///< The color of the background.
+    Orientation orientation = Orientation::Horizontal; ///< The orientation of the panel.
+  };
+
+  /// Constructor.
+  ComponentPanel(const Params&, std::vector<juce::Component*>);
+
+private:
+  void paint(juce::Graphics&) override;
+  void resized() override;
+
+  Params _params;
+  std::vector<juce::Component*> _components;
 };
+} // namespace fsh::gui

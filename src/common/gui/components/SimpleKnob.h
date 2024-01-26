@@ -21,6 +21,7 @@
 
 #pragma once
 #include "StateManager.h"
+#include "guiGlobals.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
@@ -39,27 +40,21 @@ public:
     Endless  ///< The knob will wrap around when the user drags it beyond its range.
   };
 
+  /// Parameters for the SimpleKnob component.
+  struct Params
+  {
+    juce::Colour color = Colors::dark;     ///< Color of the knob.
+    Behavior behavior = Behavior::Bounded; ///< Behavior of the knob.
+    float knobRangeDegrees = 270.0f;       ///< Range of the knob in degrees.
+    float notchWidthDegrees = 7.0f;        ///< Width of the indicator notch in degrees.
+    float notchDepthFraction = 0.7f; ///< Depth of the indicator notch as a fraction of the radius.
+  };
+
   /// Constructor.
-  SimpleKnob(const juce::String& name,
-             double knobRangeDegrees = 270.0,
-             Behavior = Behavior::Bounded);
-
-  /// Called by JUCE to paint the knob.
-  void paint(juce::Graphics& g) override;
-
-  /// Attach this knob to a parameter.
-  void attach(plugin::StateManager&, juce::String paramID);
+  explicit SimpleKnob(const Params&);
 
 private:
-  const juce::String labelText;
-  const double knobRangeRadians;
-  std::unique_ptr<plugin::StateManager::SliderAttachment> knobAttachment;
-
-  class KnobStyle : public juce::LookAndFeel_V4
-  {
-    juce::Font getLabelFont(juce::Label&) override;
-    juce::Label* createSliderTextBox(juce::Slider&) override;
-  };
-  KnobStyle knobStyle;
+  void paint(juce::Graphics& g) override;
+  Params _params;
 };
 } // namespace fsh::gui

@@ -19,54 +19,54 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "FDNReverb.h"
-#include "StateManager.h"
-#include "Synth.h"
-#include <juce_dsp/juce_dsp.h>
+#include "ComponentPanel.h"
+#include "guiGlobals.h"
 
-class PluginState : public fsh::plugin::StateManager
+using namespace fsh::gui;
+
+ComponentPanel::ComponentPanel(const Params& params, std::vector<juce::Component*> components)
+  : _params(params)
+  , _components(std::move(components))
 {
-public:
-  enum class Param
-  {
-    ambi_center,
-    ambi_spread,
+  for (const auto& component : _components)
+    if (component != nullptr)
+      addAndMakeVisible(*component);
+}
 
-    ampenv_attack,
-    ampenv_decay,
-    ampenv_hold,
-    ampenv_vel,
+void ComponentPanel::paint(juce::Graphics& g)
+{
+  g.setColour(_params.background);
+  g.fillAll();
+  g.setColour(_params.foreground);
+  g.setFont(fsh::gui::Fonts::body);
+  const auto textArea = juce::Rectangle{ 8, 3, getWidth(), 20 };
+  g.drawText(_params.label.toUpperCase(), textArea, juce::Justification::centredLeft);
+}
 
-    filtenv_attack,
-    filtenv_decay,
-    filtenv_modamt,
-    filter_cutoff,
-    filter_resonance,
+void ComponentPanel::resized()
+{
+  using juce::operator""_fr;
 
-    fx_drive,
-    fx_noise,
+  auto grid = juce::Grid{};
 
-    level,
+  if (_params.orientation == Orientation::Horizontal)
+    grid.templateRows = { 1_fr };
+  else
+    grid.templateColumns = { 1_fr };
 
-    oscA_level,
-    oscA_tune,
-    oscA_fine,
-    oscA_waveform,
+  for (const auto& component : _components) {
+    if (component == nullptr)
+      continue;
 
-    oscB_level,
-    oscB_tune,
-    oscB_fine,
-    oscB_waveform,
+    if (_params.orientation == Orientation::Horizontal)
+      grid.templateColumns.add(1_fr);
+    else
+      grid.templateRows.add(1_fr);
 
-    reverb,
+    grid.items.add(juce::GridItem{ *component });
+  }
 
-    voice_glide,
-    voice_polyphony,
-  };
-
-  explicit PluginState(juce::AudioProcessor&);
-  auto getSynthParams() const -> fsh::synth::Synth::Params;
-  auto getReverbPreset() const -> fsh::fx::FDNReverb::Preset;
-  static auto getID(Param) -> juce::ParameterID;
-};
+  const auto titleHeight = 25;
+  const auto mainArea = getLocalBounds().withTop(titleHeight);
+  grid.performLayout(mainArea);
+}
