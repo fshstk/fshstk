@@ -48,9 +48,12 @@ public:
   /// Voice parameters
   struct Params
   {
+    float masterLevel;                    ///< Master level
     util::BoundedFloat<0, 1> noiseLvl;    ///< Noise level
     util::BoundedDouble<0, 1> oscALvl;    ///< Oscillator A level
     util::BoundedDouble<0, 1> oscBLvl;    ///< Oscillator B level
+    Oscillator::Waveform oscAWaveform;    ///< Oscillator A waveform
+    Oscillator::Waveform oscBWaveform;    ///< Oscillator B waveform
     double oscBDetune;                    ///< Oscillator B detune in semitones
     ADSR::Params adsr;                    ///< ADSR envelope parameters
     util::BoundedFloat<0, 1> velocityAmt; ///< Velocity sensitivity
@@ -99,9 +102,9 @@ private:
   uint8_t _velocity;
   ADSR _adsr;
   fx::AmbisonicEncoder _encoder;
-  Oscillator _oscA{ Oscillator::Type::Triangle };
-  Oscillator _oscB{ Oscillator::Type::Square };
-  Oscillator _oscNoise{ Oscillator::Type::Noise };
+  Oscillator _oscA;
+  Oscillator _oscB;
+  Oscillator _oscNoise;
   fx::MoogVCF _filter;
 };
 } // namespace fsh::synth

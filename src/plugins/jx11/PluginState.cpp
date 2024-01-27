@@ -273,9 +273,13 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
   };
   // TODO: refactor into osc params
   return {
-    .voice = { .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
+    .voice = { .masterLevel = juce::Decibels::decibelsToGain(getParameter<float>(id(level))),
+               .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
                .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
                .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
+               // TODO: bad coupling here (depends the order of Waveform enum elements)
+               .oscAWaveform = getParameter<fsh::synth::Oscillator::Waveform>(id(oscA_waveform)),
+               .oscBWaveform = getParameter<fsh::synth::Oscillator::Waveform>(id(oscB_waveform)),
                .oscBDetune =
                  detune(getParameter<float>(id(oscB_tune)), getParameter<float>(id(oscB_fine))),
                .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
@@ -283,8 +287,10 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                          .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
                          .release = getParameter<float>(id(ampenv_decay)) },
                .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
+               // TODO: ambi param struct
                .aziCenter = getParameter<float>(id(ambi_center)),
                .aziRange = getParameter<float>(id(ambi_spread)),
+               // TODO: filter param struct
                .filterCutoff = getParameter<float>(id(filter_cutoff)) / 2.5f,
                .filterResonance = getParameter<float>(id(filter_resonance)) / 100.0f },
   };

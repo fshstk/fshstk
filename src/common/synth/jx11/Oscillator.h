@@ -25,10 +25,13 @@ namespace fsh::synth {
 /**
 Represents a single band-limited oscillator with multiple waveforms.
 
-**Before using:** set the sample rate using setSampleRate() and set the
-oscillator's parameters using setParams().
+## Before using
 
-**To use:** call nextSample() to compute the oscillator's next sample.
+Set the sample rate using setSampleRate() and set the oscillator's parameters using setParams().
+
+## To use
+
+Call nextSample() to compute the oscillator's next sample.
 
 > This class is loosely based on code from the [JX10
 > synthesizer](https://github.com/hollance/synth-plugin-book) by Matthijs Hollemans.
@@ -36,27 +39,27 @@ oscillator's parameters using setParams().
 class Oscillator
 {
 public:
-  /// Waveform
-  enum class Type
+  /// Waveform. The GUI picker relies on the specific ordering of these values, so be very careful
+  /// when changing it.
+  enum class Waveform
   {
-    Sine,         ///< Sine wave
-    Saw,          ///< Sawtooth wave with all positive positive harmonics
-    Triangle,     ///< Triangle wave with all positive harmonics≤
     TrueSaw,      ///< True sawtooth wave with alternating sign harmonics
     TrueTriangle, ///< True triangle wave with alternating sign harmonics≤
     Square,       ///< Square wave
-    Noise,        ///< White noise
+
+    Sine,     ///< Sine wave
+    Saw,      ///< Sawtooth wave with all positive positive harmonics
+    Noise,    ///< White noise
+    Triangle, ///< Triangle wave with all positive harmonics≤
   };
 
   /// Oscillator parameters
   struct Params
   {
-    double frequency; ///< Frequency in Hz
-    double amplitude; ///< Amplitude in [0, 1]
+    double frequency;  ///< Frequency in Hz
+    double amplitude;  ///< Amplitude in [0, 1]
+    Waveform waveform; ///< Waveform
   };
-
-  /// Create an oscillator of the given type
-  explicit Oscillator(Type);
 
   /// Set the sample rate in Hz
   void setSampleRate(double sampleRate);
@@ -71,8 +74,8 @@ public:
   void reset();
 
 private:
-  Type _type;
-  double _amplitude;
+  Params _params;
+
   double _phase;
   double _deltaPhase;
   double _sampleRate;

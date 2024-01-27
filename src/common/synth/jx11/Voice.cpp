@@ -116,16 +116,19 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
     .frequency = oscFreq,
     .amplitude =
       0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscALvl.get(),
+    .waveform = _params.oscAWaveform,
   });
   _oscB.setParams({
     .frequency = oscFreq * _params.oscBDetune,
     .amplitude =
       0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscBLvl.get(),
+    .waveform = _params.oscBWaveform,
   });
   _oscNoise.setParams({
     .frequency = oscFreq,
     .amplitude =
       0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.noiseLvl.get(),
+    .waveform = Oscillator::Waveform::Noise,
   });
 
   _encoder.setParams({
@@ -175,8 +178,15 @@ auto Voice::nextSample() -> float
 
   const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscNoise.nextSample();
   const auto filtered = _filter.processSample(osc);
-  const auto env = _adsr.getNextValue();
-  return filtered * static_cast<float>(env);
+  const auto env = filtered * static_cast<float>(_adsr.getNextValue());
+  const auto master = env * _params.masterLevel;
+
+  // Overload protection, clip to 0dB:
+  if (master > 1.0f)
+    return 1.0f;
+  if (master < -1.0f)
+    return -1.0f;
+  return master;
 }
 
 auto Voice::getNoteVal() const -> uint8_t
