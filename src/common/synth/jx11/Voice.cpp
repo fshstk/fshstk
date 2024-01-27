@@ -154,22 +154,27 @@ void Voice::setParams(const Params& params)
   _params = params;
 }
 
-auto Voice::nextSample() -> float
+auto Voice::nextSample(bool allowOverload) -> float
 {
   if (!isActive())
     return 0.0f;
 
-  const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscC.nextSample();
-  const auto filtered = _filter.processSample(osc);
-  const auto env = filtered * static_cast<float>(_adsr.getNextValue());
-  const auto master = env * _params.masterLevel;
+  auto out = 0.0f;
 
-  // Overload protection, clip to 0dB:
-  if (master > 1.0f)
-    return 1.0f;
-  if (master < -1.0f)
-    return -1.0f;
-  return master;
+  out += _oscA.nextSample();
+  out += _oscB.nextSample();
+  out += _oscC.nextSample();
+
+  out = _filter.processSample(out);
+  out *= static_cast<float>(_adsr.getNextValue());
+  out *= _params.masterLevel;
+
+  if (!allowOverload) {
+    out = std::min(out, +1.0f);
+    out = std::max(out, -1.0f);
+  }
+
+  return out;
 }
 
 auto Voice::getNoteVal() const -> uint8_t

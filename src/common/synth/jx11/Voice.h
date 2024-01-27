@@ -91,7 +91,7 @@ public:
   void reset();
 
 private:
-  auto nextSample() -> float;
+  auto nextSample(bool allowOverload = false) -> float;
 
   Params _params;
   uint8_t _noteVal;
