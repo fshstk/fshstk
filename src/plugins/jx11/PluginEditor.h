@@ -21,6 +21,7 @@
 
 #pragma once
 #include "ComponentPanel.h"
+#include "InfoButton.h"
 #include "Knob.h"
 #include "Labeled.h"
 #include "OptionPicker.h"
@@ -39,6 +40,7 @@ public:
 
 private:
   PluginState& _state;
+  fsh::gui::InfoButton _buttonInfo;
 
   // AMBISONICS panel:
 

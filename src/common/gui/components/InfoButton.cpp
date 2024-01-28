@@ -25,21 +25,24 @@
 using namespace fsh::gui;
 
 namespace {
-const auto github = juce::URL{ "https://github.com/fshstk/fshstk" };
-const auto infoCircleGlyph = juce::CharPointer_UTF8{ "\uf05a" };
+const auto size = 18;
 } // namespace
 
 InfoButton::InfoButton()
 {
-  setURL(github);
+  setURL(juce::URL{ "https://docs.fshstk.com" });
+  setSize(size, size);
 }
 
 void InfoButton::paintButton(juce::Graphics& g, const bool highlighted, const bool active)
 {
-  juce::ignoreUnused(highlighted);
   juce::ignoreUnused(active);
 
-  g.setColour(Colors::foreground);
-  g.setFont(Fonts::fontawesome_solid.withHeight(16.0f));
+  const auto infoCircleGlyph = juce::CharPointer_UTF8{ "\uf05a" };
+
+  g.setColour(highlighted ? fsh::gui::Colors::light.withMultipliedAlpha(0.8f)
+                          : fsh::gui::Colors::light);
+
+  g.setFont(Fonts::fontawesome_solid.withHeight(size));
   g.drawText(infoCircleGlyph, getLocalBounds(), juce::Justification::centred);
 }
