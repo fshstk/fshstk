@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #define _USE_MATH_DEFINES
-#include "SimpleKnob.h"
+#include "Knob.h"
 #include <cmath>
 
 using namespace fsh::gui;
@@ -29,7 +29,7 @@ namespace {
 auto createKnob(const juce::Point<float> center,
                 const float radius,
                 const float radians,
-                const SimpleKnob::Params& params) -> juce::Path
+                const Knob::Params& params) -> juce::Path
 {
   auto path = juce::Path{};
 
@@ -65,7 +65,7 @@ auto createKnob(const juce::Point<float> center,
 }
 } // namespace
 
-SimpleKnob::SimpleKnob(const Params& params)
+Knob::Knob(const Params& params)
   : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag,
                  juce::Slider::TextEntryBoxPosition::NoTextBox)
   , _params(params)
@@ -80,7 +80,7 @@ SimpleKnob::SimpleKnob(const Params& params)
   setRotaryParameters(startAngle, endAngle, _params.behavior == Behavior::Bounded);
 }
 
-void SimpleKnob::paint(juce::Graphics& g)
+void Knob::paint(juce::Graphics& g)
 {
   const auto area = getLocalBounds().toFloat();
   const auto radius = std::min(area.getWidth(), area.getHeight()) / 2.0f;
@@ -90,4 +90,10 @@ void SimpleKnob::paint(juce::Graphics& g)
 
   g.setColour(isMouseOverOrDragging() ? _params.color.withMultipliedAlpha(0.8f) : _params.color);
   g.fillPath(knob);
+}
+
+void Knob::attach(plugin::StateManager& state, juce::ParameterID id)
+{
+  _attachment = std::make_unique<plugin::StateManager::SliderAttachment>(
+    state.getReferenceToBaseClass(), id.getParamID(), *this);
 }

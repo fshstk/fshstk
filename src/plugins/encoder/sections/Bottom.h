@@ -20,7 +20,8 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "KnobWithLabel.h"
+#include "Knob.h"
+#include "Labeled.h"
 #include "PluginState.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -31,22 +32,20 @@ public:
   void resized() override;
 
 private:
-  fsh::gui::KnobWithLabel elevationKnobL{ {
+  fsh::gui::Labeled<fsh::gui::Knob> elevationKnobL{ {
     .label = "el",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .child = { .color = fsh::gui::Colors::light },
   } };
-  fsh::gui::KnobWithLabel elevationKnobR{ {
+  fsh::gui::Labeled<fsh::gui::Knob> elevationKnobR{ {
     .label = "el",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .child = { .color = fsh::gui::Colors::light },
   } };
-  fsh::gui::KnobWithLabel azimuthKnobL{ {
+  fsh::gui::Labeled<fsh::gui::Knob> azimuthKnobL{ {
     .label = "az",
-    .knobParams = { .color = fsh::gui::Colors::light,
-                    .behavior = fsh::gui::SimpleKnob::Behavior::Endless },
+    .child = { .color = fsh::gui::Colors::light, .behavior = fsh::gui::Knob::Behavior::Endless },
   } };
-  fsh::gui::KnobWithLabel azimuthKnobR{ {
+  fsh::gui::Labeled<fsh::gui::Knob> azimuthKnobR{ {
     .label = "az",
-    .knobParams = { .color = fsh::gui::Colors::light,
-                    .behavior = fsh::gui::SimpleKnob::Behavior::Endless },
+    .child = { .color = fsh::gui::Colors::light, .behavior = fsh::gui::Knob::Behavior::Endless },
   } };
 };

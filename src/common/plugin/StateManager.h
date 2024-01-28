@@ -54,7 +54,7 @@ public:
   /// Called by the PluginBase class to restore the plugin state.
   void setState(const juce::XmlElement& xml);
 
-  /// Can be used by GUI objects, e.g. to create SliderAttachments. See the SimpleKnob class, or the
+  /// Can be used by GUI objects, e.g. to create SliderAttachments. See the Knob class, or the
   /// JUCE documentation for more info. This should be used sparingly. In most cases you probably
   /// want to use getRawParamSafely() from within your derived class.
   auto getReferenceToBaseClass() -> juce::AudioProcessorValueTreeState&;

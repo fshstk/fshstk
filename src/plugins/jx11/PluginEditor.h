@@ -21,11 +21,11 @@
 
 #pragma once
 #include "ComponentPanel.h"
-#include "KnobWithLabel.h"
+#include "Knob.h"
+#include "Labeled.h"
 #include "OptionPicker.h"
 #include "PluginProcessor.h"
 #include "PluginState.h"
-#include "SimpleKnob.h"
 #include "guiGlobals.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
@@ -41,14 +41,13 @@ private:
 
   // AMBISONICS panel:
 
-  fsh::gui::KnobWithLabel _knobAmbiCenter{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobAmbiCenter{ {
     .label = "CENTER",
-    .knobParams = { .color = fsh::gui::Colors::light,
-                    .behavior = fsh::gui::SimpleKnob::Behavior::Endless },
+    .child = { .color = fsh::gui::Colors::light, .behavior = fsh::gui::Knob::Behavior::Endless },
   } };
-  fsh::gui::KnobWithLabel _knobAmbiSpread{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobAmbiSpread{ {
     .label = "SPREAD",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .child = { .color = fsh::gui::Colors::light },
   } };
   fsh::gui::ComponentPanel _panelAmbi{ { .label = "AMBISONICS",
                                          .foreground = fsh::gui::Colors::light,
@@ -57,13 +56,13 @@ private:
 
   // AMP ENV panel:
 
-  fsh::gui::KnobWithLabel _knobAmpEnvAttack{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobAmpEnvAttack{ {
     .label = "ATTACK",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::KnobWithLabel _knobAmpEnvDecay{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobAmpEnvDecay{ {
     .label = "DECAY",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::ComponentPanel _panelAmpEnv{ { .label = "AMP ENV",
                                            .foreground = fsh::gui::Colors::dark,
@@ -74,17 +73,17 @@ private:
 
   // FILT ENV panel:
 
-  fsh::gui::KnobWithLabel _knobFiltEnvAttack{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobFiltEnvAttack{ {
     .label = "ATTACK",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::KnobWithLabel _knobFiltEnvDecay{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobFiltEnvDecay{ {
     .label = "DECAY",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::KnobWithLabel _knobFiltEnvModAmt{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobFiltEnvModAmt{ {
     .label = "MOD AMT",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::ComponentPanel _panelFiltEnv{
     { .label = "FILT ENV",
@@ -96,13 +95,13 @@ private:
 
   // FILTER panel:
 
-  fsh::gui::KnobWithLabel _knobFilterCutoff{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobFilterCutoff{ {
     .label = "CUTOFF",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::KnobWithLabel _knobFilterResonance{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobFilterResonance{ {
     .label = "RESONANCE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::ComponentPanel _panelFilter{ { .label = "FILTER",
                                            .foreground = fsh::gui::Colors::dark,
@@ -111,13 +110,13 @@ private:
 
   // FX panel:
 
-  fsh::gui::KnobWithLabel _knobFxDrive{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobFxDrive{ {
     .label = "DRIVE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::KnobWithLabel _knobFxNoise{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobFxNoise{ {
     .label = "NOISE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::ComponentPanel _ComponentPanel{
     { .label = "FX", .foreground = fsh::gui::Colors::dark, .background = fsh::gui::Colors::light },
@@ -126,9 +125,9 @@ private:
 
   // LEVEL panel:
 
-  fsh::gui::KnobWithLabel _knobLevel{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobLevel{ {
     .label = "LEVEL",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .child = { .color = fsh::gui::Colors::light },
   } };
   fsh::gui::ComponentPanel _panelLevel{ { .label = {},
                                           .foreground = fsh::gui::Colors::light,
@@ -137,13 +136,13 @@ private:
 
   // OSC A panel:
 
-  fsh::gui::KnobWithLabel _knobOscATune{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobOscATune{ {
     .label = "TUNE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::KnobWithLabel _knobOscAFine{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobOscAFine{ {
     .label = "FINE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::OptionPicker _pickerOscAWaveform{ {
     .choice =
@@ -156,9 +155,9 @@ private:
     .color = fsh::gui::Colors::dark,
     .highlightColor = fsh::gui::Colors::red,
   } };
-  fsh::gui::KnobWithLabel _knobOscALevel{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobOscALevel{ {
     .label = "LEVEL",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::ComponentPanel _panelOscA{
     { .label = "OSC A",
@@ -169,13 +168,13 @@ private:
 
   // OSC B panel:
 
-  fsh::gui::KnobWithLabel _knobOscBTune{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobOscBTune{ {
     .label = "TUNE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::KnobWithLabel _knobOscBFine{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobOscBFine{ {
     .label = "FINE",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::OptionPicker _pickerOscBWaveform{ {
     .choice =
@@ -188,9 +187,9 @@ private:
     .color = fsh::gui::Colors::dark,
     .highlightColor = fsh::gui::Colors::red,
   } };
-  fsh::gui::KnobWithLabel _knobOscBLevel{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobOscBLevel{ {
     .label = "LEVEL",
-    .knobParams = { .color = fsh::gui::Colors::dark },
+    .child = { .color = fsh::gui::Colors::dark },
   } };
   fsh::gui::ComponentPanel _panelOscB{
     { .label = "OSC B",
@@ -201,9 +200,9 @@ private:
 
   // VOICE panel:
 
-  fsh::gui::KnobWithLabel _knobVoiceGlide{ {
+  fsh::gui::Labeled<fsh::gui::Knob> _knobVoiceGlide{ {
     .label = "GLIDE",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .child = { .color = fsh::gui::Colors::light },
   } };
   fsh::gui::OptionPicker _pickerVoicePolyphony{ {
     .choice =

@@ -20,35 +20,60 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "SimpleKnob.h"
+#include "StateManager.h"
+#include "guiGlobals.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
 /**
-A knob with a label.
+A component with a label.
 */
-class KnobWithLabel : public juce::Component
+template<typename T>
+class Labeled : public juce::Component
 {
 public:
-  /// Parameters for the KnobWithLabel.
+  /// Parameters
   struct Params
   {
-    juce::String label;            ///< The label to be displayed.
-    SimpleKnob::Params knobParams; ///< The parameters for the knob.
+    juce::String label; ///< The label to be displayed.
+    T::Params child;    ///< The parameters for the child component.
   };
 
   /// Constructor.
-  explicit KnobWithLabel(const Params&);
+  explicit Labeled(const Params& params)
+    : _params(params)
+    , _child(params.child)
+  {
+    addAndMakeVisible(_child);
+  }
 
-  /// Attach this knob to a parameter.
-  void attach(plugin::StateManager&, juce::ParameterID);
+  /// Attach the child component to a parameter.
+  void attach(plugin::StateManager& state, juce::ParameterID id) { _child.attach(state, id); }
 
 private:
-  void paint(juce::Graphics&) override;
-  void resized() override;
+  void paint(juce::Graphics& g) override
+  {
+    g.setColour(_params.child.color);
+    g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
+
+    const auto area = getLocalBounds();
+    const auto margin = 5;
+    const auto knobBottomY = _child.getBoundsInParent().getBottom() + margin;
+    const auto text = _child.isMouseButtonDown() ? _child.getTextFromValue(_child.getValue())
+                                                 : _params.label.toUpperCase();
+    g.drawText(text, area.withTop(knobBottomY), juce::Justification::centredTop, true);
+  }
+
+  void resized() override
+  {
+    const auto offsetY = 10;
+    const auto x = getLocalBounds().getCentreX();
+    const auto y = getLocalBounds().getCentreY() - offsetY;
+    const auto knobSize = 30;
+    _child.setBounds(x - (knobSize / 2), y - (knobSize / 2), knobSize, knobSize);
+  }
 
   Params _params;
-  SimpleKnob _knob;
-  std::unique_ptr<plugin::StateManager::SliderAttachment> _stateManager;
+  T _child;
 };
 } // namespace fsh::gui

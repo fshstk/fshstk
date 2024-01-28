@@ -20,7 +20,8 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "KnobWithLabel.h"
+#include "Knob.h"
+#include "Labeled.h"
 #include "PluginState.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -31,12 +32,12 @@ public:
   void resized() override;
 
 private:
-  fsh::gui::KnobWithLabel gainKnob{ {
+  fsh::gui::Labeled<fsh::gui::Knob> gainKnob{ {
     .label = "gain",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .child = { .color = fsh::gui::Colors::light },
   } };
-  fsh::gui::KnobWithLabel orderKnob{ {
+  fsh::gui::Labeled<fsh::gui::Knob> orderKnob{ {
     .label = "3d resolution",
-    .knobParams = { .color = fsh::gui::Colors::light },
+    .child = { .color = fsh::gui::Colors::light },
   } };
 };
