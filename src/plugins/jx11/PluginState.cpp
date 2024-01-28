@@ -251,17 +251,12 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 PluginState::PluginState(juce::AudioProcessor& parent)
   : StateManager(parent, createParameterLayout())
 {
-  juce::ignoreUnused(id(oscA_waveform));    // TODO
-  juce::ignoreUnused(id(oscB_waveform));    // TODO
-  juce::ignoreUnused(id(filtenv_attack));   // TODO
-  juce::ignoreUnused(id(filtenv_decay));    // TODO
-  juce::ignoreUnused(id(filtenv_modamt));   // TODO
-  juce::ignoreUnused(id(filter_cutoff));    // TODO
-  juce::ignoreUnused(id(filter_resonance)); // TODO
-  juce::ignoreUnused(id(fx_drive));         // TODO
-  juce::ignoreUnused(id(level));            // TODO
-  juce::ignoreUnused(id(voice_glide));      // TODO
-  juce::ignoreUnused(id(voice_polyphony));  // TODO
+  juce::ignoreUnused(id(filtenv_attack));  // TODO
+  juce::ignoreUnused(id(filtenv_decay));   // TODO
+  juce::ignoreUnused(id(filtenv_modamt));  // TODO
+  juce::ignoreUnused(id(fx_drive));        // TODO
+  juce::ignoreUnused(id(voice_glide));     // TODO
+  juce::ignoreUnused(id(voice_polyphony)); // TODO
 }
 
 auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
