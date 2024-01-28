@@ -282,7 +282,7 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                          .waveform = fsh::synth::Oscillator::Waveform::Noise },
                .ampEnv = { .attack = getParameter<float>(id(ampenv_attack)) + 4.0f,
                            .decay = getParameter<float>(id(ampenv_decay)) + 4.0f,
-                           .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
+                           .sustain = getParameter<bool>(id(ampenv_hold)) ? 0.0f : 1.0f,
                            .release = getParameter<float>(id(ampenv_decay)) + 4.0f },
                .filtEnv = { .attack = getParameter<float>(id(filtenv_attack)),
                             .decay = getParameter<float>(id(filtenv_decay)),
