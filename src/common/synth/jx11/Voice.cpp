@@ -33,11 +33,6 @@ auto midiNoteToFreq(double noteVal) -> double
   return concertAFreq * std::exp2((noteVal - concertAMidi) / 12.0);
 }
 
-auto getNormalisedVelocity(uint8_t vel, double sensitivity = 1.0) -> double
-{
-  return juce::jmap((vel / 127.0), 1.0 - sensitivity, 1.0);
-}
-
 void addSampleToAllChannels(juce::AudioBuffer<float>& audio,
                             fsh::fx::AmbisonicEncoder& encoder,
                             size_t position,
@@ -74,8 +69,9 @@ void Voice::reset()
 {
   _oscA.reset();
   _oscB.reset();
-  _oscNoise.reset();
-  _adsr.reset();
+  _oscC.reset();
+  _ampEnv.reset();
+  _filtEnv.reset();
   _filter.reset();
   _noteVal = 0;
   _velocity = 0;
@@ -90,14 +86,17 @@ void Voice::noteOn(uint8_t noteVal, uint8_t velocity)
 
   _noteVal = noteVal;
   _velocity = velocity;
-  _adsr.noteOn();
+  _ampEnv.noteOn();
+  _filtEnv.noteOn();
 }
 
 void Voice::noteOff(uint8_t noteVal, uint8_t)
 {
   // TODO: when ADSR is done, trigger reset
-  if (noteVal == _noteVal)
-    _adsr.noteOff();
+  if (noteVal == _noteVal) {
+    _ampEnv.noteOff();
+    _filtEnv.noteOff();
+  }
 }
 
 void Voice::pitchBend(uint16_t bendVal)
@@ -109,37 +108,28 @@ void Voice::pitchBend(uint16_t bendVal)
 
 void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bufferOffset)
 {
+  _oscA.setParams(_params.oscA);
+  _oscB.setParams(_params.oscB);
+  _oscC.setParams(_params.oscC);
+
   const auto oscNote = static_cast<double>(_noteVal) + _bendValSemitones;
   const auto oscFreq = midiNoteToFreq(oscNote);
-
-  _oscA.setParams({
-    .frequency = oscFreq,
-    .amplitude =
-      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscALvl.get(),
-    .waveform = _params.oscAWaveform,
-  });
-  _oscB.setParams({
-    .frequency = oscFreq * _params.oscBDetune,
-    .amplitude =
-      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.oscBLvl.get(),
-    .waveform = _params.oscBWaveform,
-  });
-  _oscNoise.setParams({
-    .frequency = oscFreq,
-    .amplitude =
-      0.5 * getNormalisedVelocity(_velocity, _params.velocityAmt.get()) * _params.noiseLvl.get(),
-    .waveform = Oscillator::Waveform::Noise,
-  });
+  _oscA.setFrequency(oscFreq);
+  _oscB.setFrequency(oscFreq);
+  _oscC.setFrequency(oscFreq);
 
   _encoder.setParams({
     .direction = midiNoteToDirection(oscNote, _params.aziCenter, _params.aziRange),
     .order = fsh::util::maxAmbiOrder,
   });
 
-  _adsr.setParams(_params.adsr);
+  _ampEnv.setParams(_params.ampEnv);
+  _filtEnv.setParams(_params.filtEnv);
 
   _filter.setParams({
-    .cutoff = _params.filterCutoff * static_cast<float>(oscFreq),
+    .cutoff =
+      static_cast<float>(oscFreq) *
+      (_params.filterCutoff + _params.filtModAmt * static_cast<float>(_filtEnv.getNextValue())),
     .resonance = _params.filterResonance,
   });
 
@@ -160,8 +150,9 @@ void Voice::setSampleRate(double sampleRate)
 {
   _oscA.setSampleRate(sampleRate);
   _oscB.setSampleRate(sampleRate);
-  _oscNoise.setSampleRate(sampleRate);
-  _adsr.setSampleRate(sampleRate);
+  _oscC.setSampleRate(sampleRate);
+  _ampEnv.setSampleRate(sampleRate);
+  _filtEnv.setSampleRate(sampleRate);
   _encoder.setSampleRate(sampleRate);
   _filter.setSampleRate(sampleRate);
 }
@@ -171,22 +162,27 @@ void Voice::setParams(const Params& params)
   _params = params;
 }
 
-auto Voice::nextSample() -> float
+auto Voice::nextSample(bool allowOverload) -> float
 {
   if (!isActive())
     return 0.0f;
 
-  const auto osc = _oscA.nextSample() + _oscB.nextSample() + _oscNoise.nextSample();
-  const auto filtered = _filter.processSample(osc);
-  const auto env = filtered * static_cast<float>(_adsr.getNextValue());
-  const auto master = env * _params.masterLevel;
+  auto out = 0.0f;
 
-  // Overload protection, clip to 0dB:
-  if (master > 1.0f)
-    return 1.0f;
-  if (master < -1.0f)
-    return -1.0f;
-  return master;
+  out += _oscA.nextSample();
+  out += _oscB.nextSample();
+  out += _oscC.nextSample();
+
+  out = _filter.processSample(out);
+  out *= static_cast<float>(_ampEnv.getNextValue());
+  out *= _params.masterLevel;
+
+  if (!allowOverload) {
+    out = std::min(out, +1.0f);
+    out = std::max(out, -1.0f);
+  }
+
+  return out;
 }
 
 auto Voice::getNoteVal() const -> uint8_t
@@ -196,5 +192,5 @@ auto Voice::getNoteVal() const -> uint8_t
 
 auto Voice::isActive() const -> bool
 {
-  return _adsr.isActive();
+  return _ampEnv.isActive();
 }

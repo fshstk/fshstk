@@ -31,7 +31,8 @@ Set the sample rate using setSampleRate() and set the oscillator's parameters us
 
 ## To use
 
-Call nextSample() to compute the oscillator's next sample.
+- Call setFrequency() to set the oscillator's frequency.
+- Call nextSample() to compute the oscillator's next sample.
 
 > This class is loosely based on code from the [JX10
 > synthesizer](https://github.com/hollance/synth-plugin-book) by Matthijs Hollemans.
@@ -56,13 +57,16 @@ public:
   /// Oscillator parameters
   struct Params
   {
-    double frequency;  ///< Frequency in Hz
-    double amplitude;  ///< Amplitude in [0, 1]
+    double detune;     ///< Factor that will be multiplied with the oscillator's frequency
+    double amplitude;  ///< Amplitude multiplier
     Waveform waveform; ///< Waveform
   };
 
   /// Set the sample rate in Hz
   void setSampleRate(double sampleRate);
+
+  /// Set the oscillator's frequency
+  void setFrequency(double);
 
   /// Set the oscillator's parameters
   void setParams(const Params&);

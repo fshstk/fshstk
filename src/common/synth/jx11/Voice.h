@@ -49,14 +49,13 @@ public:
   struct Params
   {
     float masterLevel;                    ///< Master level
-    util::BoundedFloat<0, 1> noiseLvl;    ///< Noise level
-    util::BoundedDouble<0, 1> oscALvl;    ///< Oscillator A level
-    util::BoundedDouble<0, 1> oscBLvl;    ///< Oscillator B level
-    Oscillator::Waveform oscAWaveform;    ///< Oscillator A waveform
-    Oscillator::Waveform oscBWaveform;    ///< Oscillator B waveform
-    double oscBDetune;                    ///< Oscillator B detune in semitones
-    ADSR::Params adsr;                    ///< ADSR envelope parameters
+    Oscillator::Params oscA;              ///< Oscillator A parameters
+    Oscillator::Params oscB;              ///< Oscillator A parameters
+    Oscillator::Params oscC;              ///< Oscillator A parameters
+    ADSR::Params ampEnv;                  ///< Amplitude envelope parameters
+    ADSR::Params filtEnv;                 ///< Amplitude envelope parameters
     util::BoundedFloat<0, 1> velocityAmt; ///< Velocity sensitivity
+    float filtModAmt;                     ///< How much the filter env should modulate the filter
     double aziCenter = 0.0;        ///< Anchor middle of MIDI note range to this azimuth in degrees
     double aziRange = 180.0;       ///< Spread MIDI range around aziCenter +/- aziRange/2
     float filterCutoff = 1'000.0f; ///< Filter cutoff as a multiplier of oscillator frequency
@@ -94,17 +93,18 @@ public:
   void reset();
 
 private:
-  auto nextSample() -> float;
+  auto nextSample(bool allowOverload = true) -> float;
 
   Params _params;
   uint8_t _noteVal;
   double _bendValSemitones;
   uint8_t _velocity;
-  ADSR _adsr;
+  ADSR _ampEnv;
+  ADSR _filtEnv;
   fx::AmbisonicEncoder _encoder;
   Oscillator _oscA;
   Oscillator _oscB;
-  Oscillator _oscNoise;
+  Oscillator _oscC;
   fx::MoogVCF _filter;
 };
 } // namespace fsh::synth

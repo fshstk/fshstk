@@ -251,17 +251,9 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 PluginState::PluginState(juce::AudioProcessor& parent)
   : StateManager(parent, createParameterLayout())
 {
-  juce::ignoreUnused(id(oscA_waveform));    // TODO
-  juce::ignoreUnused(id(oscB_waveform));    // TODO
-  juce::ignoreUnused(id(filtenv_attack));   // TODO
-  juce::ignoreUnused(id(filtenv_decay));    // TODO
-  juce::ignoreUnused(id(filtenv_modamt));   // TODO
-  juce::ignoreUnused(id(filter_cutoff));    // TODO
-  juce::ignoreUnused(id(filter_resonance)); // TODO
-  juce::ignoreUnused(id(fx_drive));         // TODO
-  juce::ignoreUnused(id(level));            // TODO
-  juce::ignoreUnused(id(voice_glide));      // TODO
-  juce::ignoreUnused(id(voice_polyphony));  // TODO
+  juce::ignoreUnused(id(fx_drive));        // TODO
+  juce::ignoreUnused(id(voice_glide));     // TODO
+  juce::ignoreUnused(id(voice_polyphony)); // TODO
 }
 
 auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
@@ -271,28 +263,40 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
     const auto freqRatio = std::exp2(semitones / 12.0f);
     return freqRatio;
   };
-  // TODO: refactor into osc params
   return {
     .voice = { .masterLevel = juce::Decibels::decibelsToGain(getParameter<float>(id(level))),
-               .noiseLvl = getParameter<float>(id(fx_noise)) / 100.0f,
-               .oscALvl = getParameter<float>(id(oscA_level)) / 100.0f,
-               .oscBLvl = getParameter<float>(id(oscB_level)) / 100.0f,
-               // TODO: bad coupling here (depends the order of Waveform enum elements)
-               .oscAWaveform = getParameter<fsh::synth::Oscillator::Waveform>(id(oscA_waveform)),
-               .oscBWaveform = getParameter<fsh::synth::Oscillator::Waveform>(id(oscB_waveform)),
-               .oscBDetune =
-                 detune(getParameter<float>(id(oscB_tune)), getParameter<float>(id(oscB_fine))),
-               .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
-                         .decay = getParameter<float>(id(ampenv_decay)),
-                         .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
-                         .release = getParameter<float>(id(ampenv_decay)) },
+               .oscA = { .detune = detune(getParameter<float>(id(oscA_tune)),
+                                          getParameter<float>(id(oscA_fine))),
+                         .amplitude = getParameter<float>(id(oscA_level)) / 200.0f,
+                         // TODO: bad coupling here (depends the order of Waveform enum elements)
+                         .waveform =
+                           getParameter<fsh::synth::Oscillator::Waveform>(id(oscA_waveform)) },
+               .oscB = { .detune = detune(getParameter<float>(id(oscB_tune)),
+                                          getParameter<float>(id(oscB_fine))),
+                         .amplitude = getParameter<float>(id(oscB_level)) / 200.0f,
+                         // TODO: bad coupling here (depends the order of Waveform enum elements)
+                         .waveform =
+                           getParameter<fsh::synth::Oscillator::Waveform>(id(oscB_waveform)) },
+               .oscC = { .detune = {},
+                         .amplitude = getParameter<float>(id(fx_noise)) / 200.0f,
+                         .waveform = fsh::synth::Oscillator::Waveform::Noise },
+               .ampEnv = { .attack = getParameter<float>(id(ampenv_attack)) + 4.0f,
+                           .decay = getParameter<float>(id(ampenv_decay)) + 4.0f,
+                           .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
+                           .release = getParameter<float>(id(ampenv_decay)) + 4.0f },
+               .filtEnv = { .attack = getParameter<float>(id(filtenv_attack)),
+                            .decay = getParameter<float>(id(filtenv_decay)),
+                            .sustain = 0.0f,
+                            .release = getParameter<float>(id(filtenv_decay)) },
                .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
+               .filtModAmt = getParameter<float>(id(filtenv_modamt)) / 2.0f,
                // TODO: ambi param struct
                .aziCenter = getParameter<float>(id(ambi_center)),
                .aziRange = getParameter<float>(id(ambi_spread)),
                // TODO: filter param struct
-               .filterCutoff = getParameter<float>(id(filter_cutoff)) / 2.5f,
-               .filterResonance = getParameter<float>(id(filter_resonance)) / 100.0f },
+               // This maps the input range (0-100) roughly to the range 1-32:
+               .filterCutoff = std::exp2(getParameter<float>(id(filter_cutoff)) / 20.0f),
+               .filterResonance = getParameter<float>(id(filter_resonance)) / 140.0f },
   };
 }
 
