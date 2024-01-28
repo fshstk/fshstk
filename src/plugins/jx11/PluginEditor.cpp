@@ -73,13 +73,6 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   _knobVoiceGlide.attach(s, PluginState::getID(voice_glide));
 
   addAndMakeVisible(_panelReverb);
-
-  juce::ignoreUnused("ampenv_hold");
-  juce::ignoreUnused("ampenv_vel");
-  juce::ignoreUnused("oscA_waveform");
-  juce::ignoreUnused("oscB_waveform");
-  juce::ignoreUnused("reverb");
-  juce::ignoreUnused("voice_polyphony");
 }
 
 void PluginEditor::paint(juce::Graphics& g)
