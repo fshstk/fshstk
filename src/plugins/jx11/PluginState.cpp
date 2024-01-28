@@ -251,9 +251,6 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
 PluginState::PluginState(juce::AudioProcessor& parent)
   : StateManager(parent, createParameterLayout())
 {
-  juce::ignoreUnused(id(filtenv_attack));  // TODO
-  juce::ignoreUnused(id(filtenv_decay));   // TODO
-  juce::ignoreUnused(id(filtenv_modamt));  // TODO
   juce::ignoreUnused(id(fx_drive));        // TODO
   juce::ignoreUnused(id(voice_glide));     // TODO
   juce::ignoreUnused(id(voice_polyphony)); // TODO
@@ -283,11 +280,16 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                .oscC = { .detune = {},
                          .amplitude = getParameter<float>(id(fx_noise)) / 200.0f,
                          .waveform = fsh::synth::Oscillator::Waveform::Noise },
-               .adsr = { .attack = getParameter<float>(id(ampenv_attack)) + 4.0f,
-                         .decay = getParameter<float>(id(ampenv_decay)) + 4.0f,
-                         .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
-                         .release = getParameter<float>(id(ampenv_decay)) + 4.0f },
+               .ampEnv = { .attack = getParameter<float>(id(ampenv_attack)) + 4.0f,
+                           .decay = getParameter<float>(id(ampenv_decay)) + 4.0f,
+                           .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
+                           .release = getParameter<float>(id(ampenv_decay)) + 4.0f },
+               .filtEnv = { .attack = getParameter<float>(id(filtenv_attack)),
+                            .decay = getParameter<float>(id(filtenv_decay)),
+                            .sustain = 0.0f,
+                            .release = getParameter<float>(id(filtenv_decay)) },
                .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
+               .filtModAmt = getParameter<float>(id(filtenv_modamt)) / 2.0f,
                // TODO: ambi param struct
                .aziCenter = getParameter<float>(id(ambi_center)),
                .aziRange = getParameter<float>(id(ambi_spread)),

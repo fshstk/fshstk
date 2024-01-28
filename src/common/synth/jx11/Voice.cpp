@@ -70,7 +70,8 @@ void Voice::reset()
   _oscA.reset();
   _oscB.reset();
   _oscC.reset();
-  _adsr.reset();
+  _ampEnv.reset();
+  _filtEnv.reset();
   _filter.reset();
   _noteVal = 0;
   _velocity = 0;
@@ -85,14 +86,17 @@ void Voice::noteOn(uint8_t noteVal, uint8_t velocity)
 
   _noteVal = noteVal;
   _velocity = velocity;
-  _adsr.noteOn();
+  _ampEnv.noteOn();
+  _filtEnv.noteOn();
 }
 
 void Voice::noteOff(uint8_t noteVal, uint8_t)
 {
   // TODO: when ADSR is done, trigger reset
-  if (noteVal == _noteVal)
-    _adsr.noteOff();
+  if (noteVal == _noteVal) {
+    _ampEnv.noteOff();
+    _filtEnv.noteOff();
+  }
 }
 
 void Voice::pitchBend(uint16_t bendVal)
@@ -119,10 +123,13 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
     .order = fsh::util::maxAmbiOrder,
   });
 
-  _adsr.setParams(_params.adsr);
+  _ampEnv.setParams(_params.ampEnv);
+  _filtEnv.setParams(_params.filtEnv);
 
   _filter.setParams({
-    .cutoff = _params.filterCutoff * static_cast<float>(oscFreq),
+    .cutoff =
+      static_cast<float>(oscFreq) *
+      (_params.filterCutoff + _params.filtModAmt * static_cast<float>(_filtEnv.getNextValue())),
     .resonance = _params.filterResonance,
   });
 
@@ -144,7 +151,8 @@ void Voice::setSampleRate(double sampleRate)
   _oscA.setSampleRate(sampleRate);
   _oscB.setSampleRate(sampleRate);
   _oscC.setSampleRate(sampleRate);
-  _adsr.setSampleRate(sampleRate);
+  _ampEnv.setSampleRate(sampleRate);
+  _filtEnv.setSampleRate(sampleRate);
   _encoder.setSampleRate(sampleRate);
   _filter.setSampleRate(sampleRate);
 }
@@ -166,7 +174,7 @@ auto Voice::nextSample(bool allowOverload) -> float
   out += _oscC.nextSample();
 
   out = _filter.processSample(out);
-  out *= static_cast<float>(_adsr.getNextValue());
+  out *= static_cast<float>(_ampEnv.getNextValue());
   out *= _params.masterLevel;
 
   if (!allowOverload) {
@@ -184,5 +192,5 @@ auto Voice::getNoteVal() const -> uint8_t
 
 auto Voice::isActive() const -> bool
 {
-  return _adsr.isActive();
+  return _ampEnv.isActive();
 }
