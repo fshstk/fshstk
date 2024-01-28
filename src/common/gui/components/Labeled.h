@@ -36,8 +36,8 @@ public:
   /// Parameters
   struct Params
   {
-    juce::String label; ///< The label to be displayed.
-    T::Params child;    ///< The parameters for the child component.
+    juce::String label;       ///< The label to be displayed.
+    typename T::Params child; ///< The parameters for the child component.
   };
 
   /// Constructor.
