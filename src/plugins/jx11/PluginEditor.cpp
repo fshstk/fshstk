@@ -21,6 +21,7 @@
 
 #include "PluginEditor.h"
 #include "Background.h"
+#include "PluginState.h"
 #include "guiGlobals.h"
 
 PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
@@ -40,6 +41,7 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   addAndMakeVisible(_panelAmpEnv);
   _knobAmpEnvAttack.attach(s, PluginState::getID(ampenv_attack));
   _knobAmpEnvDecay.attach(s, PluginState::getID(ampenv_decay));
+  _switchAmpEnvHold.attach(s, PluginState::getID(ampenv_hold));
 
   addAndMakeVisible(_panelFiltEnv);
   _knobFiltEnvAttack.attach(s, PluginState::getID(filtenv_attack));

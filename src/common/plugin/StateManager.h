@@ -40,6 +40,9 @@ public:
   /// Helper alias for juce::AudioProcessorValueTreeState::SliderAttachment
   using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
 
+  /// Helper alias for juce::AudioProcessorValueTreeState::SliderAttachment
+  using ButtonAttachment = juce::AudioProcessorValueTreeState::ButtonAttachment;
+
   /// Helper alias for juce::AudioProcessorValueTreeState::ParameterLayout
   using Params = juce::AudioProcessorValueTreeState::ParameterLayout;
 

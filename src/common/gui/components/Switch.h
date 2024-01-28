@@ -20,69 +20,37 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "Knob.h"
 #include "StateManager.h"
-#include "guiGlobals.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
 /**
-A component with a label.
+Custom Switch component that displays a label and a value.
+
+The Switch can be attached to a parameter of a PluginStateBase object.
 */
-template<typename T>
-class Labeled : public juce::Component
+class Switch : public juce::Button
 {
 public:
-  /// Parameters
+  /// Parameters for the Switch component.
   struct Params
   {
-    juce::String label; ///< The label to be displayed.
-    T::Params child;    ///< The parameters for the child component.
+    juce::CharPointer_UTF8 glyph; ///< The FontAwesome glyph to be displayed.
+    juce::Colour color;           ///< The color of the button.
+    juce::Colour glyphColor;      ///< The color of the glyph when not selected.
+    juce::Colour highlightColor;  ///< The color of the glyph when selected.
   };
 
   /// Constructor.
-  explicit Labeled(const Params& params)
-    : _params(params)
-    , _child(params.child)
-  {
-    addAndMakeVisible(_child);
-  }
+  explicit Switch(const Params&);
 
-  /// Attach the child component to a parameter.
-  void attach(plugin::StateManager& state, juce::ParameterID id) { _child.attach(state, id); }
+  /// Attach this Switch to a parameter.
+  void attach(plugin::StateManager&, juce::ParameterID);
 
 private:
-  void paint(juce::Graphics& g) override
-  {
-    g.setColour(_params.child.color);
-    g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
+  void paintButton(juce::Graphics&, bool isMouseOver, bool isDown) override;
 
-    const auto area = getLocalBounds();
-    const auto margin = 5;
-    const auto childBottomY = _child.getBoundsInParent().getBottom() + margin;
-
-    const auto text = [this]() {
-      // Only show the value for knobs, not for buttons:
-      if constexpr (std::is_same_v<decltype(_child), fsh::gui::Knob>)
-        return _child.isMouseButtonDown() ? _child.getTextFromValue(_child.getValue())
-                                          : _params.label.toUpperCase();
-      else
-        return _params.label.toUpperCase();
-    }();
-
-    g.drawText(text, area.withTop(childBottomY), juce::Justification::centredTop, true);
-  }
-
-  void resized() override
-  {
-    const auto offsetY = 10;
-    const auto x = getLocalBounds().getCentreX();
-    const auto y = getLocalBounds().getCentreY() - offsetY;
-    const auto childSize = 30;
-    _child.setBounds(x - (childSize / 2), y - (childSize / 2), childSize, childSize);
-  }
-
+  std::unique_ptr<plugin::StateManager::ButtonAttachment> _attachment;
   Params _params;
-  T _child;
 };
 } // namespace fsh::gui

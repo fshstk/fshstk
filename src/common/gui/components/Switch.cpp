@@ -19,70 +19,36 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "Knob.h"
-#include "StateManager.h"
+#include "Switch.h"
 #include "guiGlobals.h"
-#include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh::gui {
-/**
-A component with a label.
-*/
-template<typename T>
-class Labeled : public juce::Component
+using namespace fsh::gui;
+
+Switch::Switch(const Params& params)
+  : juce::Button("")
+  , _params(params)
 {
-public:
-  /// Parameters
-  struct Params
-  {
-    juce::String label; ///< The label to be displayed.
-    T::Params child;    ///< The parameters for the child component.
-  };
+  setClickingTogglesState(true);
+  setTriggeredOnMouseDown(true);
+}
 
-  /// Constructor.
-  explicit Labeled(const Params& params)
-    : _params(params)
-    , _child(params.child)
-  {
-    addAndMakeVisible(_child);
-  }
+void Switch::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
+{
+  juce::ignoreUnused(isDown);
+  const auto isSelected = getToggleState();
+  const auto buttonColor = isMouseOver ? _params.color.withMultipliedAlpha(0.8f) : _params.color;
+  const auto textColor = isSelected ? _params.highlightColor : _params.glyphColor;
 
-  /// Attach the child component to a parameter.
-  void attach(plugin::StateManager& state, juce::ParameterID id) { _child.attach(state, id); }
+  g.setColour(buttonColor);
+  g.fillRoundedRectangle(getLocalBounds().toFloat(), 4.0f);
 
-private:
-  void paint(juce::Graphics& g) override
-  {
-    g.setColour(_params.child.color);
-    g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
+  g.setColour(textColor);
+  g.setFont(fsh::gui::Fonts::fontawesome_solid);
+  g.drawText(_params.glyph, getLocalBounds(), juce::Justification::centred);
+}
 
-    const auto area = getLocalBounds();
-    const auto margin = 5;
-    const auto childBottomY = _child.getBoundsInParent().getBottom() + margin;
-
-    const auto text = [this]() {
-      // Only show the value for knobs, not for buttons:
-      if constexpr (std::is_same_v<decltype(_child), fsh::gui::Knob>)
-        return _child.isMouseButtonDown() ? _child.getTextFromValue(_child.getValue())
-                                          : _params.label.toUpperCase();
-      else
-        return _params.label.toUpperCase();
-    }();
-
-    g.drawText(text, area.withTop(childBottomY), juce::Justification::centredTop, true);
-  }
-
-  void resized() override
-  {
-    const auto offsetY = 10;
-    const auto x = getLocalBounds().getCentreX();
-    const auto y = getLocalBounds().getCentreY() - offsetY;
-    const auto childSize = 30;
-    _child.setBounds(x - (childSize / 2), y - (childSize / 2), childSize, childSize);
-  }
-
-  Params _params;
-  T _child;
-};
-} // namespace fsh::gui
+void Switch::attach(plugin::StateManager& state, juce::ParameterID id)
+{
+  _attachment = std::make_unique<plugin::StateManager::ButtonAttachment>(
+    state.getReferenceToBaseClass(), id.getParamID(), *this);
+}

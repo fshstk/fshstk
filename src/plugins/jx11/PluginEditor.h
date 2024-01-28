@@ -26,6 +26,7 @@
 #include "OptionPicker.h"
 #include "PluginProcessor.h"
 #include "PluginState.h"
+#include "Switch.h"
 #include "guiGlobals.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
@@ -64,12 +65,20 @@ private:
     .label = "DECAY",
     .child = { .color = fsh::gui::Colors::dark },
   } };
-  fsh::gui::ComponentPanel _panelAmpEnv{ { .label = "AMP ENV",
-                                           .foreground = fsh::gui::Colors::dark,
-                                           .background = fsh::gui::Colors::gold,
-                                           .orientation =
-                                             fsh::gui::ComponentPanel::Orientation::Vertical },
-                                         { &_knobAmpEnvAttack, &_knobAmpEnvDecay } };
+  fsh::gui::Labeled<fsh::gui::Switch> _switchAmpEnvHold{ {
+    .label = "HOLD",
+    .child = { .glyph = juce::CharPointer_UTF8{ "\uf011" },
+               .color = fsh::gui::Colors::dark,
+               .glyphColor = fsh::gui::Colors::gold,
+               .highlightColor = fsh::gui::Colors::red },
+  } };
+  fsh::gui::ComponentPanel _panelAmpEnv{
+    { .label = "AMP ENV",
+      .foreground = fsh::gui::Colors::dark,
+      .background = fsh::gui::Colors::gold,
+      .orientation = fsh::gui::ComponentPanel::Orientation::Vertical },
+    { &_knobAmpEnvAttack, &_knobAmpEnvDecay, &_switchAmpEnvHold }
+  };
 
   // FILT ENV panel:
 
