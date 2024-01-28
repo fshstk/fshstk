@@ -98,13 +98,6 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .attributes = displayAsOnOff,
     }
       .create(),
-    ParamBool{
-      .id = id(ampenv_vel),
-      .name = "AMP ENV: velocity",
-      .defaultVal = false,
-      .attributes = displayAsOnOff,
-    }
-      .create(),
     ParamFloat{
       .id = id(filtenv_attack),
       .name = "FILT ENV: attack",
@@ -288,7 +281,6 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                             .decay = getParameter<float>(id(filtenv_decay)),
                             .sustain = 0.0f,
                             .release = getParameter<float>(id(filtenv_decay)) },
-               .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
                .filtModAmt = getParameter<float>(id(filtenv_modamt)) / 2.0f,
                // TODO: ambi param struct
                .aziCenter = getParameter<float>(id(ambi_center)),
@@ -318,8 +310,6 @@ auto PluginState::getID(Param p) -> juce::ParameterID
       return "ampenv_decay";
     case ampenv_hold:
       return "ampenv_hold";
-    case ampenv_vel:
-      return "ampenv_vel";
     case filtenv_attack:
       return "filtenv_attack";
     case filtenv_decay:
