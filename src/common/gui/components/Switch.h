@@ -21,40 +21,36 @@
 
 #pragma once
 #include "StateManager.h"
-#include "guiGlobals.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
 /**
-Custom knob component that displays a label and a value.
+Custom Switch component that displays a label and a value.
 
-The knob can be attached to a parameter of a PluginStateBase object.
+The Switch can be attached to a parameter of a PluginStateBase object.
 */
-class SimpleKnob : public juce::Slider
+class Switch : public juce::Button
 {
 public:
-  /// Defines the behavior of the knob when the user drags it beyond its range.
-  enum class Behavior
-  {
-    Bounded, ///< The knob will stop at its minimum and maximum values.
-    Endless  ///< The knob will wrap around when the user drags it beyond its range.
-  };
-
-  /// Parameters for the SimpleKnob component.
+  /// Parameters for the Switch component.
   struct Params
   {
-    juce::Colour color = Colors::dark;     ///< Color of the knob.
-    Behavior behavior = Behavior::Bounded; ///< Behavior of the knob.
-    float knobRangeDegrees = 270.0f;       ///< Range of the knob in degrees.
-    float notchWidthDegrees = 7.0f;        ///< Width of the indicator notch in degrees.
-    float notchDepthFraction = 0.7f; ///< Depth of the indicator notch as a fraction of the radius.
+    juce::CharPointer_UTF8 glyph; ///< The FontAwesome glyph to be displayed.
+    juce::Colour color;           ///< The color of the button.
+    juce::Colour glyphColor;      ///< The color of the glyph when not selected.
+    juce::Colour highlightColor;  ///< The color of the glyph when selected.
   };
 
   /// Constructor.
-  explicit SimpleKnob(const Params&);
+  explicit Switch(const Params&);
+
+  /// Attach this Switch to a parameter.
+  void attach(plugin::StateManager&, juce::ParameterID);
 
 private:
-  void paint(juce::Graphics& g) override;
+  void paintButton(juce::Graphics&, bool isMouseOver, bool isDown) override;
+
+  std::unique_ptr<plugin::StateManager::ButtonAttachment> _attachment;
   Params _params;
 };
 } // namespace fsh::gui

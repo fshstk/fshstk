@@ -19,25 +19,36 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include "Knob.h"
-#include "Labeled.h"
-#include "PluginState.h"
-#include <juce_gui_basics/juce_gui_basics.h>
+#include "Switch.h"
+#include "guiGlobals.h"
 
-class Middle : public juce::Component
+using namespace fsh::gui;
+
+Switch::Switch(const Params& params)
+  : juce::Button("")
+  , _params(params)
 {
-public:
-  explicit Middle(PluginState&);
-  void resized() override;
+  setClickingTogglesState(true);
+  setTriggeredOnMouseDown(true);
+}
 
-private:
-  fsh::gui::Labeled<fsh::gui::Knob> gainKnob{ {
-    .label = "gain",
-    .child = { .color = fsh::gui::Colors::light },
-  } };
-  fsh::gui::Labeled<fsh::gui::Knob> orderKnob{ {
-    .label = "3d resolution",
-    .child = { .color = fsh::gui::Colors::light },
-  } };
-};
+void Switch::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
+{
+  juce::ignoreUnused(isDown);
+  const auto isSelected = getToggleState();
+  const auto buttonColor = isMouseOver ? _params.color.withMultipliedAlpha(0.8f) : _params.color;
+  const auto textColor = isSelected ? _params.highlightColor : _params.glyphColor;
+
+  g.setColour(buttonColor);
+  g.fillRoundedRectangle(getLocalBounds().toFloat(), 4.0f);
+
+  g.setColour(textColor);
+  g.setFont(fsh::gui::Fonts::fontawesome_solid);
+  g.drawText(_params.glyph, getLocalBounds(), juce::Justification::centred);
+}
+
+void Switch::attach(plugin::StateManager& state, juce::ParameterID id)
+{
+  _attachment = std::make_unique<plugin::StateManager::ButtonAttachment>(
+    state.getReferenceToBaseClass(), id.getParamID(), *this);
+}

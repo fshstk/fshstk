@@ -19,42 +19,46 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "KnobWithLabel.h"
+#pragma once
+#include "StateManager.h"
 #include "guiGlobals.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
-using namespace fsh::gui;
+namespace fsh::gui {
+/**
+Custom knob component that displays a label and a value.
 
-KnobWithLabel::KnobWithLabel(const Params& params)
-  : _params(params)
-  , _knob(params.knobParams)
+The knob can be attached to a parameter of a PluginStateBase object.
+*/
+class Knob : public juce::Slider
 {
-  addAndMakeVisible(_knob);
-}
+public:
+  /// Defines the behavior of the knob when the user drags it beyond its range.
+  enum class Behavior
+  {
+    Bounded, ///< The knob will stop at its minimum and maximum values.
+    Endless  ///< The knob will wrap around when the user drags it beyond its range.
+  };
 
-void KnobWithLabel::paint(juce::Graphics& g)
-{
-  g.setColour(_params.knobParams.color);
-  g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
+  /// Parameters for the Knob component.
+  struct Params
+  {
+    juce::Colour color = Colors::dark;     ///< Color of the knob.
+    Behavior behavior = Behavior::Bounded; ///< Behavior of the knob.
+    float knobRangeDegrees = 270.0f;       ///< Range of the knob in degrees.
+    float notchWidthDegrees = 7.0f;        ///< Width of the indicator notch in degrees.
+    float notchDepthFraction = 0.7f; ///< Depth of the indicator notch as a fraction of the radius.
+  };
 
-  const auto area = getLocalBounds();
-  const auto margin = 5;
-  const auto knobBottomY = _knob.getBoundsInParent().getBottom() + margin;
-  const auto text = _knob.isMouseButtonDown() ? _knob.getTextFromValue(_knob.getValue())
-                                              : _params.label.toUpperCase();
-  g.drawText(text, area.withTop(knobBottomY), juce::Justification::centredTop, true);
-}
+  /// Constructor.
+  explicit Knob(const Params&);
 
-void KnobWithLabel::resized()
-{
-  const auto offsetY = 10;
-  const auto x = getLocalBounds().getCentreX();
-  const auto y = getLocalBounds().getCentreY() - offsetY;
-  const auto knobSize = 30;
-  _knob.setBounds(x - (knobSize / 2), y - (knobSize / 2), knobSize, knobSize);
-}
+  /// Attach this knob to a parameter.
+  void attach(plugin::StateManager&, juce::ParameterID);
 
-void KnobWithLabel::attach(plugin::StateManager& state, juce::ParameterID id)
-{
-  _stateManager = std::make_unique<plugin::StateManager::SliderAttachment>(
-    state.getReferenceToBaseClass(), id.getParamID(), _knob);
-}
+private:
+  std::unique_ptr<plugin::StateManager::SliderAttachment> _attachment;
+  void paint(juce::Graphics& g) override;
+  Params _params;
+};
+} // namespace fsh::gui

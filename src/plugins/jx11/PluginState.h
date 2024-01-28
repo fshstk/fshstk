@@ -36,7 +36,6 @@ public:
     ampenv_attack,
     ampenv_decay,
     ampenv_hold,
-    ampenv_vel,
 
     filtenv_attack,
     filtenv_decay,
