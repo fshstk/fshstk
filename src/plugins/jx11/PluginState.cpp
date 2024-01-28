@@ -267,8 +267,7 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
     return freqRatio;
   };
   return {
-    .voice = { .masterLevel =
-                 juce::Decibels::decibelsToGain(getParameter<float>(id(level)) - 40.0f),
+    .voice = { .masterLevel = juce::Decibels::decibelsToGain(getParameter<float>(id(level))),
                .oscA = { .detune = detune(getParameter<float>(id(oscA_tune)),
                                           getParameter<float>(id(oscA_fine))),
                          .amplitude = getParameter<float>(id(oscA_level)) / 100.0f,
