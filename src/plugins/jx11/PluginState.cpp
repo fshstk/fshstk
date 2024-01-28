@@ -270,18 +270,18 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
     .voice = { .masterLevel = juce::Decibels::decibelsToGain(getParameter<float>(id(level))),
                .oscA = { .detune = detune(getParameter<float>(id(oscA_tune)),
                                           getParameter<float>(id(oscA_fine))),
-                         .amplitude = getParameter<float>(id(oscA_level)) / 100.0f,
+                         .amplitude = getParameter<float>(id(oscA_level)) / 200.0f,
                          // TODO: bad coupling here (depends the order of Waveform enum elements)
                          .waveform =
                            getParameter<fsh::synth::Oscillator::Waveform>(id(oscA_waveform)) },
                .oscB = { .detune = detune(getParameter<float>(id(oscB_tune)),
                                           getParameter<float>(id(oscB_fine))),
-                         .amplitude = getParameter<float>(id(oscB_level)) / 100.0f,
+                         .amplitude = getParameter<float>(id(oscB_level)) / 200.0f,
                          // TODO: bad coupling here (depends the order of Waveform enum elements)
                          .waveform =
                            getParameter<fsh::synth::Oscillator::Waveform>(id(oscB_waveform)) },
                .oscC = { .detune = {},
-                         .amplitude = getParameter<float>(id(fx_noise)) / 100.0f,
+                         .amplitude = getParameter<float>(id(fx_noise)) / 200.0f,
                          .waveform = fsh::synth::Oscillator::Waveform::Noise },
                .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
                          .decay = getParameter<float>(id(ampenv_decay)),

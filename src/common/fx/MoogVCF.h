@@ -31,6 +31,10 @@ This implementation originally appeared on
 ported/improved by [ddiakopoulos on
 GitHub](https://github.com/ddiakopoulos/MoogLadders/blob/master/src/MusicDSPModel.h).
 
+The filter can occasionally become unstable when the input level is too high. It is recommended to
+use a pre-scale to avoid this. For example, a factor of 0.5 seems to work well with the Oscillator
+class.
+
 ## Before using
 
 Set the sample rate using setSampleRate(), and parameters using setParams().
