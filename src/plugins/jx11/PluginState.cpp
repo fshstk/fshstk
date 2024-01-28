@@ -283,17 +283,18 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                .oscC = { .detune = {},
                          .amplitude = getParameter<float>(id(fx_noise)) / 200.0f,
                          .waveform = fsh::synth::Oscillator::Waveform::Noise },
-               .adsr = { .attack = getParameter<float>(id(ampenv_attack)),
-                         .decay = getParameter<float>(id(ampenv_decay)),
+               .adsr = { .attack = getParameter<float>(id(ampenv_attack)) + 4.0f,
+                         .decay = getParameter<float>(id(ampenv_decay)) + 4.0f,
                          .sustain = getParameter<bool>(id(ampenv_hold)) ? 1.0f : 0.0f,
-                         .release = getParameter<float>(id(ampenv_decay)) },
+                         .release = getParameter<float>(id(ampenv_decay)) + 4.0f },
                .velocityAmt = getParameter<bool>(id(ampenv_vel)) ? 1.0f : 0.0f,
                // TODO: ambi param struct
                .aziCenter = getParameter<float>(id(ambi_center)),
                .aziRange = getParameter<float>(id(ambi_spread)),
                // TODO: filter param struct
-               .filterCutoff = getParameter<float>(id(filter_cutoff)) / 2.5f,
-               .filterResonance = getParameter<float>(id(filter_resonance)) / 100.0f },
+               // This maps the input range (0-100) roughly to the range 1-32:
+               .filterCutoff = std::exp2(getParameter<float>(id(filter_cutoff)) / 20.0f),
+               .filterResonance = getParameter<float>(id(filter_resonance)) / 140.0f },
   };
 }
 
