@@ -35,16 +35,16 @@ Switch::Switch(const Params& params)
 void Switch::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
 {
   juce::ignoreUnused(isDown);
+
   const auto isSelected = getToggleState();
-  const auto buttonColor = isMouseOver ? _params.color.withMultipliedAlpha(0.8f) : _params.color;
-  const auto textColor = isSelected ? _params.highlightColor : _params.glyphColor;
+  const auto textColor = isSelected ? _params.highlightColor : _params.color;
 
-  g.setColour(buttonColor);
-  g.fillRoundedRectangle(getLocalBounds().toFloat(), 4.0f);
+  const auto toggleOff = juce::CharPointer_UTF8{ "\uf204" };
+  const auto toggleOn = juce::CharPointer_UTF8{ "\uf205" };
 
-  g.setColour(textColor);
-  g.setFont(fsh::gui::Fonts::fontawesome_solid);
-  g.drawText(_params.glyph, getLocalBounds(), juce::Justification::centred);
+  g.setColour(isMouseOver ? textColor.withMultipliedAlpha(0.8f) : textColor);
+  g.setFont(fsh::gui::Fonts::fontawesome_solid.withHeight(24.0f));
+  g.drawText(isSelected ? toggleOn : toggleOff, getLocalBounds(), juce::Justification::centred);
 }
 
 void Switch::attach(plugin::StateManager& state, juce::ParameterID id)

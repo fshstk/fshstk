@@ -69,10 +69,7 @@ private:
   } };
   fsh::gui::Labeled<fsh::gui::Switch> _switchAmpEnvHold{ {
     .label = "HOLD",
-    .child = { .glyph = juce::CharPointer_UTF8{ "\uf2f6" },
-               .color = fsh::gui::Colors::dark,
-               .glyphColor = fsh::gui::Colors::gold.withAlpha(0.3f),
-               .highlightColor = fsh::gui::Colors::gold },
+    .child = { .color = fsh::gui::Colors::dark, .highlightColor = fsh::gui::Colors::red },
   } };
   fsh::gui::ComponentPanel _panelAmpEnv{
     { .label = "AMP ENV",
