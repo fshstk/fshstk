@@ -54,4 +54,9 @@ struct Sizes
   static inline const auto editorGridSize = editorHeight / 20; ///< Size of the editor grid
   static inline const auto knobRadius = Sizes::editorGridSize; ///< Radius of knobs
 };
+
+struct Backgrounds
+{
+  static auto redWaves() -> std::unique_ptr<juce::Drawable>;
+};
 } // namespace fsh::gui

@@ -54,5 +54,5 @@ if (DOXYGEN_FOUND)
     VERBATIM)
 endif()
 
-add_subdirectory(fonts)
+add_subdirectory(assets)
 add_subdirectory(src)

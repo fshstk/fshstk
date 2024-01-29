@@ -20,9 +20,22 @@
 ***************************************************************************************************/
 
 #include "guiGlobals.h"
+#include "BackgroundData.h"
 #include "FontData.h"
 
 using namespace fsh::gui;
+
+namespace {
+auto drawableFromAsset(const char* asset) -> std::unique_ptr<juce::Drawable>
+{
+  const auto xml = juce::XmlDocument::parse(asset);
+
+  if (xml == nullptr)
+    return nullptr;
+
+  return juce::Drawable::createFromSVG(*xml);
+}
+} // namespace
 
 const juce::Font Fonts::title =
   juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
@@ -41,3 +54,8 @@ const juce::Font Fonts::fontawesome_regular =
 const juce::Font Fonts::fontawesome_solid =
   juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
                                           fsh::assets::fonts::FontAwesome6FreeSolid_otfSize);
+
+auto Backgrounds::redWaves() -> std::unique_ptr<juce::Drawable>
+{
+  return drawableFromAsset(fsh::assets::backgrounds::redwaves_svg);
+}

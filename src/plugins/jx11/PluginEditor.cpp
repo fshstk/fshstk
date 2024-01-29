@@ -20,7 +20,6 @@
 ***************************************************************************************************/
 
 #include "PluginEditor.h"
-#include "BackgroundData.h"
 #include "PluginState.h"
 #include "guiGlobals.h"
 
@@ -79,10 +78,7 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
 
 void PluginEditor::paint(juce::Graphics& g)
 {
-  const auto xml = juce::XmlDocument::parse(fsh::assets::background::background_svg);
-  assert(xml);
-
-  const auto background = juce::Drawable::createFromSVG(*xml);
+  const auto background = fsh::gui::Backgrounds::redWaves();
   assert(background);
 
   background->setTransformToFit(getLocalBounds().toFloat(), juce::RectanglePlacement::stretchToFit);
