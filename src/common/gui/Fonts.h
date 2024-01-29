@@ -19,26 +19,25 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "pathFromText.h"
-#include "guiGlobals.h"
+#pragma once
+#include <juce_gui_basics/juce_gui_basics.h>
 
-using namespace fsh::gui;
-
-juce::Path fsh::gui::pathFromText(const juce::String text, const juce::Point<float> center)
+namespace fsh::gui {
+/**
+Fonts used by the GUI.
+*/
+struct Fonts
 {
-  // Line width just needs to be a constant that's definitely big enough to fit
-  // the string we want to draw:
-  const auto lineWidth = 100.0f;
+  static const juce::Font h1; ///< Heading 1. Use for: plugin name
+  static const juce::Font h2; ///< Heading 2. Use for: suite name
+  static const juce::Font h3; ///< Heading 3. Use for: panel labels, plugin version
+  static const juce::Font h4; ///< Heading 4. Use for: knob/button labels
 
-  auto glyphs = juce::GlyphArrangement{};
-  glyphs.addJustifiedText(Fonts::body,
-                          text,
-                          center.getX() - lineWidth / 2.0f,
-                          center.getY(),
-                          lineWidth,
-                          juce::Justification::centred);
-
-  auto path = juce::Path{};
-  glyphs.createPath(path);
-  return path;
-}
+  /// Font Awesome fonts (for icons)
+  struct FontAwesome
+  {
+    static const juce::Font regular; ///< Font Awesome Regular
+    static const juce::Font solid;   ///< Font Awesome Solid
+  };
+};
+} // namespace fsh::gui

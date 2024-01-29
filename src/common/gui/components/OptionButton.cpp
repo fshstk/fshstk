@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "OptionButton.h"
-#include "guiGlobals.h"
+#include "Fonts.h"
 #include <fmt/format.h>
 
 using namespace fsh::gui;
@@ -49,6 +49,6 @@ void OptionButton::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
   }();
 
   g.setColour(color);
-  g.setFont(fsh::gui::Fonts::body);
+  g.setFont(fsh::gui::Fonts::h4);
   g.drawText(_params.text.toUpperCase(), getLocalBounds(), juce::Justification::centred);
 }

@@ -85,7 +85,7 @@ void OptionPicker::resized()
     grid.items.add(juce::GridItem{ *component });
   }
 
-  grid.performLayout({ 0, 4, getWidth(), getHeight() - 16 });
+  grid.performLayout({ 0, 5, getWidth(), getHeight() - 15 });
 }
 
 auto OptionPicker::getSelectedIndex() const -> size_t

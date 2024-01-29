@@ -20,9 +20,9 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "Fonts.h"
 #include "Knob.h"
 #include "StateManager.h"
-#include "guiGlobals.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
@@ -55,7 +55,7 @@ private:
   void paint(juce::Graphics& g) override
   {
     g.setColour(_params.child.color);
-    g.setFont(fsh::gui::Fonts::body.withHeight(16.0f));
+    g.setFont(fsh::gui::Fonts::h4);
 
     const auto area = getLocalBounds();
     const auto margin = 5;

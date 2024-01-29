@@ -20,7 +20,8 @@
 ***************************************************************************************************/
 
 #include "Top.h"
-#include "guiGlobals.h"
+#include "Colors.h"
+#include "Fonts.h"
 
 Top::Top()
 {
@@ -30,13 +31,13 @@ Top::Top()
 void Top::paint(juce::Graphics& g)
 {
   g.setColour(fsh::gui::Colors::foreground);
-  g.setFont(fsh::gui::Fonts::title);
+  g.setFont(fsh::gui::Fonts::h1);
   g.drawText("fsh::encoder", getLocalBounds(), juce::Justification::centred);
 }
 
 void Top::resized()
 {
-  const auto buttonSize = fsh::gui::Sizes::editorGridSize;
+  const auto buttonSize = 23;
   const auto infoArea = getLocalBounds().removeFromRight(buttonSize).removeFromTop(buttonSize);
   infoButton.setBounds(infoArea);
 }

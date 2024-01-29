@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "Colors.h"
 #include "Knob.h"
 #include "Labeled.h"
 #include "PluginState.h"

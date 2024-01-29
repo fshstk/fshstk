@@ -20,7 +20,6 @@
 ***************************************************************************************************/
 
 #include "Middle.h"
-#include "guiGlobals.h"
 
 Middle::Middle(PluginState& s)
 {
@@ -33,7 +32,7 @@ Middle::Middle(PluginState& s)
 
 void Middle::resized()
 {
-  auto area = getLocalBounds().removeFromTop(fsh::gui::Sizes::editorGridSize * 4);
-  orderKnob.setBounds(area.removeFromLeft(fsh::gui::Sizes::editorGridSize * 6));
-  gainKnob.setBounds(area.removeFromRight(fsh::gui::Sizes::editorGridSize * 6));
+  auto area = getLocalBounds().removeFromTop(95);
+  orderKnob.setBounds(area.removeFromLeft(142));
+  gainKnob.setBounds(area.removeFromRight(142));
 }

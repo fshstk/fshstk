@@ -20,9 +20,8 @@
 ***************************************************************************************************/
 
 #include "PluginEditor.h"
-#include "Background.h"
+#include "Backgrounds.h"
 #include "PluginState.h"
-#include "guiGlobals.h"
 
 PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(p)
@@ -79,10 +78,7 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
 
 void PluginEditor::paint(juce::Graphics& g)
 {
-  const auto xml = juce::XmlDocument::parse(background::background_svg);
-  assert(xml);
-
-  const auto background = juce::Drawable::createFromSVG(*xml);
+  const auto background = fsh::gui::Backgrounds::redWaves();
   assert(background);
 
   background->setTransformToFit(getLocalBounds().toFloat(), juce::RectanglePlacement::stretchToFit);
@@ -102,16 +98,16 @@ void PluginEditor::paint(juce::Graphics& g)
 
   g.setColour(fsh::gui::Colors::light);
 
-  g.setFont(fsh::gui::Fonts::body.withHeight(48.0f));
+  g.setFont(fsh::gui::Fonts::h1);
   g.drawText(fmt::format("fsh :: {}", juce::String{ JucePlugin_Name }.toLowerCase().toStdString()),
              headerText,
              juce::Justification::bottomRight);
 
-  g.setFont(fsh::gui::Fonts::body.withHeight(24.0f));
+  g.setFont(fsh::gui::Fonts::h2);
   g.drawText(
     "fantastic spatial holophonic :: synthesis toolkit", footerText, juce::Justification::topLeft);
 
-  g.setFont(fsh::gui::Fonts::body.withHeight(18.0f));
+  g.setFont(fsh::gui::Fonts::h3);
   g.drawText(
     fmt::format("v{}", JucePlugin_VersionString), footerText, juce::Justification::topRight);
 }

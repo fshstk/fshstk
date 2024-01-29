@@ -14,7 +14,7 @@
 #                                      www.github.com/fshstk                                       #
 #                                          www.fshstk.com                                          #
 #                                                                                                  #
-#        this file is part of the fantastic spatial holophonic synthesis toolkit (fsh::stk)         #
+#        this file is part of the fantastic spatial holophonic synthesis toolkit (fsh::stk)        #
 # fsh::stk is free software: it is provided under the terms of the gnu general public license v3.0 #
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
@@ -53,7 +53,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  Fonts
   fmt
   spdlog::spdlog
   juce::juce_audio_utils
@@ -61,6 +60,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   juce::juce_recommended_config_flags
   juce::juce_recommended_lto_flags
   juce::juce_recommended_warning_flags
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  FontData
+  BackgroundData
 )
 
 add_subdirectory(fx)

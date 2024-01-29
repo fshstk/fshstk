@@ -23,35 +23,12 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-/// Colors used by the GUI.
-struct Colors
+/**
+Backgrounds used by the GUI.
+*/
+struct Backgrounds
 {
-  inline static const juce::Colour background{ 48, 48, 48 };              ///< Background color
-  inline static const juce::Colour foreground{ 218, 218, 218 };           ///< Foreground color
-  inline static const juce::Colour transparent{ 0.0f, 0.0f, 0.0f, 0.0f }; ///< Transparent
-
-  inline static const auto darkblue = juce::Colour{ 0xff'25283d }; ///< Dark blue
-  inline static const auto light = juce::Colour{ 0xff'ffeddf };    ///< Light
-  inline static const auto gold = juce::Colour{ 0xff'fbcf23 };     ///< Gold
-  inline static const auto red = juce::Colour{ 0xff'b91327 };      ///< Red
-  inline static const auto dark = juce::Colour{ 0xff'2c363f };     ///< Dark
-};
-
-/// Fonts used by the GUI.
-struct Fonts
-{
-  static const juce::Font title;               ///< Font used for titles
-  static const juce::Font body;                ///< Font used for body text
-  static const juce::Font fontawesome_regular; ///< Font Awesome Regular (for icons)
-  static const juce::Font fontawesome_solid;   ///< Font Awesome Solid (for icons)
-};
-
-/// Sizes used by the GUI.
-struct Sizes
-{
-  static inline const auto editorWidth = 415;                  ///< Width of the editor window
-  static inline const auto editorHeight = 475;                 ///< Height of the editor window
-  static inline const auto editorGridSize = editorHeight / 20; ///< Size of the editor grid
-  static inline const auto knobRadius = Sizes::editorGridSize; ///< Radius of knobs
+  ///< Red waves background used for synth plugin
+  static auto redWaves() -> std::unique_ptr<juce::Drawable>;
 };
 } // namespace fsh::gui

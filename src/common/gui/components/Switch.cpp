@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "Switch.h"
-#include "guiGlobals.h"
+#include "Fonts.h"
 
 using namespace fsh::gui;
 
@@ -43,7 +43,7 @@ void Switch::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
   const auto toggleOn = juce::CharPointer_UTF8{ "\uf205" };
 
   g.setColour(isMouseOver ? textColor.withMultipliedAlpha(0.8f) : textColor);
-  g.setFont(fsh::gui::Fonts::fontawesome_solid.withHeight(24.0f));
+  g.setFont(fsh::gui::Fonts::FontAwesome::solid.withHeight(24.0f));
   g.drawText(isSelected ? toggleOn : toggleOff, getLocalBounds(), juce::Justification::centred);
 }
 
