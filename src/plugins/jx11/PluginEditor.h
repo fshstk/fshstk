@@ -71,8 +71,8 @@ private:
     .label = "HOLD",
     .child = { .glyph = juce::CharPointer_UTF8{ "\uf2f6" },
                .color = fsh::gui::Colors::dark,
-               .glyphColor = fsh::gui::Colors::gold,
-               .highlightColor = fsh::gui::Colors::red },
+               .glyphColor = fsh::gui::Colors::gold.withAlpha(0.3f),
+               .highlightColor = fsh::gui::Colors::gold },
   } };
   fsh::gui::ComponentPanel _panelAmpEnv{
     { .label = "AMP ENV",
