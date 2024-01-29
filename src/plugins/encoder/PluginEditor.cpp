@@ -20,7 +20,6 @@
 ***************************************************************************************************/
 
 #include "PluginEditor.h"
-#include "Sizes.h"
 #include "sections/Bottom.h"
 #include "sections/Middle.h"
 #include "sections/Top.h"
@@ -38,7 +37,9 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
 
   // Calling setSize() will immediatiely invoke resized(), even inside the
   // constructor, so we need to leave it for last:
-  setSize(fsh::gui::Sizes::editorWidth, fsh::gui::Sizes::editorHeight);
+  const auto editorWidth = 415;
+  const auto editorHeight = 475;
+  setSize(editorWidth, editorHeight);
 }
 
 void PluginEditor::paint(juce::Graphics& g)
@@ -50,8 +51,8 @@ void PluginEditor::resized()
 {
   auto area = getLocalBounds();
 
-  const auto top = area.removeFromTop(3 * fsh::gui::Sizes::editorGridSize);
-  const auto bottom = area.removeFromBottom(8 * fsh::gui::Sizes::editorGridSize);
+  const auto top = area.removeFromTop(71);
+  const auto bottom = area.removeFromBottom(190);
   const auto middle = area;
 
   assert(sections["top"].get() != nullptr);

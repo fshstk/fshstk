@@ -21,7 +21,6 @@
 
 #include "Bottom.h"
 #include "PluginState.h"
-#include "Sizes.h"
 
 Bottom::Bottom(PluginState& s)
 {
@@ -40,10 +39,10 @@ Bottom::Bottom(PluginState& s)
 
 void Bottom::resized()
 {
-  const auto margin = fsh::gui::Sizes::editorGridSize * 2;
-  const auto knobsWidth = fsh::gui::Sizes::editorGridSize * 5;
+  const auto margin = 47;
+  const auto knobsWidth = 118;
 
-  auto area = getLocalBounds().removeFromTop(fsh::gui::Sizes::editorGridSize * 4);
+  auto area = getLocalBounds().removeFromTop(95);
 
   area.removeFromLeft(margin);
   auto leftKnobs = area.removeFromLeft(knobsWidth);

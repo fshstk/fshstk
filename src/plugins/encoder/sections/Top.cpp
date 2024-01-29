@@ -22,7 +22,6 @@
 #include "Top.h"
 #include "Colors.h"
 #include "Fonts.h"
-#include "Sizes.h"
 
 Top::Top()
 {
@@ -38,7 +37,7 @@ void Top::paint(juce::Graphics& g)
 
 void Top::resized()
 {
-  const auto buttonSize = fsh::gui::Sizes::editorGridSize;
+  const auto buttonSize = 23;
   const auto infoArea = getLocalBounds().removeFromRight(buttonSize).removeFromTop(buttonSize);
   infoButton.setBounds(infoArea);
 }
