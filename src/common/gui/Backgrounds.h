@@ -23,9 +23,12 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-/// Backgrounds used by the GUI.
+/**
+Backgrounds used by the GUI.
+*/
 struct Backgrounds
 {
+  ///< Red waves background used for synth plugin
   static auto redWaves() -> std::unique_ptr<juce::Drawable>;
 };
 } // namespace fsh::gui

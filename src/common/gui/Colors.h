@@ -23,7 +23,9 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-/// Colors used by the GUI.
+/**
+Colors used by the GUI.
+*/
 struct Colors
 {
   inline static const juce::Colour background{ 48, 48, 48 };              ///< Background color

@@ -23,7 +23,9 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
-/// Fonts used by the GUI.
+/**
+Fonts used by the GUI.
+*/
 struct Fonts
 {
   static const juce::Font h1; ///< Heading 1. Use for: plugin name
