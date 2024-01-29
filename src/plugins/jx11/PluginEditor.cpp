@@ -98,16 +98,16 @@ void PluginEditor::paint(juce::Graphics& g)
 
   g.setColour(fsh::gui::Colors::light);
 
-  g.setFont(fsh::gui::Fonts::body.withHeight(48.0f));
+  g.setFont(fsh::gui::Fonts::h1);
   g.drawText(fmt::format("fsh :: {}", juce::String{ JucePlugin_Name }.toLowerCase().toStdString()),
              headerText,
              juce::Justification::bottomRight);
 
-  g.setFont(fsh::gui::Fonts::body.withHeight(24.0f));
+  g.setFont(fsh::gui::Fonts::h2);
   g.drawText(
     "fantastic spatial holophonic :: synthesis toolkit", footerText, juce::Justification::topLeft);
 
-  g.setFont(fsh::gui::Fonts::body.withHeight(18.0f));
+  g.setFont(fsh::gui::Fonts::h3);
   g.drawText(
     fmt::format("v{}", JucePlugin_VersionString), footerText, juce::Justification::topRight);
 }

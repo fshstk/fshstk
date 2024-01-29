@@ -24,20 +24,21 @@
 
 using namespace fsh::gui;
 
-const juce::Font Fonts::title =
+namespace {
+const auto jockeyOne =
   juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
-                                                      fsh::assets::fonts::JockeyOne_ttfSize) }
-    .withHeight(64.0f);
+                                                      fsh::assets::fonts::JockeyOne_ttfSize) };
+} // namespace
 
-const juce::Font Fonts::body =
-  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
-                                                      fsh::assets::fonts::JockeyOne_ttfSize) }
-    .withHeight(18.0f);
+const juce::Font Fonts::h1 = jockeyOne.withHeight(48.0f);
+const juce::Font Fonts::h2 = jockeyOne.withHeight(24.0f);
+const juce::Font Fonts::h3 = jockeyOne.withHeight(18.0f);
+const juce::Font Fonts::h4 = jockeyOne.withHeight(16.0f);
 
-const juce::Font Fonts::fontawesome_regular =
+const juce::Font Fonts::FontAwesome::regular =
   juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeRegular_otf,
                                           fsh::assets::fonts::FontAwesome6FreeRegular_otfSize);
 
-const juce::Font Fonts::fontawesome_solid =
+const juce::Font Fonts::FontAwesome::solid =
   juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
                                           fsh::assets::fonts::FontAwesome6FreeSolid_otfSize);

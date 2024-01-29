@@ -38,7 +38,7 @@ void ComponentPanel::paint(juce::Graphics& g)
   g.setColour(_params.background);
   g.fillAll();
   g.setColour(_params.foreground);
-  g.setFont(fsh::gui::Fonts::body);
+  g.setFont(fsh::gui::Fonts::h3);
   const auto textArea = juce::Rectangle{ 8, 3, getWidth(), 20 };
   g.drawText(_params.label.toUpperCase(), textArea, juce::Justification::centredLeft);
 }

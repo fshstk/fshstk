@@ -32,7 +32,7 @@ Top::Top()
 void Top::paint(juce::Graphics& g)
 {
   g.setColour(fsh::gui::Colors::foreground);
-  g.setFont(fsh::gui::Fonts::title);
+  g.setFont(fsh::gui::Fonts::h1);
   g.drawText("fsh::encoder", getLocalBounds(), juce::Justification::centred);
 }
 
