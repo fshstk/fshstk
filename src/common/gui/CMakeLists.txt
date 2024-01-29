@@ -25,7 +25,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 target_sources(${PROJECT_NAME} PRIVATE
   guiGlobals.cpp
-  pathFromText.cpp
 )
 
 add_subdirectory(components)
