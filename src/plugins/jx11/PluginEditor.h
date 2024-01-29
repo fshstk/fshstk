@@ -221,7 +221,7 @@ private:
         return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
       }(),
     .color = fsh::gui::Colors::light,
-    .highlightColor = fsh::gui::Colors::red,
+    .highlightColor = fsh::gui::Colors::gold,
   } };
   fsh::gui::ComponentPanel _panelVoice{ { .label = "VOICE",
                                           .foreground = fsh::gui::Colors::light,
@@ -239,7 +239,7 @@ private:
         return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
       }(),
     .color = fsh::gui::Colors::light,
-    .highlightColor = fsh::gui::Colors::red,
+    .highlightColor = fsh::gui::Colors::gold,
   } };
   fsh::gui::ComponentPanel _panelReverb{
     { .label = "REVERB",
