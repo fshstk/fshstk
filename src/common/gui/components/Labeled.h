@@ -20,9 +20,9 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "Fonts.h"
 #include "Knob.h"
 #include "StateManager.h"
-#include "guiGlobals.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {

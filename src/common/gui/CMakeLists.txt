@@ -24,7 +24,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
-  guiGlobals.cpp
+  Backgrounds.cpp
+  Fonts.cpp
 )
 
 add_subdirectory(components)

@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "OptionButton.h"
-#include "guiGlobals.h"
+#include "Fonts.h"
 #include <fmt/format.h>
 
 using namespace fsh::gui;

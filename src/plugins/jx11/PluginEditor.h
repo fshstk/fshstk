@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "Colors.h"
 #include "ComponentPanel.h"
 #include "InfoButton.h"
 #include "Knob.h"
@@ -28,7 +29,6 @@
 #include "PluginProcessor.h"
 #include "PluginState.h"
 #include "Switch.h"
-#include "guiGlobals.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
 class PluginEditor : public juce::AudioProcessorEditor

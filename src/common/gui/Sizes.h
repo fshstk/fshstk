@@ -19,43 +19,16 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "guiGlobals.h"
-#include "BackgroundData.h"
-#include "FontData.h"
+#pragma once
+#include <juce_gui_basics/juce_gui_basics.h>
 
-using namespace fsh::gui;
-
-namespace {
-auto drawableFromAsset(const char* asset) -> std::unique_ptr<juce::Drawable>
+namespace fsh::gui {
+/// Sizes used by the GUI.
+struct Sizes
 {
-  const auto xml = juce::XmlDocument::parse(asset);
-
-  if (xml == nullptr)
-    return nullptr;
-
-  return juce::Drawable::createFromSVG(*xml);
-}
-} // namespace
-
-const juce::Font Fonts::title =
-  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
-                                                      fsh::assets::fonts::JockeyOne_ttfSize) }
-    .withHeight(64.0f);
-
-const juce::Font Fonts::body =
-  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
-                                                      fsh::assets::fonts::JockeyOne_ttfSize) }
-    .withHeight(18.0f);
-
-const juce::Font Fonts::fontawesome_regular =
-  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeRegular_otf,
-                                          fsh::assets::fonts::FontAwesome6FreeRegular_otfSize);
-
-const juce::Font Fonts::fontawesome_solid =
-  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
-                                          fsh::assets::fonts::FontAwesome6FreeSolid_otfSize);
-
-auto Backgrounds::redWaves() -> std::unique_ptr<juce::Drawable>
-{
-  return drawableFromAsset(fsh::assets::backgrounds::redwaves_svg);
-}
+  static inline const auto editorWidth = 415;                  ///< Width of the editor window
+  static inline const auto editorHeight = 475;                 ///< Height of the editor window
+  static inline const auto editorGridSize = editorHeight / 20; ///< Size of the editor grid
+  static inline const auto knobRadius = Sizes::editorGridSize; ///< Radius of knobs
+};
+} // namespace fsh::gui

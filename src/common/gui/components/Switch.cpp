@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "Switch.h"
-#include "guiGlobals.h"
+#include "Fonts.h"
 
 using namespace fsh::gui;
 

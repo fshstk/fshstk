@@ -19,44 +19,25 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include <juce_gui_basics/juce_gui_basics.h>
+#include "Fonts.h"
+#include "FontData.h"
 
-namespace fsh::gui {
-/// Colors used by the GUI.
-struct Colors
-{
-  inline static const juce::Colour background{ 48, 48, 48 };              ///< Background color
-  inline static const juce::Colour foreground{ 218, 218, 218 };           ///< Foreground color
-  inline static const juce::Colour transparent{ 0.0f, 0.0f, 0.0f, 0.0f }; ///< Transparent
+using namespace fsh::gui;
 
-  inline static const auto darkblue = juce::Colour{ 0xff'25283d }; ///< Dark blue
-  inline static const auto light = juce::Colour{ 0xff'ffeddf };    ///< Light
-  inline static const auto gold = juce::Colour{ 0xff'fbcf23 };     ///< Gold
-  inline static const auto red = juce::Colour{ 0xff'b91327 };      ///< Red
-  inline static const auto dark = juce::Colour{ 0xff'2c363f };     ///< Dark
-};
+const juce::Font Fonts::title =
+  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
+                                                      fsh::assets::fonts::JockeyOne_ttfSize) }
+    .withHeight(64.0f);
 
-/// Fonts used by the GUI.
-struct Fonts
-{
-  static const juce::Font title;               ///< Font used for titles
-  static const juce::Font body;                ///< Font used for body text
-  static const juce::Font fontawesome_regular; ///< Font Awesome Regular (for icons)
-  static const juce::Font fontawesome_solid;   ///< Font Awesome Solid (for icons)
-};
+const juce::Font Fonts::body =
+  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
+                                                      fsh::assets::fonts::JockeyOne_ttfSize) }
+    .withHeight(18.0f);
 
-/// Sizes used by the GUI.
-struct Sizes
-{
-  static inline const auto editorWidth = 415;                  ///< Width of the editor window
-  static inline const auto editorHeight = 475;                 ///< Height of the editor window
-  static inline const auto editorGridSize = editorHeight / 20; ///< Size of the editor grid
-  static inline const auto knobRadius = Sizes::editorGridSize; ///< Radius of knobs
-};
+const juce::Font Fonts::fontawesome_regular =
+  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeRegular_otf,
+                                          fsh::assets::fonts::FontAwesome6FreeRegular_otfSize);
 
-struct Backgrounds
-{
-  static auto redWaves() -> std::unique_ptr<juce::Drawable>;
-};
-} // namespace fsh::gui
+const juce::Font Fonts::fontawesome_solid =
+  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
+                                          fsh::assets::fonts::FontAwesome6FreeSolid_otfSize);

@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "PluginEditor.h"
-#include "guiGlobals.h"
+#include "Sizes.h"
 #include "sections/Bottom.h"
 #include "sections/Middle.h"
 #include "sections/Top.h"

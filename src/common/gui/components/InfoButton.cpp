@@ -20,7 +20,8 @@
 ***************************************************************************************************/
 
 #include "InfoButton.h"
-#include "guiGlobals.h"
+#include "Colors.h"
+#include "Fonts.h"
 
 using namespace fsh::gui;
 

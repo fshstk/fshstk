@@ -20,7 +20,9 @@
 ***************************************************************************************************/
 
 #include "Top.h"
-#include "guiGlobals.h"
+#include "Colors.h"
+#include "Fonts.h"
+#include "Sizes.h"
 
 Top::Top()
 {

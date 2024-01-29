@@ -19,21 +19,24 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "Middle.h"
-#include "Sizes.h"
+#include "Backgrounds.h"
+#include "BackgroundData.h"
 
-Middle::Middle(PluginState& s)
+using namespace fsh::gui;
+
+namespace {
+auto drawableFromAsset(const char* asset) -> std::unique_ptr<juce::Drawable>
 {
-  addAndMakeVisible(gainKnob);
-  addAndMakeVisible(orderKnob);
+  const auto xml = juce::XmlDocument::parse(asset);
 
-  gainKnob.attach(s, "gain");
-  orderKnob.attach(s, "order");
+  if (xml == nullptr)
+    return nullptr;
+
+  return juce::Drawable::createFromSVG(*xml);
 }
+} // namespace
 
-void Middle::resized()
+auto Backgrounds::redWaves() -> std::unique_ptr<juce::Drawable>
 {
-  auto area = getLocalBounds().removeFromTop(fsh::gui::Sizes::editorGridSize * 4);
-  orderKnob.setBounds(area.removeFromLeft(fsh::gui::Sizes::editorGridSize * 6));
-  gainKnob.setBounds(area.removeFromRight(fsh::gui::Sizes::editorGridSize * 6));
+  return drawableFromAsset(fsh::assets::backgrounds::redwaves_svg);
 }

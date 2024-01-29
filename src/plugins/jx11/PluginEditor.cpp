@@ -20,8 +20,8 @@
 ***************************************************************************************************/
 
 #include "PluginEditor.h"
+#include "Backgrounds.h"
 #include "PluginState.h"
-#include "guiGlobals.h"
 
 PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   : juce::AudioProcessorEditor(p)

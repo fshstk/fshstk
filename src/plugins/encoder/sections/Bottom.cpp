@@ -21,7 +21,7 @@
 
 #include "Bottom.h"
 #include "PluginState.h"
-#include "guiGlobals.h"
+#include "Sizes.h"
 
 Bottom::Bottom(PluginState& s)
 {

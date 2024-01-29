@@ -19,21 +19,13 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "Middle.h"
-#include "Sizes.h"
+#pragma once
+#include <juce_gui_basics/juce_gui_basics.h>
 
-Middle::Middle(PluginState& s)
+namespace fsh::gui {
+/// Backgrounds used by the GUI.
+struct Backgrounds
 {
-  addAndMakeVisible(gainKnob);
-  addAndMakeVisible(orderKnob);
-
-  gainKnob.attach(s, "gain");
-  orderKnob.attach(s, "order");
-}
-
-void Middle::resized()
-{
-  auto area = getLocalBounds().removeFromTop(fsh::gui::Sizes::editorGridSize * 4);
-  orderKnob.setBounds(area.removeFromLeft(fsh::gui::Sizes::editorGridSize * 6));
-  gainKnob.setBounds(area.removeFromRight(fsh::gui::Sizes::editorGridSize * 6));
-}
+  static auto redWaves() -> std::unique_ptr<juce::Drawable>;
+};
+} // namespace fsh::gui
