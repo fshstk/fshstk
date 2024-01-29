@@ -20,7 +20,7 @@
 ***************************************************************************************************/
 
 #include "PluginEditor.h"
-#include "Background.h"
+#include "BackgroundData.h"
 #include "PluginState.h"
 #include "guiGlobals.h"
 
@@ -79,7 +79,7 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
 
 void PluginEditor::paint(juce::Graphics& g)
 {
-  const auto xml = juce::XmlDocument::parse(background::background_svg);
+  const auto xml = juce::XmlDocument::parse(fsh::assets::background::background_svg);
   assert(xml);
 
   const auto background = juce::Drawable::createFromSVG(*xml);

@@ -53,7 +53,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  Fonts
+  FontData
   fmt
   spdlog::spdlog
   juce::juce_audio_utils

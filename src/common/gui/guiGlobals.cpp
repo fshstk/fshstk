@@ -20,24 +20,24 @@
 ***************************************************************************************************/
 
 #include "guiGlobals.h"
-#include "Fonts.h"
+#include "FontData.h"
 
 using namespace fsh::gui;
 
 const juce::Font Fonts::title =
-  juce::Font{ juce::Typeface::createSystemTypefaceFor(BinaryData::JockeyOne_ttf,
-                                                      BinaryData::JockeyOne_ttfSize) }
+  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
+                                                      fsh::assets::fonts::JockeyOne_ttfSize) }
     .withHeight(64.0f);
 
 const juce::Font Fonts::body =
-  juce::Font{ juce::Typeface::createSystemTypefaceFor(BinaryData::JockeyOne_ttf,
-                                                      BinaryData::JockeyOne_ttfSize) }
+  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
+                                                      fsh::assets::fonts::JockeyOne_ttfSize) }
     .withHeight(18.0f);
 
 const juce::Font Fonts::fontawesome_regular =
-  juce::Typeface::createSystemTypefaceFor(BinaryData::FontAwesome6FreeRegular_otf,
-                                          BinaryData::FontAwesome6FreeRegular_otfSize);
+  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeRegular_otf,
+                                          fsh::assets::fonts::FontAwesome6FreeRegular_otfSize);
 
 const juce::Font Fonts::fontawesome_solid =
-  juce::Typeface::createSystemTypefaceFor(BinaryData::FontAwesome6FreeSolid_otf,
-                                          BinaryData::FontAwesome6FreeSolid_otfSize);
+  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
+                                          fsh::assets::fonts::FontAwesome6FreeSolid_otfSize);

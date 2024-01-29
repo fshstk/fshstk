@@ -19,11 +19,11 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-juce_add_binary_data(Fonts
+juce_add_binary_data(FontData
   HEADER_NAME
-    Fonts.h
+    FontData.h
   NAMESPACE
-    BinaryData
+    fsh::assets::fonts
   SOURCES
     JockeyOne.ttf
     JollyLodger.ttf
