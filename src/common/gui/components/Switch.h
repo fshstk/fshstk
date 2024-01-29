@@ -25,7 +25,9 @@
 
 namespace fsh::gui {
 /**
-Custom Switch component that displays a label and a value.
+Custom Switch component that displays a toggle switch.
+
+Use this switch as a template parameter for the Labeled class to add a label to the switch.
 
 The Switch can be attached to a parameter of a PluginStateBase object.
 */
@@ -35,10 +37,8 @@ public:
   /// Parameters for the Switch component.
   struct Params
   {
-    juce::CharPointer_UTF8 glyph; ///< The FontAwesome glyph to be displayed.
-    juce::Colour color;           ///< The color of the button.
-    juce::Colour glyphColor;      ///< The color of the glyph when not selected.
-    juce::Colour highlightColor;  ///< The color of the glyph when selected.
+    juce::Colour color;          ///< The color of the glyph when not selected.
+    juce::Colour highlightColor; ///< The color of the glyph when selected.
   };
 
   /// Constructor.

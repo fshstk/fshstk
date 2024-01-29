@@ -21,6 +21,7 @@
 
 #pragma once
 #include "ComponentPanel.h"
+#include "InfoButton.h"
 #include "Knob.h"
 #include "Labeled.h"
 #include "OptionPicker.h"
@@ -39,6 +40,7 @@ public:
 
 private:
   PluginState& _state;
+  fsh::gui::InfoButton _buttonInfo;
 
   // AMBISONICS panel:
 
@@ -67,10 +69,7 @@ private:
   } };
   fsh::gui::Labeled<fsh::gui::Switch> _switchAmpEnvHold{ {
     .label = "HOLD",
-    .child = { .glyph = juce::CharPointer_UTF8{ "\uf011" },
-               .color = fsh::gui::Colors::dark,
-               .glyphColor = fsh::gui::Colors::gold,
-               .highlightColor = fsh::gui::Colors::red },
+    .child = { .color = fsh::gui::Colors::dark, .highlightColor = fsh::gui::Colors::red },
   } };
   fsh::gui::ComponentPanel _panelAmpEnv{
     { .label = "AMP ENV",
@@ -222,7 +221,7 @@ private:
         return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
       }(),
     .color = fsh::gui::Colors::light,
-    .highlightColor = fsh::gui::Colors::red,
+    .highlightColor = fsh::gui::Colors::gold,
   } };
   fsh::gui::ComponentPanel _panelVoice{ { .label = "VOICE",
                                           .foreground = fsh::gui::Colors::light,
@@ -240,7 +239,7 @@ private:
         return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
       }(),
     .color = fsh::gui::Colors::light,
-    .highlightColor = fsh::gui::Colors::red,
+    .highlightColor = fsh::gui::Colors::gold,
   } };
   fsh::gui::ComponentPanel _panelReverb{
     { .label = "REVERB",
