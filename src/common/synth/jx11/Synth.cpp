@@ -51,7 +51,7 @@ void Synth::handleMIDIEvent(const MidiEvent& evt)
     case NoteOff:
       for (auto& voice : _voices)
         if (voice.getNoteVal() == evt.data1())
-          return voice.noteOff(evt.data1(), evt.data2());
+          voice.noteOff(evt.data1(), evt.data2());
       return;
     case PitchBend:
       for (auto& voice : _voices)
