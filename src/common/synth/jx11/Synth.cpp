@@ -70,6 +70,8 @@ void Synth::setParams(const Params& params)
 
 void Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
 {
+  audio.clear();
+
   auto bufferOffset = 0U;
 
   for (const auto& msg : midi) {
