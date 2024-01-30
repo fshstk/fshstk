@@ -24,6 +24,7 @@ set(FSH_PLUGIN_FORMATS VST Standalone)
 
 set_directory_properties(PROPERTIES
   JUCE_COMPANY_NAME               fshstk
+  JUCE_COMPANY_WEBSITE            https://docs.fshstk.com
 )
 
 # Development is done on macOS, for now we don't really care about other OSes:
