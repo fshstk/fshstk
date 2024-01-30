@@ -31,7 +31,7 @@ set_directory_properties(PROPERTIES
 if(APPLE)
 set_directory_properties(PROPERTIES
   JUCE_COPY_PLUGIN_AFTER_BUILD    TRUE
-  JUCE_LV2_COPY_DIR               "$ENV{HOME}/Library/Audio/Plug-Ins/LV2/fshstk"
+  JUCE_LV2_COPY_DIR               "$ENV{HOME}/Library/Audio/Plug-Ins/LV2"
   JUCE_VST_COPY_DIR               "$ENV{HOME}/Library/Audio/Plug-Ins/VST/fshstk"
   JUCE_VST3_COPY_DIR              "$ENV{HOME}/Library/Audio/Plug-Ins/VST3/fshstk"
 )
