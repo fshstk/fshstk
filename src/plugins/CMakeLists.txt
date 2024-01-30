@@ -20,7 +20,7 @@
 ####################################################################################################
 
 set(FSH_MANUFACTURER_CODE Fstk)
-set(FSH_PLUGIN_FORMATS VST Standalone)
+set(FSH_PLUGIN_FORMATS VST VST3 LV2)
 
 set_directory_properties(PROPERTIES
   JUCE_COMPANY_NAME               fshstk
