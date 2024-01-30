@@ -20,7 +20,13 @@
 ####################################################################################################
 
 set(FSH_MANUFACTURER_CODE Fstk)
-set(FSH_PLUGIN_FORMATS VST VST3 LV2)
+
+if(APPLE OR WIN32)
+  set(FSH_PLUGIN_FORMATS VST VST3 LV2)
+else()
+  # TODO: Linux segfaults when linking LV2 plugin, so we disable it for now:
+  set(FSH_PLUGIN_FORMATS VST VST3)
+endif()
 
 set_directory_properties(PROPERTIES
   JUCE_COMPANY_NAME               fshstk
