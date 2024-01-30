@@ -24,8 +24,8 @@ set(FSH_MANUFACTURER_CODE Fstk)
 if(APPLE OR WIN32)
   set(FSH_PLUGIN_FORMATS VST VST3 LV2)
 else()
-  # TODO: Linux segfaults when linking VST3 plugin, so we disable it for now:
-  set(FSH_PLUGIN_FORMATS VST LV2)
+  # TODO: Linux segfaults when linking VST3/LV2 plugins, so we disable it for now:
+  set(FSH_PLUGIN_FORMATS VST)
 endif()
 
 set_directory_properties(PROPERTIES
