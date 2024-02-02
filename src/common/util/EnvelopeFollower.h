@@ -70,11 +70,11 @@ private:
 
   Params _params;
 
-  double _coeffAttack;
-  double _coeffRelease;
+  double _coeffAttack = 1.0;
+  double _coeffRelease = 1.0;
 
-  double _currentValue;
-  double _targetValue;
+  double _currentValue = 0.0;
+  double _targetValue = 0.0;
 
   double _sampleRate;
 };
