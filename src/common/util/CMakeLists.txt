@@ -24,6 +24,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
+  BufferProtector.cpp
   EnvelopeFollower.cpp
   IndexedVector.cpp
   SphericalHarmonics.cpp

@@ -47,10 +47,19 @@ void PluginProcessor::prepareToPlay(double sampleRate, int bufferSize)
 
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
 {
+  audio.clear();
+
   _synth.setParams(_params.getSynthParams());
   _synth.process(audio, midi);
+
   _reverb.setPreset(_params.getReverbPreset());
   _reverb.process(audio);
+
+  _bufferProtector.setParams({
+    .clampTo = 1.0f,
+    .allowNaNs = false,
+  });
+  _bufferProtector.process(audio);
 }
 
 void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiBuffer& midi)
