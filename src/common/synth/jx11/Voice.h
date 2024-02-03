@@ -22,7 +22,6 @@
 #pragma once
 #include "ADSR.h"
 #include "AmbisonicEncoder.h"
-#include "BoundedValue.h"
 #include "MoogVCF.h"
 #include "Oscillator.h"
 #include <cstdint>
