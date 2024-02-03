@@ -19,20 +19,34 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
-#include <juce_gui_basics/juce_gui_basics.h>
+#include "Trigger.h"
+#include "Fonts.h"
 
-namespace fsh::gui {
-/**
-Simple button that displays an info icon with a link to the fshstk website.
-*/
-class InfoButton : public juce::HyperlinkButton
+using namespace fsh::gui;
+
+namespace {
+const auto size = 18;
+} // namespace
+
+Trigger::Trigger(const Params& params)
+  : juce::Button("")
+  , _params(params)
 {
-public:
-  /// Default constructor.
-  InfoButton();
+  setSize(size, size);
+  setTriggeredOnMouseDown(true);
+}
 
-private:
-  void paintButton(juce::Graphics&, bool highlighted, bool active) override;
-};
-} // namespace fsh::gui
+void Trigger::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
+{
+  const auto textColor = [this, isMouseOver, isDown]() {
+    if (isDown)
+      return _params.highlightColor;
+    if (isMouseOver)
+      return _params.color.withMultipliedAlpha(0.8f);
+    return _params.color;
+  }();
+
+  g.setColour(textColor);
+  g.setFont(Fonts::FontAwesome::solid.withHeight(size));
+  g.drawText(_params.glyph, getLocalBounds(), juce::Justification::centred);
+}

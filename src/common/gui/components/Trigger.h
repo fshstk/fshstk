@@ -24,15 +24,29 @@
 
 namespace fsh::gui {
 /**
-Simple button that displays an info icon with a link to the fshstk website.
+Custom button component that displays a FontAwesome icon and fires a function on click.
+
+For this to actually do something, set the callback by assigning a lambda to the `onClick` member:
+```cpp
+_trigger.onClick = []() { doSomething(); };
+```
 */
-class InfoButton : public juce::HyperlinkButton
+class Trigger : public juce::Button
 {
 public:
-  /// Default constructor.
-  InfoButton();
+  /// Parameters for the Trigger component.
+  struct Params
+  {
+    juce::CharPointer_UTF8 glyph; ///< The FontAwesome glyph to display.
+    juce::Colour color;           ///< The color of the glyph when not selected.
+    juce::Colour highlightColor;  ///< The color of the glyph when pressed.
+  };
+
+  /// Constructor.
+  explicit Trigger(const Params&);
 
 private:
-  void paintButton(juce::Graphics&, bool highlighted, bool active) override;
+  void paintButton(juce::Graphics&, bool isMouseOver, bool isDown) override;
+  Params _params;
 };
 } // namespace fsh::gui

@@ -36,6 +36,8 @@ public:
   void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
   void processBlock(juce::AudioBuffer<double>&, juce::MidiBuffer&) override;
 
+  void allNotesOff();
+
 private:
   fsh::synth::Synth _synth;
   fsh::fx::FDNReverb _reverb;
