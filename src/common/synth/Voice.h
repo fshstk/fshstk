@@ -107,6 +107,5 @@ private:
   Oscillator _oscB;
   Oscillator _oscC;
   fx::MoogVCF _filter;
-  fx::Distortion _drive;
 };
 } // namespace fsh::synth

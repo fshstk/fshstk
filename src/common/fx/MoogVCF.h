@@ -20,7 +20,8 @@
 ***************************************************************************************************/
 
 #pragma once
-#include <array>
+#include "BoundedValue.h"
+#include <juce_dsp/juce_dsp.h>
 
 namespace fsh::fx
 {
@@ -44,15 +45,18 @@ Set the sample rate using setSampleRate(), and parameters using setParams().
 
 Call processSample() for each sample.
 */
-class MoogVCF
+class MoogVCF : private juce::dsp::LadderFilter<float>
 {
 public:
-  /// Parameters for the filter
+  /// The mode (order/shape) of the filter
+  using Mode = juce::dsp::LadderFilterMode;
 
+  /// Parameters for the filter
   struct Params
   {
-    float cutoff = 1'000.0f; ///< Filter cutoff frequency in Hz
-    float resonance = 0.1f;  ///< Filter resonance
+    fsh::util::BoundedFloat<20, 20'000> cutoff = 1'000.0f; ///< Filter cutoff frequency in Hz
+    fsh::util::BoundedFloat<0, 1> resonance = 0.1f;        ///< Filter resonance
+    fsh::util::BoundedFloat<1, 1'000> drive = 1.0f;        ///< Distortion drive
   };
 
   /// Set the filter parameters
@@ -66,16 +70,5 @@ public:
 
   /// Reset the filter state
   void reset();
-
-private:
-  void calculateCoefficients();
-
-  Params _params;
-  double _sampleRate;
-  double _resCoeff;
-  double _p;
-  double _k;
-  std::array<double, 4> _stage = {};
-  std::array<double, 4> _delay = {};
 };
 } // namespace fsh::fx

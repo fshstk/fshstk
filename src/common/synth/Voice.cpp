@@ -127,7 +127,6 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
   _ampEnv.setParams(_params.ampEnv);
   _filtEnv.setParams(_params.filtEnv);
-  _drive.setParams({ .preGain = _params.drive });
 
   _filter.setParams({
     .cutoff =
@@ -139,6 +138,7 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
       return static_cast<float>(baseFreq * (1 + env));
     }(),
     .resonance = _params.filterResonance,
+    .drive = _params.drive,
   });
 
   const auto bufferSize = static_cast<size_t>(audio.getNumSamples());
@@ -181,9 +181,6 @@ auto Voice::nextSample() -> float
   out += _oscA.nextSample();
   out += _oscB.nextSample();
   out += _oscC.nextSample();
-
-  if (_params.drive > 0.0f)
-    out = _drive.processSample(out);
 
   out = _filter.processSample(out);
   out *= static_cast<float>(_ampEnv.getNextValue());
