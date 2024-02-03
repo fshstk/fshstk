@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "Distortion.h"
+#include <juce_audio_basics/juce_audio_basics.h>
 
 using namespace fsh::fx;
 
@@ -30,5 +31,6 @@ void Distortion::setParams(const Params& params)
 
 auto Distortion::processSample(float x) const -> float
 {
-  return _params.function(x * _params.preGain) / _params.preGain;
+  const auto gainLinear = juce::Decibels::decibelsToGain(_params.preGain);
+  return _params.function(x * gainLinear) / gainLinear;
 }

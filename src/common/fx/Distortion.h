@@ -36,8 +36,8 @@ public:
   /// The parameters for the distortion effect
   struct Params
   {
-    /// Linear gain multiplier, which is applied to the input signal (and reversed afterwards)
-    float preGain = 1.0f;
+    /// Gain (dB), which is applied to the input signal (and reversed afterwards)
+    float preGain = 0.0f;
 
     /// Distortion function which is applied to the signal
     std::function<float(float)> function = [](float x) { return std::atan(x); };
