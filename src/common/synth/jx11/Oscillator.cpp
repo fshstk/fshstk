@@ -27,6 +27,18 @@
 using namespace fsh::synth;
 
 namespace {
+/**
+We need to limit the maximum number of overtones or the CPU will explode.
+
+Some reference values:
+
+- sawtooth @ E2 (80Hz) w/ 250 overtones will go beyond 20 kHz
+- sawtooth @ A0 (27Hz) will go up to 6.8 kHz
+- 40th sawtooth partial is at 1/250 amplitude (= -48 dB)
+- 40th triangle partial is at 1/250^2 amplitude (= -96 dB)
+*/
+const auto overtoneLimit = 250;
+
 double sine(double phase)
 {
   return std::sin(2.0 * M_PI * phase);
@@ -48,7 +60,7 @@ double saw(double phase, double deltaPhase)
   auto out = 0.0;
 
   // "Good enough" saw, every harmonic has positive sign:
-  for (auto k = 1; (k * deltaPhase) < nyquist; ++k)
+  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); ++k)
     out += std::sin(2.0 * M_PI * k * phase) / k;
 
   return (2.0 / M_PI) * out;
@@ -65,7 +77,7 @@ double truesaw(double phase, double deltaPhase)
   auto out = 0.0;
 
   // "Technically correct" saw, every other harmonic has negative sign:
-  for (auto k = 1; (k * deltaPhase) < nyquist; k += 2) {
+  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); k += 2) {
     out += std::sin(2.0 * M_PI * (k + 0) * phase) / (k + 0);
     out -= std::sin(2.0 * M_PI * (k + 1) * phase) / (k + 1);
   }
@@ -84,7 +96,7 @@ double triangle(double phase, double deltaPhase)
   auto out = 0.0;
 
   // "Good enough" triangle, every harmonic has positive sign:
-  for (auto k = 1; (k * deltaPhase) < nyquist; k += 2)
+  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); k += 2)
     out += std::sin(2.0 * M_PI * k * phase) / (k * k);
 
   return (2.0 / M_PI) * out;
@@ -101,7 +113,7 @@ double truetriangle(double phase, double deltaPhase)
   auto out = 0.0;
 
   // "Technically correct" triangle, every other harmonic has negative sign:
-  for (auto k = 1; (k * deltaPhase) < nyquist; k += 4) {
+  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); k += 4) {
     out += std::sin(2.0 * M_PI * (k + 0) * phase) / ((k + 0) * (k + 0));
     out -= std::sin(2.0 * M_PI * (k + 2) * phase) / ((k + 2) * (k + 2));
   }
@@ -119,7 +131,7 @@ double square(double phase, double deltaPhase)
   const auto nyquist = 0.5;
   auto out = 0.0;
 
-  for (auto k = 1; (k * deltaPhase) < nyquist; k += 2)
+  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); k += 2)
     out += std::sin(2.0 * M_PI * k * phase) / k;
 
   return (2.0 / M_PI) * out;
