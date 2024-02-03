@@ -289,7 +289,7 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                // This maps the input range (0-100) roughly to the range 1-32:
                .filterCutoff = std::exp2(getParameter<float>(id(filter_cutoff)) / 20.0f),
                .filterResonance = getParameter<float>(id(filter_resonance)) / 140.0f,
-               .drive = getParameter<float>(id(fx_drive)) / 10.0f },
+               .drive = getParameter<float>(id(fx_drive)) / 3.0f },
   };
 }
 

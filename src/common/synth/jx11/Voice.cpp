@@ -174,11 +174,12 @@ auto Voice::nextSample() -> float
   out += _oscB.nextSample();
   out += _oscC.nextSample();
 
+  if (_params.drive > 0.0f)
+    out = _drive.processSample(out);
+
   out = _filter.processSample(out);
   out *= static_cast<float>(_ampEnv.getNextValue());
   out *= _params.masterLevel;
-
-  out = _drive.processSample(out);
 
   return out;
 }

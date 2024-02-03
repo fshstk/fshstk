@@ -36,11 +36,11 @@ public:
   /// The parameters for the distortion effect
   struct Params
   {
-    /// Gain (dB), which is applied to the input signal (and reversed afterwards)
+    /// Gain (dB), which is applied to the input signal
     float preGain = 0.0f;
 
     /// Distortion function which is applied to the signal
-    std::function<float(float)> function = [](float x) { return std::atan(x); };
+    std::function<float(float)> function = [](float x) { return std::tanh(x); };
   };
 
   /// Sets the parameters for the distortion effect

@@ -32,5 +32,5 @@ void Distortion::setParams(const Params& params)
 auto Distortion::processSample(float x) const -> float
 {
   const auto gainLinear = juce::Decibels::decibelsToGain(_params.preGain);
-  return _params.function(x * gainLinear) / gainLinear;
+  return _params.function(x * gainLinear);
 }
