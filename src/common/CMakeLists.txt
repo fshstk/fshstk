@@ -48,7 +48,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # Disabling the splash screen is only legal if you purchase a JUCE license, or
   # if you license your project using the GNU Public License.
   # - https://www.gnu.org/licenses
-  # - https://juce.com/juce-6-licence
+  # - https://juce.com/juce-7-licence
   JUCE_DISPLAY_SPLASH_SCREEN=0
 )
 
