@@ -34,7 +34,9 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   setSize(width, height);
 
   addAndMakeVisible(_buttonInfo);
+
   addAndMakeVisible(_buttonPanic);
+  _buttonPanic.onClick = [&p]() { p.allNotesOff(); };
 
   addAndMakeVisible(_panelAmbi);
   _knobAmbiCenter.attach(s, PluginState::getID(ambi_center));
