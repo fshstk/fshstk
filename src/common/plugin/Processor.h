@@ -126,9 +126,8 @@ public:
   /// it, but you may choose to override this if you have a more complex setup.
   bool isBusesLayoutSupported(const BusesLayout& layouts) const override
   {
-    return _conf.hasInputs() ? layouts.getMainOutputChannelSet() == _conf.outputs
-                             : (layouts.getMainOutputChannelSet() == _conf.inputs &&
-                                layouts.getMainInputChannelSet() == _conf.outputs);
+    return layouts.getMainInputChannelSet().size() == _conf.inputs.size() &&
+           layouts.getMainOutputChannelSet().size() == _conf.outputs.size();
   }
 
   /// Called by the DAW when the user starts playback. The default implementation does nothing, but
