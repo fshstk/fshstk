@@ -125,6 +125,7 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
   _ampEnv.setParams(_params.ampEnv);
   _filtEnv.setParams(_params.filtEnv);
+  _drive.setParams({ .preGain = _params.drive });
 
   _filter.setParams({
     .cutoff =
@@ -176,6 +177,8 @@ auto Voice::nextSample() -> float
   out = _filter.processSample(out);
   out *= static_cast<float>(_ampEnv.getNextValue());
   out *= _params.masterLevel;
+
+  out = _drive.processSample(out);
 
   return out;
 }
