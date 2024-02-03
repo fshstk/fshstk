@@ -287,7 +287,7 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
                .aziRange = getParameter<float>(id(ambi_spread)),
                // TODO: filter param struct
                // This maps the input range (0-100) roughly to the range 1-32:
-               .filterCutoff = std::exp2(getParameter<float>(id(filter_cutoff)) / 15.0f),
+               .filterCutoff = getParameter<float>(id(filter_cutoff)) / 15.0f,
                .filterResonance = getParameter<float>(id(filter_resonance)) / 140.0f,
                .drive = getParameter<float>(id(fx_drive)) / 3.0f },
   };

@@ -131,7 +131,7 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
     .cutoff =
       [this, oscFreq]() {
         // TODO: filter mod amt needs to be exponential
-        const auto baseFreq = oscFreq * _params.filterCutoff;
+        const auto baseFreq = oscFreq * std::exp2(_params.filterCutoff);
         const auto env = _params.filtModAmt * _filtEnv.getNextValue();
         return static_cast<float>(baseFreq + baseFreq * env);
       }(),
