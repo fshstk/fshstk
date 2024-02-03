@@ -183,9 +183,9 @@ public:
   /// programs are implemented.
   int getCurrentProgram() override { return 0; }
 
-  /// Returns the name of the program at the given index. The default implementation returns an
-  /// empty string, as no programs are implemented.
-  const juce::String getProgramName(int) override { return {}; }
+  /// Returns the name of the program at the given index. The default implementation returns
+  /// "unnamed". (Some plugin validators will complain if we return an empty string.)
+  const juce::String getProgramName(int) override { return "unnamed"; }
 
   /// Returns the name of the current program (preset). The default implementation has no effect, as
   /// no programs are implemented.
