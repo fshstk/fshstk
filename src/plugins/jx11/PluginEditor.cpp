@@ -34,6 +34,7 @@ PluginEditor::PluginEditor(PluginProcessor& p, PluginState& s)
   setSize(width, height);
 
   addAndMakeVisible(_buttonInfo);
+  addAndMakeVisible(_buttonPanic);
 
   addAndMakeVisible(_panelAmbi);
   _knobAmbiCenter.attach(s, PluginState::getID(ambi_center));
@@ -131,6 +132,9 @@ void PluginEditor::resized()
   const auto yBot = offsetY + singleHeight + margin;
 
   _buttonInfo.setTopRightPosition(margin + _buttonInfo.getWidth(), margin);
+
+  _buttonPanic.setTopRightPosition(getWidth() - margin,
+                                   getHeight() - margin - _buttonPanic.getHeight());
 
   _panelLevel.setBounds(x, yTop, singleWidth, singleHeight);
   _panelReverb.setBounds(x, yBot, singleWidth, singleHeight);

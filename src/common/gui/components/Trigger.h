@@ -25,6 +25,11 @@
 namespace fsh::gui {
 /**
 Custom button component that displays a FontAwesome icon and fires a function on click.
+
+For this to actually do something, set the callback by assigning a lambda to the `onClick` member:
+```cpp
+_trigger.onClick = []() { doSomething(); };
+```
 */
 class Trigger : public juce::Button
 {
@@ -32,10 +37,9 @@ public:
   /// Parameters for the Trigger component.
   struct Params
   {
-    juce::CharPointer_UTF8 glyph;  ///< The FontAwesome glyph to display.
-    juce::Colour color;            ///< The color of the glyph when not selected.
-    juce::Colour highlightColor;   ///< The color of the glyph when pressed.
-    std::function<void()> onClick; ///< The function to call on click.
+    juce::CharPointer_UTF8 glyph; ///< The FontAwesome glyph to display.
+    juce::Colour color;           ///< The color of the glyph when not selected.
+    juce::Colour highlightColor;  ///< The color of the glyph when pressed.
   };
 
   /// Constructor.
@@ -43,7 +47,6 @@ public:
 
 private:
   void paintButton(juce::Graphics&, bool isMouseOver, bool isDown) override;
-
   Params _params;
 };
 } // namespace fsh::gui

@@ -24,10 +24,15 @@
 
 using namespace fsh::gui;
 
+namespace {
+const auto size = 18;
+} // namespace
+
 Trigger::Trigger(const Params& params)
   : juce::Button("")
   , _params(params)
 {
+  setSize(size, size);
   setTriggeredOnMouseDown(true);
 }
 
@@ -42,6 +47,6 @@ void Trigger::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
   }();
 
   g.setColour(textColor);
-  g.setFont(fsh::gui::Fonts::FontAwesome::solid.withHeight(24.0f));
+  g.setFont(Fonts::FontAwesome::solid.withHeight(size));
   g.drawText(_params.glyph, getLocalBounds(), juce::Justification::centred);
 }

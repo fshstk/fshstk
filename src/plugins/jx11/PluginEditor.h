@@ -29,6 +29,7 @@
 #include "PluginProcessor.h"
 #include "PluginState.h"
 #include "Switch.h"
+#include "Trigger.h"
 #include <juce_audio_utils/juce_audio_utils.h>
 
 class PluginEditor : public juce::AudioProcessorEditor
@@ -41,6 +42,12 @@ public:
 private:
   PluginState& _state;
   fsh::gui::InfoButton _buttonInfo;
+
+  fsh::gui::Trigger _buttonPanic{ {
+    .glyph = juce::CharPointer_UTF8{ "\uf1e2" }, // bomb
+    .color = fsh::gui::Colors::light,
+    .highlightColor = fsh::gui::Colors::gold,
+  } };
 
   // AMBISONICS panel:
 

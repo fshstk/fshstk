@@ -68,3 +68,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiB
   audio.clear();
   spdlog::critical("double precision not supported");
 }
+
+void PluginProcessor::allNotesOff()
+{
+  _synth.reset();
+}
