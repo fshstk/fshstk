@@ -56,7 +56,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audio, juce::MidiBu
   _reverb.process(audio);
 
   _bufferProtector.setParams({
-    .clampTo = 1.0f,
+    .maxDb = +12.0f,
     .allowNaNs = false,
   });
   _bufferProtector.process(audio);

@@ -33,15 +33,17 @@ void BufferProtector::process(juce::AudioBuffer<float> audio) const
 {
   const auto numChannels = audio.getNumChannels();
   const auto numSamples = audio.getNumSamples();
+  const auto clampValueLinear = juce::Decibels::decibelsToGain(_params.maxDb);
 
   for (auto ch = 0; ch < numChannels; ++ch)
     for (auto i = 0; i < numSamples; ++i) {
       if (!_params.allowNaNs && std::isnan(audio.getSample(ch, i))) {
         audio.setSample(ch, i, 0.0f);
         spdlog::warn("BufferProtector: NaN found in buffer, replaced with 0.0f");
-      } else if (_params.clampTo > 0.0f && std::abs(audio.getSample(ch, i)) > _params.clampTo) {
-        audio.setSample(ch, i, std::copysign(_params.clampTo, audio.getSample(ch, i)));
-        spdlog::warn("BufferProtector: sample clamped to +/- {}", _params.clampTo);
+      } else if (std::abs(audio.getSample(ch, i)) > clampValueLinear) {
+        audio.setSample(ch, i, std::copysign(clampValueLinear, audio.getSample(ch, i)));
+        spdlog::warn(
+          "BufferProtector: sample clamped to +/- {} [{} dB]", clampValueLinear, _params.maxDb);
       }
     }
 }
