@@ -19,31 +19,38 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#include "BufferProtector.h"
-#include "spdlog/spdlog.h"
+#pragma once
+#include <cmath>
+#include <functional>
 
-using namespace fsh::util;
+namespace fsh::fx {
+/**
+Distortion/modulation effect class.
 
-void BufferProtector::setParams(const Params& params)
+This class provides a simple distortion effect, which can be used to add harmonics to a signal. You
+can set the pre-gain and the distortion function, which is applied to the signal. By default, an
+atan function is used, which is a simple and effective way to add harmonics to a signal.
+*/
+class Distortion
 {
-  _params = params;
-}
+public:
+  /// The parameters for the distortion effect
+  struct Params
+  {
+    /// Gain (dB), which is applied to the input signal
+    float preGain = 0.0f;
 
-void BufferProtector::process(juce::AudioBuffer<float> audio) const
-{
-  const auto numChannels = audio.getNumChannels();
-  const auto numSamples = audio.getNumSamples();
-  const auto clampValueLinear = juce::Decibels::decibelsToGain(_params.maxDb);
+    /// Distortion function which is applied to the signal
+    std::function<float(float)> function = [](float x) { return std::tanh(x); };
+  };
 
-  for (auto ch = 0; ch < numChannels; ++ch)
-    for (auto i = 0; i < numSamples; ++i) {
-      if (!_params.allowNaNs && std::isnan(audio.getSample(ch, i))) {
-        audio.setSample(ch, i, 0.0f);
-        spdlog::warn("BufferProtector: NaN found in buffer, replaced with 0.0f");
-      } else if (std::abs(audio.getSample(ch, i)) > clampValueLinear) {
-        audio.setSample(ch, i, std::copysign(clampValueLinear, audio.getSample(ch, i)));
-        spdlog::warn(
-          "BufferProtector: sample clamped to +/- {} [{} dB]", clampValueLinear, _params.maxDb);
-      }
-    }
-}
+  /// Sets the parameters for the distortion effect
+  void setParams(const Params&);
+
+  /// Processes a single sample through the distortion effect
+  auto processSample(float) const -> float;
+
+private:
+  Params _params;
+};
+} // namespace fsh::fx

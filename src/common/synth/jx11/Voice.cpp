@@ -125,6 +125,7 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
   _ampEnv.setParams(_params.ampEnv);
   _filtEnv.setParams(_params.filtEnv);
+  _drive.setParams({ .preGain = _params.drive });
 
   _filter.setParams({
     .cutoff =
@@ -162,7 +163,7 @@ void Voice::setParams(const Params& params)
   _params = params;
 }
 
-auto Voice::nextSample(bool allowOverload) -> float
+auto Voice::nextSample() -> float
 {
   if (!isActive())
     return 0.0f;
@@ -173,14 +174,12 @@ auto Voice::nextSample(bool allowOverload) -> float
   out += _oscB.nextSample();
   out += _oscC.nextSample();
 
+  if (_params.drive > 0.0f)
+    out = _drive.processSample(out);
+
   out = _filter.processSample(out);
   out *= static_cast<float>(_ampEnv.getNextValue());
   out *= _params.masterLevel;
-
-  if (!allowOverload) {
-    out = std::min(out, +1.0f);
-    out = std::max(out, -1.0f);
-  }
 
   return out;
 }

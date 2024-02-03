@@ -34,8 +34,9 @@ public:
   /// Parameters for the buffer protector
   struct Params
   {
-    float clampTo = 1.0f;   ///< Clamp all buffer samples to +/- this value. If set to zero,
-                            ///< clamping will not be performed.
+    /// Clamp all buffer samples to +/- this value (in dB). If set to zero, clamping will not be
+    /// performed.
+    float maxDb = +6.0f;
     bool allowNaNs = false; ///< Replace NaNs with 0.0f in the buffer
   };
 

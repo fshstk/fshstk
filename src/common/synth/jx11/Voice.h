@@ -22,7 +22,7 @@
 #pragma once
 #include "ADSR.h"
 #include "AmbisonicEncoder.h"
-#include "BoundedValue.h"
+#include "Distortion.h"
 #include "MoogVCF.h"
 #include "Oscillator.h"
 #include <cstdint>
@@ -59,6 +59,7 @@ public:
     double aziRange = 180.0;       ///< Spread MIDI range around aziCenter +/- aziRange/2
     float filterCutoff = 1'000.0f; ///< Filter cutoff as a multiplier of oscillator frequency
     float filterResonance = 0.0f;  ///< Filter resonance
+    float drive = 0.0;             ///< Distortion drive (dB)
   };
 
   /// Set the sample rate in Hz
@@ -92,7 +93,7 @@ public:
   void reset();
 
 private:
-  auto nextSample(bool allowOverload = true) -> float;
+  auto nextSample() -> float;
 
   Params _params;
   uint8_t _noteVal;
@@ -105,5 +106,6 @@ private:
   Oscillator _oscB;
   Oscillator _oscC;
   fx::MoogVCF _filter;
+  fx::Distortion _drive;
 };
 } // namespace fsh::synth
