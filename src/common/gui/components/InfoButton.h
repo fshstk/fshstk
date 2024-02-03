@@ -32,7 +32,7 @@ public:
   /// Default constructor.
   InfoButton();
 
-  /// Called by JUCE to paint the button.
+private:
   void paintButton(juce::Graphics&, bool highlighted, bool active) override;
 };
 } // namespace fsh::gui
