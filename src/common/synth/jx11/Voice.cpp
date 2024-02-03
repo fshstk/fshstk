@@ -162,7 +162,7 @@ void Voice::setParams(const Params& params)
   _params = params;
 }
 
-auto Voice::nextSample(bool allowOverload) -> float
+auto Voice::nextSample() -> float
 {
   if (!isActive())
     return 0.0f;
@@ -176,11 +176,6 @@ auto Voice::nextSample(bool allowOverload) -> float
   out = _filter.processSample(out);
   out *= static_cast<float>(_ampEnv.getNextValue());
   out *= _params.masterLevel;
-
-  if (!allowOverload) {
-    out = std::min(out, +1.0f);
-    out = std::max(out, -1.0f);
-  }
 
   return out;
 }
