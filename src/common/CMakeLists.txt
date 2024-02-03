@@ -39,7 +39,7 @@ endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
   # Uncomment this if you want to build VST3 plugins without the VST2 SDK:
-  # JUCE_VST3_CAN_REPLACE_VST2=0
+  JUCE_VST3_CAN_REPLACE_VST2=0
 
   # This one's important because it gets rid of the "gtk header not found" error
   # when compiling under Ubuntu:
