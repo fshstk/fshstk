@@ -129,8 +129,12 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
   _filter.setParams({
     .cutoff =
-      static_cast<float>(oscFreq) *
-      (_params.filterCutoff + _params.filtModAmt * static_cast<float>(_filtEnv.getNextValue())),
+      [this, oscFreq]() {
+        // TODO: filter mod amt needs to be exponential
+        const auto baseFreq = oscFreq * _params.filterCutoff;
+        const auto env = _params.filtModAmt * _filtEnv.getNextValue();
+        return static_cast<float>(baseFreq + baseFreq * env);
+      }(),
     .resonance = _params.filterResonance,
   });
 
