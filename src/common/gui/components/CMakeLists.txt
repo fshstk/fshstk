@@ -30,4 +30,5 @@ target_sources(${PROJECT_NAME} PRIVATE
   OptionButton.cpp
   OptionPicker.cpp
   Switch.cpp
+  Trigger.cpp
 )
