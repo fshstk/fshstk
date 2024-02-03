@@ -14,68 +14,34 @@
                                        www.github.com/fshstk
                                            www.fshstk.com
 
-         this file is part of the fantastic spatial holophonic synthesis toolkit (fsh::stk)
+         this file is part of the fantastic spatial holophonic software toolkit (fsh::stk)
   fsh::stk is free software: it is provided under the terms of the gnu general public license v3.0
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
-#pragma once
+#include "BufferProtector.h"
+#include "spdlog/spdlog.h"
 
-namespace fsh::util {
-/**
-Smoothed value tracking with separate attack/decay times.
+using namespace fsh::util;
 
-Can be used as a general simple attack/decay envelope, or for avoiding audible clicks on sudden
-parameter changes.
-
-This class provides a simple exponential curve between its current value and a target value,
-specified with setTargetValue(). If the target is lower than the current value, the
-EnvelopeFollower will use the attack time to reach the target, and conversely the release time if
-the target is lower.
-
-Note that
-
-Before using an EnvelopeFollower, you must set the sample rate using setSampleRate(). You may
-also want to set the attack and release times using setParams(), but these will fall back on very
-short default values.
-*/
-class EnvelopeFollower
+void BufferProtector::setParams(const Params& params)
 {
-public:
-  /// Parameters for EnvelopeFollower.
-  struct Params
-  {
-    double attackTimeMilliseconds = 5.0;  ///< attack time in milliseconds
-    double releaseTimeMilliseconds = 5.0; ///< release time in milliseconds
-  };
+  _params = params;
+}
 
-  /// Calculate the next value between the current value and the target.
-  auto getNextValue() -> double;
+void BufferProtector::process(juce::AudioBuffer<float> audio) const
+{
+  const auto numChannels = audio.getNumChannels();
+  const auto numSamples = audio.getNumSamples();
 
-  /// Set the target.
-  void setTargetValue(double);
-
-  /// Set the sample rate. This must be set before using the EnvelopeFollower.
-  void setSampleRate(double);
-
-  /// Set the parameters. Will fall back on default values if not set.
-  void setParams(const Params&);
-
-  /// Reset both the current and target values to the specified value, or to
-  /// zero if none is provided.
-  void reset(double val = 0.0);
-
-private:
-  void calculateCoefficients();
-
-  Params _params;
-
-  double _coeffAttack = 1.0;
-  double _coeffRelease = 1.0;
-
-  double _currentValue = 0.0;
-  double _targetValue = 0.0;
-
-  double _sampleRate;
-};
-} // namespace fsh::util
+  for (auto ch = 0; ch < numChannels; ++ch)
+    for (auto i = 0; i < numSamples; ++i) {
+      if (!_params.allowNaNs && std::isnan(audio.getSample(ch, i))) {
+        audio.setSample(ch, i, 0.0f);
+        spdlog::warn("BufferProtector: NaN found in buffer, replaced with 0.0f");
+      } else if (_params.clampTo > 0.0f && std::abs(audio.getSample(ch, i)) > _params.clampTo) {
+        audio.setSample(ch, i, std::copysign(_params.clampTo, audio.getSample(ch, i)));
+        spdlog::warn("BufferProtector: sample clamped to +/- {}", _params.clampTo);
+      }
+    }
+}

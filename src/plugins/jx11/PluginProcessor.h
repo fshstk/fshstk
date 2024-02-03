@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "BufferProtector.h"
 #include "FDNReverb.h"
 #include "PluginState.h"
 #include "Processor.h"
@@ -38,4 +39,5 @@ public:
 private:
   fsh::synth::Synth _synth;
   fsh::fx::FDNReverb _reverb;
+  fsh::util::BufferProtector _bufferProtector;
 };
