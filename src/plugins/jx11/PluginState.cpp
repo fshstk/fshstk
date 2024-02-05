@@ -71,7 +71,7 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
     ParamFloat{
       .id = id(ambi_spread),
       .name = "AMBI: spread",
-      .range = { -720.0f, 720.0f, 1.0f },
+      .range = { -1'440.0f, 1'440.0f, 1.0f },
       .defaultVal = 360.0f,
       .attributes = displayAsDegreesRange,
     }
