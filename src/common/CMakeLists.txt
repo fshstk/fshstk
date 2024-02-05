@@ -37,7 +37,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC
 )
 endif()
 
-include(${CMAKE_SOURCE_DIR}/GitCommitHash.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/GitCommitHash.cmake)
 get_git_commit_hash(GIT_COMMIT_HASH)
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC

@@ -38,7 +38,7 @@ if(APPLE)
 set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
 
-include(Dependencies.cmake)
+include(cmake/Dependencies.cmake)
 
 # VST_SDK_PATH is defined in Dependencies.cmake:
 juce_set_vst2_sdk_path(${VST_SDK_PATH})
