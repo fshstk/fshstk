@@ -19,63 +19,32 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-project(fshlib
-    VERSION     ${CMAKE_PROJECT_VERSION}
-    LANGUAGES   CXX)
+# This function sets GIT_COMMIT_HASH to the short commit hash if the current commit is not tagged
+# (i.e. a release), or to an empty string if it is tagged.
 
-add_library(fshlib STATIC)
+function(get_git_commit_hash GIT_COMMIT_HASH)
+  # Check if the current commit has a tag
+  execute_process(
+    COMMAND git describe --exact-match --tags HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    RESULT_VARIABLE GIT_TAG_RESULT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+  )
 
-target_compile_options(${PROJECT_NAME} PUBLIC
-  -Wall
-)
-
-if(NOT MSVC)
-target_compile_options(${PROJECT_NAME} PUBLIC
-  -Wextra
-  -Wpedantic
-  -Werror
-)
-endif()
-
-include(${CMAKE_SOURCE_DIR}/GitCommitHash.cmake)
-get_git_commit_hash(GIT_COMMIT_HASH)
-
-target_compile_definitions(${PROJECT_NAME} PUBLIC
-  # Uncomment this if you want to build VST3 plugins without the VST2 SDK:
-  JUCE_VST3_CAN_REPLACE_VST2=0
-
-  # This one's important because it gets rid of the "gtk header not found" error
-  # when compiling under Ubuntu:
-  JUCE_WEB_BROWSER=0
-
-  # Disabling the splash screen is only legal if you purchase a JUCE license, or
-  # if you license your project using the GNU Public License.
-  # - https://www.gnu.org/licenses
-  # - https://juce.com/juce-7-licence
-  JUCE_DISPLAY_SPLASH_SCREEN=0
-
-  # Can be used to display commit hash in the GUI (defaults to empty string if
-  # the current commit is a tagged release):
-  FSH_GIT_COMMIT_HASH="${GIT_COMMIT_HASH}"
-)
-
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  fmt
-  spdlog::spdlog
-  juce::juce_audio_utils
-  juce::juce_dsp
-  juce::juce_recommended_config_flags
-  juce::juce_recommended_lto_flags
-  juce::juce_recommended_warning_flags
-)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-  FontData
-  BackgroundData
-)
-
-add_subdirectory(fx)
-add_subdirectory(gui)
-add_subdirectory(plugin)
-add_subdirectory(util)
-add_subdirectory(synth)
+  # If the command succeeded, there is a tag, so set the commit hash to an empty string
+  # Otherwise, get the commit hash and add parentheses around it
+  if(GIT_TAG_RESULT EQUAL 0)
+    set(${GIT_COMMIT_HASH} "" PARENT_SCOPE)
+    message("Current commit is tagged, no GIT_COMMIT_HASH set")
+  else()
+    execute_process(
+      COMMAND git rev-parse --short HEAD
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      OUTPUT_VARIABLE GIT_COMMIT_HASH_LOCAL
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(${GIT_COMMIT_HASH} " (${GIT_COMMIT_HASH_LOCAL})" PARENT_SCOPE)
+    message("GIT_COMMIT_HASH: (${GIT_COMMIT_HASH_LOCAL})")
+  endif()
+endfunction()

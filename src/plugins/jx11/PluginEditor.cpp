@@ -111,8 +111,9 @@ void PluginEditor::paint(juce::Graphics& g)
     "fantastic spatial holophonic :: synthesis toolkit", footerText, juce::Justification::topLeft);
 
   g.setFont(fsh::gui::Fonts::h3);
-  g.drawText(
-    fmt::format("v{}", JucePlugin_VersionString), footerText, juce::Justification::topRight);
+  g.drawText(fmt::format("v{}{}", JucePlugin_VersionString, FSH_GIT_COMMIT_HASH),
+             footerText,
+             juce::Justification::topRight);
 }
 
 void PluginEditor::resized()
