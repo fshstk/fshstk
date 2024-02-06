@@ -19,23 +19,15 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
+include(${CMAKE_SOURCE_DIR}/cmake/AddPlugin.cmake)
+
 project(synth1
   VERSION     ${CMAKE_PROJECT_VERSION}
   LANGUAGES   CXX)
 
-juce_add_plugin(${PROJECT_NAME}
-  PLUGIN_CODE               fhS1
-  IS_SYNTH                  TRUE
-  NEEDS_MIDI_INPUT          TRUE
-  # (NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail)
-
-  PLUGIN_MANUFACTURER_CODE  ${FSH_PLUGIN_MANUFACTURER_CODE}
-  FORMATS                   ${FSH_PLUGIN_FORMATS}
-)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-  fshlib
-)
+fsh_add_plugin(
+  PLUGIN_CODE   fhS1
+  IS_SYNTH      TRUE)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}

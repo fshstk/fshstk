@@ -19,25 +19,35 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-include(${CMAKE_SOURCE_DIR}/cmake/AddPlugin.cmake)
+function(fsh_add_plugin)
+  cmake_parse_arguments(PARSE_ARGV 0 FSH
+  # Options:
+  "IS_SYNTH"
+  # Single-value arguments:
+  "PLUGIN_CODE"
+  # Multi-value arguments:
+  "")
 
-project(encoder
-  VERSION     ${CMAKE_PROJECT_VERSION}
-  LANGUAGES   CXX)
+  if(APPLE OR WIN32)
+    set(FSH_PLUGIN_FORMATS VST VST3 LV2)
+  else()
+    # TODO: Linux segfaults when linking VST3/LV2 plugins, so we disable it for now:
+    set(FSH_PLUGIN_FORMATS VST)
+  endif()
 
-fsh_add_plugin(
-  PLUGIN_CODE   fhEN
-  IS_SYNTH      FALSE)
+  juce_add_plugin(${PROJECT_NAME}
+    PLUGIN_CODE               ${FSH_PLUGIN_CODE}
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
+    # NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail:
+    IS_SYNTH                  ${FSH_IS_SYNTH}
+    NEEDS_MIDI_INPUT          ${FSH_IS_SYNTH}
 
-target_sources(${PROJECT_NAME} PRIVATE
-  main.cpp
-  PluginEditor.cpp
-  PluginProcessor.cpp
-  PluginState.cpp
-)
+    PLUGIN_MANUFACTURER_CODE  Fstk
+    FORMATS                   ${FSH_PLUGIN_FORMATS}
 
-add_subdirectory(sections)
+    COMPANY_NAME              fshstk
+    COMPANY_WEBSITE           https://docs.fshstk.com
+  )
+
+  target_link_libraries(${PROJECT_NAME} PRIVATE fshlib)
+endfunction()
