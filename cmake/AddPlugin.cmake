@@ -49,6 +49,8 @@ function(fsh_add_plugin)
 
     COMPANY_NAME              fshstk
     COMPANY_WEBSITE           https://docs.fshstk.com
+
+    COPY_PLUGIN_AFTER_BUILD   TRUE
   )
 
   target_link_libraries(${PROJECT_NAME} PRIVATE fshlib)
