@@ -36,6 +36,8 @@ function(fsh_add_plugin)
   endif()
 
   juce_add_plugin(${PROJECT_NAME}
+    # TODO: replace with "fsh :: ${PROJECT_NAME}":
+    PRODUCT_NAME              "${PROJECT_NAME}"
     PLUGIN_CODE               ${FSH_PLUGIN_CODE}
 
     # NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail:
