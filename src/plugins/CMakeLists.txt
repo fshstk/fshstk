@@ -19,20 +19,6 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-set(FSH_MANUFACTURER_CODE Fstk)
-
-if(APPLE OR WIN32)
-  set(FSH_PLUGIN_FORMATS VST VST3 LV2)
-else()
-  # TODO: Linux segfaults when linking VST3/LV2 plugins, so we disable it for now:
-  set(FSH_PLUGIN_FORMATS VST)
-endif()
-
-set_directory_properties(PROPERTIES
-  JUCE_COMPANY_NAME               fshstk
-  JUCE_COMPANY_WEBSITE            https://docs.fshstk.com
-)
-
 # Development is done on macOS, for now we don't really care about other OSes:
 if(APPLE)
 set_directory_properties(PROPERTIES

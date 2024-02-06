@@ -19,38 +19,37 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-cmake_minimum_required(VERSION 3.22)
+function(fsh_add_plugin)
+  cmake_parse_arguments(PARSE_ARGV 0 FSH
+  # Options:
+  "IS_SYNTH"
+  # Single-value arguments:
+  "PLUGIN_CODE"
+  # Multi-value arguments:
+  "")
 
-set(FSH_PROJECT_VERSION 0.0.1)
+  if(APPLE OR WIN32)
+    set(FSH_PLUGIN_FORMATS VST VST3 LV2)
+  else()
+    # TODO: Linux segfaults when linking VST3/LV2 plugins, so we disable it for now:
+    set(FSH_PLUGIN_FORMATS VST)
+  endif()
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+  juce_add_plugin(${PROJECT_NAME}
+    # TODO: replace with "fsh :: ${PROJECT_NAME}":
+    PRODUCT_NAME              "${PROJECT_NAME}"
+    PLUGIN_CODE               ${FSH_PLUGIN_CODE}
 
-if(LINUX)
-# Required by spdlog:
-set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
-endif()
+    # NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail:
+    IS_SYNTH                  ${FSH_IS_SYNTH}
+    NEEDS_MIDI_INPUT          ${FSH_IS_SYNTH}
 
-if(APPLE)
-# Build universal binaries on Mac:
-set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
-endif()
+    PLUGIN_MANUFACTURER_CODE  Fstk
+    FORMATS                   ${FSH_PLUGIN_FORMATS}
 
-include(cmake/Dependencies.cmake)
+    COMPANY_NAME              fshstk
+    COMPANY_WEBSITE           https://docs.fshstk.com
+  )
 
-# VST_SDK_PATH is defined in Dependencies.cmake:
-juce_set_vst2_sdk_path(${VST_SDK_PATH})
-
-enable_testing()
-
-find_package(Doxygen)
-if (DOXYGEN_FOUND)
-  add_custom_target(docs
-    COMMAND             ${DOXYGEN_EXECUTABLE}
-    WORKING_DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT             "Generating docs with doxygen"
-    VERBATIM)
-endif()
-
-add_subdirectory(assets)
-add_subdirectory(src)
+  target_link_libraries(${PROJECT_NAME} PRIVATE fshlib)
+endfunction()
