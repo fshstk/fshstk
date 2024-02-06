@@ -30,5 +30,4 @@ set_directory_properties(PROPERTIES
 endif()
 
 add_subdirectory(encoder)
-add_subdirectory(synth1)
 add_subdirectory(jx11)
