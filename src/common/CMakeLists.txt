@@ -20,7 +20,7 @@
 ####################################################################################################
 
 project(fshlib
-    VERSION     ${CMAKE_PROJECT_VERSION}
+    VERSION     ${FSH_PROJECT_VERSION}
     LANGUAGES   CXX)
 
 add_library(fshlib STATIC)

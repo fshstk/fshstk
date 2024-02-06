@@ -22,7 +22,7 @@
 include(${CMAKE_SOURCE_DIR}/cmake/AddPlugin.cmake)
 
 project(encoder
-  VERSION     ${CMAKE_PROJECT_VERSION}
+  VERSION     ${FSH_PROJECT_VERSION}
   LANGUAGES   CXX)
 
 fsh_add_plugin(
