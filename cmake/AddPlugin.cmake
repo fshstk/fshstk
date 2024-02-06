@@ -22,9 +22,9 @@
 function(fsh_add_plugin)
   cmake_parse_arguments(PARSE_ARGV 0 FSH
   # Options:
-  "IS_SYNTH"
+  ""
   # Single-value arguments:
-  "PLUGIN_CODE"
+  "IS_SYNTH;PLUGIN_CODE"
   # Multi-value arguments:
   "")
 
