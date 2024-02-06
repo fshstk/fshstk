@@ -20,4 +20,4 @@
 ####################################################################################################
 
 add_subdirectory(encoder)
-add_subdirectory(jx11)
+add_subdirectory(ambisonium)

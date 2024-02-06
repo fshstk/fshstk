@@ -21,12 +21,12 @@
 
 include(${CMAKE_SOURCE_DIR}/cmake/AddPlugin.cmake)
 
-project(JX11
+project(ambisonium
   VERSION     ${FSH_PROJECT_VERSION}
   LANGUAGES   CXX)
 
 fsh_add_plugin(
-  PLUGIN_CODE   Jx11
+  PLUGIN_CODE   Famb
   IS_SYNTH      TRUE)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
