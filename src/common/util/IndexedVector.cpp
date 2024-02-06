@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #include "IndexedVector.h"
+#include <spdlog/spdlog.h>
 
 using namespace fsh::util;
 
@@ -30,15 +31,30 @@ void IndexedVector::resize(size_t newSize)
 
 auto IndexedVector::get() const -> float
 {
+  if (index >= data.size()) {
+    spdlog::error("IndexedVector: index {} out of bounds (size: {}).", index, data.size());
+    return 0.0f;
+  }
+
   return data[index];
 }
 void IndexedVector::add(float val)
 {
+  if (index >= data.size()) {
+    spdlog::error("IndexedVector: index {} out of bounds (size: {}).", index, data.size());
+    return;
+  }
+
   data[index] += val;
 }
 
 void IndexedVector::set(float val)
 {
+  if (index >= data.size()) {
+    spdlog::error("IndexedVector: index {} out of bounds (size: {}).", index, data.size());
+    return;
+  }
+
   data[index] = val;
 }
 

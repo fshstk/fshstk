@@ -43,9 +43,9 @@ public:
   /// Parameters for the FDN reverb algorithm.
   struct Params
   {
-    float roomSize; ///< Room size in meters
-    float revTime;  ///< Reverberation time in seconds
-    float dryWet;   ///< Dry/wet mix [0, 1]
+    float roomSize = 0.0f; ///< Room size in meters
+    float revTime = 0.0f;  ///< Reverberation time in seconds
+    float dryWet = 0.0f;   ///< Dry/wet mix [0, 1]
   };
 
   /// Presets for the FDN reverb algorithm.
@@ -82,7 +82,7 @@ private:
   std::vector<unsigned> primeNumbers;
 
   Params params;
-  double sampleRate;
+  double sampleRate = 0.0;
 
   void updateParameterSettings();
 };

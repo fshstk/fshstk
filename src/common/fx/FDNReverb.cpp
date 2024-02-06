@@ -52,7 +52,8 @@ const auto presets = std::map<FDNReverb::Preset, FDNReverb::Params>{
     } },
 };
 
-auto generatePrimes(size_t count)
+const auto numPrimes = 5'000;
+auto generatePrimes(size_t count = numPrimes)
 {
   std::vector<unsigned> primes;
   primes.reserve(count);
@@ -78,28 +79,28 @@ auto generatePrimes(size_t count)
   return primes;
 }
 
-auto generateIndices(size_t numIndices, unsigned delayLength)
+template<size_t numIndices = FDNReverb::fdnSize>
+auto generateIndices(unsigned delayLength)
 {
-  std::vector<size_t> indices;
-  indices.reserve(numIndices);
+  std::array<size_t, numIndices> indices;
+  indices[0] = std::max(delayLength / 10UL, 1UL);
 
-  const auto roundedDivision = [](size_t a, size_t b) {
-    return static_cast<size_t>(std::round(static_cast<float>(a) / static_cast<float>(b)));
-  };
+  for (auto i = 1U; i < numIndices; i++)
+    indices[i] = indices[i - 1] + std::max(i * delayLength / numIndices, size_t{ 1 });
 
-  const auto firstIncrement = delayLength / 10UL;
-  const auto firstIndex = std::max(firstIncrement, 1UL);
-  indices.push_back(firstIndex);
-
-  for (auto i = 1U; i < numIndices; i++) {
-    const auto increment = roundedDivision(i * delayLength, numIndices);
-    const auto index = indices.back() + std::max(increment, size_t{ 1 });
-    indices.push_back(index);
-  }
+  for (auto i = 0U; i < numIndices; ++i)
+    if (indices[i] > numPrimes) {
+      spdlog::warn("index {} is greater than numPrimes {}, replacing with {}",
+                   indices[i],
+                   numPrimes,
+                   indices[i] % numPrimes);
+      indices[i] = indices[i] % numPrimes;
+    }
 
   return indices;
 }
 
+/// Fast Hadamard-Walsh transform (FWHT) in-place.
 void fwht(std::array<float, FDNReverb::fdnSize>& data)
 {
   static_assert(FDNReverb::fdnSize == 64, "FDN size must be power of 2");
@@ -124,7 +125,7 @@ void fwht(std::array<float, FDNReverb::fdnSize>& data)
 } // namespace
 
 FDNReverb::FDNReverb()
-  : primeNumbers(generatePrimes(5'000))
+  : primeNumbers(generatePrimes())
 {
   updateParameterSettings();
 }
@@ -165,26 +166,11 @@ void FDNReverb::process(juce::AudioBuffer<float>& buffer)
 
 void FDNReverb::updateParameterSettings()
 {
-  const auto primeIndices = generateIndices(fdnSize, static_cast<unsigned>(params.roomSize));
+  const auto primeIndices = generateIndices(static_cast<unsigned>(params.revTime));
 
   for (auto channel = 0U; channel < fdnSize; ++channel) {
-    const auto primeNumber = [&]() {
-      if (channel >= primeIndices.size())
-        spdlog::error(
-          "channel {} is trying to index into primeIndices, which has size {} ... using 0 instead",
-          channel,
-          primeIndices.size());
-      const auto index = (channel < primeIndices.size()) ? primeIndices[channel] : 0;
-
-      if (index >= primeNumbers.size())
-        spdlog::error(
-          "index {} is trying to index into primeNumbers, which has size {} ... using 3 instead",
-          index,
-          primeNumbers.size());
-      const auto prime = (index < primeNumbers.size()) ? primeNumbers[index] : 3;
-
-      return prime;
-    }();
+    const auto primeIndex = primeIndices[channel];
+    const auto primeNumber = primeNumbers[primeIndex];
 
     const auto delayLengthMilliseconds = 0.1 * primeNumber;
     const auto delayLengthSeconds = 0.001 * delayLengthMilliseconds;
