@@ -56,7 +56,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 
   # Can be used to display commit hash in the GUI (defaults to empty string if
   # the current commit is a tagged release):
-  FSH_GIT_COMMIT_HASH="${GIT_COMMIT_HASH}"
+  FSH_COMMIT_HASH="${GIT_COMMIT_HASH}"
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC

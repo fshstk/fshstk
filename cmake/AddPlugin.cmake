@@ -22,9 +22,9 @@
 function(fsh_add_plugin)
   cmake_parse_arguments(PARSE_ARGV 0 FSH
   # Options:
-  "IS_SYNTH"
+  ""
   # Single-value arguments:
-  "PLUGIN_CODE"
+  "IS_SYNTH;PLUGIN_CODE"
   # Multi-value arguments:
   "")
 
@@ -36,8 +36,8 @@ function(fsh_add_plugin)
   endif()
 
   juce_add_plugin(${PROJECT_NAME}
-    # TODO: replace with "fsh :: ${PROJECT_NAME}":
-    PRODUCT_NAME              "${PROJECT_NAME}"
+    PRODUCT_NAME              "fsh_${PROJECT_NAME}"
+    PLUGIN_NAME               "fsh :: ${PROJECT_NAME}"
     PLUGIN_CODE               ${FSH_PLUGIN_CODE}
 
     # NEEDS_MIDI_INPUT must be true if IS_SYNTH is true, or AU validation will fail:
@@ -49,6 +49,8 @@ function(fsh_add_plugin)
 
     COMPANY_NAME              fshstk
     COMPANY_WEBSITE           https://docs.fshstk.com
+
+    COPY_PLUGIN_AFTER_BUILD   TRUE
   )
 
   target_link_libraries(${PROJECT_NAME} PRIVATE fshlib)

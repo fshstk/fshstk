@@ -19,14 +19,23 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-target_include_directories(${PROJECT_NAME} PUBLIC
+include(${CMAKE_SOURCE_DIR}/cmake/AddPlugin.cmake)
+
+project(ambisonium
+  VERSION     ${FSH_PROJECT_VERSION}
+  LANGUAGES   CXX)
+
+fsh_add_plugin(
+  PLUGIN_CODE   Famb
+  IS_SYNTH      TRUE)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
-  ADSR.cpp
-  MidiEvent.cpp
-  Oscillator.cpp
-  Synth.cpp
-  Voice.cpp
+  main.cpp
+  PluginEditor.cpp
+  PluginProcessor.cpp
+  PluginState.cpp
 )

@@ -26,7 +26,7 @@ project(encoder
   LANGUAGES   CXX)
 
 fsh_add_plugin(
-  PLUGIN_CODE   fhEN
+  PLUGIN_CODE   Fenc
   IS_SYNTH      FALSE)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
