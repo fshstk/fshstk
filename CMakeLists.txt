@@ -21,7 +21,9 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-set(FSH_PROJECT_VERSION 0.0.1)
+project(fshstk
+    VERSION     0.0.1
+    LANGUAGES   CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
