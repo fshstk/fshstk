@@ -28,13 +28,6 @@ function(fsh_add_plugin)
   # Multi-value arguments:
   "")
 
-  if(APPLE OR WIN32)
-    set(FSH_PLUGIN_FORMATS VST VST3 LV2)
-  else()
-    # TODO: Linux segfaults when linking VST3/LV2 plugins, so we disable it for now:
-    set(FSH_PLUGIN_FORMATS VST)
-  endif()
-
   juce_add_plugin(${PROJECT_NAME}
     PRODUCT_NAME              "fsh_${PROJECT_NAME}"
     PLUGIN_NAME               "fsh :: ${PROJECT_NAME}"
@@ -45,7 +38,7 @@ function(fsh_add_plugin)
     NEEDS_MIDI_INPUT          ${FSH_IS_SYNTH}
 
     PLUGIN_MANUFACTURER_CODE  Fstk
-    FORMATS                   ${FSH_PLUGIN_FORMATS}
+    FORMATS                   VST VST3 LV2
 
     COMPANY_NAME              fshstk
     COMPANY_WEBSITE           https://docs.fshstk.com
