@@ -48,6 +48,9 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # when compiling under Ubuntu:
   JUCE_WEB_BROWSER=0
 
+  # Remove libcurl dependency on Linux (which doesn't seem to work anyway):
+  JUCE_USE_CURL=0
+
   # Disabling the splash screen is only legal if you purchase a JUCE license, or
   # if you license your project using the GNU Public License.
   # - https://www.gnu.org/licenses
