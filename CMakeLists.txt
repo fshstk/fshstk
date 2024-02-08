@@ -28,7 +28,7 @@ project(fshstk
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-if(LINUX)
+if(UNIX AND NOT APPLE) # (if Linux)
 # Required by spdlog:
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 endif()
