@@ -29,6 +29,20 @@ Fonts used by the GUI.
 The fonts are accessed by the `Fonts::Instance` type, which is a `juce::SharedResourcePointer`. This
 means that the fonts are shared across all instances of the `Fonts::Instance` type. Unfortunately,
 Linux builds fail to link the fonts correctly when using static members, so this is a workaround.
+
+## Example usage:
+```cpp
+class ComponentClass : public juce::Component
+{
+public:
+  void paint(juce::Graphics& g) override {
+    g.setFont(_fonts->h1);
+    g.drawText("hello world", getLocalBounds(), juce::Justification::centred);
+  }
+private:
+  const Fonts::Instance _fonts;
+};
+```
 */
 struct Fonts
 {
