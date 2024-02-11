@@ -35,10 +35,12 @@ Linux builds fail to link the fonts correctly when using static members, so this
 class ComponentClass : public juce::Component
 {
 public:
-  void paint(juce::Graphics& g) override {
+  void paint(juce::Graphics& g) override
+  {
     g.setFont(_fonts->h1);
     g.drawText("hello world", getLocalBounds(), juce::Justification::centred);
   }
+
 private:
   const Fonts::Instance _fonts;
 };
