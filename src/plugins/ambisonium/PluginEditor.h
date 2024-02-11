@@ -22,6 +22,7 @@
 #pragma once
 #include "Colors.h"
 #include "ComponentPanel.h"
+#include "Fonts.h"
 #include "InfoButton.h"
 #include "Knob.h"
 #include "Labeled.h"
@@ -41,6 +42,7 @@ public:
 
 private:
   PluginState& _state;
+  fsh::gui::Fonts::Instance _fonts;
   fsh::gui::InfoButton _buttonInfo;
 
   fsh::gui::Trigger _buttonPanic{ {

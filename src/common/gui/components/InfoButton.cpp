@@ -21,7 +21,6 @@
 
 #include "InfoButton.h"
 #include "Colors.h"
-#include "Fonts.h"
 
 using namespace fsh::gui;
 
@@ -44,6 +43,6 @@ void InfoButton::paintButton(juce::Graphics& g, const bool highlighted, const bo
   g.setColour(highlighted ? fsh::gui::Colors::light.withMultipliedAlpha(0.8f)
                           : fsh::gui::Colors::light);
 
-  g.setFont(Fonts::FontAwesome::solid.withHeight(size));
+  g.setFont(_fonts->iconsSolid.withHeight(size));
   g.drawText(infoCircleGlyph, getLocalBounds(), juce::Justification::centred);
 }

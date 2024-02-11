@@ -25,19 +25,26 @@
 namespace fsh::gui {
 /**
 Fonts used by the GUI.
+
+The fonts are accessed by the `Fonts::Instance` type, which is a `juce::SharedResourcePointer`. This
+means that the fonts are shared across all instances of the `Fonts::Instance` type. Unfortunately,
+Linux builds fail to link the fonts correctly when using static members, so this is a workaround.
 */
 struct Fonts
 {
-  static const juce::Font h1; ///< Heading 1. Use for: plugin name
-  static const juce::Font h2; ///< Heading 2. Use for: suite name
-  static const juce::Font h3; ///< Heading 3. Use for: panel labels, plugin version
-  static const juce::Font h4; ///< Heading 4. Use for: knob/button labels
+  /// Add this as a member to your component/editor class to access the fonts.
+  using Instance = juce::SharedResourcePointer<Fonts>;
 
-  /// Font Awesome fonts (for icons)
-  struct FontAwesome
-  {
-    static const juce::Font regular; ///< Font Awesome Regular
-    static const juce::Font solid;   ///< Font Awesome Solid
-  };
+  const juce::Font h1; ///< Heading 1. Use for: plugin name
+  const juce::Font h2; ///< Heading 2. Use for: suite name
+  const juce::Font h3; ///< Heading 3. Use for: panel labels, plugin version
+  const juce::Font h4; ///< Heading 4. Use for: knob/button labels
+
+  const juce::Font iconsRegular; ///< Font Awesome Regular
+  const juce::Font iconsSolid;   ///< Font Awesome Solid
+
+private:
+  Fonts();
+  friend Instance;
 };
 } // namespace fsh::gui

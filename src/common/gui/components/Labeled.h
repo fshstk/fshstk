@@ -55,7 +55,7 @@ private:
   void paint(juce::Graphics& g) override
   {
     g.setColour(_params.child.color);
-    g.setFont(fsh::gui::Fonts::h4);
+    g.setFont(_fonts->h4);
 
     const auto area = getLocalBounds();
     const auto margin = 5;
@@ -82,6 +82,7 @@ private:
     _child.setBounds(x - (childSize / 2), y - (childSize / 2), childSize, childSize);
   }
 
+  Fonts::Instance _fonts;
   Params _params;
   T _child;
 };

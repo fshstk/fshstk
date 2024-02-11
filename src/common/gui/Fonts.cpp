@@ -26,19 +26,25 @@ using namespace fsh::gui;
 
 namespace {
 const auto jockeyOne =
-  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
-                                                      fsh::assets::fonts::JockeyOne_ttfSize) };
-} // namespace
+  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
+                                          fsh::assets::fonts::JockeyOne_ttfSize);
 
-const juce::Font Fonts::h1 = jockeyOne.withHeight(48.0f);
-const juce::Font Fonts::h2 = jockeyOne.withHeight(24.0f);
-const juce::Font Fonts::h3 = jockeyOne.withHeight(18.0f);
-const juce::Font Fonts::h4 = jockeyOne.withHeight(16.0f);
-
-const juce::Font Fonts::FontAwesome::regular =
+const auto fontAwesomeRegular =
   juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeRegular_otf,
                                           fsh::assets::fonts::FontAwesome6FreeRegular_otfSize);
 
-const juce::Font Fonts::FontAwesome::solid =
+const auto fontAwesomeSolid =
   juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
                                           fsh::assets::fonts::FontAwesome6FreeSolid_otfSize);
+
+} // namespace
+
+Fonts::Fonts()
+  : h1(juce::Font{ jockeyOne }.withHeight(48.0f))
+  , h2(juce::Font{ jockeyOne }.withHeight(24.0f))
+  , h3(juce::Font{ jockeyOne }.withHeight(18.0f))
+  , h4(juce::Font{ jockeyOne }.withHeight(16.0f))
+  , iconsRegular(juce::Font{ fontAwesomeRegular })
+  , iconsSolid(juce::Font{ fontAwesomeSolid })
+{
+}

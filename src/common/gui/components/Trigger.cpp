@@ -20,7 +20,6 @@
 ***************************************************************************************************/
 
 #include "Trigger.h"
-#include "Fonts.h"
 
 using namespace fsh::gui;
 
@@ -47,6 +46,6 @@ void Trigger::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
   }();
 
   g.setColour(textColor);
-  g.setFont(Fonts::FontAwesome::solid.withHeight(size));
+  g.setFont(_fonts->iconsSolid.withHeight(size));
   g.drawText(_params.glyph, getLocalBounds(), juce::Justification::centred);
 }

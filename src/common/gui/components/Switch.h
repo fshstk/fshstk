@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "Fonts.h"
 #include "StateManager.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -52,5 +53,6 @@ private:
 
   std::unique_ptr<plugin::StateManager::ButtonAttachment> _attachment;
   Params _params;
+  Fonts::Instance _fonts;
 };
 } // namespace fsh::gui

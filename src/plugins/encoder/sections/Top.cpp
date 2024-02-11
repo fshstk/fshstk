@@ -21,7 +21,6 @@
 
 #include "Top.h"
 #include "Colors.h"
-#include "Fonts.h"
 
 Top::Top()
 {
@@ -31,7 +30,7 @@ Top::Top()
 void Top::paint(juce::Graphics& g)
 {
   g.setColour(fsh::gui::Colors::foreground);
-  g.setFont(fsh::gui::Fonts::h1);
+  g.setFont(_fonts->h1);
   g.drawText("fsh::encoder", getLocalBounds(), juce::Justification::centred);
 }
 
