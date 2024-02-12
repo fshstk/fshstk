@@ -45,6 +45,7 @@ class MoogVCF
 public:
   enum class Mode
   {
+    Uninitialized,
     LPF12,
     HPF12,
     BPF12,
@@ -61,8 +62,6 @@ public:
     fsh::util::BoundedFloat<1, 1'000> drive = 1.0f;        ///< Distortion drive
   };
 
-  MoogVCF();
-
   /// Set the filter parameters
   void setParams(const Params&);
 
@@ -70,7 +69,7 @@ public:
   void setSampleRate(double);
 
   /// Filter a single sample
-  float processSample(float, size_t = 0);
+  float processSample(float);
 
   /// Reset the filter state
   void reset();
@@ -109,7 +108,7 @@ private:
   float resonance;
   float cutoffFreqScaler;
 
-  Mode mode;
+  Mode mode = Mode::Uninitialized;
   bool enabled = true;
 };
 } // namespace fsh::fx

@@ -19,26 +19,19 @@
                                     www.gnu.org/licenses/gpl-3.0
 ***************************************************************************************************/
 
+#define _USE_MATH_DEFINES
 #include "MoogVCF.h"
+#include <algorithm>
+#include <cmath>
 
 using namespace fsh::fx;
-
-MoogVCF::MoogVCF()
-{
-  setSampleRate(1000.0f); // intentionally setting unrealistic default
-                          // sample rate to catch missing initialisation bugs
-  setResonance(0.0f);
-  setDrive(1.2f);
-
-  mode = Mode::LPF24;
-  setMode(Mode::LPF12);
-}
 
 void MoogVCF::setParams(const Params& params)
 {
   setCutoffFrequencyHz(params.cutoff.get());
   setResonance(params.resonance.get());
   setDrive(params.drive.get());
+  setMode(Mode::LPF12);
 }
 
 void MoogVCF::setSampleRate(double newValue)
@@ -53,7 +46,7 @@ void MoogVCF::setSampleRate(double newValue)
   updateCutoffFreq();
 }
 
-float MoogVCF::processSample(float inputValue, size_t)
+float MoogVCF::processSample(float inputValue)
 {
   auto& s = state;
 
@@ -110,6 +103,7 @@ void MoogVCF::setMode(MoogVCF::Mode newMode)
       A = { { 0.0f, 0.0f, 1.0f, -2.0f, 1.0f } };
       comp = 0.5f;
       break;
+    case Mode::Uninitialized:
     default:
       jassertfalse;
       break;
