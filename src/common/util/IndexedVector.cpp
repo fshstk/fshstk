@@ -27,6 +27,7 @@ using namespace fsh::util;
 void IndexedVector::resize(size_t newSize)
 {
   data.resize(newSize);
+  index = (newSize != 0) ? (index % newSize) : 0;
 }
 
 auto IndexedVector::get() const -> float
