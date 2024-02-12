@@ -32,12 +32,12 @@ We need to limit the maximum number of overtones or the CPU will explode.
 
 Some reference values:
 
-- sawtooth @ E2 (80Hz) w/ 250 overtones will go beyond 20 kHz
-- sawtooth @ A0 (27Hz) will go up to 6.8 kHz
+- sawtooth @ G#3 (200Hz) w/ 100 overtones will go beyond 20 kHz
+- sawtooth @ A0 (27Hz) will go up to 2.7 kHz
 - 40th sawtooth partial is at 1/250 amplitude (= -48 dB)
 - 40th triangle partial is at 1/250^2 amplitude (= -96 dB)
 */
-const auto overtoneLimit = 250;
+const auto overtoneLimit = 100;
 
 double sine(double phase)
 {
