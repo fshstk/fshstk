@@ -259,40 +259,42 @@ auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
     return freqRatio;
   };
 
+  const auto map = [this](PluginState::Param p, float min, float max)
+  { return juce::jmap(getParameter<float>(id(p)), 0.0f, 100.0f, min, max); };
+
   return {
     .voice = { .masterLevel = juce::Decibels::decibelsToGain(getParameter<float>(id(level))),
                .oscA = { .detune = detune(getParameter<float>(id(oscA_tune)),
                                           getParameter<float>(id(oscA_fine))),
-                         .amplitude = getParameter<float>(id(oscA_level)) / 200.0f,
+                         .amplitude = map(oscA_level, 0.0f, 0.5f),
                          // TODO: bad coupling here (depends the order of Waveform enum elements)
                          .waveform =
                            getParameter<fsh::synth::Oscillator::Waveform>(id(oscA_waveform)) },
                .oscB = { .detune = detune(getParameter<float>(id(oscB_tune)),
                                           getParameter<float>(id(oscB_fine))),
-                         .amplitude = getParameter<float>(id(oscB_level)) / 200.0f,
+                         .amplitude = map(oscB_level, 0.0f, 0.5f),
                          // TODO: bad coupling here (depends the order of Waveform enum elements)
                          .waveform =
                            getParameter<fsh::synth::Oscillator::Waveform>(id(oscB_waveform)) },
                .oscC = { .detune = {},
-                         .amplitude = getParameter<float>(id(fx_noise)) / 200.0f,
+                         .amplitude = map(fx_noise, 0.0f, 0.5f),
                          .waveform = fsh::synth::Oscillator::Waveform::Noise },
-               .ampEnv = { .attack = getParameter<float>(id(ampenv_attack)) + 4.0f,
-                           .decay = getParameter<float>(id(ampenv_decay)) + 4.0f,
+               .ampEnv = { .attack = map(ampenv_attack, 4.0f, 100.0f),
+                           .decay = map(ampenv_decay, 4.0f, 100.0f),
                            .sustain = getParameter<bool>(id(ampenv_hold)) ? 0.0f : 1.0f,
-                           .release = getParameter<float>(id(ampenv_decay)) + 4.0f },
-               .filtEnv = { .attack = getParameter<float>(id(filtenv_attack)) / 5.0f,
-                            .decay = getParameter<float>(id(filtenv_decay)) / 5.0f,
+                           .release = map(ampenv_decay, 4.0f, 100.0f) },
+               .filtEnv = { .attack = map(filtenv_attack, 0.0f, 20.0f),
+                            .decay = map(filtenv_decay, 0.0f, 20.0f),
                             .sustain = 0.0f,
-                            .release = getParameter<float>(id(filtenv_decay)) },
-               .filtModAmt = getParameter<float>(id(filtenv_modamt)) / 8.0f,
+                            .release = map(filtenv_decay, 0.0f, 20.0f) },
+               .filtModAmt = map(filtenv_modamt, 0.0f, 15.0f),
                // TODO: ambi param struct
                .aziCenter = getParameter<float>(id(ambi_center)),
                .aziRange = getParameter<float>(id(ambi_spread)),
                // TODO: filter param struct
-               // This maps the input range (0-100) roughly to the range 1-32:
-               .filterCutoff = getParameter<float>(id(filter_cutoff)) / 15.0f,
-               .filterResonance = getParameter<float>(id(filter_resonance)) / 140.0f,
-               .drive = getParameter<float>(id(fx_drive)) / 3.0f },
+               .filterCutoff = map(filter_cutoff, 0.0f, 7.0f),
+               .filterResonance = map(filter_resonance, 0.0f, 0.7f),
+               .drive = map(fx_drive, 0.0f, 35.0f) },
   };
 }
 
