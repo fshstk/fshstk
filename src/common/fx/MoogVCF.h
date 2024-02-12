@@ -20,10 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
-#include "BoundedValue.h"
 #include <array>
-#include <cstddef>
-#include <juce_dsp/juce_dsp.h>
 
 namespace fsh::fx
 {
@@ -43,23 +40,13 @@ Call processSample() for each sample.
 class MoogVCF
 {
 public:
-  enum class Mode
-  {
-    Uninitialized,
-    LPF12,
-    HPF12,
-    BPF12,
-    LPF24,
-    HPF24,
-    BPF24,
-  };
-
   /// Parameters for the filter
+
   struct Params
   {
-    fsh::util::BoundedFloat<20, 20'000> cutoff = 1'000.0f; ///< Filter cutoff frequency in Hz
-    fsh::util::BoundedFloat<0, 1> resonance = 0.1f;        ///< Filter resonance
-    fsh::util::BoundedFloat<1, 1'000> drive = 1.0f;        ///< Distortion drive
+    float cutoff = 1'000.0f; ///< Filter cutoff frequency in Hz
+    float resonance = 0.1f;  ///< Filter resonance
+    float drive = 1.0f;      ///< Distortion drive
   };
 
   /// Set the filter parameters
@@ -75,40 +62,13 @@ public:
   void reset();
 
 private:
-  void setMode(Mode newMode);
-  void setCutoffFrequencyHz(float newCutoff);
-  void setResonance(float newResonance);
-  void setDrive(float newDrive);
+  void calculateCoefficients();
 
-  void updateSmoothers();
-  void updateCutoffFreq();
-  void updateResonance();
-
-  float drive;
-  float drive2;
-  float gain;
-  float gain2;
-  float comp;
-
-  static constexpr size_t numStates = 5;
-  std::array<float, numStates> state;
-  std::array<float, numStates> A;
-
-  juce::SmoothedValue<float> cutoffTransformSmoother;
-  juce::SmoothedValue<float> scaledResonanceSmoother;
-  float cutoffTransformValue;
-  float scaledResonanceValue;
-
-  juce::dsp::LookupTableTransform<float> saturationLUT{ [](float x) { return std::tanh(x); },
-                                                        -5.0f,
-                                                        5.0f,
-                                                        128 };
-
-  float cutoffFreqHz = 200.0f;
-  float resonance;
-  float cutoffFreqScaler;
-
-  Mode mode = Mode::Uninitialized;
-  bool enabled = true;
+  Params _params;
+  double _sampleRate;
+  double _cutoffCoeff;
+  double _b0;
+  double _b1;
+  std::array<double, 5> _stage = {};
 };
 } // namespace fsh::fx

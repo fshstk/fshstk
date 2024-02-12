@@ -26,141 +26,61 @@
 
 using namespace fsh::fx;
 
+namespace {
+auto gain(double drive)
+{
+  return std::pow(drive, -2.642f) * 0.6103f + 0.3903f;
+}
+
+auto distort(double input, double drive)
+{
+  return std::tanh(input * drive);
+}
+} // namespace
+
 void MoogVCF::setParams(const Params& params)
 {
-  setCutoffFrequencyHz(params.cutoff.get());
-  setResonance(params.resonance.get());
-  setDrive(params.drive.get());
-  setMode(Mode::LPF12);
+  _params = params;
+  calculateCoefficients();
 }
 
-void MoogVCF::setSampleRate(double newValue)
+void MoogVCF::setSampleRate(double sampleRate)
 {
-  jassert(newValue > 0.0);
-  cutoffFreqScaler = static_cast<float>(-2.0 * juce::MathConstants<double>::pi / newValue);
-
-  static constexpr float smootherRampTimeSec = 0.05f;
-  cutoffTransformSmoother.reset(newValue, smootherRampTimeSec);
-  scaledResonanceSmoother.reset(newValue, smootherRampTimeSec);
-
-  updateCutoffFreq();
+  _sampleRate = sampleRate;
+  calculateCoefficients();
 }
 
-float MoogVCF::processSample(float inputValue)
+float MoogVCF::processSample(float input)
 {
-  auto& s = state;
-
-  const auto a1 = cutoffTransformValue;
-  const auto g = a1 * -1.0f + 1.0f;
-  const auto b0 = g * 0.76923076923f;
-  const auto b1 = g * 0.23076923076f;
-
-  const auto dx = gain * saturationLUT(drive * inputValue);
+  const auto drive2 = _params.drive * 0.04f + 0.96f;
+  const auto dx = gain(_params.drive) * distort(input, _params.drive);
+  const auto comp = 0.5f;
   const auto a =
-    dx + scaledResonanceValue * -4.0f * (gain2 * saturationLUT(drive2 * s[4]) - dx * comp);
+    dx + _params.resonance * -4.0f * (gain(drive2) * distort(_stage[4], drive2) - dx * comp);
 
-  const auto b = b1 * s[0] + a1 * s[1] + b0 * a;
-  const auto c = b1 * s[1] + a1 * s[2] + b0 * b;
-  const auto d = b1 * s[2] + a1 * s[3] + b0 * c;
-  const auto e = b1 * s[3] + a1 * s[4] + b0 * d;
+  const auto b = _b1 * _stage[0] + _cutoffCoeff * _stage[1] + _b0 * a;
+  const auto c = _b1 * _stage[1] + _cutoffCoeff * _stage[2] + _b0 * b;
+  const auto d = _b1 * _stage[2] + _cutoffCoeff * _stage[3] + _b0 * c;
+  const auto e = _b1 * _stage[3] + _cutoffCoeff * _stage[4] + _b0 * d;
 
-  s[0] = a;
-  s[1] = b;
-  s[2] = c;
-  s[3] = d;
-  s[4] = e;
+  _stage[0] = a;
+  _stage[1] = b;
+  _stage[2] = c;
+  _stage[3] = d;
+  _stage[4] = e;
 
-  return a * A[0] + b * A[1] + c * A[2] + d * A[3] + e * A[4];
+  return static_cast<float>(_stage[4]);
 }
 
-void MoogVCF::setMode(MoogVCF::Mode newMode)
+void MoogVCF::calculateCoefficients()
 {
-  if (newMode == mode)
-    return;
-
-  switch (newMode) {
-    case Mode::LPF12:
-      A = { { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f } };
-      comp = 0.5f;
-      break;
-    case Mode::HPF12:
-      A = { { 1.0f, -2.0f, 1.0f, 0.0f, 0.0f } };
-      comp = 0.0f;
-      break;
-    case Mode::BPF12:
-      A = { { 0.0f, 0.0f, -1.0f, 1.0f, 0.0f } };
-      comp = 0.5f;
-      break;
-    case Mode::LPF24:
-      A = { { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f } };
-      comp = 0.5f;
-      break;
-    case Mode::HPF24:
-      A = { { 1.0f, -4.0f, 6.0f, -4.0f, 1.0f } };
-      comp = 0.0f;
-      break;
-    case Mode::BPF24:
-      A = { { 0.0f, 0.0f, 1.0f, -2.0f, 1.0f } };
-      comp = 0.5f;
-      break;
-    case Mode::Uninitialized:
-    default:
-      jassertfalse;
-      break;
-  }
-
-  static constexpr auto outputGain = 1.2f;
-
-  for (auto& a : A)
-    a *= outputGain;
-
-  mode = newMode;
-  reset();
+  _cutoffCoeff = 2.0 * std::sin(M_PI * _params.cutoff / _sampleRate);
+  const auto g = _cutoffCoeff * -1.0f + 1.0f;
+  _b0 = g * 0.76923076923f;
+  _b1 = g * 0.23076923076f;
 }
 
 void MoogVCF::reset()
 {
-  state.fill(0.0f);
-  cutoffTransformSmoother.setCurrentAndTargetValue(cutoffTransformSmoother.getTargetValue());
-  scaledResonanceSmoother.setCurrentAndTargetValue(scaledResonanceSmoother.getTargetValue());
-}
-
-void MoogVCF::setCutoffFrequencyHz(float newCutoff)
-{
-  jassert(newCutoff > 0.0f);
-  cutoffFreqHz = newCutoff;
-  updateCutoffFreq();
-}
-
-void MoogVCF::setResonance(float newResonance)
-{
-  jassert(newResonance >= 0.0f && newResonance <= 1.0f);
-  resonance = newResonance;
-  updateResonance();
-}
-
-void MoogVCF::setDrive(float newDrive)
-{
-  jassert(newDrive >= 1.0f);
-
-  drive = newDrive;
-  gain = std::pow(drive, -2.642f) * 0.6103f + 0.3903f;
-  drive2 = drive * 0.04f + 0.96f;
-  gain2 = std::pow(drive2, -2.642f) * 0.6103f + 0.3903f;
-}
-
-void MoogVCF::updateSmoothers()
-{
-  cutoffTransformValue = cutoffTransformSmoother.getNextValue();
-  scaledResonanceValue = scaledResonanceSmoother.getNextValue();
-}
-
-void MoogVCF::updateCutoffFreq()
-{
-  cutoffTransformSmoother.setTargetValue(std::exp(cutoffFreqHz * cutoffFreqScaler));
-}
-
-void MoogVCF::updateResonance()
-{
-  scaledResonanceSmoother.setTargetValue(juce::jmap(resonance, 0.1f, 1.0f));
+  _stage.fill(0.0);
 }
