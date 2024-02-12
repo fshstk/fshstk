@@ -21,6 +21,8 @@
 
 #pragma once
 #include "BoundedValue.h"
+#include <array>
+#include <cstddef>
 #include <juce_dsp/juce_dsp.h>
 
 namespace fsh::fx
@@ -28,14 +30,7 @@ namespace fsh::fx
 /**
 Virtual analog Moog-style lowpass filter.
 
-This implementation originally appeared on
-[MusicDSP.org](http://www.musicdsp.org/en/latest/Filters/24-moog-vcf.html), and was then
-ported/improved by [ddiakopoulos on
-GitHub](https://github.com/ddiakopoulos/MoogLadders/blob/master/src/MusicDSPModel.h).
-
-The filter can occasionally become unstable when the input level is too high. It is recommended to
-use a pre-scale to avoid this. For example, a factor of 0.5 seems to work well with the Oscillator
-class.
+This implementation is based on the JUCE LadderFilter.
 
 ## Before using
 
@@ -45,11 +40,18 @@ Set the sample rate using setSampleRate(), and parameters using setParams().
 
 Call processSample() for each sample.
 */
-class MoogVCF : private juce::dsp::LadderFilter<float>
+class MoogVCF
 {
 public:
-  /// The mode (order/shape) of the filter
-  using Mode = juce::dsp::LadderFilterMode;
+  enum class Mode
+  {
+    LPF12,
+    HPF12,
+    BPF12,
+    LPF24,
+    HPF24,
+    BPF24,
+  };
 
   /// Parameters for the filter
   struct Params
@@ -59,6 +61,8 @@ public:
     fsh::util::BoundedFloat<1, 1'000> drive = 1.0f;        ///< Distortion drive
   };
 
+  MoogVCF();
+
   /// Set the filter parameters
   void setParams(const Params&);
 
@@ -66,9 +70,46 @@ public:
   void setSampleRate(double);
 
   /// Filter a single sample
-  float processSample(float);
+  float processSample(float, size_t = 0);
 
   /// Reset the filter state
   void reset();
+
+private:
+  void setMode(Mode newMode);
+  void setCutoffFrequencyHz(float newCutoff);
+  void setResonance(float newResonance);
+  void setDrive(float newDrive);
+
+  void updateSmoothers();
+  void updateCutoffFreq();
+  void updateResonance();
+
+  float drive;
+  float drive2;
+  float gain;
+  float gain2;
+  float comp;
+
+  static constexpr size_t numStates = 5;
+  std::array<float, numStates> state;
+  std::array<float, numStates> A;
+
+  juce::SmoothedValue<float> cutoffTransformSmoother;
+  juce::SmoothedValue<float> scaledResonanceSmoother;
+  float cutoffTransformValue;
+  float scaledResonanceValue;
+
+  juce::dsp::LookupTableTransform<float> saturationLUT{ [](float x) { return std::tanh(x); },
+                                                        -5.0f,
+                                                        5.0f,
+                                                        128 };
+
+  float cutoffFreqHz = 200.0f;
+  float resonance;
+  float cutoffFreqScaler;
+
+  Mode mode;
+  bool enabled = true;
 };
 } // namespace fsh::fx
