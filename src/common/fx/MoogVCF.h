@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "EnvelopeFollower.h"
 #include <array>
 
 namespace fsh::fx
@@ -72,9 +73,9 @@ private:
 
   Params _params;
   double _sampleRate;
-  double _resCoeff;
-  double _p;
-  double _k;
+  fsh::util::EnvelopeFollower _resCoeff;
+  fsh::util::EnvelopeFollower _p;
+  fsh::util::EnvelopeFollower _k;
   std::array<double, 4> _stage = {};
   std::array<double, 4> _delay = {};
 };
