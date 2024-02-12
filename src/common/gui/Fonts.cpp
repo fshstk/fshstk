@@ -34,6 +34,6 @@ Fonts::Fonts()
   , h2(juce::Font{ mainTypeface }.withHeight(24.0f))
   , h3(juce::Font{ mainTypeface }.withHeight(18.0f))
   , h4(juce::Font{ mainTypeface }.withHeight(16.0f))
-  , iconsSolid(juce::Font{ iconTypeface })
+  , icons(juce::Font{ iconTypeface })
 {
 }

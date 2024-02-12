@@ -56,11 +56,11 @@ public:
   /// Add this as a member to your component/editor class to access the fonts.
   using Instance = juce::SharedResourcePointer<Fonts>;
 
-  const juce::Font h1;         ///< Heading 1. Use for: plugin name
-  const juce::Font h2;         ///< Heading 2. Use for: suite name
-  const juce::Font h3;         ///< Heading 3. Use for: panel labels, plugin version
-  const juce::Font h4;         ///< Heading 4. Use for: knob/button labels
-  const juce::Font iconsSolid; ///< Font Awesome Solid
+  const juce::Font h1;    ///< Heading 1. Use for: plugin name
+  const juce::Font h2;    ///< Heading 2. Use for: suite name
+  const juce::Font h3;    ///< Heading 3. Use for: panel labels, plugin version
+  const juce::Font h4;    ///< Heading 4. Use for: knob/button labels
+  const juce::Font icons; ///< Font Awesome Solid
 
 private:
   Fonts();

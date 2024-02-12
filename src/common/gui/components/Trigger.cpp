@@ -46,6 +46,6 @@ void Trigger::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
   }();
 
   g.setColour(textColor);
-  g.setFont(_fonts->iconsSolid.withHeight(size));
+  g.setFont(_fonts->icons.withHeight(size));
   g.drawText(_params.glyph, getLocalBounds(), juce::Justification::centred);
 }
