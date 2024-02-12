@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "Fonts.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
@@ -54,5 +55,6 @@ private:
 
   Params _params;
   std::vector<juce::Component*> _components;
+  Fonts::Instance _fonts;
 };
 } // namespace fsh::gui

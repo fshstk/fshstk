@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "Fonts.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
 namespace fsh::gui {
@@ -43,5 +44,6 @@ public:
 private:
   void paintButton(juce::Graphics&, bool highlighted, bool down) override;
   Params _params;
+  Fonts::Instance _fonts;
 };
 } // namespace fsh::gui

@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include "Fonts.h"
 #include "components/InfoButton.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -32,4 +33,5 @@ public:
 
 private:
   fsh::gui::InfoButton infoButton;
+  fsh::gui::Fonts::Instance _fonts;
 };

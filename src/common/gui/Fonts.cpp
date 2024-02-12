@@ -24,21 +24,16 @@
 
 using namespace fsh::gui;
 
-namespace {
-const auto jockeyOne =
-  juce::Font{ juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
-                                                      fsh::assets::fonts::JockeyOne_ttfSize) };
-} // namespace
-
-const juce::Font Fonts::h1 = jockeyOne.withHeight(48.0f);
-const juce::Font Fonts::h2 = jockeyOne.withHeight(24.0f);
-const juce::Font Fonts::h3 = jockeyOne.withHeight(18.0f);
-const juce::Font Fonts::h4 = jockeyOne.withHeight(16.0f);
-
-const juce::Font Fonts::FontAwesome::regular =
-  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeRegular_otf,
-                                          fsh::assets::fonts::FontAwesome6FreeRegular_otfSize);
-
-const juce::Font Fonts::FontAwesome::solid =
-  juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
-                                          fsh::assets::fonts::FontAwesome6FreeSolid_otfSize);
+Fonts::Fonts()
+  : mainTypeface(juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::JockeyOne_ttf,
+                                                         fsh::assets::fonts::JockeyOne_ttfSize))
+  , iconTypeface(
+      juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
+                                              fsh::assets::fonts::FontAwesome6FreeSolid_otfSize))
+  , h1(juce::Font{ mainTypeface }.withHeight(48.0f))
+  , h2(juce::Font{ mainTypeface }.withHeight(24.0f))
+  , h3(juce::Font{ mainTypeface }.withHeight(18.0f))
+  , h4(juce::Font{ mainTypeface }.withHeight(16.0f))
+  , icons(juce::Font{ iconTypeface })
+{
+}

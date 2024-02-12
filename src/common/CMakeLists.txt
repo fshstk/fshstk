@@ -20,7 +20,7 @@
 ####################################################################################################
 
 project(fshlib
-    VERSION     ${FSH_PROJECT_VERSION}
+    VERSION     ${CMAKE_PROJECT_VERSION}
     LANGUAGES   CXX)
 
 add_library(fshlib STATIC)
@@ -47,6 +47,9 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
   # This one's important because it gets rid of the "gtk header not found" error
   # when compiling under Ubuntu:
   JUCE_WEB_BROWSER=0
+
+  # Remove libcurl dependency on Linux (which doesn't seem to work anyway):
+  JUCE_USE_CURL=0
 
   # Disabling the splash screen is only legal if you purchase a JUCE license, or
   # if you license your project using the GNU Public License.
