@@ -38,7 +38,7 @@ function(fsh_add_plugin)
     NEEDS_MIDI_INPUT          ${FSH_IS_SYNTH}
 
     PLUGIN_MANUFACTURER_CODE  Fstk
-    FORMATS                   VST VST3 LV2
+    FORMATS                   VST3 LV2
 
     COMPANY_NAME              fshstk
     COMPANY_WEBSITE           https://docs.fshstk.com

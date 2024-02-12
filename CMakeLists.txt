@@ -40,9 +40,6 @@ endif()
 
 include(cmake/Dependencies.cmake)
 
-# VST_SDK_PATH is defined in Dependencies.cmake:
-juce_set_vst2_sdk_path(${VST_SDK_PATH})
-
 enable_testing()
 
 find_package(Doxygen)
