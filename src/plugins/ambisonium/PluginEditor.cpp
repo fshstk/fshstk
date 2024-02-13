@@ -102,9 +102,7 @@ void PluginEditor::paint(juce::Graphics& g)
   g.setColour(fsh::gui::Colors::light);
 
   g.setFont(_fonts->h1);
-  g.drawText(fmt::format("fsh :: {}", juce::String{ JucePlugin_Name }.toLowerCase().toStdString()),
-             headerText,
-             juce::Justification::bottomRight);
+  g.drawText(JucePlugin_Name, headerText, juce::Justification::bottomRight);
 
   g.setFont(_fonts->h2);
   g.drawText(
