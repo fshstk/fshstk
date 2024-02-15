@@ -26,7 +26,8 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <spdlog/spdlog.h>
 
-namespace fsh::gui {
+namespace fsh::gui
+{
 /**
 Class for displaying a list of options as buttons.
 */

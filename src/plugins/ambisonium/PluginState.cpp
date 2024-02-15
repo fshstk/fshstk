@@ -31,7 +31,8 @@ using fsh::plugin::ParamBool;
 using fsh::plugin::ParamChoice;
 using fsh::plugin::ParamFloat;
 
-namespace {
+namespace
+{
 auto id(PluginState::Param p)
 {
   return PluginState::getID(p);
@@ -42,10 +43,9 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
   const auto displayAsDegrees = ParamFloat::Attributes{}.withStringFromValueFunction(
     [](float val, int) { return fmt::format("{:+0.0f}°", val); });
 
-  const auto displayAsDegreesRange =
-    ParamFloat::Attributes{}.withStringFromValueFunction([](float val, int) {
-      return fmt::format("{} {:0.0f}°", (val >= 0) ? "+/-" : "-/+", std::abs(val) / 2.0f);
-    });
+  const auto displayAsDegreesRange = ParamFloat::Attributes{}.withStringFromValueFunction(
+    [](float val, int)
+    { return fmt::format("{} {:0.0f}°", (val >= 0) ? "+/-" : "-/+", std::abs(val) / 2.0f); });
 
   const auto displayAsOnOff = ParamBool::Attributes{}.withStringFromValueFunction(
     [](bool val, int) { return val ? "ON" : "OFF"; });
@@ -151,11 +151,12 @@ auto createParameterLayout() -> juce::AudioProcessorValueTreeState::ParameterLay
       .id = id(level),
       .name = "LEVEL: level",
       .range =
-        []() {
-          auto range = juce::NormalisableRange<float>{ -24.0f, 6.0f, 0.1f };
-          range.setSkewForCentre(0.0f);
-          return range;
-        }(),
+        []()
+      {
+        auto range = juce::NormalisableRange<float>{ -24.0f, 6.0f, 0.1f };
+        range.setSkewForCentre(0.0f);
+        return range;
+      }(),
       .defaultVal = 0.0f,
       .attributes = displayAsDecibels,
     }
@@ -251,11 +252,13 @@ PluginState::PluginState(juce::AudioProcessor& parent)
 
 auto PluginState::getSynthParams() const -> fsh::synth::Synth::Params
 {
-  const auto detune = [](float semi, float cents) {
+  const auto detune = [](float semi, float cents)
+  {
     const auto semitones = semi + (cents / 100.0f);
     const auto freqRatio = std::exp2(semitones / 12.0f);
     return freqRatio;
   };
+
   return {
     .voice = { .masterLevel = juce::Decibels::decibelsToGain(getParameter<float>(id(level))),
                .oscA = { .detune = detune(getParameter<float>(id(oscA_tune)),
@@ -300,7 +303,8 @@ auto PluginState::getReverbPreset() const -> fsh::fx::FDNReverb::Preset
 
 auto PluginState::getID(Param p) -> juce::ParameterID
 {
-  switch (p) {
+  switch (p)
+  {
     case ambi_center:
       return "ambi_center";
     case ambi_spread:

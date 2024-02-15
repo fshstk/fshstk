@@ -24,7 +24,8 @@
 #include "Voice.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 
-namespace fsh::synth {
+namespace fsh::synth
+{
 /**
 Polyphonic synthesizer
 

@@ -22,7 +22,8 @@
 #pragma once
 #include <juce_opengl/juce_opengl.h>
 
-namespace fsh::util {
+namespace fsh::util
+{
 /**
 Represents a direction in spherical coordinates.
 */

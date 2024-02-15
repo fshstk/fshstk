@@ -54,7 +54,9 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 
   const auto bufferSize = buffer.getNumSamples();
   const auto numChannels = static_cast<size_t>(buffer.getNumChannels());
-  for (auto i = 0; i < bufferSize; ++i) {
+
+  for (auto i = 0; i < bufferSize; ++i)
+  {
     const auto leftInputSample = buffer.getSample(0, i);
     const auto rightInputSample = buffer.getSample(1, i);
 
@@ -63,7 +65,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 
     const auto channelsToProcess = juce::jmin(numChannels, leftCoeffs.size(), rightCoeffs.size());
 
-    for (auto ch = 0U; ch < channelsToProcess; ++ch) {
+    for (auto ch = 0U; ch < channelsToProcess; ++ch)
+    {
       const auto leftOutputSample = leftInputSample * leftCoeffs[ch];
       const auto rightOutputSample = rightInputSample * rightCoeffs[ch];
       buffer.setSample(static_cast<int>(ch), i, leftOutputSample + rightOutputSample);

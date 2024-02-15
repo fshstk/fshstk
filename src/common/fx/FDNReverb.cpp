@@ -24,7 +24,8 @@
 
 using namespace fsh::fx;
 
-namespace {
+namespace
+{
 const auto presets = std::map<FDNReverb::Preset, FDNReverb::Params>{
   { FDNReverb::Preset::Off,
     {
@@ -58,7 +59,8 @@ auto generatePrimes(size_t count = numPrimes)
   std::vector<unsigned> primes;
   primes.reserve(count);
 
-  const auto isPrime = [](unsigned n) {
+  const auto isPrime = [](unsigned n)
+  {
     if (n == 0 || n == 1)
       return false;
     for (auto i = 2U; i * i <= n; ++i)
@@ -68,9 +70,10 @@ auto generatePrimes(size_t count = numPrimes)
   };
 
   primes.push_back(2U);
-
   auto i = 3U;
-  while (primes.size() < count) {
+
+  while (primes.size() < count)
+  {
     if (isPrime(i))
       primes.push_back(i);
     i += 2;
@@ -89,7 +92,8 @@ auto generateIndices(unsigned delayLength)
     indices[i] = indices[i - 1] + std::max(i * delayLength / numIndices, size_t{ 1 });
 
   for (auto i = 0U; i < numIndices; ++i)
-    if (indices[i] > numPrimes) {
+    if (indices[i] > numPrimes)
+    {
       spdlog::warn("index {} is greater than numPrimes {}, replacing with {}",
                    indices[i],
                    numPrimes,
@@ -109,7 +113,8 @@ void fwht(std::array<float, FDNReverb::fdnSize>& data)
 
   for (auto i = 0U; i < logSize; ++i)
     for (auto j = 0U; j < data.size(); j += (1 << (i + 1)))
-      for (auto k = 0U; k < (1U << i); ++k) {
+      for (auto k = 0U; k < (1U << i); ++k)
+      {
         const auto x = j + k;
         const auto y = j + k + (1 << i);
         const auto a = data[x];
@@ -141,8 +146,10 @@ void FDNReverb::process(juce::AudioBuffer<float>& buffer)
       "FDN size is smaller than number of channels in buffer. Only processing first {} channels.",
       fdnSize);
 
-  for (int i = 0; i < numSamples; ++i) {
-    for (auto channel = 0UL; channel < numChannelsToProcess; ++channel) {
+  for (int i = 0; i < numSamples; ++i)
+  {
+    for (auto channel = 0UL; channel < numChannelsToProcess; ++channel)
+    {
       const auto input = buffer.getSample(static_cast<int>(channel), i);
       delayBuffers[channel].add(input);
 
@@ -157,7 +164,8 @@ void FDNReverb::process(juce::AudioBuffer<float>& buffer)
 
     fwht(transferVector);
 
-    for (auto channel = 0U; channel < delayBuffers.size(); ++channel) {
+    for (auto channel = 0U; channel < delayBuffers.size(); ++channel)
+    {
       delayBuffers[channel].set(transferVector[channel]);
       delayBuffers[channel].incrementIndex();
     }
@@ -168,7 +176,8 @@ void FDNReverb::updateParameterSettings()
 {
   const auto primeIndices = generateIndices(static_cast<unsigned>(params.revTime));
 
-  for (auto channel = 0U; channel < fdnSize; ++channel) {
+  for (auto channel = 0U; channel < fdnSize; ++channel)
+  {
     const auto primeIndex = primeIndices[channel];
     const auto primeNumber = primeNumbers[primeIndex];
 

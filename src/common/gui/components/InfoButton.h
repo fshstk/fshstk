@@ -23,7 +23,8 @@
 #include "Fonts.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh::gui {
+namespace fsh::gui
+{
 /**
 Simple button that displays an info icon with a link to the fshstk website.
 */

@@ -26,7 +26,8 @@
 
 using namespace fsh::synth;
 
-namespace {
+namespace
+{
 /**
 We need to limit the maximum number of overtones or the CPU will explode.
 
@@ -51,7 +52,8 @@ double noise()
 
 double saw(double phase, double deltaPhase)
 {
-  if (deltaPhase < 0.0001) {
+  if (deltaPhase < 0.0001)
+  {
     spdlog::warn("oscillator called with zero frequency");
     return 0.0;
   }
@@ -68,7 +70,8 @@ double saw(double phase, double deltaPhase)
 
 double truesaw(double phase, double deltaPhase)
 {
-  if (deltaPhase < 0.0001) {
+  if (deltaPhase < 0.0001)
+  {
     spdlog::warn("oscillator called with zero or negative frequency");
     return 0.0;
   }
@@ -77,7 +80,8 @@ double truesaw(double phase, double deltaPhase)
   auto out = 0.0;
 
   // "Technically correct" saw, every other harmonic has negative sign:
-  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); k += 2) {
+  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); k += 2)
+  {
     out += std::sin(2.0 * M_PI * (k + 0) * phase) / (k + 0);
     out -= std::sin(2.0 * M_PI * (k + 1) * phase) / (k + 1);
   }
@@ -87,7 +91,8 @@ double truesaw(double phase, double deltaPhase)
 
 double triangle(double phase, double deltaPhase)
 {
-  if (deltaPhase < 0.0001) {
+  if (deltaPhase < 0.0001)
+  {
     spdlog::warn("oscillator called with zero frequency");
     return 0.0;
   }
@@ -104,7 +109,8 @@ double triangle(double phase, double deltaPhase)
 
 double truetriangle(double phase, double deltaPhase)
 {
-  if (deltaPhase < 0.0001) {
+  if (deltaPhase < 0.0001)
+  {
     spdlog::warn("oscillator called with zero or negative frequency");
     return 0.0;
   }
@@ -113,7 +119,8 @@ double truetriangle(double phase, double deltaPhase)
   auto out = 0.0;
 
   // "Technically correct" triangle, every other harmonic has negative sign:
-  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); k += 4) {
+  for (auto k = 1; (k * deltaPhase < nyquist) && (k <= overtoneLimit); k += 4)
+  {
     out += std::sin(2.0 * M_PI * (k + 0) * phase) / ((k + 0) * (k + 0));
     out -= std::sin(2.0 * M_PI * (k + 2) * phase) / ((k + 2) * (k + 2));
   }
@@ -123,7 +130,8 @@ double truetriangle(double phase, double deltaPhase)
 
 double square(double phase, double deltaPhase)
 {
-  if (deltaPhase < 0.0001) {
+  if (deltaPhase < 0.0001)
+  {
     spdlog::warn("oscillator called with zero frequency");
     return 0.0;
   }
@@ -145,9 +153,11 @@ void Oscillator::reset()
 
 auto Oscillator::nextSample() -> float
 {
-  const auto out = [&]() {
+  const auto out = [&]()
+  {
     using enum Waveform;
-    switch (_params.waveform) {
+    switch (_params.waveform)
+    {
       default:
         spdlog::error("invalid oscillator type");
         return 0.0;

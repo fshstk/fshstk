@@ -23,7 +23,8 @@
 #include "SphericalVector.h"
 #include <array>
 
-namespace fsh::util {
+namespace fsh::util
+{
 enum class Normalization
 {
   N3D,

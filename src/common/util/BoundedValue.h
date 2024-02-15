@@ -22,7 +22,8 @@
 #pragma once
 #include <spdlog/spdlog.h>
 
-namespace fsh::util {
+namespace fsh::util
+{
 /**
 Represents a value that is bounded by a minimum and maximum.
 
@@ -42,13 +43,15 @@ public:
   /// Set a new value, clamping to min/max if necessary
   void set(T val)
   {
-    if (val < min) {
+    if (val < min)
+    {
       spdlog::warn("BoundedValue: value {} is below minimum {}, clamping", val, min);
       _val = min;
       return;
     }
 
-    if (val > max) {
+    if (val > max)
+    {
       spdlog::warn("BoundedValue: value {} is above maximum {}, clamping", val, max);
       _val = max;
       return;

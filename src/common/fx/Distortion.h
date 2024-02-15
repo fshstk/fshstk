@@ -23,7 +23,8 @@
 #include <cmath>
 #include <functional>
 
-namespace fsh::fx {
+namespace fsh::fx
+{
 /**
 Distortion/modulation effect class.
 

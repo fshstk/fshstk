@@ -22,7 +22,8 @@
 #pragma once
 #include <juce_audio_processors/juce_audio_processors.h>
 
-namespace fsh::plugin {
+namespace fsh::plugin
+{
 /**
  * Used to add an integer parameter to a plugin.
  *

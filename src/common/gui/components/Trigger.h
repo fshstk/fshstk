@@ -23,7 +23,8 @@
 #include "Fonts.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh::gui {
+namespace fsh::gui
+{
 /**
 Custom button component that displays a FontAwesome icon and fires a function on click.
 

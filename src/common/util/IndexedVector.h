@@ -22,7 +22,8 @@
 #pragma once
 #include <vector>
 
-namespace fsh::util {
+namespace fsh::util
+{
 /**
 Primitive ring buffer class.
 

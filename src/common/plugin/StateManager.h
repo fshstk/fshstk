@@ -23,7 +23,8 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <spdlog/spdlog.h>
 
-namespace fsh::plugin {
+namespace fsh::plugin
+{
 /**
 Base class for storing plugin state.
 
@@ -71,7 +72,9 @@ protected:
   auto getParameter(const juce::ParameterID& id) const -> T
   {
     const auto* const param = getRawParameterValue(id.getParamID());
-    if (param == nullptr) {
+
+    if (param == nullptr)
+    {
       spdlog::critical("PluginStateBase: trying to access parameter '{}' which does not exist",
                        id.getParamID().toStdString());
       return {};

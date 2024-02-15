@@ -163,12 +163,13 @@ private:
   } };
   fsh::gui::OptionPicker _pickerOscAWaveform{ {
     .choice =
-      [&]() {
-        const auto param = PluginState::Param::oscA_waveform;
-        const auto paramID = PluginState::getID(param).getParamID();
-        auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
-        return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
-      }(),
+      [&]()
+    {
+      const auto param = PluginState::Param::oscA_waveform;
+      const auto paramID = PluginState::getID(param).getParamID();
+      auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
+      return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
+    }(),
     .color = fsh::gui::Colors::dark,
     .highlightColor = fsh::gui::Colors::red,
   } };
@@ -195,12 +196,13 @@ private:
   } };
   fsh::gui::OptionPicker _pickerOscBWaveform{ {
     .choice =
-      [&]() {
-        const auto param = PluginState::Param::oscB_waveform;
-        const auto paramID = PluginState::getID(param).getParamID();
-        auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
-        return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
-      }(),
+      [&]()
+    {
+      const auto param = PluginState::Param::oscB_waveform;
+      const auto paramID = PluginState::getID(param).getParamID();
+      auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
+      return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
+    }(),
     .color = fsh::gui::Colors::dark,
     .highlightColor = fsh::gui::Colors::red,
   } };
@@ -223,12 +225,13 @@ private:
   } };
   fsh::gui::OptionPicker _pickerVoicePolyphony{ {
     .choice =
-      [&]() {
-        const auto param = PluginState::Param::voice_polyphony;
-        const auto paramID = PluginState::getID(param).getParamID();
-        auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
-        return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
-      }(),
+      [&]()
+    {
+      const auto param = PluginState::Param::voice_polyphony;
+      const auto paramID = PluginState::getID(param).getParamID();
+      auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
+      return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
+    }(),
     .color = fsh::gui::Colors::light,
     .highlightColor = fsh::gui::Colors::gold,
   } };
@@ -241,12 +244,13 @@ private:
 
   fsh::gui::OptionPicker _pickerReverb{ {
     .choice =
-      [&]() {
-        const auto param = PluginState::Param::reverb;
-        const auto paramID = PluginState::getID(param).getParamID();
-        auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
-        return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
-      }(),
+      [&]()
+    {
+      const auto param = PluginState::Param::reverb;
+      const auto paramID = PluginState::getID(param).getParamID();
+      auto* paramPtr = _state.getReferenceToBaseClass().getParameter(paramID);
+      return dynamic_cast<juce::AudioParameterChoice*>(paramPtr);
+    }(),
     .color = fsh::gui::Colors::light,
     .highlightColor = fsh::gui::Colors::gold,
   } };

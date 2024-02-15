@@ -38,7 +38,8 @@ void OptionButton::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
   juce::ignoreUnused(isDown);
   const auto isSelected = getToggleState();
 
-  const auto color = [this, isSelected, isMouseOver]() {
+  const auto color = [this, isSelected, isMouseOver]()
+  {
     if (isSelected)
       return _params.highlightColor;
     else if (isMouseOver)

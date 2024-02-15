@@ -28,7 +28,8 @@
 using namespace fsh::util;
 using std::sqrt;
 
-namespace {
+namespace
+{
 constexpr auto pi = M_PI;
 
 template<typename T>
@@ -185,7 +186,8 @@ std::array<float, maxNumChannels> fsh::util::harmonics(const SphericalVector& ve
                                                        Normalization norm)
 {
   const auto [x, y, z] = toXYZ(vec);
-  switch (norm) {
+  switch (norm)
+  {
     case Normalization::N3D:
       return toFloats(harmonics_n3d(x, y, z));
     case Normalization::SN3D:

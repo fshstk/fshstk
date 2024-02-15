@@ -29,7 +29,8 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <stdint.h>
 
-namespace fsh::synth {
+namespace fsh::synth
+{
 /**
 Represents a single voice of a polyphonic synthesizer.
 

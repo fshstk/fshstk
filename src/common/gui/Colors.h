@@ -22,7 +22,8 @@
 #pragma once
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh::gui {
+namespace fsh::gui
+{
 /**
 Colors used by the GUI.
 */

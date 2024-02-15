@@ -25,7 +25,8 @@
 #include "StateManager.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh::gui {
+namespace fsh::gui
+{
 /**
 A component with a label.
 */
@@ -61,7 +62,8 @@ private:
     const auto margin = 5;
     const auto childBottomY = _child.getBoundsInParent().getBottom() + margin;
 
-    const auto text = [this]() {
+    const auto text = [this]()
+    {
       // Only show the value for knobs, not for buttons:
       if constexpr (std::is_same_v<decltype(_child), fsh::gui::Knob>)
         return _child.isMouseButtonDown() ? _child.getTextFromValue(_child.getValue())

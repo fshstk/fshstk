@@ -24,7 +24,8 @@
 #include "SphericalHarmonics.h"
 #include <fmt/format.h>
 
-namespace {
+namespace
+{
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
   const auto degreesLabel = fsh::plugin::ParamFloat::Attributes{}.withStringFromValueFunction(
