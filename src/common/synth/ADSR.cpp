@@ -40,43 +40,42 @@ auto ADSR::getNextValue() -> double
   {
     using enum Phase;
     case Attack:
-    {
-      const auto val = _env.getNextValue();
-      if (val >= upperThreshold)
+      return [&]()
       {
-        _phase = Decay;
-        updateEnvelope();
-      }
-      return val;
-    }
+        const auto val = _env.getNextValue();
+        if (val >= upperThreshold)
+        {
+          _phase = Decay;
+          updateEnvelope();
+        }
+        return val;
+      }();
     case Decay:
-    {
-      const auto val = _env.getNextValue();
-      if (val <= _params.sustain)
+      return [&]()
       {
-        _phase = Sustain;
-        updateEnvelope();
-      }
-      return val;
-    }
+        const auto val = _env.getNextValue();
+        if (val <= _params.sustain)
+        {
+          _phase = Sustain;
+          updateEnvelope();
+        }
+        return val;
+      }();
     case Sustain:
-    {
       return _params.sustain;
-    }
     case Release:
-    {
-      const auto val = _env.getNextValue();
-      if (val <= lowerThreshold)
+      return [&]()
       {
-        _phase = Idle;
-        updateEnvelope();
-      }
-      return val;
-    }
+        const auto val = _env.getNextValue();
+        if (val <= lowerThreshold)
+        {
+          _phase = Idle;
+          updateEnvelope();
+        }
+        return val;
+      }();
     case Idle:
-    {
       return 0.0;
-    }
   }
 
   spdlog::error("ADSR: invalid phase");
