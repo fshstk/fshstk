@@ -22,7 +22,8 @@
 #pragma once
 #include <juce_audio_basics/juce_audio_basics.h>
 
-namespace fsh::util {
+namespace fsh::util
+{
 /**
 Protect an AudioBuffer by clamping its samples to a given range and/or replacing NaNs with 0.0f.
 

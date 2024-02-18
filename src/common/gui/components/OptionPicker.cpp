@@ -27,13 +27,16 @@ using namespace fsh::gui;
 OptionPicker::OptionPicker(const Params& p)
   : _params(p)
 {
-  if (_params.choice == nullptr) {
+  if (_params.choice == nullptr)
+  {
     spdlog::error("OptionPicker: choice parameter is null");
     return;
   }
 
   const auto numChoices = static_cast<size_t>(_params.choice->choices.size());
-  for (auto i = 0U; i < numChoices; ++i) {
+
+  for (auto i = 0U; i < numChoices; ++i)
+  {
     const auto text = _params.choice->choices[static_cast<int>(i)];
     auto component = std::make_unique<OptionButton>(OptionButton::Params{
       .text = text,
@@ -58,7 +61,8 @@ void OptionPicker::buttonClicked(size_t i)
   if (i == getSelectedIndex())
     return;
 
-  if (i >= _options.size()) {
+  if (i >= _options.size())
+  {
     spdlog::error("OptionPicker: index {} out of bounds ({})", i, _options.size());
     return;
   }
@@ -79,7 +83,8 @@ void OptionPicker::resized()
   auto grid = juce::Grid{};
   grid.templateColumns = { 1_fr };
 
-  for (const auto& component : _options) {
+  for (const auto& component : _options)
+  {
     assert(component != nullptr);
     grid.templateRows.add(1_fr);
     grid.items.add(juce::GridItem{ *component });

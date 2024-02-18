@@ -24,7 +24,8 @@
 #include "StateManager.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh::gui {
+namespace fsh::gui
+{
 /**
 Custom knob component that displays a label and a value.
 

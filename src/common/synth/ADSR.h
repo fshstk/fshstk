@@ -22,7 +22,8 @@
 #pragma once
 #include "EnvelopeFollower.h"
 
-namespace fsh::synth {
+namespace fsh::synth
+{
 /**
 ADSR envelope
 

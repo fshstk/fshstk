@@ -36,38 +36,46 @@ auto ADSR::getNextValue() -> double
   const auto lowerThreshold = 0.00;
   const auto upperThreshold = 1.00;
 
-  switch (_phase) {
+  switch (_phase)
+  {
     using enum Phase;
-    case Attack: {
-      const auto val = _env.getNextValue();
-      if (val >= upperThreshold) {
-        _phase = Decay;
-        updateEnvelope();
-      }
-      return val;
-    }
-    case Decay: {
-      const auto val = _env.getNextValue();
-      if (val <= _params.sustain) {
-        _phase = Sustain;
-        updateEnvelope();
-      }
-      return val;
-    }
-    case Sustain: {
+    case Attack:
+      return [&]()
+      {
+        const auto val = _env.getNextValue();
+        if (val >= upperThreshold)
+        {
+          _phase = Decay;
+          updateEnvelope();
+        }
+        return val;
+      }();
+    case Decay:
+      return [&]()
+      {
+        const auto val = _env.getNextValue();
+        if (val <= _params.sustain)
+        {
+          _phase = Sustain;
+          updateEnvelope();
+        }
+        return val;
+      }();
+    case Sustain:
       return _params.sustain;
-    }
-    case Release: {
-      const auto val = _env.getNextValue();
-      if (val <= lowerThreshold) {
-        _phase = Idle;
-        updateEnvelope();
-      }
-      return val;
-    }
-    case Idle: {
+    case Release:
+      return [&]()
+      {
+        const auto val = _env.getNextValue();
+        if (val <= lowerThreshold)
+        {
+          _phase = Idle;
+          updateEnvelope();
+        }
+        return val;
+      }();
+    case Idle:
       return 0.0;
-    }
   }
 
   spdlog::error("ADSR: invalid phase");
@@ -110,7 +118,8 @@ void ADSR::updateEnvelope()
   // Setting decay/release target to < 0.0 so we can cut it off at 0.0:
   const auto decayReleaseTarget = -0.05;
 
-  switch (_phase) {
+  switch (_phase)
+  {
     using enum Phase;
     case Attack:
       _env.reset(0.0);

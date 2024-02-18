@@ -32,7 +32,8 @@ void IndexedVector::resize(size_t newSize)
 
 auto IndexedVector::get() const -> float
 {
-  if (index >= data.size()) {
+  if (index >= data.size())
+  {
     spdlog::error("IndexedVector: index {} out of bounds (size: {}).", index, data.size());
     return 0.0f;
   }
@@ -41,7 +42,8 @@ auto IndexedVector::get() const -> float
 }
 void IndexedVector::add(float val)
 {
-  if (index >= data.size()) {
+  if (index >= data.size())
+  {
     spdlog::error("IndexedVector: index {} out of bounds (size: {}).", index, data.size());
     return;
   }
@@ -51,7 +53,8 @@ void IndexedVector::add(float val)
 
 void IndexedVector::set(float val)
 {
-  if (index >= data.size()) {
+  if (index >= data.size())
+  {
     spdlog::error("IndexedVector: index {} out of bounds (size: {}).", index, data.size());
     return;
   }

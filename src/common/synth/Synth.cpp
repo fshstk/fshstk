@@ -40,7 +40,8 @@ void Synth::reset()
 
 void Synth::handleMIDIEvent(const MidiEvent& evt)
 {
-  switch (evt.type()) {
+  switch (evt.type())
+  {
     using enum MidiEvent::Type;
     case NoteOn:
       spdlog::debug("currently active voices: {}", numActiveVoices());
@@ -74,11 +75,13 @@ void Synth::process(juce::AudioBuffer<float>& audio, juce::MidiBuffer& midi)
 
   auto bufferOffset = 0U;
 
-  for (const auto& msg : midi) {
+  for (const auto& msg : midi)
+  {
     handleMIDIEvent(MidiEvent{ msg });
 
     if (const auto elapsedSamples = static_cast<size_t>(msg.samplePosition) - bufferOffset;
-        elapsedSamples > 0) {
+        elapsedSamples > 0)
+    {
       for (auto& voice : _voices)
         voice.render(audio, elapsedSamples, bufferOffset);
       bufferOffset += elapsedSamples;

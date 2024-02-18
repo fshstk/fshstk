@@ -21,7 +21,8 @@
 
 #pragma once
 
-namespace fsh::util {
+namespace fsh::util
+{
 /**
 Smoothed value tracking with separate attack/decay times.
 

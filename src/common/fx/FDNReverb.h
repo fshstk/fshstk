@@ -23,7 +23,8 @@
 #include "IndexedVector.h"
 #include <juce_dsp/juce_dsp.h>
 
-namespace fsh::fx {
+namespace fsh::fx
+{
 /**
 Ambisonic FDN reverb algorithm.
 

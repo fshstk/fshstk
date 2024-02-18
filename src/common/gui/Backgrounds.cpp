@@ -24,7 +24,8 @@
 
 using namespace fsh::gui;
 
-namespace {
+namespace
+{
 auto drawableFromAsset(const char* asset) -> std::unique_ptr<juce::Drawable>
 {
   const auto xml = juce::XmlDocument::parse(asset);

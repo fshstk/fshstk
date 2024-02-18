@@ -23,7 +23,8 @@
 
 using namespace fsh::gui;
 
-namespace {
+namespace
+{
 const auto size = 18;
 } // namespace
 
@@ -37,7 +38,8 @@ Trigger::Trigger(const Params& params)
 
 void Trigger::paintButton(juce::Graphics& g, bool isMouseOver, bool isDown)
 {
-  const auto textColor = [this, isMouseOver, isDown]() {
+  const auto textColor = [this, isMouseOver, isDown]()
+  {
     if (isDown)
       return _params.highlightColor;
     if (isMouseOver)

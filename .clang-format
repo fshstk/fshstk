@@ -1,5 +1,6 @@
 BasedOnStyle: Mozilla
 ColumnLimit: 100
+BreakBeforeBraces: Allman
 AlwaysBreakAfterReturnType: None
 AlwaysBreakAfterDefinitionReturnType: None
 FixNamespaceComments: true

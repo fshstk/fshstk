@@ -60,7 +60,8 @@ void AmbisonicEncoder::updateCoefficients()
                   std::tuple_size_v<decltype(_coefficients)>,
                 "targetCoefficients and _coefficients must have the same size");
 
-  for (auto i = 0U; i < _coefficients.size(); ++i) {
+  for (auto i = 0U; i < _coefficients.size(); ++i)
+  {
     if (i < fullGainChannels)
       _coefficients[i].setTargetValue(targetCoefficients[i]);
     else if (i < reducedGainChannels)

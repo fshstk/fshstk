@@ -21,7 +21,8 @@
 
 #pragma once
 
-namespace fsh::synth {
+namespace fsh::synth
+{
 /**
 Represents a single band-limited oscillator with multiple waveforms.
 

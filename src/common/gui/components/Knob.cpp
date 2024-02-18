@@ -25,7 +25,8 @@
 
 using namespace fsh::gui;
 
-namespace {
+namespace
+{
 auto createKnob(const juce::Point<float> center,
                 const float radius,
                 const float radians,
@@ -40,10 +41,12 @@ auto createKnob(const juce::Point<float> center,
   path.addCentredArc(
     center.getX(), center.getY(), radius, radius, 0.0f, rightNotchAngle, leftNotchAngle, true);
 
-  const auto pointOnCircle = [center, radius](const float circleAngle) {
+  const auto pointOnCircle = [center, radius](const float circleAngle)
+  {
     return juce::Point{ center.x + radius * std::sin(circleAngle),
                         center.y + radius * std::cos(circleAngle) };
   };
+
   const auto leftNotchPoint = pointOnCircle(leftNotchAngle);
   const auto rightNotchPoint = pointOnCircle(rightNotchAngle);
 

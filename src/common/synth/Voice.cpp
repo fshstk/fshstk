@@ -25,7 +25,8 @@
 
 using namespace fsh::synth;
 
-namespace {
+namespace
+{
 auto midiNoteToFreq(double noteVal) -> double
 {
   const auto concertAMidi = 69.0;
@@ -93,7 +94,8 @@ void Voice::noteOn(uint8_t noteVal, uint8_t velocity)
 void Voice::noteOff(uint8_t noteVal, uint8_t)
 {
   // TODO: when ADSR is done, trigger reset
-  if (noteVal == _noteVal) {
+  if (noteVal == _noteVal)
+  {
     _ampEnv.noteOff();
     _filtEnv.noteOff();
   }
@@ -129,18 +131,20 @@ void Voice::render(juce::AudioBuffer<float>& audio, size_t numSamples, size_t bu
 
   _filter.setParams({
     .cutoff =
-      [this, oscFreq]() {
-        // TODO: filter mod amt needs to be exponential
-        const auto baseFreq = oscFreq * std::exp2(_params.filterCutoff);
-        const auto env = _params.filtModAmt * _filtEnv.getNextValue();
-        return static_cast<float>(baseFreq * (1 + env));
-      }(),
+      [this, oscFreq]()
+    {
+      // TODO: filter mod amt needs to be exponential
+      const auto baseFreq = oscFreq * std::exp2(_params.filterCutoff);
+      const auto env = _params.filtModAmt * _filtEnv.getNextValue();
+      return static_cast<float>(baseFreq * (1 + env));
+    }(),
     .resonance = _params.filterResonance,
   });
 
   const auto bufferSize = static_cast<size_t>(audio.getNumSamples());
 
-  for (auto n = bufferOffset; n < bufferOffset + numSamples; ++n) {
+  for (auto n = bufferOffset; n < bufferOffset + numSamples; ++n)
+  {
     if (n >= bufferSize)
       return spdlog::critical("bufferOffset ({}) + numSamples ({}) > bufferSize ({})",
                               bufferOffset,

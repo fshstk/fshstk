@@ -22,7 +22,8 @@
 #pragma once
 #include <array>
 
-namespace fsh::fx {
+namespace fsh::fx
+{
 /**
 Virtual analog Moog-style lowpass filter.
 

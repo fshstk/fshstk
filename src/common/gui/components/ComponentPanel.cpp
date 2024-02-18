@@ -53,7 +53,8 @@ void ComponentPanel::resized()
   else
     grid.templateColumns = { 1_fr };
 
-  for (const auto& component : _components) {
+  for (const auto& component : _components)
+  {
     if (component == nullptr)
       continue;
 

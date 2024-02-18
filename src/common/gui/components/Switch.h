@@ -24,7 +24,8 @@
 #include "StateManager.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 
-namespace fsh::gui {
+namespace fsh::gui
+{
 /**
 Custom Switch component that displays a toggle switch.
 

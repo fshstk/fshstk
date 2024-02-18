@@ -25,7 +25,8 @@
 #include "SphericalHarmonics.h"
 #include "SphericalVector.h"
 
-namespace fsh::fx {
+namespace fsh::fx
+{
 /**
 Provides coefficients to encode a mono signal into Ambisonics.
 

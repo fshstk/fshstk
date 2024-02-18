@@ -24,7 +24,8 @@
 
 using namespace fsh::gui;
 
-namespace {
+namespace
+{
 const auto size = 18;
 } // namespace
 
