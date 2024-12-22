@@ -30,10 +30,10 @@ Fonts::Fonts()
   , iconTypeface(
       juce::Typeface::createSystemTypefaceFor(fsh::assets::fonts::FontAwesome6FreeSolid_otf,
                                               fsh::assets::fonts::FontAwesome6FreeSolid_otfSize))
-  , h1(juce::Font{ mainTypeface }.withHeight(48.0f))
-  , h2(juce::Font{ mainTypeface }.withHeight(24.0f))
-  , h3(juce::Font{ mainTypeface }.withHeight(18.0f))
-  , h4(juce::Font{ mainTypeface }.withHeight(16.0f))
-  , icons(juce::Font{ iconTypeface })
+  , h1(juce::Font{ juce::FontOptions{ mainTypeface }.withHeight(48.0f) })
+  , h2(juce::Font{ juce::FontOptions{ mainTypeface }.withHeight(24.0f) })
+  , h3(juce::Font{ juce::FontOptions{ mainTypeface }.withHeight(18.0f) })
+  , h4(juce::Font{ juce::FontOptions{ mainTypeface }.withHeight(16.0f) })
+  , icons(juce::Font{ juce::FontOptions{ iconTypeface } })
 {
 }
