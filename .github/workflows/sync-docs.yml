@@ -58,16 +58,14 @@ jobs:
             libxrandr-dev \
             libxrender-dev \
             mesa-common-dev
-          wget https://www.doxygen.nl/files/doxygen-1.10.0.linux.bin.tar.gz
-          tar -xzf doxygen-1.10.0.linux.bin.tar.gz
 
       # Configure step is needed for custom CSS:
       - name: Install Doxygen
         run: |
-          FILE=doxygen-1.10.0.linux.bin.tar.gz
+          FILE=doxygen-1.12.0.linux.bin.tar.gz
           wget https://www.doxygen.nl/files/${FILE}
           CALCULATED_SHA256=$(sha256sum ${FILE} | awk '{print $1}')
-          EXPECTED_SHA256="dcfc9aa4cc05aef1f0407817612ad9e9201d9bf2ce67cecf95a024bba7d39747"
+          EXPECTED_SHA256="3c42c3f3fb206732b503862d9c9c11978920a8214f223a3950bbf2520be5f647"
           if [ "$CALCULATED_SHA256" != "$EXPECTED_SHA256" ]; then
             echo "ERROR: SHA256 mismatch for Doxygen:"
             echo "EXPECTED: ${EXPECTED_SHA256}"
@@ -83,7 +81,7 @@ jobs:
       # Doxygen < 1.10 (as installed by apt) will throw an error when docstring
       # comments are formatted without "*" at the beginning of each line:
       - name: Generate docs
-        run: ./doxygen-1.10.0/bin/doxygen
+        run: ./doxygen-1.12.0/bin/doxygen
 
       - name: Sync docs directory
         run: |
