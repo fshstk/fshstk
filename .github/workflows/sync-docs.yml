@@ -91,4 +91,4 @@ jobs:
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
-          SSH_ID: docs.fshstk.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICoRSttmGhja67iWGqH/tNcK7JydvAX4ljVWWJqFb9IJ
+          SSH_ID: docs.fshstk.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDLBl/XAUqdoyM2Uty6qpBroPpQimYgqDag4Bj29AOb
