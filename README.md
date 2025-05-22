@@ -20,6 +20,24 @@
 - docs: [docs.fshstk.com](https://docs.fshstk.com)
 - code: [github.com/fshstk/fshstk](https://github.com/fshstk/fshstk)
 
+> [!IMPORTANT]
+> _If you came here from my [poster presentation](https://pizza.fshstk.com/u/Ambisonium.pdf) at the
+> AES convention (or from anywhere else for that matter) and you'd like to try out the Ambisonium
+> synth yourself:_
+>
+> First of all, hi and welcome! 👋 I'm happy you're here. Please note that Ambisonium and the rest
+> of the plugins that make up this repository are still very much in early development. This means
+> that
+>
+> - there are no downloadable releases right now;
+> - if you want to use it you will have to compile it yourself, which may be tricky if you don't
+>   have at least some level of knowledge of CMake;
+> - there may be bugs and unexpected behaviour, so be very cautious with volume;
+> - future versions are not guaranteed to be backwards compatible in DAW projects.
+>
+> If you're still interested but don't know how to build the plugin yourself, I'm happy to help.
+> Feel free to send me a mail; my address is in the PDF above.
+
 ## Motivation
 
 This repository is an attempt at trying out a few creative ideas in Ambisonics/3D Audio, with a
