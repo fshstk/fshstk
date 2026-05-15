@@ -29,7 +29,7 @@ message(STATUS "Fetching JUCE...")
 FetchContent_Declare(
   JUCE
   GIT_REPOSITORY https://github.com/juce-framework/JUCE
-  GIT_TAG        8.0.4)
+  GIT_TAG        8.0.12)
 FetchContent_MakeAvailable(JUCE)
 
 ####################################################################################################
@@ -40,7 +40,7 @@ message(STATUS "Fetching FMT...")
 FetchContent_Declare(
   FMT
   GIT_REPOSITORY https://github.com/fmtlib/fmt
-  GIT_TAG        11.0.2
+  GIT_TAG        12.1.0
 )
 set(FMT_SYSTEM_HEADERS ON)
 FetchContent_MakeAvailable(FMT)
@@ -53,7 +53,7 @@ message(STATUS "Fetching spdlog...")
 FetchContent_Declare(
   spdlog
   GIT_REPOSITORY https://github.com/gabime/spdlog
-  GIT_TAG        v1.15.0
+  GIT_TAG        v1.17.0
 )
 set(SPDLOG_FMT_EXTERNAL ON)
 FetchContent_MakeAvailable(spdlog)
@@ -66,6 +66,6 @@ message(STATUS "Fetching doxygen-awesome-css...")
 FetchContent_Declare(
   doxygen-css
   GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css
-  GIT_TAG        v2.3.4
+  GIT_TAG        v2.4.2
 )
 FetchContent_MakeAvailable(doxygen-css)
