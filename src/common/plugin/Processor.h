@@ -20,6 +20,7 @@
 ***************************************************************************************************/
 
 #pragma once
+#include <cassert>
 #include <juce_audio_processors/juce_audio_processors.h>
 
 // The following macros are here just to appease the compiler. When including this file in a plugin,
@@ -107,6 +108,8 @@ public:
     /// Input channel set (optional)
     juce::AudioChannelSet inputs = juce::AudioChannelSet::disabled();
 
+    std::optional<juce::XmlElement> presets = {};
+
     /// Returns true if the configuration has enabled inputs
     auto hasInputs() const -> bool { return inputs != juce::AudioChannelSet::disabled(); }
   };
@@ -175,24 +178,54 @@ public:
   /// Returns whether the plugin is a MIDI effect (as specified in the JUCE project settings)
   bool isMidiEffect() const override { return _isMidiEffect; }
 
-  /// Returns the number of programs (presets) supported by the plugin. The default implementation
-  /// returns 1, even though no presets are impleneted, since some DAWs don't like it when you
-  /// return 0 (or so the JUCE documentation says).
-  int getNumPrograms() override { return 1; }
-
-  /// Returns the index of the current program (preset). The default implementation returns 0, as no
-  /// programs are implemented.
-  int getCurrentProgram() override { return 0; }
-
-  /// Returns the name of the program at the given index. The default implementation returns
-  /// "unnamed". (Some plugin validators will complain if we return an empty string.)
-  const juce::String getProgramName(int) override { return "unnamed"; }
-
-  /// Returns the name of the current program (preset). The default implementation has no effect, as
-  /// no programs are implemented.
-  void setCurrentProgram(int) override
+  /// Returns the number of programs (presets) supported by the plugin. Returns 1 by default when no
+  /// presets are impleneted, since some DAWs don't like it when you return 0 (or so the JUCE
+  /// documentation says).
+  int getNumPrograms() override
   {
-    // Intentionally empty override
+    if (_conf.presets == std::nullopt)
+      return 1;
+
+    const auto numPresets = _conf.presets->getNumChildElements();
+    assert(numPresets > 0);
+    return numPresets;
+  }
+
+  /// Returns the index of the current program (preset).
+  int getCurrentProgram() override { return _currentPreset; }
+
+  /// Returns the name of the program at the given index. Returns "unnamed" as a fallback. (Some
+  /// plugin validators will complain if we return an empty string.)
+  const juce::String getProgramName(int i) override
+  {
+    const auto unnamed = "unnamed";
+
+    if (_conf.presets == std::nullopt)
+      return unnamed;
+
+    const auto* prog = _conf.presets->getChildElement(i);
+    assert(prog != nullptr);
+
+    return prog->getStringAttribute("name", unnamed);
+  }
+
+  /// Changes the plugin state to the selected preset.
+  void setCurrentProgram(int i) override
+  {
+    if (_conf.presets == std::nullopt)
+      return;
+
+    const auto* prog = _conf.presets->getChildElement(i);
+    assert(prog != nullptr);
+
+    const auto* progParams = prog->getChildByName("Parameters");
+    assert(progParams != nullptr);
+
+    // TODO: setState should return info on whether it succeeded.
+    // something like std::expected<void, std::string>.
+    // if it fails, we don't uppdate _currentPreset
+    _params.setState(*progParams);
+    _currentPreset = i;
   }
 
   /// Renames the program at the given index. The default implementation has no effect, as no
@@ -218,6 +251,23 @@ public:
       _params.setState(*xml);
   }
 
+  /// Parse an XML file containing presets. This is usually added to the `fsh::assets::presets`
+  /// namespace at compile-time.
+  ///
+  /// TODO: We need an XML schema to make sure presets all use the same structure.
+  static auto getPresetsFromBinaryData(const char* data, int numBytes) -> juce::XmlElement
+  {
+    assert(data != nullptr);
+    assert(numBytes > 0);
+
+    const auto str = juce::String::fromUTF8(data, numBytes);
+    auto doc = juce::XmlDocument{ str };
+    auto root = doc.getDocumentElement();
+
+    assert(root != nullptr);
+    return *root;
+  }
+
 protected:
   /// Use this to access the plugin's parameters. This is an instance of the PluginState object that
   /// is passed as a template parameter to PluginBase.
@@ -241,6 +291,7 @@ private:
   inline static const auto _producesMidi = bool{ JucePlugin_ProducesMidiOutput };
   inline static const auto _isMidiEffect = bool{ JucePlugin_IsMidiEffect };
   Config _conf;
+  int _currentPreset = 0;
   juce::ScopedNoDenormals _disableDenormals; // TODO: this may not be effective here
 };
 } // namespace fsh::plugin

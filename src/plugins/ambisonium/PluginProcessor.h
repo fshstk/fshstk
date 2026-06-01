@@ -38,15 +38,8 @@ public:
 
   void allNotesOff();
 
-  auto getNumPrograms() -> int override;
-  auto getProgramName(int) -> const juce::String override;
-  auto getCurrentProgram() -> int override;
-  void setCurrentProgram(int) override;
-
 private:
-  int _currentPreset = 0;
   fsh::synth::Synth _synth;
   fsh::fx::FDNReverb _reverb;
   fsh::util::BufferProtector _bufferProtector;
-  juce::XmlElement _presets;
 };

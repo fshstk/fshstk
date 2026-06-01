@@ -25,24 +25,12 @@
 #include "SphericalHarmonics.h"
 #include "Synth.h"
 
-namespace
-{
-auto fetchPresets()
-{
-  const auto xmlStr = juce::String::fromUTF8(fsh::assets::presets::ambisonium_xml,
-                                             fsh::assets::presets::ambisonium_xmlSize);
-  auto xmlDoc = juce::XmlDocument{ xmlStr };
-  auto root = xmlDoc.getDocumentElement();
-  assert(root != nullptr);
-  return *root;
-}
-} // namespace
-
 PluginProcessor::PluginProcessor()
   : Processor({
       .outputs = juce::AudioChannelSet::ambisonic(fsh::util::maxAmbiOrder),
+      .presets = getPresetsFromBinaryData(fsh::assets::presets::ambisonium_xml,
+                                          fsh::assets::presets::ambisonium_xmlSize),
     })
-  , _presets(fetchPresets())
 {
 }
 
@@ -87,33 +75,4 @@ void PluginProcessor::processBlock(juce::AudioBuffer<double>& audio, juce::MidiB
 void PluginProcessor::allNotesOff()
 {
   _synth.reset();
-}
-
-auto PluginProcessor::getNumPrograms() -> int
-{
-  return _presets.getNumChildElements();
-}
-
-auto PluginProcessor::getProgramName(int i) -> const juce::String
-{
-  const auto* prog = _presets.getChildElement(i);
-  assert(prog != nullptr);
-  return prog->getStringAttribute("name", "Untitled");
-}
-
-auto PluginProcessor::getCurrentProgram() -> int
-{
-  return _currentPreset;
-}
-
-void PluginProcessor::setCurrentProgram(int i)
-{
-  const auto* prog = _presets.getChildElement(i);
-  assert(prog != nullptr);
-
-  const auto* progParams = prog->getChildByName("Parameters");
-  assert(progParams != nullptr);
-
-  _params.setState(*progParams);
-  _currentPreset = i;
 }
