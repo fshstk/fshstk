@@ -91,27 +91,29 @@ void PluginProcessor::allNotesOff()
 
 auto PluginProcessor::getNumPrograms() -> int
 {
-  // return PRESETS.size();
-  return {};
+  return _presets.getNumChildElements();
 }
 
 auto PluginProcessor::getProgramName(int i) -> const juce::String
 {
-  assert(i >= 0);
-  // assert(static_cast<size_t>(i) < PRESETS.size());
-  // return PRESETS[static_cast<size_t>(i)].name;
-  return {};
+  const auto* prog = _presets.getChildElement(i);
+  assert(prog != nullptr);
+  return prog->getStringAttribute("name", "Untitled");
 }
 
 auto PluginProcessor::getCurrentProgram() -> int
 {
-  return _currentPreset; // TODO: what to return when no preset is active?
+  return _currentPreset;
 }
 
 void PluginProcessor::setCurrentProgram(int i)
 {
-  assert(i >= 0);
-  // assert(static_cast<size_t>(i) < PRESETS.size());
-  // const auto preset = PRESETS[static_cast<size_t>(i)]; // TODO: load this
-  // _currentPreset = i;
+  const auto* prog = _presets.getChildElement(i);
+  assert(prog != nullptr);
+
+  const auto* progParams = prog->getChildByName("Parameters");
+  assert(progParams != nullptr);
+
+  _params.setState(*progParams);
+  _currentPreset = i;
 }

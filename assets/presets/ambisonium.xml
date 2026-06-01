@@ -1,36 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Parameters>
-  <PARAM id="oscA_level" value="100.0"/>
-  <PARAM id="oscA_tune" value="0.0"/>
-  <PARAM id="oscA_fine" value="0.0"/>
-  <PARAM id="oscA_waveform" value="0.0"/>
-
-  <PARAM id="oscB_level" value="0.0"/>
-  <PARAM id="oscB_tune" value="0.0"/>
-  <PARAM id="oscB_fine" value="0.0"/>
-  <PARAM id="oscB_waveform" value="0.0"/>
-
-  <PARAM id="ampenv_attack" value="0.0"/>
-  <PARAM id="ampenv_decay" value="30.0"/>
-  <PARAM id="ampenv_hold" value="1.0"/>
-
-  <PARAM id="filter_cutoff" value="100.0"/>
-  <PARAM id="filter_resonance" value="15.0"/>
-
-  <PARAM id="filtenv_attack" value="0.0"/>
-  <PARAM id="filtenv_decay" value="30.0"/>
-  <PARAM id="filtenv_modamt" value="0.0"/>
-
-  <PARAM id="fx_drive" value="0.0"/>
-  <PARAM id="fx_noise" value="0.0"/>
-  <PARAM id="reverb" value="0.0"/>
-
-  <PARAM id="voice_glide" value="0.0"/>
-  <PARAM id="voice_polyphony" value="1.0"/>
-
-  <PARAM id="ambi_center" value="0.0"/>
-  <PARAM id="ambi_spread" value="360.0"/>
-
-  <PARAM id="level" value="0.0"/>
-</Parameters>
+<Presets>
+  <Preset name="Init">
+    <Parameters>
+      <PARAM id="oscA_level" value="100.0" />
+      <PARAM id="oscA_tune" value="0.0" />
+      <PARAM id="oscA_fine" value="0.0" />
+      <PARAM id="oscA_waveform" value="0.0" />
+      <PARAM id="oscB_level" value="0.0" />
+      <PARAM id="oscB_tune" value="0.0" />
+      <PARAM id="oscB_fine" value="0.0" />
+      <PARAM id="oscB_waveform" value="0.0" />
+      <PARAM id="ampenv_attack" value="0.0" />
+      <PARAM id="ampenv_decay" value="30.0" />
+      <PARAM id="ampenv_hold" value="1.0" />
+      <PARAM id="filter_cutoff" value="100.0" />
+      <PARAM id="filter_resonance" value="15.0" />
+      <PARAM id="filtenv_attack" value="0.0" />
+      <PARAM id="filtenv_decay" value="30.0" />
+      <PARAM id="filtenv_modamt" value="0.0" />
+      <PARAM id="fx_drive" value="0.0" />
+      <PARAM id="fx_noise" value="0.0" />
+      <PARAM id="reverb" value="0.0" />
+      <PARAM id="voice_glide" value="0.0" />
+      <PARAM id="voice_polyphony" value="1.0" />
+      <PARAM id="ambi_center" value="0.0" />
+      <PARAM id="ambi_spread" value="360.0" />
+      <PARAM id="level" value="0.0" />
+    </Parameters>
+  </Preset>
+  <Preset name="Dual Saw">
+    <Parameters>
+      <PARAM id="oscA_level" value="100.0" />
+      <PARAM id="oscA_tune" value="-12.0" />
+      <PARAM id="oscA_fine" value="0.0" />
+      <PARAM id="oscA_waveform" value="0.0" />
+      <PARAM id="oscB_level" value="100.0" />
+      <PARAM id="oscB_tune" value="12.0" />
+      <PARAM id="oscB_fine" value="0.0" />
+      <PARAM id="oscB_waveform" value="0.0" />
+      <PARAM id="ampenv_attack" value="0.0" />
+      <PARAM id="ampenv_decay" value="30.0" />
+      <PARAM id="ampenv_hold" value="1.0" />
+      <PARAM id="filter_cutoff" value="100.0" />
+      <PARAM id="filter_resonance" value="15.0" />
+      <PARAM id="filtenv_attack" value="0.0" />
+      <PARAM id="filtenv_decay" value="30.0" />
+      <PARAM id="filtenv_modamt" value="0.0" />
+      <PARAM id="fx_drive" value="0.0" />
+      <PARAM id="fx_noise" value="0.0" />
+      <PARAM id="reverb" value="0.0" />
+      <PARAM id="voice_glide" value="0.0" />
+      <PARAM id="voice_polyphony" value="1.0" />
+      <PARAM id="ambi_center" value="0.0" />
+      <PARAM id="ambi_spread" value="360.0" />
+      <PARAM id="level" value="0.0" />
+    </Parameters>
+  </Preset>
+</Presets>

@@ -44,7 +44,7 @@ public:
   void setCurrentProgram(int) override;
 
 private:
-  int _currentPreset;
+  int _currentPreset = 0;
   fsh::synth::Synth _synth;
   fsh::fx::FDNReverb _reverb;
   fsh::util::BufferProtector _bufferProtector;
