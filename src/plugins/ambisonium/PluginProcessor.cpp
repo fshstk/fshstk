@@ -88,3 +88,30 @@ void PluginProcessor::allNotesOff()
 {
   _synth.reset();
 }
+
+auto PluginProcessor::getNumPrograms() -> int
+{
+  // return PRESETS.size();
+  return {};
+}
+
+auto PluginProcessor::getProgramName(int i) -> const juce::String
+{
+  assert(i >= 0);
+  // assert(static_cast<size_t>(i) < PRESETS.size());
+  // return PRESETS[static_cast<size_t>(i)].name;
+  return {};
+}
+
+auto PluginProcessor::getCurrentProgram() -> int
+{
+  return _currentPreset; // TODO: what to return when no preset is active?
+}
+
+void PluginProcessor::setCurrentProgram(int i)
+{
+  assert(i >= 0);
+  // assert(static_cast<size_t>(i) < PRESETS.size());
+  // const auto preset = PRESETS[static_cast<size_t>(i)]; // TODO: load this
+  // _currentPreset = i;
+}
