@@ -21,13 +21,28 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "PresetData.h"
 #include "SphericalHarmonics.h"
 #include "Synth.h"
+
+namespace
+{
+auto fetchPresets()
+{
+  const auto xmlStr = juce::String::fromUTF8(fsh::assets::presets::_01_init_xml,
+                                             fsh::assets::presets::_01_init_xmlSize);
+  auto xmlDoc = juce::XmlDocument{ xmlStr };
+  auto root = xmlDoc.getDocumentElement();
+  assert(root != nullptr);
+  return root;
+}
+} // namespace
 
 PluginProcessor::PluginProcessor()
   : Processor({
       .outputs = juce::AudioChannelSet::ambisonic(fsh::util::maxAmbiOrder),
     })
+  , _presets(fetchPresets())
 {
 }
 

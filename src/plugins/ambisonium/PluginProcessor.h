@@ -42,4 +42,5 @@ private:
   fsh::synth::Synth _synth;
   fsh::fx::FDNReverb _reverb;
   fsh::util::BufferProtector _bufferProtector;
+  std::unique_ptr<juce::XmlElement> _presets;
 };

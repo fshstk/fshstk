@@ -21,3 +21,4 @@
 
 add_subdirectory(backgrounds)
 add_subdirectory(fonts)
+add_subdirectory(presets)
