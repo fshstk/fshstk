@@ -19,13 +19,11 @@
 #                                   www.gnu.org/licenses/gpl-3.0                                   #
 ####################################################################################################
 
-# juce_add_binary_data(PresetData
-#   HEADER_NAME
-#     PresetData.h
-#   NAMESPACE
-#     fsh::assets::presets
-#   SOURCES
-#     ambisonium.xml
-# )
-
-add_subdirectory(ambisonium)
+juce_add_binary_data(PresetData
+  HEADER_NAME
+    PresetData.h
+  NAMESPACE
+    fsh::assets::presets
+  SOURCES
+    ambisonium.xml
+)

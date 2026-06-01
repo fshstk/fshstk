@@ -29,8 +29,8 @@ namespace
 {
 auto fetchPresets()
 {
-  const auto xmlStr = juce::String::fromUTF8(fsh::assets::presets::_01_init_xml,
-                                             fsh::assets::presets::_01_init_xmlSize);
+  const auto xmlStr = juce::String::fromUTF8(fsh::assets::presets::ambisonium_xml,
+                                             fsh::assets::presets::ambisonium_xmlSize);
   auto xmlDoc = juce::XmlDocument{ xmlStr };
   auto root = xmlDoc.getDocumentElement();
   assert(root != nullptr);
