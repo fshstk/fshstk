@@ -34,7 +34,7 @@ auto fetchPresets()
   auto xmlDoc = juce::XmlDocument{ xmlStr };
   auto root = xmlDoc.getDocumentElement();
   assert(root != nullptr);
-  return root;
+  return *root;
 }
 } // namespace
 
