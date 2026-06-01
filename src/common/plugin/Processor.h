@@ -241,6 +241,6 @@ private:
   inline static const auto _producesMidi = bool{ JucePlugin_ProducesMidiOutput };
   inline static const auto _isMidiEffect = bool{ JucePlugin_IsMidiEffect };
   Config _conf;
-  juce::ScopedNoDenormals _disableDenormals;
+  juce::ScopedNoDenormals _disableDenormals; // TODO: this may not be effective here
 };
 } // namespace fsh::plugin
