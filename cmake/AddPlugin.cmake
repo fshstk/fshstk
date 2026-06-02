@@ -46,5 +46,5 @@ function(fsh_add_plugin)
     COPY_PLUGIN_AFTER_BUILD   TRUE
   )
 
-  target_link_libraries(${PROJECT_NAME} PRIVATE fshlib)
+  target_link_libraries(${PROJECT_NAME} PRIVATE fshlib PresetData)
 endfunction()
